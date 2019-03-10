@@ -11,7 +11,76 @@
 \author{Anmol Parande}
 \date{Spring 2019 - Professors Anant Sahai, Kris Pister, and Jaijeet Roychowdhury}
 \maketitle
+\section{Discrete Time Models}
+Although circuits and other systems function in continuous time, computers can only act in discrete time.
+This means the signals they send out to try and control the system are piecewise-continuous, and they can only sense the system at specified intervals $\delta$
+At a discrete time-step $i$, the computer will measure $\vec{x}_d[i]$ and applies the control $\vec{u}[i]$ over the time-interval $[i, i+1]$.
+Keep in mind that $i=\delta t$ where $t$ is the continuous time.
 
+\begin{definition}
+    The discrete time model is $\vec{x}_d[i+1]=A_d\vec{x}_d[i]+B_d\vec{u}[i]+\vec{w}[i]$ where $\vec{w}[i]$ is some disturbance.
+\end{definition}
+
+\subsection{Converting between continuous time and discrete time}
+To see how to convert between a continuous time model to a discrete time model, consider the following system.
+\[
+    \begin{array}{c}
+        \frac{dx}{dt}=\lambda x+u, u=e^{st}\\
+        \left(
+            \frac{d}{dt}-\lambda
+            \right)x = u
+    \end{array}\\
+\]
+
+Solving will give $x=\alpha e^{\lambda t}+\beta e^{st}$
+Plugging this into the original equation
+\[
+    \begin{array}{c}
+        \alpha \lambda e^{st}+\beta se^{st} = \lambda (\alpha e^{\lambda t}+\beta e^{st})+e^{st}\\
+        \text{if}\> \lambda \ne s\\
+        \beta s = \beta \lambda + 1 \implies \beta = \frac{1}{s-\lambda}
+    \end{array}
+    \]
+Since the computer only outputs constant signals, $s=0$, so $x=\alpha e^{\lambda t}-\frac{u}{\lambda}$
+If $x(0)=x_0$
+\[
+    \begin{array}{c}
+        x(0)=\alpha - \frac{u}{\lambda}=x_0\\
+        x = (x_0+\frac{u/\lambda})e^{\lambda t}-\frac{u}{\lambda}\\
+        x = x_0 e^{\lambda t}+u\left(
+            \frac{e^{\lambda t}-1}{\lambda}
+        \right)
+    \end{array}
+\]
+
+Thus the discrete time model is
+$$x[i+1]=e^{\lambda \delta}x[i]+\left(
+    \frac{e^{\lambda t}-1}{\lambda}\right) u[i]$$
+since the initial condition for the next time-step is simple the value at the previous time-step
+
+\subsection{Finding A and B}
+What would happen if we didn't know what A and B were though? It turns out that we can find it by gathering data about the system and then using least squares.
+In the scalar case:
+\[
+    \begin{array}{c}
+        x[i+1]=ax[i]+bu[t]+w[i]\\
+        x[1]=ax[0]+bu[0]\\
+        x[2]=ax[1]+bu[1]\\
+        \vdots\\
+        x[m]=ax[m-1]+bu[m-1] 
+    \end{array}
+\]
+This means with $m$ observations, we can construct a matrix $D$ and a vector $\vec{s}$ such that we have the least squares problem
+\[
+    D\vec{p}=\vec{s}, \vec{p}=
+\left[
+    \begin{array}{c}
+        a\\
+        b\\
+    \end{array}
+\right]
+\]
+The same thing can be done in the vector case. We just create multiple parallel systems by multiplying out the rows.
 \section{Control Theory}
 \subsection{Stability}
 The question of stability is whethere or not disturbances will over time control a system if left alone.
