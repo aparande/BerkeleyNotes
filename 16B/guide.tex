@@ -1,0 +1,243 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proof}{Proof}
+\begin{document}
+\title{EE16B Course Notes}
+\author{Anmol Parande}
+\date{Spring 2019 - Professors Anant Sahai, Kris Pister, and Jaijeet Roychowdhury}
+\maketitle
+
+\section{Control Theory}
+\subsection{Stability}
+The question of stability is whethere or not disturbances will over time control a system if left alone.
+Specificically, it is asking if the disturbances are bounded, will the states be bounded too? 
+\begin{definition}
+    Bounded Input, Bounded Output (BIBO) stability means if $|\vec{w}[i| < \epsilon$, then $\exists \delta>0$ such that $|\vec{x}[i| < \delta$
+\end{definition}
+
+To see where this definition comes into play, consider the following scalar systems:
+\begin{itemize}
+    \item[1.] $x[i+1] = u[i] + w[i]$ 
+    \item[2.] $x[i+1] = \frac{1}{2}x[i] + u[i]+w[i]$ ("Weak" dependence on previous state)
+    \item[3.] $x[i+1] = 2 x[i]+u[i]+w[i]$ ("Strong" dependenceon previous state)
+\end{itemize}
+\begin{itemize}
+    \item[System 1:] In this system, there is no dependence on the previous state.
+    Thus any disturbances are limited to affecting only the next state and no others. 
+    This makes the system stable because disturbances will not add up. 
+    To see this mathematically, pretend $u[i] = 0$ since we want to see how the system evolves without doing anything.
+    $$|x[i+1]|=|w[i]| < \epsilon, \>\>\> \therefore |x[i]|<\epsilon$$
+    Thus we have BIBO stability
+    \item[System 2:] Unlike the previous system, this system has a "weak" dependence on previous states. We consider it "weak" because only half of the previous state influences the next state.
+    Intuitively, this system must be BIBO stability then because although disturbances will accumulate, they will be attenuated through an infinite geometric sum. Once again, we will pretend $\vec{u}[i]=0$ to check this mathematically.
+    $$|x[i+1]| = \frac{1}{2}x[i]+w[i] < \frac{1}{2}x[i]+ \epsilon$$
+    Unrolling the recursive relationship, we see
+    $$|x[i+1]| < \epsilon+\frac{1}{2}\epsilon+\frac{1}{4}\epsilon+...+\left( \frac{1}{2} \right)^i\epsilon$$
+    $$\lim_{i->\infty}{|x[i+1]}<\frac{\epsilon}{1-\frac{1}{2}} = 2\epsilon$$
+    Thus the system is BIBO stability since $|x[i]| < 2\epsilon$
+    \item[System 3:] This system has a "strong" dependence on previous states since the contribution of previous states is doubled each times.
+    Intuitively, this means the system must be unstable because small disturbances will be explode over time. To see this mathematically, once again consider what happens if we apply no inputs.
+    $$|x[i+1]| = 2x[i]+w[i] < 2x[i]+ \epsilon$$
+    Unrolling the recursion,
+    $$|x[i+1]| < \epsilon+2\epsilon+4\epsilon+...+2^i\epsilon$$
+    $$\lim_{i->\infty}{|x[i+1]} < \infty$$
+    Thus $|x[i]|$ has no bound, so the system is not stable.
+\end{itemize}
+
+Note that in the scalar case, as long as $|\lambda| < 1$ for the system $x[i+1]=\lambda x[i]+bu[i]+w[i]$, the system will be stable. Note that this is $\lambda<1$, not $\lambda \leq 1$. That is because when $\lambda=1$, we can see the errors will add up.
+It turns out that in the vector case, for the system $\vec{x}[t+1]=A \vec{x}[t]+B\vec{u}[t]+\vec{w}[t]$, the system will be stable if the eigenvalues of A are less than 1.
+\begin{proof}
+    If $\exists \> n \> \vec{v}_i$ such that $A\vec{v}_i=\lambda_i\vec{v}_i$, then changing coordinates to the eigenbasis gives 
+    $$\tilde{A}=
+        \left[
+        \begin{array}{ccc}
+        \lambda_1 &  & 0 \\
+         & \ddots &  \\
+        0 &  & \lambda_n \\
+        \end{array}
+        \right] $$
+    This means $\vec{\tilde{x}}[t+1]=\tilde{A}\vec{\tilde{x}}[t]+V^{-1}B\vec{u}[t]+V^{-1}\vec{w}[t]$ where $V$ is the matrix whose columns are A's eigenvectors.
+    This is merely n different scalar cases, but we still have to make sure that $|\vec{w}[t]|<\epsilon \implies |V^{-1}\vec{w}[t]|<\kappa$ where $\kappa$ is some bound.
+    Lets say $m=V_{ij}^{-1}$ is the largest entry in $V^{-1}$. In the worst case all $\vec{w}_i[t]$ and all $V_{ij}=m$.
+    Then $\forall i, \left[V^{-1}\vec{w}[t]\right]_i \leq n m \epsilon$ where $n$ is the dimension of $V$, which means $|V^{-1}\vec{w}[t]|<\kappa$
+    Thus we can say that $\tilde{x}[t]$ is BIBO implies that $\vec{x}[t]$ is BIBO.
+\end{proof}
+\subsection{Closed Loop Control}
+Lets say we have a system which is modeled by $\vec{x}[t+1]=A \vec{x}[t]+B\vec{u}[t]+\vec{w}[t]$
+We must choose our inputs $\vec{u}[t]$ based on only $\vec{x}[t]$ since we can't observe the disturbances. How should we choose our inputs to control the system?
+If we try $\vec{u}[t]=k\vec{x}[t]$, then
+\[
+    \begin{array}{c}
+        \vec{x}[t+1]=A\vec{x}[t]+Bk\vec{x}[t]+\vec{w}[t]\\
+        \vec{x}[t+1]=(A+Bk)\vec{x}[t]+\vec{w}[t]
+    \end{array}
+\] 
+Which means that if we choose $K$ appropriately, we can potentially change the behavior of the system.
+Consider the following simple scalar case example 
+\[
+    \begin{array}{c}
+        x[t+1]=3x[t]+u[t]+w[t]\\
+        u[t] = kx[t]\\
+        x[t+1] = (3+k)x[t]+w[t]
+    \end{array}{c}
+\]
+
+Notice that even if the system is initially unstable, we can set our $k$ to make it stable since the domain of $\lambda=3+k$ is $\infty$
+What if we have a system $\vec{x}[t+1]=A\vec{x}[t]+\vec{b}u[t]+\vec{w}[t]$ where $A, \vec{b}$ are controllable, but we only get a scalar input $u[t]$.
+Can we find a set of feedback gains $\vec{f}^T=[f_0, f_1, ..., f_{k-1}]$ such that $u[t]=-\vec{f}^T\vec{x}[t]$ makes $A-\vec{b}\vec{f}^T$ have the eigenvalues we want?
+\break \break
+We know how to easily solve scalar cases like $z[t+1]=az[t]+u[t]$, but it is hard to get this from a vector case because we only have a simple input, so we will be limited in how we can set our eigenvalues this way.
+Since this won't work, consider the folowing recursive system.
+$$z[t+1]=a_{k-1}z[t]+a_{k-2}z[t-1]+...+a_0z[t-(k-1)]+u[t]$$
+This is definetly controllable since our input $u[t]$ could potentially be any value in $\mathbb{R}$. 
+Moreover, if we choose $u[t]=-\sum_{i=0}^{k-1}{f_i z[t-(k-1)+i]}$, we can create any recurrence relation we want.
+For example, if we wanted $z[t+1]=d_{k-1}z[t]+d_{k-2}z[t-1]+...+d_0z[t-(k-1)]$, then $f_i=a_i-d_i$
+Writing this in vector form, we get
+\[
+    \begin{array}{c}
+    \vec{z}[t+1]=A_z z[t]+\vec{b}u[t] \\
+    \\
+    \vec{z}[t] = \left[
+        \begin{array}{c}
+            z[t-(k-1)]\\
+            \vdots\\
+            z[t-2]\\
+            z[t-1]\\
+            z[t]
+        \end{array}
+    \right]
+    \end{array}
+\]
+Notice that the vector $\vec{z}[t]$ here is different from the scalar $z[t]$ which it is made up of. Each "state" here is a scalar quantity, but to represent the recursive relationship properly, we collect all of the previous states in a vector to define the next state.
+\break\break
+Given our definition of $\vec{z}[t]$ (which are the scalar values of previous states), we can fill in values for $A_z$ and $\vec{b}$
+\[
+    A_z = \left[
+        \begin{array}{cccccc}
+            0 & 1 & 0 & 0 & ... & 0\\
+            0 & 0 & 1 & 0 & ... & 0\\
+            0 & 0 & 0 & 1 & ... & 0\\
+            \vdots & & & & \ddots & \vdots\\
+            a_0 & a_1 & a_2 & ... & & a_{k-1}
+        \end{array}
+    \right],\>
+    \vec{b} = \left[
+        \begin{array}{c}
+            0\\
+            0\\
+            0\\
+            \vdots\\
+            1
+        \end{array}
+    \right]
+\]
+
+To understand where these come from, thing of the $A_z$ matrix "scrolling down" the state vector $\vec{z}[t]$ to get how it influences $\vec{z}[t+1]$. 
+All the rows except the last are 0's and 1's since the previous states can't change, but the last row determines the next state. 
+Notice that all entries in the b-vector are 0 except the last since we can't affect the past with present control.
+We can assume $a_0\ne 0$ since we defined the recurrence to have length $k$. Breaking $A_z$ into its block components gives us some more insight to its structure.
+\[
+    A_z = \left[
+        \begin{array}{c}
+            \begin{array}{c|c}
+                0 & I_{k-1}\\
+            \end{array} \\
+            \hline \\
+            \vec{a}^T
+        \end{array}
+    \right]
+\]
+We can check through multiplication that this system will be controllable.
+When the A matrix of a system is in this form, we say it is in \textbf{Controllable Canonical Form}.
+
+Let's try finding the eigenvalues of $A_z$. If $A_z$ is large, it'll be hard to calculate the characteristic polynomial, so instead lets guess their form and figure them out that way.
+\[
+    \vec{v}_\lambda = \left[
+        \begin{array}{c}
+            1\\
+            *\\
+            *\\
+            \vdots
+        \end{array}
+    \right]
+    \]
+Where * is any element.
+We know $A_z\vec{v}_\lambda=\lambda v_\lambda$, and since $A_z$ scrolls the vector down, we can see that the second * must be $\lambda$. Applying this same logic to the second *, it must be $\lambda^2$.
+Continuing this, we get
+\[
+    \vec{v}_\lambda = \left[
+        \begin{array}{c}
+            1\\
+            \lambda\\
+            \lambda^2\\
+            \vdots\\
+            \lambda^{k-1}
+        \end{array}
+    \right]
+    \]
+If we wanted to find the characteristic polynomial, we could look at the last entry in $A_z\vec{v}_\lambda$
+\[
+    \begin{array}{c}
+        \sum_{i=0}^{k-1}{a_i\lambda_i}=\lambda*\lambda^{k-1}=\lambda_k\\
+        \lambda_k-\sum_{i=0}^{k-1}{a_i\lambda_i}=\lambda*\lambda^{k-1} = 0
+    \end{array}
+    \]
+
+Now that we know about this matrix form, the question becomes: can we transform any controllable system with matrix A into controllable canonical form?
+(i.e can we make $\vec{x}[t+1]=A\vec{x}[t]+\vec{b}u[t]$ into $\vec{z}[t+1]=A_z\vec{z}[t]+\vec{b}_zu[t]$)
+We know that $A\vec{b}, A^2\vec{b}, ... A^{k-1}\vec{b}$ are linearly independent since our system is controllable. Let this define basis $\mathbb{G}$. If we write the matrix A in the basis of G, we get $\tilde{A}=G^{-1}AG$
+The naming choice is very appropriate here because this matrix multiplication will be painful by hand, so lets look for another way to get $\tilde{A}$.
+
+Remember that any linear transformation is defined by what it does to the basis vectors. We know
+\[
+    \tilde{b} = G^{-1}\vec{b} = \left[
+        \begin{array}{c}
+            1\\
+            0\\
+            0\\
+            \vdots\\
+        \end{array}
+    \right]
+\]
+since $\vec{b}$ is the first basis vector of $\mathbb{G}$. Thus,
+\[
+    \tilde{A}\tilde{\vec{b}}=G^{-1}A\vec{b} = \left[
+        \begin{array}{c}
+            0\\
+            1\\
+            0\\
+            \vdots\\
+        \end{array}
+    \right],\>
+    \tilde{A}^2\tilde{\vec{b}} = G^{-1}A^2\vec{b} = \left[
+        \begin{array}{c}
+            0\\
+            0\\
+            1\\
+            \vdots\\
+        \end{array}
+    \right] ...
+\]
+This gives us $k$ columns of $\tilde{A}$. For the last column must be a linear combination of all the basis vectors, so $\tilde{A}^k\tilde{\vec{b}}=\sum_{i=0}^{k-1}{\alpha_i\tilde{A}^i\tilde{\vec{b}}}$
+This means
+\[
+    \tilde{A} = \left[
+        \begin{array}{cccc}
+            0 & 0 & ... & \alpha_0\\
+            1 & 0 & ... & \alpha_1\\
+            0 & 1 & ... & \alpha_2\\
+            \vdots & & \ddots & \vdots\\
+            0 & ... & 1 & \alpha_{k-1}
+        \end{array}
+    \right]
+    \]
+which is $A_z^T$. Now we have a basis $\mathbb{G}$ with $(\tilde{A}, \tilde{b}$), but we want a basis $\mathbb{H}$ whith $(\tilde{A}^T, \vec{b}_z)$
+We want $\tilde{A}^T, \vec{b}_z$ to be controllable, which means $\vec{b}_z, \tilde{A}^T\vec{b}_z,...,(\tilde{A}^T)^{k-1}\vec{b}_z$ are linearly independent. 
+Notice that the matrix H composed on these basis vectors will take us from basis $\mathbb{H}$ to basis $\mathbb{G}$. This means to get $(\tilde{A}^T, \vec{b}_z)$ from $(A, \vec{b})$
+we can apply the change of coordinates $G^{-1}H$ so $\vec{x}_z[t]=HG^{-1}\vec{x}[t]$ and put our entire system into controllable canonical form.
+\end{document}
