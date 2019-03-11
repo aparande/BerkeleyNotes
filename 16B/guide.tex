@@ -1,4 +1,4 @@
-\documentclass{article}
+visu\documentclass{article}
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{mathtools}
@@ -67,7 +67,7 @@ In the scalar case:
         x[1]=ax[0]+bu[0]\\
         x[2]=ax[1]+bu[1]\\
         \vdots\\
-        x[m]=ax[m-1]+bu[m-1] 
+        x[m]=ax[m-1]+bu[m-1]
     \end{array}
 \]
 This means with $m$ observations, we can construct a matrix $D$ and a vector $\vec{s}$ such that we have the least squares problem
@@ -83,22 +83,22 @@ This means with $m$ observations, we can construct a matrix $D$ and a vector $\v
 The same thing can be done in the vector case. We just create multiple parallel systems by multiplying out the rows.
 \section{Control Theory}
 \subsection{Stability}
-The question of stability is whethere or not disturbances will over time control a system if left alone.
-Specificically, it is asking if the disturbances are bounded, will the states be bounded too? 
+The question of stability is whether or not disturbances will over time control a system if left alone.
+Specificically, it is asking if the disturbances are bounded, will the states be bounded too?
 \begin{definition}
     Bounded Input, Bounded Output (BIBO) stability means if $|\vec{w}[i| < \epsilon$, then $\exists \delta>0$ such that $|\vec{x}[i| < \delta$
 \end{definition}
 
 To see where this definition comes into play, consider the following scalar systems:
 \begin{itemize}
-    \item[1.] $x[i+1] = u[i] + w[i]$ 
+    \item[1.] $x[i+1] = u[i] + w[i]$
     \item[2.] $x[i+1] = \frac{1}{2}x[i] + u[i]+w[i]$ ("Weak" dependence on previous state)
     \item[3.] $x[i+1] = 2 x[i]+u[i]+w[i]$ ("Strong" dependenceon previous state)
 \end{itemize}
 \begin{itemize}
     \item[System 1:] In this system, there is no dependence on the previous state.
-    Thus any disturbances are limited to affecting only the next state and no others. 
-    This makes the system stable because disturbances will not add up. 
+    Thus any disturbances are limited to affecting only the next state and no others.
+    This makes the system stable because disturbances will not add up.
     To see this mathematically, pretend $u[i] = 0$ since we want to see how the system evolves without doing anything.
     $$|x[i+1]|=|w[i]| < \epsilon, \>\>\> \therefore |x[i]|<\epsilon$$
     Thus we have BIBO stability
@@ -121,7 +121,7 @@ To see where this definition comes into play, consider the following scalar syst
 Note that in the scalar case, as long as $|\lambda| < 1$ for the system $x[i+1]=\lambda x[i]+bu[i]+w[i]$, the system will be stable. Note that this is $\lambda<1$, not $\lambda \leq 1$. That is because when $\lambda=1$, we can see the errors will add up.
 It turns out that in the vector case, for the system $\vec{x}[t+1]=A \vec{x}[t]+B\vec{u}[t]+\vec{w}[t]$, the system will be stable if the eigenvalues of A are less than 1.
 \begin{proof}
-    If $\exists \> n \> \vec{v}_i$ such that $A\vec{v}_i=\lambda_i\vec{v}_i$, then changing coordinates to the eigenbasis gives 
+    If $\exists \> n \> \vec{v}_i$ such that $A\vec{v}_i=\lambda_i\vec{v}_i$, then changing coordinates to the eigenbasis gives
     $$\tilde{A}=
         \left[
         \begin{array}{ccc}
@@ -145,9 +145,9 @@ If we try $\vec{u}[t]=k\vec{x}[t]$, then
         \vec{x}[t+1]=A\vec{x}[t]+Bk\vec{x}[t]+\vec{w}[t]\\
         \vec{x}[t+1]=(A+Bk)\vec{x}[t]+\vec{w}[t]
     \end{array}
-\] 
+\]
 Which means that if we choose $K$ appropriately, we can potentially change the behavior of the system.
-Consider the following simple scalar case example 
+Consider the following simple scalar case example
 \[
     \begin{array}{c}
         x[t+1]=3x[t]+u[t]+w[t]\\
@@ -163,7 +163,7 @@ Can we find a set of feedback gains $\vec{f}^T=[f_0, f_1, ..., f_{k-1}]$ such th
 We know how to easily solve scalar cases like $z[t+1]=az[t]+u[t]$, but it is hard to get this from a vector case because we only have a simple input, so we will be limited in how we can set our eigenvalues this way.
 Since this won't work, consider the folowing recursive system.
 $$z[t+1]=a_{k-1}z[t]+a_{k-2}z[t-1]+...+a_0z[t-(k-1)]+u[t]$$
-This is definetly controllable since our input $u[t]$ could potentially be any value in $\mathbb{R}$. 
+This is definetly controllable since our input $u[t]$ could potentially be any value in $\mathbb{R}$.
 Moreover, if we choose $u[t]=-\sum_{i=0}^{k-1}{f_i z[t-(k-1)+i]}$, we can create any recurrence relation we want.
 For example, if we wanted $z[t+1]=d_{k-1}z[t]+d_{k-2}z[t-1]+...+d_0z[t-(k-1)]$, then $f_i=a_i-d_i$
 Writing this in vector form, we get
@@ -206,8 +206,8 @@ Given our definition of $\vec{z}[t]$ (which are the scalar values of previous st
     \right]
 \]
 
-To understand where these come from, thing of the $A_z$ matrix "scrolling down" the state vector $\vec{z}[t]$ to get how it influences $\vec{z}[t+1]$. 
-All the rows except the last are 0's and 1's since the previous states can't change, but the last row determines the next state. 
+To understand where these come from, thing of the $A_z$ matrix "scrolling down" the state vector $\vec{z}[t]$ to get how it influences $\vec{z}[t+1]$.
+All the rows except the last are 0's and 1's since the previous states can't change, but the last row determines the next state.
 Notice that all entries in the b-vector are 0 except the last since we can't affect the past with present control.
 We can assume $a_0\ne 0$ since we defined the recurrence to have length $k$. Breaking $A_z$ into its block components gives us some more insight to its structure.
 \[
@@ -305,8 +305,8 @@ This means
         \end{array}
     \right]
     \]
-which is $A_z^T$. Now we have a basis $\mathbb{G}$ with $(\tilde{A}, \tilde{b}$), but we want a basis $\mathbb{H}$ whith $(\tilde{A}^T, \vec{b}_z)$
-We want $\tilde{A}^T, \vec{b}_z$ to be controllable, which means $\vec{b}_z, \tilde{A}^T\vec{b}_z,...,(\tilde{A}^T)^{k-1}\vec{b}_z$ are linearly independent. 
+which is $A_z^T$. Now we have a basis $\mathbb{G}$ with $(\tilde{A}, \tilde{b}$), but we want a basis $\mathbb{H}$ with $(\tilde{A}^T, \vec{b}_z)$
+We want $\tilde{A}^T, \vec{b}_z$ to be controllable, which means $\vec{b}_z, \tilde{A}^T\vec{b}_z,...,(\tilde{A}^T)^{k-1}\vec{b}_z$ are linearly independent.
 Notice that the matrix H composed on these basis vectors will take us from basis $\mathbb{H}$ to basis $\mathbb{G}$. This means to get $(\tilde{A}^T, \vec{b}_z)$ from $(A, \vec{b})$
 we can apply the change of coordinates $G^{-1}H$ so $\vec{x}_z[t]=HG^{-1}\vec{x}[t]$ and put our entire system into controllable canonical form.
 \end{document}
