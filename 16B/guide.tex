@@ -82,6 +82,55 @@ This means with $m$ observations, we can construct a matrix $D$ and a vector $\v
 \]
 The same thing can be done in the vector case. We just create multiple parallel systems by multiplying out the rows.
 \section{Control Theory}
+\subsection{Controllability}
+\begin{definition}
+    A system is controllable if $\forall x^*, \forall x[0] \exists u[0],u[1],...,u[k-1]$ such that $x[k]=x^*$ given that the system starts at $x[0]$
+\end{definition}
+In words, this means that there exists a sequence of control actions that can eventually get the system anywhere we want it to be from any given initial state.
+\begin{theorem}
+    If a state is n-dimensional, then a system $\vec{x}_d[i+1]=A\vec{x}[i]+B\vec{u}[i]+\vec{w}[i]$ is controllable in k time-steps if $span(B, AB, ..., A^{k-1}B)=\mathbb{R}^n$
+\end{theorem}
+\begin{proof}
+    Without any noise, $\vec{x}_d[i+1]=A\vec{x}[i]+B\vec{u}[i]$
+    \[
+        \begin{array}{c}
+            \vec{x}[1]=A\vec{x}[0]+B\vec{u}[0]\\
+            \vec{x}[2]=A\vec{x}[1]+B\vec{u}[1] = A^2\vec{x}[0]+AB\vec{u}[0]+B\vec{u}[i]\\
+            \vec{x}[3]=A\vec{x}[2]+B\vec{u}[2] = A^3\vec{x}[0]+A^2B\vec{u}[0]+AB\vec{u}[i]+B\vec{u}[2]\\
+            \vdots\\
+            \vec{x}[k]=A^k\vec{x}[0]+\sum_{i=0}^{k-1}{A^{k-i-1}B\vec{u}[i]}
+        \end{array}
+        \]
+    Thus the current state is merely a linear combination of vectors in the column spaces of $A^k$ and $B...A^{k-1}$, so if this span is equal to $\mathbb{R}^n$, we can reach every state.
+\end{proof}
+\begin{definition}
+    The controllability matrix is a the matrix whose column space is all the reachable states.
+    \[
+        \left[
+            \begin{array}{c|c|c|c|c}
+                B & AB & A^2B & ... & A^{k-1}B
+            \end{array}
+        \right]
+        \]
+\end{definition}
+However, if we want to check if a system is controllable in 100 time-steps for a 900 state system, it will be painful to calculate the column space of the controllability matrix.
+It turns out that we can stop checking when $dim(col(B, AB,...,A^{p-1}))=dim(col(B, AB, ..., A^p)), (p \leq k)$ (i.e the dimension of the column space stops growing)
+This means we can build the controllability matrix up piece-by-piece and stop early rather than computing the full column space only to fail. Consider the following proof for why this works.
+\begin{proof}
+    If $\vec{b}$ is column vector of the matrix B, then $A^p \vec{b}=\sum_{i=0}^{p-1}{\alpha_iA^i\vec{b}}$ since we assume the dimension of the column space has stopped growing,
+    so $A^p\vec{b}$ is a linear combination of the vectors preceding it.
+    We want to show $\exists \beta_i$ such that $A^{p+1}=\sum_{i=0}^{p-1}{\beta_iA^i\vec{b}}$
+    \[
+        \begin{array}{c}
+            A^{p+1}\vec{b}=A(A^p\vec{b}) =\\
+            A\sum_{i=0}^{p-1}{\alpha_iA^i\vec{b}} = \sum_{i=0}^{p-1}{\alpha_iA^{i+1}\vec{b}}=\\
+            \alpha_{p-1}A^p\vec{b}+ \sum_{i=0}^{p-2}{\alpha_iA^{i}\vec{b}}=\\
+            \alpha_{p-1}\sum_{i=0}^{p-1}{\alpha_iA^i\vec{b}}+\sum_{i=0}^{p-2}{\alpha_iA^{i}\vec{b}}
+        \end{array}
+        \]
+    By writing $A^{p+1}$ as a linear combination of $B, AB,...,A^{p-1}$, we have shown $\beta_i$ exists, so by induction, all future vectors $p+m\leq k$ will be linear combinations of these same vectors, 
+    so the dimension will never grow again and we can be justified in stopping early.
+\end{proof}
 \subsection{Stability}
 The question of stability is whether or not disturbances will over time control a system if left alone.
 Specificically, it is asking if the disturbances are bounded, will the states be bounded too?
