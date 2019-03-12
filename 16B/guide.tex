@@ -356,6 +356,20 @@ This means
     \]
 which is $A_z^T$. Now we have a basis $\mathbb{G}$ with $(\tilde{A}, \tilde{b}$), but we want a basis $\mathbb{H}$ with $(\tilde{A}^T, \vec{b}_z)$
 We want $\tilde{A}^T, \vec{b}_z$ to be controllable, which means $\vec{b}_z, \tilde{A}^T\vec{b}_z,...,(\tilde{A}^T)^{k-1}\vec{b}_z$ are linearly independent.
-Notice that the matrix H composed on these basis vectors will take us from basis $\mathbb{H}$ to basis $\mathbb{G}$. This means to get $(\tilde{A}^T, \vec{b}_z)$ from $(A, \vec{b})$
+
+Let's construct a matrix H which will take us from a coordinates in basis $\mathbb{H}$ to coordinates in the basis $\mathbb{G}$. 
+\textbf{Important:} the matrix \[
+    \left[
+        \begin{array}{c|c|c|c}
+            \vec{b}_z & \tilde{A}^T\vec{b}_z & ... &(\tilde{A}^T)^{k-1}\vec{b}_z
+        \end{array}
+        \right]
+    \]
+
+is \textbf{not} the matrix H. To compute H, we have to see how it transforms the $\mathbb{G}$ basis vectors.
+
+Once we have the matrix H, to get $(\tilde{A}^T, \vec{b}_z)$ from $(A, \vec{b})$,
 we can apply the change of coordinates $G^{-1}H$ so $\vec{x}_z[t]=HG^{-1}\vec{x}[t]$ and put our entire system into controllable canonical form.
+
+The reason we can't find $HG^{-1}$ in a single-step and must go through an intermediary basis is because we might not know what our system will look like in canonical form.
 \end{document}
