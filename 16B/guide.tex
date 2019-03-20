@@ -2,6 +2,7 @@
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{mathtools}
+\usepackage{cancel}
 \newtheorem{theorem}{Theorem}
 \newtheorem{definition}{Definition}
 \newtheorem{corollary}{Corollary}
@@ -46,7 +47,7 @@ If $x(0)=x_0$
 \[
     \begin{array}{c}
         x(0)=\alpha - \frac{u}{\lambda}=x_0\\
-        x = (x_0+\frac{u/\lambda})e^{\lambda t}-\frac{u}{\lambda}\\
+        x = (x_0+\frac{u}{\lambda}e^{\lambda t})-\frac{u}{\lambda}\\
         x = x_0 e^{\lambda t}+u\left(
             \frac{e^{\lambda t}-1}{\lambda}
         \right)
@@ -372,4 +373,153 @@ Once we have the matrix H, to get $(\tilde{A}^T, \vec{b}_z)$ from $(A, \vec{b})$
 we can apply the change of coordinates $G^{-1}H$ so $\vec{x}_z[t]=HG^{-1}\vec{x}[t]$ and put our entire system into controllable canonical form.
 
 The reason we can't find $HG^{-1}$ in a single-step and must go through an intermediary basis is because we might not know what our system will look like in canonical form.
+
+\subsection{Linearization}
+Up until now, we have been assuming our systems are linear. To understand what this means, we must first understand what linearity means.
+
+First, let's define what we know as a function.
+\begin{definition}
+    A function is a simple mapping from a domain to a range (i.e y(t)=L(u(t))). 
+    To evaluate y(t), we only need to know u(t), making the function "memory-less"
+\end{definition}
+\begin{definition}
+    A function $f(x)$ is linear iff
+    \begin{itemize}
+        \item $\forall \alpha, \forall x \in \mathbb{R}, f(\alpha x) = \alpha f(x)$ (Scaling)
+        \item $\forall u, \forall v \in \mathbb{R}, f(u + v) = f(u)+f(v)$ (Superposition)
+    \end{itemize}
+\end{definition}
+Notice that by this definition, any linear function must necessarily have $f(0)=0$ since otherwise with $\alpha = 1, x=0, f(1*0)=f(0)=1*f(0)\ne 0$
+These conditions can be simplified down into a single expression $f(\alpha u + v) = \alpha f(u) + f(v), \forall u, \forall v, \forall \alpha \in \mathbb{R}$
+If we can find a single setting of $(u, v, \alpha)$ for which this equation does not hold, then our function is not linear.
+
+If we have a scalar nonlinear function we can linearize it in a simple way. Remember that the Taylor series expansion of a function around a certain point is
+$$ f(x) = \frac{f(c)}{0!}+\frac{f'(c)}{1!}(x-c)+\frac{f''(c)}{2!}(x-c)^2+... = \sum_{i=0}^{\infty}{\frac{f^{(i)}}{i!}(x-c)^i}$$
+where $c$ is some expansion point we choose. Lets say we choose some point $x^*$ and decide to linearize around that point.
+The tangent line to the function is
+$$f_L(x)=f'(x^*)(x-x^*)+f(x^*)$$
+However, $f(0)\ne 0$, so this tangent line is still not linear. To linearize it, we can change coordinates.
+\[
+    \begin{array}{c}
+        m = \frac{df}{dx}|_x\\
+        f(x^*+\delta x)= f(x^*)+m \delta x\\
+        \delta y = f(x^*+\delta x) - f(x^*)\\
+        f(x^*+\delta x) = f(x^*)+\delta y = f(x^*)+m \delta x\\
+        \delta y = m \delta x
+    \end{array}
+\]
+
+Thus the linearized expression is in terms of the "error" $\delta y$, a.k.a how far it deviates from what it was at the point of linearization.
+While this makes sense for functions, how does it apply to systems. Systems are more than simple functions, they are functionals.
+\begin{definition}
+    A functional y(t) = L\{u(t)\} is a function which requires knowing the entire u in order to evaluate it.
+\end{definition}
+A good example of a functional is
+$$ L\{u(t)\}=\int_{\tau - 1}^{\tau}{u(t)d\tau}$$
+
+The definition of linearity for functionals is virtually the same as for a normal function.
+\begin{definition}
+    A system $L\{\}$ is linear iff
+    \begin{itemize}
+        \item $\forall \alpha\in \mathbb{R}, \forall u(t), L\{\alpha u(t)\} = \alpha L\{u(t)\}$ (Scaling)
+        \item $\forall u(t), \forall v(t), L\{u(t) + v(t)\} = L\{u(t)\}+L\{v(t)\}$ (Superposition)
+    \end{itemize}
+\end{definition}
+With this definition, we can now formally define how to linearize a non-linear system.
+Take the system $\frac{d}{dt}x(t) = f(x(t))+bu(t)$ where $f$ is a nonlinear function and $b$ is a scalar multiplier
+
+To linearize the system
+\begin{itemize}
+    \item[1.] Choose a constant with time input $u(t) = u^*$
+    \item[2.] Find a solution $x(t)=x^*$ to the system
+            $$\frac{dx^*}{dt}=f(x^*)+bu^* \implies f(x^*)=-bu^*$$
+    \item[3.] Linearize $f(x)$ around $x^*$
+            $$f(x) \approx f(x^*)+\frac{df}{dx}|_{x^*} (x-x^*)$$
+    \item[4.] Use the linearization of $f$ to make the differential equation linear
+            \[
+                \begin{array}{c}
+                    \frac{dx}{dt} = f(x^*)+\frac{df}{dx}|_{x^*} (x(t)-x^*)+bu(t)\\\\
+                    \text{Let }\delta x = x(t)-x^*, \delta u = u(t) - u^*\\\\
+                    \frac{d}{dt}(\delta x +x^*) = f(x^*)+\frac{df}{dx}|_{x^*} \delta x + b (u^*+\delta u)\\\\
+                    \frac{d}{dt}\delta x = \cancelto{0}{f(x^*)+bu^*} + \frac{df}{dx}|_{x^*} \delta x + b \delta u(t)\\\\
+                    \frac{d}{dt}\delta x =  \frac{df}{dx}|_{x^*} \delta x + b \delta u(t)
+                \end{array}
+            \] 
+\end{itemize}
+Note that this only works assuming that $\delta x$ is small, so when linearizing our systems, 
+we must check that this property is true otherwise our linearization may be invalid. 
+To see why, consider the system $\frac{d}{dt}=-sin(x)$. Try linearizing about $x^*=0$.
+\[
+    \begin{array} {c}
+        \frac{d}{dt}\delta x = -\delta x\\\\
+        \therefore \delta x = \delta x(0)e^{-t}
+    \end{array}
+\]
+Since $\delta x$ is the "error" of our approximation, we can see that because $\delta x = \delta x(0)e^{-t}$ will grow smaller over time, meaning the system is stable, and our approximation is legimitate.
+However, if we linearize about $x^*=\pi$
+\[
+    \begin{array} {c}
+        \frac{d}{dt}\delta x = \delta x\\\\
+        \therefore \delta x = \delta x(0)e^{t}
+    \end{array}
+\]
+and this will grow very large as time goes on, so our approximate will be illegitimate.
+
+These concepts of linearization extend beyond simple 1D functions. For example, the linearization of a 2D function is
+$$f(x^*+\delta x, u^*+\delta u) \approx f(x^*, u^*)+\frac{\partial f}{\partial x}|_{x^*, u^*}\delta x+\frac{\partial f}{\partial u}|_{x^*, u^*}\delta u$$
+We can further generalize the idea of linearization to vector functions.
+\[
+    f(\vec{x})=\left[
+        \begin{array}{c}
+            f_1(x_1, x_2)\\
+            f_2(x_1, x_2)
+        \end{array}
+        \right] \text{ where } \vec{x} = \left[
+            \begin{array}{c}
+                x_1\\
+                x_2
+            \end{array}
+            \right]
+    \]
+
+If we linearize each of the functions inside the vector, we get
+\[
+    \begin{array}{c}
+        f(\vec{x^*}+\delta\vec{x^*})=\left[
+            \begin{array}{c}
+                f_1(x_1^*+\delta x_1, x_2^*+\delta x_2)\\
+                f_2(x_1^*+\delta x_1, x_2^*+\delta x_2)
+            \end{array}
+        \right] \\\\
+        f_1(x_1^*+\delta x_1, x_2^*+\delta x_2) \approx f_1(x_1^*, x_2^*)+\frac{\partial f_1}{\partial x_1}|_{x_1^*, x_2^*}\delta x_1+\frac{\partial f_1}{\partial x_2}|_{x_1^*, x_2^*}\delta x_2\\\\
+        f_2(x_1^*+\delta x_1, x_2^*+\delta x_2) \approx f_2(x_1^*, x_2^*)+\frac{\partial f_2}{\partial x_1}|_{x_1^*, x_2^*}\delta x_1+\frac{\partial f_1}{\partial x_2}|_{x_1^*, x_2^*}\delta x_2\\\\
+        \therefore f(\vec{x^*}+\delta\vec{x^*})=\left[
+            \begin{array}{c}
+                f_1(x_1^*+\delta x_1, x_2^*+\delta x_2)\\
+                f_2(x_1^*+\delta x_1, x_2^*+\delta x_2)
+            \end{array}
+        \right] = \left[
+            \begin{array}{c}
+                f_1(x_1^*, x_2^*)\\
+                f_2(x_1^*, x_2^*)
+            \end{array}
+            \right] + \left[
+                \begin{array}{cc}
+                    \frac{\partial f_1}{\partial x_1} & \frac{\partial f_1}{\partial x_2} \\\\
+                    \frac{\partial f_2}{\partial x_1} & \frac{\partial f_1}{\partial x_2}
+                \end{array}
+                \right] |_{x_1^*, x_2^*} \left[
+                    \begin{array}{c}
+                        \delta x_1\\
+                        \delta x_2
+                    \end{array}
+                    \right]
+    \end{array}
+\]
+
+The matrix with partial derivatives is known as the \textbf{Jacobian} and is denoted either $\nabla f$ or $J$
+Thus a succinct form the linearization of a vector system is
+$$ f(\vec{x^*}+\delta\vec{x})=f(\vec{x^*})+J_x f (\delta \vec{x})$$
+For multiargument functions,
+$$ f(\vec{x^*}+\delta\vec{x}, \vec{u^*}+\delta \vec{u})=f(\vec{x^*}, \vec{u^*})+J_x \delta \vec{x}+J_u \delta \vec{u}$$
 \end{document}
