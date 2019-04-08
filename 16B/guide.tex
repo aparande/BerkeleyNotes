@@ -7,6 +7,9 @@
 \newtheorem{definition}{Definition}
 \newtheorem{corollary}{Corollary}
 \newtheorem{proof}{Proof}
+
+\DeclareMathOperator*{\argmin}{argmin}
+
 \begin{document}
 \title{EE16B Course Notes}
 \author{Anmol Parande}
@@ -344,6 +347,11 @@ Notice that $(U^TAU)^T=U^TA^TU$. This forms the basis for \textbf{Spectral Theor
 \begin{theorem}[Spectral Theorem]
     Every symmetric matrix with real eigenvalues can be orthogonally diagonalized
 \end{theorem}
+Two consequences of spectral theorem are that if the symmetric matrix $A$ is real, then
+\begin{itemize}
+    \item[1. ] All eigenvalues are non-negative and real
+    \item[2. ] All eigenvectors are real
+\end{itemize}
 
 \subsection{Closed Loop Control}
 Lets say we have a system which is modeled by $\vec{x}[t+1]=A \vec{x}[t]+B\vec{u}[t]+\vec{w}[t]$
@@ -681,4 +689,183 @@ Thus a succinct form the linearization of a vector system is
 $$ f(\vec{x^*}+\delta\vec{x})=f(\vec{x^*})+J_x f (\delta \vec{x})$$
 For multiargument functions,
 $$ f(\vec{x^*}+\delta\vec{x}, \vec{u^*}+\delta \vec{u})=f(\vec{x^*}, \vec{u^*})+J_x \delta \vec{x}+J_u \delta \vec{u}$$
+\subsection{Planning}
+With all of these tools, we can now tackle the problem of planning. With closed loop control, we know we can keep a system near a specific state even if the system is unstable by itself due to disturbances.
+We can use this fact to keep our system close to a specified "open loop" trajectory by redefining our equilibrium position is along a specific trajectory.
+\subsubsection{Open Loop Control}
+Lets say we have a controllable system $\frac{d}{dt} \vec{x}[t]=A\vec{x}[t]+\vec{b}u[t] + \vec{w}[t]$, a desired trajectory $\vec{x}_n[t]$, and a set of inputs that will take us along that trajectory $u_n[t]$.
+We can define $\vec{v}[t] = \vec{x}[t]-\vec{x}_n[t]$ and $u_v[t] = u[t] - u_n[t]$ as the trajectory deviation and input deviation respectively.
+Writing this equation in terms of the deviations gives us
+\[
+    \begin{array}{c}
+        \frac{d}{dt}\vec{x}[t]=A\vec{x}[t]+\vec{b}u[t]+ \vec{w}[t]\\
+        \frac{d}{dt}(\vec{v}[t]+\vec{x}_n[t]) = A(\vec{v}[t] + \vec{x}_n[t]) + \vec{b}(u_v[t] + u_n[t])+ \vec{w}[t]\\
+        \frac{d}{dt}\vec{v}[t] + \cancelto{}{\frac{d}{dt}\vec{x}_n[t])} = (A\vec{v}[t] + \vec{b}u_v[t]) + \cancelto{}{(A\vec{x}_n[t] + u_n[t])} + \vec{w}[t]\\\\
+        \frac{d}{dt}\vec{v}[t] = A\vec{v}[t]+\vec{b}u_v[t] + \vec{w}[t]
+    \end{array}
+\]
+Since our original system was controllable, this system must be controllable as well. In fact, it will have all the same characteristics as the original system (controllability, stability, observability) since they share the same $A$ and $\vec{b}$.
+This tells us that if the original system was not stable, then we will not be able to follow the trajectory $\vec{x}[n]$ since our deviation from the trajectory $\vec{v}[t]$ can blow up from disturbances.
+Lets apply feedback control to make sure the deviation does not grow expnentially large.
+\[
+    u_v[t] = 
+    \left[
+        \begin{array}{cccc}
+            f_0 & f_1 & f_2 ...
+        \end{array}
+    \right] \vec{v}[t]
+\]
+This will let us control the deviation from the desired trajectory.
+This lets us compute the controls we need to follow the trajectory by inserting this result back into the formula for $u[t]$
+\[
+    \begin{array}{c}
+        u[t] = u_n[t]+u_v[t] = u_n[t]+\left[
+            \begin{array}{cccc}
+                f_0 & f_1 & f_2 & ...
+            \end{array}
+        \right] \vec{v}[t] \\\\
+        u[t] = u_n[t]+\left[
+            \begin{array}{cccc}
+                f_0 & f_1 & f_2 & ...
+            \end{array}
+        \right] (\vec{x}[t]-\vec{x}_n[t])
+    \end{array}
+\]
+
+\subsubsection{Minimum Energy Control}
+For any generic system, we know that if the system is controllable, we can use controls to take it to any state we want.
+For example, if the state is 10-dimensional, then it will take a maximum of 10 time-steps to move anywhere.
+But what should we do if we want to get to a system in 100 time-steps instead?
+
+One approach is to move to the desired state $x^*$ in 10 time-steps and then do nothing for the remaining 90 time-steps,
+ but this is a bad solution because the dynamics of the environment may prevent our system from staying in one place at a time (imagine a jumping robot that needs to reach a height at a specific time. Continuously jumping up and down waste's a lot of energy)
+
+Another idea is to visit random states for 90 time-steps and spend the next 10 moving towards the goal, but once again, this wastes energy.
+Ideally, we should take a "natural" path which uses the dynamics of the environment as much as possible.
+A good example of this is a satellite such as Voyager. It could continuously use fuel to get where it needs to go, but it is much more energy efficient for it to use the gravity of planets to gain speed instead.
+This is knowns as minimum energy control
+\begin{definition}
+    The minimum energy control problem is to find $\argmin{||\vec{u}||}$ such that $C\vec{u}=\vec{x}^*$ where 
+    C is the controllability matrix for the system, $\vec{x}^*$ is a desired state, and $\vec{u}$ is a vector of inputs applied at each time-step (assuming our inputs are scalar).
+\end{definition}
+Like most problems, this one is difficult to solve in its original state. Since the controllability matrix is of dimension $n \times k$ with $k > n$ ($n$ is the dimension of the state and $k$ is how many time-steps we want to reach our goal in), 
+the matrix must have a null space. Moving around inside this null space is a waste of energy because it doesn't get us close to $x^*$. This tells us two things about how we might solve this problem.
+\begin{itemize}
+    \item[1. ] We should change coordinates to an orthonormal basis because it might make the problem easier to solve without changing the length of the vectors.
+    \item[2. ] We should try an isolate the null space when we construct a basis because we don't want to move in those directions.  
+\end{itemize}
+Mathematically, this means we want
+\[
+    V = \left[
+        \begin{array}{cccc}
+            \vec{v_1} & \vec{v_2} & ... & \vec{v_k}
+        \end{array}
+    \right] \text{ such that } V^TV=I \text{ and } C\vec{v_1} \text{ for } i > n
+\]
+In the new basis, the problem becomes
+\[
+    \argmin{||\tilde{\vec{u}}||} \text{ such that } CV\tilde{\vec{u}}=\vec{x}^*
+\]
+Notice that the product $CV\tilde{\vec{u}}$ is a linear combination of only the first $n$ basis vectors.
+\[
+    C \left[
+        \begin{array}{cccc}
+            | & | & & |\\
+            \vec{v_1} & \vec{v_2} & ... & \vec{v_k}\\
+            | & | & & |
+        \end{array}
+    \right] \left[
+        \begin{array}{c}
+            \tilde{u}_1\\
+            \vdots\\
+            \tilde{u}_n
+        \end{array}
+    \right] = C (\tilde{u}_1\vec{v}_1+...+\tilde{u}_n\vec{v}_n)
+\]
+This is because $C\vec{v}_i\tilde{u}_i=0$ for $i>n$ based on the properties we want out of V.
+Clearly it would be very useful to have this basis $V$ because then we could let $\tilde{u}_i=0$ for $i > n$ to minimize $||\tilde{\vec{u}}$.
+
+At this point, we should try constructing V. We know that any symmetric matrix can be orthogonally diagonalized because of spectral theorem.
+Lets try finding a symmetric matrix $Q$ such that $Null(Q)=Null(C)$ because then the eigenvectors of Q which form a basis for $Null(Q)$ will also form an orthogonal basis for $Null(C)$. Notice that $C^TC$ has this property.
+\begin{proof}
+    $\vec{v}\in Null(C) \implies C\vec{v}=\vec{0}$, then $C^TC\vec{v} \implies \vec{v} \in Null(C^TC)$
+    $\vec{v} \in Null(C^TC) \implies C^TC\vec{v}=\vec{0}$, $C\vec{v} \cdot C\vec{v}=\vec{v}^TC^TC\vec{v}=\vec{0}\implies \vec{v}\in Null(C)$
+    Since any vector in $Null(C)$ belongs to $Null(C^TC)$ and vice versa, the two null spaces are the same.
+\end{proof}
+Let's say $V$ is the orthonormal basis of eigenvectors of Q which we know exists from the spectral theorem.
+If we order our eigenvectors such that their corresponding eigenvalues are related by $\lambda_1 \ge \lambda_2 \ge ... \ge \lambda_k \ge 0$,
+then we get
+\[
+    \Lambda = V^T(C^TC)V=\left[
+        \begin{array}{cccc}
+            \lambda_1 & 0 & ... & 0\\
+            0 & \lambda _2 & & \vdots\\
+            \vdots & & \ddots & \\
+            0 & ... & & \lambda_k
+        \end{array}
+    \right]
+    \text{ where only the first } n \text{ diagonal entries are not zero}
+\]
+An interesting fact about these eigenvalues is that $\lambda_i = ||C\vec{v}_i||^2$
+\begin{proof}
+    \[
+        \begin{array}{c}
+            C^TC\vec{v}_i = \lambda_i \vec{v}_i\\
+            \vec{v}_i^TC^TC\vec{v}_i = ||C\vec{v}_i||^2 \\
+            \vec{v}_i^TC^TC\vec{v}_i = \vec{v}_i^TQ\vec{v}_i = \lambda \vec{v}_i^T\vec{v}_i = \lambda_i\\
+            \therefore \lambda_i = ||C\vec{v}_i||^2
+        \end{array}
+    \]
+\end{proof}
+For convenience (and for reasons which will be clear later), lets defined $\sigma_i=\sqrt{\lambda_i} = ||C\vec{v}_i||$ to remove the exponent.
+A curious fact about the eigenvectors is that the matrix C does not change their orthogonality.
+\begin{proof}
+    $(C\vec{v}_i^T)(C\vec{v}_j)=\vec{v}_i^TC^TC\vec{v_j}=\vec{v}_i^T\lambda_j \vec{v}_j = 0$
+\end{proof}
+This means the vectors $C\vec{v}_i$ for $i \le n$ form an orthonormal basis for $\mathbb{R}^n$ (we disregard $C\vec{v}_i)$ for $i > n$ since these are merely zero vectors).
+Lets normalize this basis so $$\vec{w}_i=\frac{C\vec{v}_i}{||C\vec{v}_i||}=\frac{C\vec{v}}{\sigma_i}$$
+Now that we have extracted everything useful out of our basis $V$, let's return to the original problem of $\argmin{\tilde{\vec{u}}}$.
+\[
+    \begin{array}{c}
+        CV\tilde{\vec{u}}=\sum_{i=1}^{n}{C\vec{v}_i\tilde{u}_i} =\\\\
+        \sum_{i=1}^{n}{\sigma_i\tilde{u}_i\vec{w}_i} = \vec{x}^*
+    \end{array}
+\]
+By inspection, we can see that if we let $\tilde{u}_i=\frac{\vec{w}^T_ix^*_i}{\sigma_i}$, then the sum will work out.
+This means the following $\tilde{\vec{u}}$ will solve our problem.
+\[
+    \tilde{\vec{u}} = \left[
+        \begin{array}{c}
+            \frac{\vec{w}^T_1x^*_1}{\sigma_1}\\
+            \vdots\\
+            \frac{\vec{w}^T_nx^*_n}{\sigma_n}\\
+            0\\
+            \vdots\\
+            0
+        \end{array}
+    \right]
+\]
+And from these we can find the actual controls by $\vec{u}_{opt}=V\tilde{\vec{u}}$.
+\subsection{SVD}
+The analysis which we did above reveals an incredibly interesting fact.
+\[
+    \begin{array}{c}
+        \tilde{u}_i=\vec{v}_i^T\vec{u}\\
+        C\vec{u}=\sum_{i=1}^{n}{C\vec{v_i}\tilde{u}_i}=\\\\
+        \sum_{i=1}^{n}{(\sigma_i\vec{w_i}\vec{v}^T_iu_i)}=\\\\
+        \sum_{i=1}^{n}{(\sigma_i\vec{w_i}\vec{v}^T_i)} \vec{u}\\\\
+        \therefore C = \sum_{i=1}^{n}{(\sigma_i\vec{w_i}\vec{v}^T_i)} = W\Sigma V^T
+    \end{array}
+\]
+This shows that the matrix C can be factored into a product of three matrices.
+$W$ is has orthonormal columns and is of shape $n\times n$, $\Sigma$ is $n\times n$ with $\sigma_i$ on the diagonal, and $V^T$ is $n \times k$.
+Together, these matrices form the \textbf{Singular Value Decomposition} of $C$. The values $\sigma_i$ on the diagonal are called the \textbf{singular values}. Note that C was a generic matrix, which means \textbf{any} matrix can be factored in this way. 
+
+The product $\vec{w}\vec{v}^T$ is a special type of product known as an \textbf{outer product}.
+If $\vec{w}\in \mathbb{R}^n$ and $\vec{v}\in \mathbb{R}^m$, then $\vec{w}\vec{v}^T$ produces a $n \times m$ matrix of rank 1.
+Thus, SVD shows us that every matrix can be expressed as a sum of outer products, which is essentially a sum of rank 1 matrices.
+The outer products which correspond to higher singular values have more "weight" in making up the original matrix. 
+
+This means that theoretically, if we have a large matrix (such as an image),
+we can retain most of its information but remember fewer numbers by throwing away the outer products which correspond to lower singular values.
 \end{document}
