@@ -476,7 +476,7 @@ If we wanted to find the characteristic polynomial, we could look at the last en
 
 Now that we know about this matrix form, the question becomes: can we transform any controllable system with matrix A into controllable canonical form?
 (i.e can we make $\vec{x}[t+1]=A\vec{x}[t]+\vec{b}u[t]$ into $\vec{z}[t+1]=A_z\vec{z}[t]+\vec{b}_zu[t]$)
-We know that $A\vec{b}, A^2\vec{b}, ... A^{k-1}\vec{b}$ are linearly independent since our system is controllable. Let this define basis $\mathbb{G}$. If we write the matrix A in the basis of G, we get $\tilde{A}=G^{-1}AG$
+We know that $\vec{b}, A\vec{b}, A^2\vec{b}, ... A^{k-1}\vec{b}$ are linearly independent since our system is controllable. Let this define basis $\mathbb{G}$. If we write the matrix A in the basis of G, we get $\tilde{A}=G^{-1}AG$
 The naming choice is very appropriate here because this matrix multiplication will be painful by hand, so lets look for another way to get $\tilde{A}$.
 
 Remember that any linear transformation is defined by what it does to the basis vectors. We know
