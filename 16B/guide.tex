@@ -846,7 +846,7 @@ This means the following $\tilde{\vec{u}}$ will solve our problem.
     \right]
 \]
 And from these we can find the actual controls by $\vec{u}_{opt}=V\tilde{\vec{u}}$.
-\subsection{SVD}
+\section{SVD and PCA}
 The analysis which we did above reveals an incredibly interesting fact.
 \[
     \begin{array}{c}
@@ -860,12 +860,174 @@ The analysis which we did above reveals an incredibly interesting fact.
 This shows that the matrix C can be factored into a product of three matrices.
 $W$ is has orthonormal columns and is of shape $n\times n$, $\Sigma$ is $n\times n$ with $\sigma_i$ on the diagonal, and $V^T$ is $n \times k$.
 Together, these matrices form the \textbf{Singular Value Decomposition} of $C$. The values $\sigma_i$ on the diagonal are called the \textbf{singular values}. Note that C was a generic matrix, which means \textbf{any} matrix can be factored in this way. 
+\begin{definition}
+    Any matrix $A\in \mathbb{R}^{m\times n}$ can be factored such that $A = U\Sigma V^T$
+     where $U\in \mathbb{R}^{m\times m}$, $\Sigma \in \mathbb{R}^{m \times n}$, $V\in \mathbb{R}^{n \times n}$
+     with $U,V$ having orthonormal columns and $\Sigma$ is diagonal. 
+\end{definition}
 
-The product $\vec{w}\vec{v}^T$ is a special type of product known as an \textbf{outer product}.
+\subsection{Computing the SVD}
+The procedure for computing the SVD of a matrix procedes exactly was was done above to find minimum energy control.
+First, we find the eigenpairs of $A^TA$ and these become our $V$ matrix and $\lambda_i=\sigma_i^2$. To find U, we let $\vec{u}_i=\frac{A\vec{v}_i}{\sigma_i}$ for all $\sigma \ne 0$ and then use Graham Schmidt to find the rest of the basis.
+However, if the matrix $A$ is $m \times n$, if $A^TA$ will be $n x n$. If $n > m$, then this means we have to compute more eigenvectors. Instead, it would be less work to find the eigenvectors of $AA^T$ and make those the vectors in U.
+In general, the SVD can be found as follows.
+\begin{itemize}
+    \item[] If $m > n$
+    \item[1. ] $\vec{v}_i$ are the eigenvectors of $A^TA$, $sigma_i=\sqrt{\lambda_i}$
+    \item[2. ] $\vec{u_i}=\frac{A\vec{v_i}}{\sigma_i} \forall \sigma_i \ne 0$
+    \item[3. ] Extend the basis of vectors ${\vec{u}_1, \vec{u}_2, ..., \vec{u_n}}$ into an orthonormal basis for $\mathbb{R}^m$ using Graham Schmidt.
+    \item[] If $m < n$
+    \item[1. ] $\vec{u}_i$ are the eigenvectors of $AA^T$, $\sigma_i=\sqrt{\lambda_i}$
+    \item[2. ] $\vec{v}_i=\frac{A^T\vec{u}_i}{\sigma_i} \forall \sigma_i \ne 0$
+    \item[3. ] Extend the basis of vectors ${\vec{v}_1, \vec{v}_2, ..., \vec{v_m}}$ into an orthonormal basis for $\mathbb{R}^n$ using Graham Schmidt.
+\end{itemize}
+Extending a basis can be a lot of work, so there also exists the compact form of the SVD.
+\begin{definition}
+    Any matrix $A\in \mathbb{R}^{m\times n}$ can be factored such that $A = U\Sigma V^T$
+     where $U\in \mathbb{R}^{m\times k}$, $\Sigma \in \mathbb{R}^{k \times k}$, $V\in \mathbb{R}^{k \times n}$
+     with $U,V$ having orthonormal columns and $\Sigma$ is square. $k$ is the number of nonzero singular values.
+     This is known as the compact form of the SVD.
+\end{definition}
+
+\subsection{Outer Product Form of SVD}
+In the SVD of a matrix A, $A = \sum_{i=1}^{n}{(\sigma_i\vec{w_i}\vec{v}^T_i)}$, the term $\vec{w}\vec{v}^T$ is a special type of product known as an \textbf{outer product}.
 If $\vec{w}\in \mathbb{R}^n$ and $\vec{v}\in \mathbb{R}^m$, then $\vec{w}\vec{v}^T$ produces a $n \times m$ matrix of rank 1.
-Thus, SVD shows us that every matrix can be expressed as a sum of outer products, which is essentially a sum of rank 1 matrices.
+All matrix multiplications can be expressed as a sum of outer products.
+\[
+    \left[
+        \begin{array}{cccc}
+            | & | & & |\\
+            \vec{x}_1 & \vec{x}_2 & ... & \vec{x}_m\\
+            | & | & & |
+        \end{array}
+    \right]\left[
+        \begin{array}{ccc}
+            - & \vec{y}_1^T & -\\
+            - & \vec{y}_2^T & -\\
+             & \vdots & \\
+             - & \vec{y}_m & -
+        \end{array}
+    \right] = \sum_{i=1}^{m}{\vec{x}_i\vec{y}_i^T}
+\]
+This is why $A = \sum_{i=1}^{n}{(\sigma_i\vec{w_i}\vec{v}^T_i)}$ is known as the \textbf{outer product form} of the SVD.
+The outer product form shows us that every matrix can be expressed as a sum of outer products a.k.a a sum of rank 1 matrices.
 The outer products which correspond to higher singular values have more "weight" in making up the original matrix. 
 
-This means that theoretically, if we have a large matrix (such as an image),
+\subsection{Approximating a matrix}
+Another outcome of outer products is that theoretically, if we have a large matrix (such as an image),
 we can retain most of its information but remember fewer numbers by throwing away the outer products which correspond to lower singular values.
+i.e for a matrix $A$ which is $p \times q$
+$$A = \sum_{i=1}^{m}{\sigma_i\vec{u}_i\vec{v}_i^T} \approx \sum_{i=1}^{k}{\sigma_i\vec{u}_i\vec{v}_i^T}$$
+Where $m$ is the smaller dimension of the matrix and $k < m$. The error of this approximation can also be found easily.
+$$A - \hat{A} = \sum_{i=k+1}^{m}{\sigma_i\vec{u}_i\vec{v}_i^T}$$
+Which are merely the thrown away terms. We can reduce this to a number by taking the Frobenius Norm of the error matrix.
+\begin{definition}
+    The Froebenius norm of a matrix $A$, written $||A||_F$, is the square root of the sum of the squares of each element.
+    $$||A||_F^2 = \sum_{i=1}^{n}{\sum_{j=1}^{m}{|a_{ij}|^2}}$$
+\end{definition}
+With this definition, it is easy to see that the error of our approximation depends only on the approximations.
+$$||A-\hat{A}||_F^2 = \sum_{i=k+1}^{m}{\sigma_i^2}$$
+The following theorem contains useful features of the Frobenius Norm and can be proved fairly easily.
+\begin{theorem}
+    \begin{itemize}
+        \item[1. ] $||A||_F^2=Tr{A^TA}$
+        \item[2. ] For an orthonormal matrix $U$, $||A||_F=||UA|_F=||AU||_F$
+    \end{itemize}
+\end{theorem}
+
+\subsection{PCA}
+PCA is a technique which is closely related to the SVD. It applies to matrices which represent data.
+Lets say we have a matrix $A \in \mathbb{R}^{n \times m}$ in which each row represents a data vector.
+To make analysis more accurate, it is nice to have all of our data centered around zero.
+To do this, find the mean of each column $\mu_1, ..., \mu_m$ and subtract out the column average from each data point.
+\[
+    \tilde{A} = \left[
+        \begin{array}{cccc}
+            x_{11} - \mu_1 & x_{12} - \mu_2 & ... &x_{1m} - \mu_m\\
+            x_{21} - \mu_1 & x_{22} - \mu_2 & ... &x_{2m} - \mu_m\\
+             & & \vdots & \\
+             x_{n1} - \mu_1 & x_{n2} - \mu_2 & ... &x_{nm} - \mu_m\\
+        \end{array}
+    \right]
+\]
+\begin{definition}
+    $$ S \triangleq \frac{1}{n}\tilde{A}^T\tilde{A}$$
+    is the covariance matrix of $A$. $n$ is the number of datapoints,
+    and $\tilde{A}$ is the mean-centered A matrix.
+    \[
+        S = \left[
+            \begin{array}{ccc}
+                s_{11} & ... & s_{1m}\\
+                \vdots & \ddots & \vdots\\
+                s_{m1} & ... & s_{mm}
+            \end{array}
+        \right]
+    \]
+\end{definition}
+\begin{theorem}
+    The covariance matrix S has the following properties.
+    \begin{itemize}
+        \item $S^T = S$ (i.e it is symmetric)
+        \item $_ii \ge 0, S_ii \in \mathbb{R}$
+        \item $|s_{ij}| \le |s_{ii}s_{jj}$
+    \end{itemize}
+\end{theorem}
+Notice that the diagonals contain the statistical variance of each "feature" of the data (each feature corresponds to a different column).
+(Remember that the variance $\sigma_x^2 = \frac{1}{n}\sum_{i=1}^{n}{x_i-\mu}$ for data points $x_1, ..., x_n$).
+To simplify notation, lets rename each diagonal entry to be $s_i^2=s_{ii}$.
+With the covariance matrix, we can now find the correlation matrix, another statistical matrix which tells us the linear correlation between data.
+\begin{definition}
+    \[
+        R \triangleq \left[
+            \begin{array}{cccc}
+                1 & \frac{s_{12}}{s_1s_2} & ... & \frac{s_{1m}}{s_1s_m}\\
+                \frac{s_{21}}{s_2s_1} & \ddots & &\\
+                \vdots & & \ddots & \vdots\\
+                \frac{s_{m1}}{s_ms_1} & ... & ... & 1
+            \end{array}
+        \right]
+    \]
+\end{definition}
+The R matrix contains the correlations between each feature. All of the terms on its diagonal are 1, and $R^T=R$.
+Each $-1 \le r_{ij} \le 1$. A correlation of 1 means complete positive linear correlation while correlation of -1 means complete negative linear correlation.
+A correlation of 0 means no correlation at all. The correlation matrix is nice to do analysis on because it tells us how each feature is correlated.
+However, it is painful to calculate and if any of the diagonal entries of the covariance matrix is 0, then the R matrix will be undefined.
+PCA is a way to get around these issues.
+
+PCA finds principal components of the data.
+\begin{definition}
+    The principal components of a matrix $A$ are the eigenvectors of the covariance matrix $S$
+    i.e, since $S$ is symmetric, it can be othorgonally diagonalized into $S = P\Lambda P^T$.
+    The principal components are merely the vectors in P.
+\end{definition}
+Principal components are the "axes" along which the data varies the most.
+Principal component analysis involves projecting the mean centered data $\tilde{A}$ onto the principle components ($\hat{A}=\tilde{A}P)$).
+Note that $\hat{A}$ will also be mean centered since
+\[
+    \begin{array}{c}
+        \frac{\left[
+        \begin{array}{ccccc}
+            1 & 1 & 1 & 1 & ...
+        \end{array}
+    \right]}{n} \tilde{A}P = 0 \\\\
+    \therefore \frac{\left[
+        \begin{array}{ccccc}
+            1 & 1 & 1 & 1 & ...
+        \end{array}
+    \right]}{n} \hat{A} = \frac{\left[
+        \begin{array}{ccccc}
+            1 & 1 & 1 & 1 & ...
+        \end{array}
+    \right]}{n} \tilde{A}P = 0
+    \end{array}
+\]
+The reason why the eigenvectors of $S$ are the axes along which the data varies the most is because 
+if we compute $\hat{S}$, the covariance of the projected data, we get a diagonal matrix.
+$$\hat{S}=\frac{1}{n}\hat{A}^T\hat{A} = \frac{1}{n}P^T\tilde{A}^T\tilde{A}P=P^TSP=\Lambda$$
+The fact that covariance matrix is 0 means thats all of the variances between different features are 0,
+effectively meaning that we have "decoupled" the features.
+This gives us a good basis to analyze our data for tasks like classification because features are not interacting with each other.
+Notice that the matrix $P$ is the same as the matrix $V$ in the SVD of $\tilde{A}$ since 
+$$S=\frac{1}{n}\tilde{A}^T\tilde{A} = \frac{1}{n}V\Sigma^TU^TU\Sigma V^T = \frac{1}{n}V\Sigma^T\Sigma V^T$$
+Thus $\Lambda = \frac{\Sigma^T \Sigma}{n}$. This gives us an easy way to do PCA since we can just do SVD.
 \end{document}
