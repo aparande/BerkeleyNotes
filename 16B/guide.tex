@@ -869,7 +869,7 @@ Together, these matrices form the \textbf{Singular Value Decomposition} of $C$. 
 \subsection{Computing the SVD}
 The procedure for computing the SVD of a matrix procedes exactly what was done above to find minimum energy control.
 First, we find the eigenpairs of $A^TA$ and these become our $V$ matrix and $\lambda_i=\sigma_i^2$. To find U, we let $\vec{u}_i=\frac{A\vec{v}_i}{\sigma_i}$ for all $\sigma \ne 0$ and then use Graham Schmidt to find the rest of the basis.
-However, if the matrix $A$ is $m \times n$, if $A^TA$ will be $n x n$. If $n > m$, then this means we have to compute more eigenvectors. Instead, it would be less work to find the eigenvectors of $AA^T$ and make those the vectors in U.
+However, if the matrix $A$ is $m \times n$, if $A^TA$ will be $n \times n$. If $n > m$, then this means we have to compute more eigenvectors. Instead, it would be less work to find the eigenvectors of $AA^T$ and make those the vectors in U.
 In general, the SVD can be found as follows.
 \begin{itemize}
     \item[] If $m > n$
