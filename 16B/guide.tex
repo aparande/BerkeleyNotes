@@ -857,8 +857,8 @@ The analysis which we did above reveals an incredibly interesting fact.
         \therefore C = \sum_{i=1}^{n}{(\sigma_i\vec{w_i}\vec{v}^T_i)} = W\Sigma V^T
     \end{array}
 \]
-This shows that the matrix C can be factored into a product of three matrices.
-$W$ is has orthonormal columns and is of shape $n\times n$, $\Sigma$ is $n\times n$ with $\sigma_i$ on the diagonal, and $V^T$ is $n \times k$.
+This shows that the matrix $C\in \mathbb{R}^{m \times n}$ can be factored into a product of three matrices.
+$W\in \mathbb{R}^{m \times m}$ has orthonormal columns, $\Sigma \in \mathbb{R}^{m \times n}$ has $\sigma_i$ on the diagonal, and $V^T \in \mathbb{R}^{n \times n}$ also has orthonormal columns.
 Together, these matrices form the \textbf{Singular Value Decomposition} of $C$. The values $\sigma_i$ on the diagonal are called the \textbf{singular values}. Note that C was a generic matrix, which means \textbf{any} matrix can be factored in this way. 
 \begin{definition}
     Any matrix $A\in \mathbb{R}^{m\times n}$ can be factored such that $A = U\Sigma V^T$
