@@ -252,7 +252,7 @@ Notice that checking stability based on the eigenvalues requires the matrix $A$ 
 This leaves open the question of what happens when $A$ is not diagonalizable, meaning there are not n distinct eigenvalues.
 In order to resolve this problem, we are going to need a new matrix form called Schur Upper Triangular Form
 \begin{definition}
-    The Shurr Upper Triangular form of a matrix A is
+    The Schur Upper Triangular form of a matrix A is
     \[
         \left[
             \begin{array}{cccc}
@@ -265,19 +265,19 @@ In order to resolve this problem, we are going to need a new matrix form called 
         \]
     It is an upper triangular matrix with eigenvalues on the diagonal. The eigenvalues may equal = 0.
 \end{definition}
-Shurr form allows us to easily find the characteristic polynomial of the matrix and solve the problem of stability.
+Schur form allows us to easily find the characteristic polynomial of the matrix and solve the problem of stability.
 To see why it helps with stability, consider the following proof.
 \begin{proof}
     $$\tilde{x}[t+1]=\tilde{A}\tilde{x}[t]+\tilde{w}[t]$$
-    If $\tilde{A}$ is in Shurr form, then the nth component is
+    If $\tilde{A}$ is in Schur form, then the nth component is
     $$\tilde{x}_n[t+1]=\lambda_n\tilde{x}_n[t]+\tilde{w}_n[t]$$
     so if $|\lambda_n| < 1$, then $\tilde{x}_n$ is BIBO stable.
     Likewise, for the n-1th component
     $$\tilde{x}_{n-1}[t+1]=\lambda_{n-1}\tilde{x}_{n-1}[t]+s\tilde{x}_n[t]+\tilde{w}_{n-1}[t]$$
-    $s$ is one of the $*$ entries in the upper part of Shurr form. It doesn't matter what it is because $\tilde{x}_n[t]$ is BIBO, so $s\tilde{x}_n[t]$ is also BIBO.
+    $s$ is one of the $*$ entries in the upper part of Schur form. It doesn't matter what it is because $\tilde{x}_n[t]$ is BIBO, so $s\tilde{x}_n[t]$ is also BIBO.
     As a result $$\tilde{x}_{n-1}[t]$$ will be BIBO if $|\lambda_{n-1}|<1$ and $|\lambda_n| < 1$.
     Since the component $\tilde{x}_{n-i}[t+1]$ depends on $\tilde{x}_n[t], \tilde{x}_{n-1}[t],...$, as long as $\tilde{x}_n[t], \tilde{x}_{n-1}[t],...$ are stable, $\tilde{x}_{n-i}[t+1]$ will be stable too.
-    Thus as long as all $|\lambda_i|<1$, then Shurr form tells us whether or not the system is stable.
+    Thus as long as all $|\lambda_i|<1$, then Schur form tells us whether or not the system is stable.
 \end{proof}
 Now that we know how it works, we need to know how to find a basis $U$ such that $\tilde{A}=U^{-1}AU$. As a bonus, it would be helpful if $U$ is orthonormal.
 To make things easier later, we'll define $M_n = A$. Since all matrices have at least one eigenpair, we can choose
@@ -350,7 +350,7 @@ Lets say $$U_2 = \vec{v}_1, \vec{x}, rest$$ is a basis where $\vec{x}$ has some 
 There aren't many options for what $\vec{x}$ and the rest of the basis vectors could be, so let's try.
 $$\vec{x}=R_{n-1}\vec{v}_2,\ rest = R_{n-1}R_{n-2}$$ because this will get us the appropriate sized vectors.
 Notice this basis will also be orthonormal because $\vec{v}_1^T R_{n-1}=0$ and $\vec{v_2}R_{n-1}^TR_{n-1}R_{n-1}=\vec{v_2}^TR_{n-2}=0$
-Lets see how $M_n$ lookins in the basis $U_2$ to see if we are getting closer to Shurr form.
+Lets see how $M_n$ lookins in the basis $U_2$ to see if we are getting closer to Schur form.
 \[
     \begin{array}{c}
         U_2^-1M_nU_2 = 
@@ -389,8 +389,8 @@ Lets see how $M_n$ lookins in the basis $U_2$ to see if we are getting closer to
 
 The $\lambda_2$ showed up because
 $$\vec{v}_2^TR_{n-1}^TM_nR_{n-1}\vec{v}_2)=\vec{v}_2M_{n-1}\vec{v}_2=\lambda_2$$
-This tells us we can continue with this process to get to Shurr form.
-To get to Shurr Form, all we need to do is
+This tells us we can continue with this process to get to Schur form.
+To get to Schur Form, all we need to do is
 \begin{itemize}
     \item[] Let $M_n=A$
     \item[Loop:]
@@ -400,7 +400,7 @@ To get to Shurr Form, all we need to do is
     \item[End Loop]
     \item[] $U = \vec{v_1},\ R_{n-1}\vec{v}_2,\ R_{n-1}R_{n-2}\vec{v}_2,\ ...,\ (\prod_{j=1}^{k}{R_{n-j}})\vec{v}_{k+1}$
 \end{itemize}
-Thus $\tilde{A}=U^TAU$ will give the Shurr Form of the matrix A.
+Thus $\tilde{A}=U^TAU$ will give the Schur Form of the matrix A.
 Notice that $(U^TAU)^T=U^TA^TU$. This forms the basis for \textbf{Spectral Theorem}
 \begin{theorem}[Spectral Theorem]
     Every symmetric matrix with real eigenvalues can be orthogonally diagonalized
