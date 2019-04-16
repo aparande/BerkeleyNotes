@@ -17,12 +17,12 @@
 \maketitle
 \section{Discrete Time Models}
 Although circuits and other systems function in continuous time, computers can only act in discrete time.
-This means the signals they send out to try and control the system are piecewise-continuous, and they can only sense the system at specified intervals $\delta$
+This means the signals they send out to try and control the system are piecewise-continuous, and they can only sense the system at specified intervals $\delta$.
 At a discrete time-step $i$, the computer will measure $\vec{x}_d[i]$ and applies the control $\vec{u}[i]$ over the time-interval $[i, i+1]$.
 Keep in mind that $i=\delta t$ where $t$ is the continuous time.
 
 \begin{definition}
-    The discrete time model is $\vec{x}_d[i+1]=A_d\vec{x}_d[i]+B_d\vec{u}[i]+\vec{w}[i]$ where $\vec{w}[i]$ is some disturbance.
+    The discrete-time state space model is $\vec{x}_d[i+1]=A_d\vec{x}_d[i]+B_d\vec{u}[i]+\vec{w}[i]$ where $\vec{w}[i]$ is some disturbance.
 \end{definition}
 
 \subsection{Converting between continuous time and discrete time}
@@ -59,7 +59,7 @@ If $x(0)=x_0$
 
 Thus the discrete time model is
 $$x[i+1]=e^{\lambda \delta}x[i]+\left(
-    \frac{e^{\lambda t}-1}{\lambda}\right) u[i]$$
+    \frac{e^{\lambda \delta}-1}{\lambda}\right) u[i]$$
 since the initial condition for the next time-step is simple the value at the previous time-step
 
 \subsection{Finding A and B}
@@ -76,7 +76,7 @@ In the scalar case:
 \]
 This means with $m$ observations, we can construct a matrix $D$ and a vector $\vec{s}$ such that we have the least squares problem
 \[
-    D\vec{p}=\vec{s}, \vec{p}=
+    D\vec{p}=\vec{s},\text{ where } \vec{p}=
 \left[
     \begin{array}{c}
         a\\
@@ -88,7 +88,7 @@ The same thing can be done in the vector case. We just create multiple parallel 
 \section{Control Theory}
 \subsection{Controllability}
 \begin{definition}
-    A system is controllable if $\forall x^*, \forall x[0] \exists u[0],u[1],...,u[k-1]$ such that $x[k]=x^*$ given that the system starts at $x[0]$
+    A system is controllable if $\forall x^*, \forall x[0], \exists u[0],u[1],...,u[k-1]$ such that $x[k]=x^*$ given that the system starts at $x[0]$
 \end{definition}
 In words, this means that there exists a sequence of control actions that can eventually get the system anywhere we want it to be from any given initial state.
 \begin{theorem}
@@ -110,14 +110,14 @@ In words, this means that there exists a sequence of control actions that can ev
 \begin{definition}
     The controllability matrix is a the matrix whose column space is all the reachable states.
     \[
-        \left[
+        \mathcal{C} = \left[
             \begin{array}{c|c|c|c|c}
                 B & AB & A^2B & ... & A^{k-1}B
             \end{array}
         \right]
         \]
 \end{definition}
-However, if we want to check if a system is controllable in 100 time-steps for a 900 state system, it will be painful to calculate the column space of the controllability matrix.
+However, if we want to check if a system is controllable in 100 time-steps for a 100 state system, it will be painful to calculate the column space of the controllability matrix.
 It turns out that we can stop checking when $dim(col(B, AB,...,A^{p-1}))=dim(col(B, AB, ..., A^p)), (p \leq k)$ (i.e the dimension of the column space stops growing)
 This means we can build the controllability matrix up piece-by-piece and stop early rather than computing the full column space only to fail. Consider the following proof for why this works.
 \begin{proof}
@@ -135,6 +135,55 @@ This means we can build the controllability matrix up piece-by-piece and stop ea
     By writing $A^{p+1}$ as a linear combination of $B, AB,...,A^{p-1}$, we have shown $\beta_i$ exists, so by induction, all future vectors $p+m\leq k$ will be linear combinations of these same vectors, 
     so the dimension will never grow again and we can be justified in stopping early.
 \end{proof}
+\subsection{Observability}
+Another question we can ask about different systems is whether or not we can figure out exactly where we are.
+Often times, we are limited in the measurements we can take, and so we might not be able to "see" the entire state vector $\vec{x}[t]$.
+Instead, we would only be able to see the output $\vec{y}[t]=C\vec{x}[t]$. To start with, consider what would happen if we applies no inputs to the system.
+\[
+    \begin{array}{c}
+        \vec{y}[0] = C\vec{x}[0]\\
+        \vec{y}[1] = C\vec{x}[1] = CA\vec{x}[0]\\
+        \vdots\\
+        \vec{y}[n] = CA^n\vec{x}[0]\\
+    \end{array}
+\]
+If we want to recover the state $\vec{x}[0]$, we could apply least squares.
+$$\vec{x}[0] = (\mathcal{O}^T\mathcal{O}^{-1}\mathcal{O}^T\vec{y}$$
+where
+\[
+    \mathcal{O} = \left[
+        \begin{array}{c}
+            C\\
+            CA\\
+            \vdots\\
+            CA^i
+        \end{array}
+    \right],\ \vec{y} = \left[
+        \begin{array}{c}
+            \vec{y}[0]\\
+            \vec{y}[1]\\
+            \vdots\\
+            \vec{y}[n]\\
+        \end{array}
+        \right]
+\]
+$\mathcal{O}$ is known as the observability matrix, and we can use least squares as long as it is full rank.
+\begin{theorem}
+    A system is observable if $\mathcal{O}$ has linearly independent columns.
+\end{theorem}
+Even if a system has inputs, this kind of analysis still holds.
+Define 
+$$\vec{x}_f[i]=A\vec{x}[i],\ \vec{y}_f[i]=C\vec{x}_f[0]$$
+This is what the system would do without any inputs. If we unroll the recursion in the system, we see
+\[
+    \begin{array}{c}
+        \vec{x}[i] = \vec{x}_f[i]+\sum_{k=0}^{i-1}{A^{i-k-1}B\vec{u}[k]}\\\\
+        \vec{y}[i] = \vec{y}_f[i]+\sum_{k=0}^{i-1}{CA^{i-k-1}B\vec{u}[k]}
+    \end{array}
+\]
+Since we know the inputs we applied, and $\vec{x}_f[i]=A^i\vec{x}[i]$, we can easily find $\vec{x}_f[i],\ \vec{y}_f[i]$
+and then apply least squares to them to compute the initial state.
+
 \subsection{Stability}
 The question of stability is whether or not disturbances will over time control a system if left alone.
 Specificically, it is asking if the disturbances are bounded, will the states be bounded too?
@@ -186,10 +235,19 @@ It turns out that in the vector case, for the system $\vec{x}[t+1]=A \vec{x}[t]+
     This means $\vec{\tilde{x}}[t+1]=\tilde{A}\vec{\tilde{x}}[t]+V^{-1}B\vec{u}[t]+V^{-1}\vec{w}[t]$ where $V$ is the matrix whose columns are A's eigenvectors.
     This is merely n different scalar cases, but we still have to make sure that $|\vec{w}[t]|<\epsilon \implies |V^{-1}\vec{w}[t]|<\kappa$ where $\kappa$ is some bound.
     Lets say $m=V_{ij}^{-1}$ is the largest entry in $V^{-1}$. In the worst case all $\vec{w}_i[t]$ and all $V_{ij}=m$.
-    Then $\forall i, \left[V^{-1}\vec{w}[t]\right]_i \leq n m \epsilon$ where $n$ is the dimension of $V$, which means $|V^{-1}\vec{w}[t]|<\kappa$
+    Then $\forall i, \left[V^{-1}\vec{w}[t]\right]_i \leq n m \epsilon$ where $n$ is the dimension of $V$, which means $|V^{-1}\vec{w}[t]|<\kappa$.
     Thus we can say that $\tilde{x}[t]$ is BIBO implies that $\vec{x}[t]$ is BIBO.
 \end{proof}
-\subsubsection{Stability in the General Case}
+It is important to realize that the condition $|\lambda|<1$ holds only for discrete-time systems. If instead our system is continuous (i.e $\frac{d}{dt}\vec{x}(t)=A\vec{x}(t)+B\vec{u}(t)$),
+then the system will only be stable if $Re\{\lambda\}<0$. To see why, consider the following simple linear system with initial condition $x_0$.
+\[
+    \begin{array}{c}
+        \frac{d}{dt}x(t) = \lambda x(t)\\
+        \therefore x(t) = x_0 e^{\lambda t}
+    \end{array}
+\]
+Clearly if $\lambda > 0$, this system will grow infinitely large. The same analysis applies to vector cases.
+\subsubsection{Stability for a general A matrix}
 Notice that checking stability based on the eigenvalues requires the matrix $A$ to be diagonalizable becase we need to check all of its eigenvalues.
 This leaves open the question of what happens when $A$ is not diagonalizable, meaning there are not n distinct eigenvalues.
 In order to resolve this problem, we are going to need a new matrix form called Shurr Upper Triangular Form
@@ -217,7 +275,7 @@ To see why it helps with stability, consider the following proof.
     Likewise, for the n-1th component
     $$\tilde{x}_{n-1}[t+1]=\lambda_{n-1}\tilde{x}_{n-1}[t]+s\tilde{x}_n[t]+\tilde{w}_{n-1}[t]$$
     $s$ is one of the $*$ entries in the upper part of Shurr form. It doesn't matter what it is because $\tilde{x}_n[t]$ is BIBO, so $s\tilde{x}_n[t]$ is also BIBO.
-    As a result $$\tilde{x}_{n-1}[t]$$ will be BIBO if $|\lambda_{n-1}|<1$ and $|\lambda_n| < 1$
+    As a result $$\tilde{x}_{n-1}[t]$$ will be BIBO if $|\lambda_{n-1}|<1$ and $|\lambda_n| < 1$.
     Since the component $\tilde{x}_{n-i}[t+1]$ depends on $\tilde{x}_n[t], \tilde{x}_{n-1}[t],...$, as long as $\tilde{x}_n[t], \tilde{x}_{n-1}[t],...$ are stable, $\tilde{x}_{n-i}[t+1]$ will be stable too.
     Thus as long as all $|\lambda_i|<1$, then Shurr form tells us whether or not the system is stable.
 \end{proof}
@@ -370,7 +428,7 @@ Consider the following simple scalar case example
         x[t+1]=3x[t]+u[t]+w[t]\\
         u[t] = kx[t]\\
         x[t+1] = (3+k)x[t]+w[t]
-    \end{array}{c}
+    \end{array}
 \]
 
 Notice that even if the system is initially unstable, we can set our $k$ to make it stable since the domain of $\lambda=3+k$ is $\infty$
@@ -422,7 +480,6 @@ Given our definition of $\vec{z}[t]$ (which are the scalar values of previous st
         \end{array}
     \right]
 \]
-
 To understand where these come from, thing of the $A_z$ matrix "scrolling down" the state vector $\vec{z}[t]$ to get how it influences $\vec{z}[t+1]$.
 All the rows except the last are 0's and 1's since the previous states can't change, but the last row determines the next state.
 Notice that all entries in the b-vector are 0 except the last since we can't affect the past with present control.
@@ -524,23 +581,21 @@ This means
     \]
 which is $A_z^T$. Now we have a basis $\mathbb{G}$ with $(\tilde{A}, \tilde{b}$), but we want a basis $\mathbb{H}$ with $(\tilde{A}^T, \vec{b}_z)$
 We want $\tilde{A}^T, \vec{b}_z$ to be controllable, which means $\vec{b}_z, \tilde{A}^T\vec{b}_z,...,(\tilde{A}^T)^{k-1}\vec{b}_z$ are linearly independent.
-
 Let's construct a matrix H which will take us from a coordinates in basis $\mathbb{H}$ to coordinates in the basis $\mathbb{G}$. 
-\textbf{Important:} the matrix \[
-    \left[
+\[
+    \mathbb{H} = \left[
         \begin{array}{c|c|c|c}
             \vec{b}_z & \tilde{A}^T\vec{b}_z & ... &(\tilde{A}^T)^{k-1}\vec{b}_z
         \end{array}
-        \right]
-    \]
-
-is \textbf{not} the matrix H. To compute H, we have to see how it transforms the $\mathbb{G}$ basis vectors.
-
+    \right]
+\]
 Once we have the matrix H, to get $(\tilde{A}^T, \vec{b}_z)$ from $(A, \vec{b})$,
 we can apply the change of coordinates $G^{-1}H$ so $\vec{x}_z[t]=HG^{-1}\vec{x}[t]$ and put our entire system into controllable canonical form.
-
 The reason we can't find $HG^{-1}$ in a single-step and must go through an intermediary basis is because we might not know what our system will look like in canonical form.
-
+While we can use $HG^{-1}$ to convert from the normal basis to the CCF basis, if we just want to figure out what the system looks like in CCF, we don't need to do so much work.
+Since $A$ and $A_z$ have the same eigenvalues, they have the same characteristic polynomial. Therefore to find $A_z$, solve
+$$det(\lambda I - A) = det(\lambda I - A_z)$$
+by finding the proper $a_0, a_1, ...$ present in the CCF Form. This works because we already know the form of $A_z$.
 \subsection{Linearization}
 Up until now, we have been assuming our systems are linear. To understand what this means, we must first understand what linearity means.
 
