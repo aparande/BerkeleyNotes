@@ -19,10 +19,10 @@
 Although circuits and other systems function in continuous time, computers can only act in discrete time.
 This means the signals they send out to try and control the system are piecewise-continuous, and they can only sense the system at specified intervals $\delta$.
 At a discrete time-step $i$, the computer will measure $\vec{x}_d[i]$ and applies the control $\vec{u}[i]$ over the time-interval $[i, i+1]$.
-Keep in mind that $i=\delta t$ where $t$ is the continuous time.
+Keep in mind that $t=\delta i$ where $t$ is the continuous time.
 
 \begin{definition}
-    The discrete-time state space model is $\vec{x}_d[i+1]=A_d\vec{x}_d[i]+B_d\vec{u}[i]+\vec{w}[i]$ where $\vec{w}[i]$ is some disturbance.
+    The discrete-time state space model is $$\vec{x}_d[i+1]=A_d\vec{x}_d[i]+B_d\vec{u}[i]+\vec{w}[i]$$ where $\vec{w}[i]$ is some disturbance.
 \end{definition}
 
 \subsection{Converting between continuous time and discrete time}
@@ -30,9 +30,6 @@ To see how to convert between a continuous time model to a discrete time model, 
 \[
     \begin{array}{c}
         \frac{dx}{dt}=\lambda x+u, u=e^{st}\\
-        \left(
-            \frac{d}{dt}-\lambda
-            \right)x = u
     \end{array}\\
 \]
 
@@ -56,16 +53,18 @@ If $x(0)=x_0$
         \right)
     \end{array}
 \]
-
-Thus the discrete time model is
+Notice that at $x(\delta) = x_0 e^{\lambda \delta}+u\left(\frac{e^{\lambda \delta}-1}{\lambda}\right)$
+This means that $x[2\delta]$ can be written as $x[2\delta] = x(\delta) e^{\lambda \delta}+u\left(\frac{e^{\lambda \delta}-1}{\lambda}\right)$
+because we simply take $x(\delta)$ to be our initial condition.
+This allows us to write the discrete time model as
 $$x[i+1]=e^{\lambda \delta}x[i]+\left(
     \frac{e^{\lambda \delta}-1}{\lambda}\right) u[i]$$
-since the initial condition for the next time-step is simple the value at the previous time-step.
+since the initial condition for the next time-step is simply the value at the previous time-step.
 For a vector continuous system, $A_d$ and $B_d$ can be found in the same way by simply solving
 the differential equation for each state variable and converting those to discrete time models
 and combining the results into matrix-vector form.
 
-\subsection{Finding A and B}
+\subsection{System Identification}
 What would happen if we didn't know what A and B were though? It turns out that we can find it by gathering data about the system and then using least squares.
 In the scalar case:
 \[
@@ -88,6 +87,7 @@ This means with $m$ observations, we can construct a matrix $D$ and a vector $\v
 \right]
 \]
 The same thing can be done in the vector case. We just create multiple parallel systems by multiplying out the rows.
+This is called system identification.
 \section{Control Theory}
 \subsection{Controllability}
 \begin{definition}
@@ -95,7 +95,8 @@ The same thing can be done in the vector case. We just create multiple parallel 
 \end{definition}
 In words, this means that there exists a sequence of control actions that can eventually get the system anywhere we want it to be from any given initial state.
 \begin{theorem}
-    If a state is n-dimensional, then a system $\vec{x}_d[i+1]=A\vec{x}[i]+B\vec{u}[i]+\vec{w}[i]$ is controllable in k time-steps if $span(B, AB, ..., A^{k-1}B)=\mathbb{R}^n$
+    If a state is n-dimensional, then a system $$\vec{x}_d[i+1]=A\vec{x}[i]+B\vec{u}[i]+\vec{w}[i]$$ 
+    is controllable in k time-steps if $span(B, AB, ..., A^{k-1}B)=\mathbb{R}^n$
 \end{theorem}
 \begin{proof}
     Without any noise, $\vec{x}_d[i+1]=A\vec{x}[i]+B\vec{u}[i]$
@@ -115,30 +116,31 @@ In words, this means that there exists a sequence of control actions that can ev
     \[
         \mathcal{C} = \left[
             \begin{array}{c|c|c|c|c}
-                A^{k-1}B & A^{k-2}B & ... & AB & A
+                A^{k-1}B & A^{k-2}B & ... & AB & B
             \end{array}
         \right]
     \]
 \end{definition}
 However, if we want to check if a system is controllable in 100 time-steps for a 100 state system, it will be painful to calculate the column space of the controllability matrix.
-It turns out that we can stop checking when $dim(col(B, AB,...,A^{p-1}))=dim(col(B, AB, ..., A^p)), (p \leq k)$ (i.e the dimension of the column space stops growing)
-This means we can build the controllability matrix up piece-by-piece and stop early rather than computing the full column space only to fail. Consider the following proof for why this works.
+\\\\It turns out that we can stop checking when $dim(col(B, AB,...,A^{p-1}))=dim(col(B, AB, ..., A^p)), (p \leq k)$ (i.e the dimension of the column space stops growing)
+This means we can build the controllability matrix up piece-by-piece and stop early rather than computing the full column space only to fail.
+Consider the following proof for why this works.
 \begin{proof}
     If $\vec{b}$ is column vector of the matrix B, then $A^p \vec{b}=\sum_{i=0}^{p-1}{\alpha_iA^i\vec{b}}$ since we assume the dimension of the column space has stopped growing,
     so $A^p\vec{b}$ is a linear combination of the vectors preceding it.
     We want to show $\exists \beta_i$ such that $A^{p+1}=\sum_{i=0}^{p-1}{\beta_iA^i\vec{b}}$
     \[
         \begin{array}{c}
-            A^{p+1}\vec{b}=A(A^p\vec{b}) =\\
-            A\sum_{i=0}^{p-1}{\alpha_iA^i\vec{b}} = \sum_{i=0}^{p-1}{\alpha_iA^{i+1}\vec{b}}=\\
-            \alpha_{p-1}A^p\vec{b}+ \sum_{i=0}^{p-2}{\alpha_iA^{i}\vec{b}}=\\
+            A^{p+1}\vec{b}=A(A^p\vec{b}) =\\\\
+            A\sum_{i=0}^{p-1}{\alpha_iA^i\vec{b}} = \sum_{i=0}^{p-1}{\alpha_iA^{i+1}\vec{b}}=\\\\
+            \alpha_{p-1}A^p\vec{b}+ \sum_{i=0}^{p-2}{\alpha_iA^{i}\vec{b}}=\\\\
             \alpha_{p-1}\sum_{i=0}^{p-1}{\alpha_iA^i\vec{b}}+\sum_{i=0}^{p-2}{\alpha_iA^{i}\vec{b}}
         \end{array}
         \]
     By writing $A^{p+1}$ as a linear combination of $B, AB,...,A^{p-1}$, we have shown $\beta_i$ exists, so by induction, all future vectors $p+m\leq k$ will be linear combinations of these same vectors, 
     so the dimension will never grow again and we can be justified in stopping early.
 \end{proof}
-If we want to figure out the controls needed to reach a particular state in $p < k$ steps, all that needs to be done is solve
+With the controllability matrix, if we want to figure out the controls needed to reach a particular state in $p < k$ steps, all that needs to be done is solve
 \[
     \mathcal{C}_p\vec{u} = \vec{x}^* \text{ where } \vec{u} = \left[
             \begin{array}{c}
@@ -148,26 +150,29 @@ If we want to figure out the controls needed to reach a particular state in $p <
                 \vec{u}[p]\\
             \end{array}\right], \mathcal{C}_p = \left[
                 \begin{array}{c|c|c|c|c}
-                    A^{p-1}B & A^{p-2}B & ... & AB & A
+                    A^{p-1}B & A^{p-2}B & ... & AB & B
                 \end{array}
             \right]
 \]
+\textbf{Important: }this assumes that $\vec{x}[0]=0$. For an arbitrary $\vec{x}[0]$, we would solve $C_p\vec{u}=\vec{x}^*-\vec{x}[0]$.
+Look back to where the controllability matrix was derived to see why. 
 \subsection{Observability}
 Another question we can ask about different systems is whether or not we can figure out exactly where we are.
-Often times, we are limited in the measurements we can take, and so we might not be able to "see" the entire state vector $\vec{x}[t]$.
-Instead, we would only be able to see the output $\vec{y}[t]=C\vec{x}[t]$. To start with, consider what would happen if we applies no inputs to the system.
+\begin{definition}
+    A system is observable if from a future state $\vec{x}[n]$, the original state $\vec{x}[0]$ is recoverable.
+\end{definition}
+Often times, we are limited in the measurements we can take, so we might not be able to "see" the entire state vector $\vec{x}[t]$.
+Instead, we would only be able to see the output $\vec{y}[t]=C\vec{x}[t]$. To start with, consider what would happen if we applied no inputs to the system.
 \[
     \begin{array}{c}
-        \vec{y}[0] = C\vec{x}[0]\\
+        \vec{y}[0] = C\vec{x}[0]\\\\
         \vec{y}[1] = C\vec{x}[1] = CA\vec{x}[0]\\
         \vdots\\
         \vec{y}[n] = CA^n\vec{x}[0]\\
     \end{array}
 \]
-If we want to recover the state $\vec{x}[0]$, we could apply least squares.
-$$\vec{x}[0] = (\mathcal{O}^T\mathcal{O})^{-1}\mathcal{O}^T\vec{y}$$
-where
-\[
+\begin{definition}
+    \[
     \mathcal{O} = \left[
         \begin{array}{c}
             C\\
@@ -184,7 +189,11 @@ where
         \end{array}
         \right]
 \]
-$\mathcal{O}$ is known as the observability matrix, and we can use least squares as long as it is full rank.
+is the observability matrix for a system.
+\end{definition}
+As long as $\mathcal{O}$ is full rank, if we want to recover the state $\vec{x}[0]$, we could apply least squares.
+$$\vec{x}[0] = (\mathcal{O}^T\mathcal{O})^{-1}\mathcal{O}^T\vec{y}$$
+This brings us the following theorem.
 \begin{theorem}
     A system is observable if $\mathcal{O}$ has linearly independent columns.
 \end{theorem}
@@ -205,9 +214,9 @@ and then apply least squares to them to compute the initial state.
 The question of stability is whether or not disturbances will over time control a system if left alone.
 Specificically, it is asking if the disturbances are bounded, will the states be bounded too?
 \begin{definition}
-    Bounded Input, Bounded Output (BIBO) stability means if $|\vec{w}[i]| < \epsilon$, then $\exists \delta>0$ such that $|\vec{x}[i]| < \delta$
+    Bounded Input, Bounded Output (BIBO) stability means if
+    $$|\vec{w}[i]| < \epsilon\text{, then }\exists \delta>0\text{ such that }|\vec{x}[i]| < \delta$$
 \end{definition}
-
 To see where this definition comes into play, consider the following scalar systems:
 \begin{itemize}
     \item[1.] $x[i+1] = u[i] + w[i]$
@@ -220,25 +229,30 @@ To see where this definition comes into play, consider the following scalar syst
     This makes the system stable because disturbances will not add up.
     To see this mathematically, pretend $u[i] = 0$ since we want to see how the system evolves without doing anything.
     $$|x[i+1]|=|w[i]| < \epsilon, \>\>\> \therefore |x[i]|<\epsilon$$
-    Thus we have BIBO stability
+    Thus we have BIBO stability.
     \item[System 2:] Unlike the previous system, this system has a "weak" dependence on previous states. We consider it "weak" because only half of the previous state influences the next state.
     Intuitively, this system must be BIBO stability then because although disturbances will accumulate, they will be attenuated through an infinite geometric sum. Once again, we will pretend $\vec{u}[i]=0$ to check this mathematically.
     $$|x[i+1]| = \frac{1}{2}x[i]+w[i] < \frac{1}{2}x[i]+ \epsilon$$
     Unrolling the recursive relationship, we see
     $$|x[i+1]| < \epsilon+\frac{1}{2}\epsilon+\frac{1}{4}\epsilon+...+\left( \frac{1}{2} \right)^i\epsilon$$
-    $$\lim_{i->\infty}{|x[i+1]}<\frac{\epsilon}{1-\frac{1}{2}} = 2\epsilon$$
+    $$\lim_{i->\infty}{|x[i+1]|}<\frac{\epsilon}{1-\frac{1}{2}} = 2\epsilon$$
     Thus the system is BIBO stability since $|x[i]| < 2\epsilon$
     \item[System 3:] This system has a "strong" dependence on previous states since the contribution of previous states is doubled each times.
     Intuitively, this means the system must be unstable because small disturbances will be explode over time. To see this mathematically, once again consider what happens if we apply no inputs.
     $$|x[i+1]| = 2x[i]+w[i] < 2x[i]+ \epsilon$$
     Unrolling the recursion,
     $$|x[i+1]| < \epsilon+2\epsilon+4\epsilon+...+2^i\epsilon$$
-    $$\lim_{i->\infty}{|x[i+1]} < \infty$$
+    $$\lim_{i->\infty}{|x[i+1]|} < \infty$$
     Thus $|x[i]|$ has no bound, so the system is not stable.
 \end{itemize}
-
 Note that in the scalar case, as long as $|\lambda| < 1$ for the system $x[i+1]=\lambda x[i]+bu[i]+w[i]$, the system will be stable. Note that this is $\lambda<1$, not $\lambda \leq 1$. That is because when $\lambda=1$, we can see the errors will add up.
-It turns out that in the vector case, for the system $\vec{x}[t+1]=A \vec{x}[t]+B\vec{u}[t]+\vec{w}[t]$, the system will be stable if the eigenvalues of A are less than 1.
+\begin{definition}
+    A discrete system is marginally stable if $\lambda = 1$
+\end{definition}
+We call it marginally stable because if there are no disturbances, then it would be stable.
+\begin{theorem}
+    A vector discrete system $\vec{x}[t+1]=A \vec{x}[t]+B\vec{u}[t]+\vec{w}[t]$ will be stable if the eigenvalues of $A$ are less than 1.
+\end{theorem}
 \begin{proof}
     If $\exists \> n \> \vec{v}_i$ such that $A\vec{v}_i=\lambda_i\vec{v}_i$, then changing coordinates to the eigenbasis gives
     $$\tilde{A}=
@@ -250,10 +264,10 @@ It turns out that in the vector case, for the system $\vec{x}[t+1]=A \vec{x}[t]+
         \end{array}
         \right] $$
     This means $\vec{\tilde{x}}[t+1]=\tilde{A}\vec{\tilde{x}}[t]+V^{-1}B\vec{u}[t]+V^{-1}\vec{w}[t]$ where $V$ is the matrix whose columns are A's eigenvectors.
-    This is merely n different scalar cases, but we still have to make sure that $|\vec{w}[t]|<\epsilon \implies |V^{-1}\vec{w}[t]|<\kappa$ where $\kappa$ is some bound.
-    Lets say $m=V_{ij}^{-1}$ is the largest entry in $V^{-1}$. In the worst case all $\vec{w}_i[t]$ and all $V_{ij}=m$.
+    \\\\This is merely n different scalar cases, but we still have to make sure that $|\vec{w}[t]|<\epsilon \implies |V^{-1}\vec{w}[t]|<\kappa$ where $\kappa$ is some bound.
+    \\\\Lets say $m=V_{ij}^{-1}$ is the largest entry in $V^{-1}$. In the worst case all $\vec{w}_i[t]$ and all $V_{ij}=m$.
     Then $\forall i, \left[V^{-1}\vec{w}[t]\right]_i \leq n m \epsilon$ where $n$ is the dimension of $V$, which means $|V^{-1}\vec{w}[t]|<\kappa$.
-    Thus we can say that $\tilde{x}[t]$ is BIBO implies that $\vec{x}[t]$ is BIBO.
+    \\\\Thus we can say that $\tilde{x}[t]$ is BIBO implies that $\vec{x}[t]$ is BIBO.
 \end{proof}
 It is important to realize that the condition $|\lambda|<1$ holds only for discrete-time systems. If instead our system is continuous (i.e $\frac{d}{dt}\vec{x}(t)=A\vec{x}(t)+B\vec{u}(t)$),
 then the system will only be stable if $Re\{\lambda\}<0$. To see why, consider the following simple linear system with initial condition $x_0$.
@@ -275,7 +289,7 @@ Clearly if $\lambda > 0$, this system will grow infinitely large. The same analy
 \subsubsection{Stability for a general A matrix}
 Notice that checking stability based on the eigenvalues requires the matrix $A$ to be diagonalizable becase we need to check all of its eigenvalues.
 This leaves open the question of what happens when $A$ is not diagonalizable, meaning there are not n distinct eigenvalues.
-In order to resolve this problem, we are going to need a new matrix form called Schur Upper Triangular Form
+In order to resolve this problem, we are going to need a new matrix form called Schur Upper Triangular Form.
 \begin{definition}
     The Schur Upper Triangular form of a matrix A is
     \[
@@ -300,9 +314,9 @@ To see why it helps with stability, consider the following proof.
     Likewise, for the n-1th component
     $$\tilde{x}_{n-1}[t+1]=\lambda_{n-1}\tilde{x}_{n-1}[t]+s\tilde{x}_n[t]+\tilde{w}_{n-1}[t]$$
     $s$ is one of the $*$ entries in the upper part of Schur form. It doesn't matter what it is because $\tilde{x}_n[t]$ is BIBO, so $s\tilde{x}_n[t]$ is also BIBO.
-    As a result $$\tilde{x}_{n-1}[t]$$ will be BIBO if $|\lambda_{n-1}|<1$ and $|\lambda_n| < 1$.
+    \\\\As a result $\tilde{x}_{n-1}[t]$ will be BIBO if $|\lambda_{n-1}|<1$ and $|\lambda_n| < 1$.
     Since the component $\tilde{x}_{n-i}[t+1]$ depends on $\tilde{x}_n[t], \tilde{x}_{n-1}[t],...$, as long as $\tilde{x}_n[t], \tilde{x}_{n-1}[t],...$ are stable, $\tilde{x}_{n-i}[t+1]$ will be stable too.
-    Thus as long as all $|\lambda_i|<1$, then Schur form tells us whether or not the system is stable.
+    \\\\Thus as long as all $|\lambda_i|<1$, then Schur form tells us whether or not the system is stable.
 \end{proof}
 Now that we know how it works, we need to know how to find a basis $U$ such that $\tilde{A}=U^{-1}AU$. As a bonus, it would be helpful if $U$ is orthonormal.
 To make things easier later, we'll define $M_n = A$. Since all matrices have at least one eigenpair, we can choose
@@ -374,8 +388,8 @@ We can keep repeating this by saying $M_{n-2} = R_{n-2}^T M_{n-1} R_{n-2}$, but 
 Lets say $$U_2 = \vec{v}_1, \vec{x}, rest$$ is a basis where $\vec{x}$ has some dependence on $\vec{v}_2$.
 There aren't many options for what $\vec{x}$ and the rest of the basis vectors could be, so let's try.
 $$\vec{x}=R_{n-1}\vec{v}_2,\ rest = R_{n-1}R_{n-2}$$ because this will get us the appropriate sized vectors.
-Notice this basis will also be orthonormal because $\vec{v}_1^T R_{n-1}=0$ and $\vec{v_2}R_{n-1}^TR_{n-1}R_{n-1}=\vec{v_2}^TR_{n-2}=0$
-Lets see how $M_n$ lookins in the basis $U_2$ to see if we are getting closer to Schur form.
+Notice this basis will also be orthonormal because $\vec{v}_1^T R_{n-1}=0$ and $\vec{v_2}R_{n-1}^TR_{n-1}R_{n-2}=\vec{v_2}^TR_{n-2}=0$
+Lets see how $M_n$ looks in the basis $U_2$ to see if we are getting closer to Schur form.
 \[
     \begin{array}{c}
         U_2^-1M_nU_2 = 
@@ -426,13 +440,13 @@ To get to Schur Form, all we need to do is
     \item[] $U = \vec{v_1},\ R_{n-1}\vec{v}_2,\ R_{n-1}R_{n-2}\vec{v}_2,\ ...,\ (\prod_{j=1}^{k}{R_{n-j}})\vec{v}_{k+1}$
 \end{itemize}
 Thus $\tilde{A}=U^TAU$ will give the Schur Form of the matrix A.
-Notice that $(U^TAU)^T=U^TA^TU$. This forms the basis for \textbf{Spectral Theorem}
+Notice that $(U^TAU)^T=U^TA^TU$. This forms the basis for \textbf{Spectral Theorem}.
 \begin{theorem}[Spectral Theorem]
-    Every symmetric matrix with real eigenvalues can be orthogonally diagonalized
+    Every real symmetric matrix has real eigenvalues can be orthogonally diagonalized
 \end{theorem}
 Two consequences of spectral theorem are that if the symmetric matrix $A$ is real, then
 \begin{itemize}
-    \item[1. ] All eigenvalues are non-negative and real
+    \item[1. ] All eigenvalues are real
     \item[2. ] All eigenvectors are real
 \end{itemize}
 
@@ -455,9 +469,8 @@ Consider the following simple scalar case example
         x[t+1] = (3+k)x[t]+w[t]
     \end{array}
 \]
-
 Notice that even if the system is initially unstable, we can set our $k$ to make it stable since the domain of $\lambda=3+k$ is $\infty$
-What if we have a system $\vec{x}[t+1]=A\vec{x}[t]+\vec{b}u[t]+\vec{w}[t]$ where $A, \vec{b}$ are controllable, but we only get a scalar input $u[t]$.
+\\\\What if we have a system $\vec{x}[t+1]=A\vec{x}[t]+\vec{b}u[t]+\vec{w}[t]$ where $A, \vec{b}$ are controllable, but we only get a scalar input $u[t]$.
 Can we find a set of feedback gains $\vec{f}^T=[f_0, f_1, ..., f_{k-1}]$ such that $u[t]=-\vec{f}^T\vec{x}[t]$ makes $A-\vec{b}\vec{f}^T$ have the eigenvalues we want?
 \break \break
 We know how to easily solve scalar cases like $z[t+1]=az[t]+u[t]$, but it is hard to get this from a vector case because we only have a simple input, so we will be limited in how we can set our eigenvalues this way.
@@ -465,7 +478,7 @@ Since this won't work, consider the folowing recursive system.
 $$z[t+1]=a_{k-1}z[t]+a_{k-2}z[t-1]+...+a_0z[t-(k-1)]+u[t]$$
 This is definetly controllable since our input $u[t]$ could potentially be any value in $\mathbb{R}$.
 Moreover, if we choose $u[t]=-\sum_{i=0}^{k-1}{f_i z[t-(k-1)+i]}$, we can create any recurrence relation we want.
-For example, if we wanted $z[t+1]=d_{k-1}z[t]+d_{k-2}z[t-1]+...+d_0z[t-(k-1)]$, then $f_i=a_i-d_i$
+\\\\For example, if we wanted $z[t+1]=d_{k-1}z[t]+d_{k-2}z[t-1]+...+d_0z[t-(k-1)]$, then $f_i=a_i-d_i$
 Writing this in vector form, we get
 \[
     \begin{array}{c}
@@ -507,7 +520,7 @@ Given our definition of $\vec{z}[t]$ (which are the scalar values of previous st
 \]
 To understand where these come from, thing of the $A_z$ matrix "scrolling down" the state vector $\vec{z}[t]$ to get how it influences $\vec{z}[t+1]$.
 All the rows except the last are 0's and 1's since the previous states can't change, but the last row determines the next state.
-Notice that all entries in the b-vector are 0 except the last since we can't affect the past with present control.
+\\\\Notice that all entries in the b-vector are 0 except the last since we can't affect the past with present control.
 We can assume $a_0\ne 0$ since we defined the recurrence to have length $k$. Breaking $A_z$ into its block components gives us some more insight to its structure.
 \[
     A_z = \left[
@@ -521,8 +534,29 @@ We can assume $a_0\ne 0$ since we defined the recurrence to have length $k$. Bre
     \right]
 \]
 We can check through multiplication that this system will be controllable.
-When the A matrix of a system is in this form, we say it is in \textbf{Controllable Canonical Form}.
-\\\\Let's try finding the eigenvalues of $A_z$. If $A_z$ is large, it'll be hard to calculate the characteristic polynomial, so instead lets guess their form and figure them out that way.
+\begin{definition}
+    A system is in Controllable Canonical Form if
+    \[
+    A_z = \left[
+        \begin{array}{c}
+            \begin{array}{c|c}
+                0 & I_{k-1}\\
+            \end{array} \\
+            \hline \\
+            \vec{a}^T
+        \end{array}
+    \right],\ \vec{b}_z = \left[
+        \begin{array}{c}
+            0\\
+            0\\
+            0\\
+            \vdots\\
+            1
+        \end{array}
+    \right]
+\]
+\end{definition}
+Let's try finding the eigenvalues of $A_z$. If $A_z$ is large, it'll be hard to calculate the characteristic polynomial, so instead lets guess their form and figure them out that way.
 \[
     \vec{v}_\lambda = \left[
         \begin{array}{c}
@@ -550,13 +584,15 @@ Continuing this, we get
 If we wanted to find the characteristic polynomial, we could look at the last entry in $A_z\vec{v}_\lambda$
 \[
     \begin{array}{c}
-        \sum_{i=0}^{k-1}{a_i\lambda_i}=\lambda*\lambda^{k-1}=\lambda_k\\
-        \lambda_k-\sum_{i=0}^{k-1}{a_i\lambda_i}=\lambda*\lambda^{k-1} = 0
+        \sum_{i=0}^{k-1}{a_i\lambda_i}=\lambda*\lambda^{k-1}=\lambda_k\\\\
+        \text{Rearranging: }\lambda_k-\sum_{i=0}^{k-1}{a_i\lambda_i} = 0
     \end{array}
-    \]
-Now that we know about this matrix form, the question becomes: can we transform any controllable system with matrix A into controllable canonical form?
+\]
+Notice this is the characteristic polynomial of $A$. That means if we want to simply find what the CCF form of the system looks like, rather than computing the transformation $\mathbb{H}\mathbb{G}^{-1}$,
+we can instead use the fact that $a_0, a_1, ... a_{k-1}$ are the coefficients of the characteristic polynomial.
+\\\\Now that we know about this matrix form, the question becomes: can we transform any controllable system with matrix A into controllable canonical form?
 (i.e can we make $\vec{x}[t+1]=A\vec{x}[t]+\vec{b}u[t]$ into $\vec{z}[t+1]=A_z\vec{z}[t]+\vec{b}_zu[t]$)
-We know that $\vec{b}, A\vec{b}, A^2\vec{b}, ... A^{k-1}\vec{b}$ are linearly independent since our system is controllable. Let this define basis $\mathbb{G}$. If we write the matrix A in the basis of G, we get $\tilde{A}=G^{-1}AG$
+\\\\We know that $\vec{b}, A\vec{b}, A^2\vec{b}, ... A^{k-1}\vec{b}$ are linearly independent since our system is controllable. Let this define basis $\mathbb{G}$. If we write the matrix A in the basis of G, we get $\tilde{A}=G^{-1}AG$.
 The naming choice is very appropriate here because this matrix multiplication will be painful by hand, so lets look for another way to get $\tilde{A}$.
 \\\\Remember that any linear transformation is defined by what it does to the basis vectors. We know
 \[
@@ -615,12 +651,8 @@ Let's construct a matrix H which will take us from a coordinates in basis $\math
 \]
 Once we have the matrix H, to get $(\tilde{A}^T, \vec{b}_z)$ from $(A, \vec{b})$,
 we can apply the change of coordinates $G^{-1}H$ so $\vec{x}_z[t]=HG^{-1}\vec{x}[t]$ and put our entire system into controllable canonical form.
-\\\\If we want to simply find what the CCF form of the system looks like, rather than computing the transformation $\mathbb{H}\mathbb{G}^{-1}$,
- we can instead use the fact that $a_0, a_1, ... a_{k-1}$ are the coefficients of the characteristic polynomial.
-This means $$det(\lambda I - A) = \lambda^{k}-\sum_{i=0}^{k-1}{a_{i}\lambda_{i}}$$
 \subsection{Linearization}
 Up until now, we have been assuming our systems are linear. To understand what this means, we must first understand what linearity means.
-
 First, let's define what we know as a function.
 \begin{definition}
     A function is a simple mapping from a domain to a range (i.e y(t)=L(u(t))). 
@@ -634,10 +666,10 @@ First, let's define what we know as a function.
     \end{itemize}
 \end{definition}
 Notice that by this definition, any linear function must necessarily have $f(0)=0$ since otherwise with $\alpha = 1, x=0, f(1*0)=f(0)=1*f(0)\ne 0$
-These conditions can be simplified down into a single expression $f(\alpha u + v) = \alpha f(u) + f(v), \forall u, \forall v, \forall \alpha \in \mathbb{R}$
+\\\\These conditions can be simplified down into a single expression 
+$$f(\alpha u + v) = \alpha f(u) + f(v), \forall u, \forall v, \forall \alpha \in \mathbb{R}$$
 If we can find a single setting of $(u, v, \alpha)$ for which this equation does not hold, then our function is not linear.
-
-If we have a scalar nonlinear function we can linearize it in a simple way. Remember that the Taylor series expansion of a function around a certain point is
+\\\\If we have a scalar nonlinear function we can linearize it in a simple way. Remember that the Taylor series expansion of a function around a certain point is
 $$ f(x) = \frac{f(c)}{0!}+\frac{f'(c)}{1!}(x-c)+\frac{f''(c)}{2!}(x-c)^2+... = \sum_{i=0}^{\infty}{\frac{f^{(i)}}{i!}(x-c)^i}$$
 where $c$ is some expansion point we choose. Lets say we choose some point $x^*$ and decide to linearize around that point.
 The tangent line to the function is
@@ -645,10 +677,10 @@ $$f_L(x)=f'(x^*)(x-x^*)+f(x^*)$$
 However, $f(0)\ne 0$, so this tangent line is still not linear. To linearize it, we can change coordinates.
 \[
     \begin{array}{c}
-        m = \frac{df}{dx}|_x\\
-        f(x^*+\delta x)= f(x^*)+m \delta x\\
-        \delta y = f(x^*+\delta x) - f(x^*)\\
-        f(x^*+\delta x) = f(x^*)+\delta y = f(x^*)+m \delta x\\
+        m = \frac{df}{dx}|_x\\\\
+        f(x^*+\delta x)= f(x^*)+m \delta x\\\\
+        \delta y = f(x^*+\delta x) - f(x^*)\\\\
+        f(x^*+\delta x) = f(x^*)+\delta y = f(x^*)+m \delta x\\\\
         \delta y = m \delta x
     \end{array}
 \]
@@ -670,9 +702,8 @@ The definition of linearity for functionals is virtually the same as for a norma
     \end{itemize}
 \end{definition}
 With this definition, we can now formally define how to linearize a non-linear system.
-Take the system $\frac{d}{dt}x(t) = f(x(t))+bu(t)$ where $f$ is a nonlinear function and $b$ is a scalar multiplier
-
-To linearize the system
+Take the system $\frac{d}{dt}x(t) = f(x(t))+bu(t)$ where $f$ is a nonlinear function and $b$ is a scalar multiplier.
+To linearize the system:
 \begin{itemize}
     \item[1.] Choose a constant with time input $u(t) = u^*$
     \item[2.] Find a solution $x(t)=x^*$ to the system
@@ -692,24 +723,26 @@ To linearize the system
 \end{itemize}
 Note that this only works assuming that $\delta x$ is small, so when linearizing our systems, 
 we must check that this property is true otherwise our linearization may be invalid. 
-To see why, consider the system $\frac{d}{dt}=-sin(x)$. Try linearizing about $x^*=0$.
+\\\\To see why, consider the system $\frac{d}{dt}=-sin(x)$. Try linearizing about $x^*=0$.
 \[
     \begin{array} {c}
         \frac{d}{dt}\delta x = -\delta x\\\\
         \therefore \delta x = \delta x(0)e^{-t}
     \end{array}
 \]
-Since $\delta x$ is the "error" of our approximation, we can see that because $\delta x = \delta x(0)e^{-t}$ will grow smaller over time, meaning the system is stable, and our approximation is legimitate.
+Since $\delta x$ is the "error" of our approximation, we can see that
+$$\lim_{\delta x \to \infty}{\delta x} = 0$$
+This means the linearization is stable, and our approximation is legimitate.
 However, if we linearize about $x^*=\pi$
 \[
     \begin{array} {c}
         \frac{d}{dt}\delta x = \delta x\\\\
-        \therefore \delta x = \delta x(0)e^{t}
+        \therefore \delta x = \delta x(0)e^{t}\\\\
+        \lim_{\delta x \to \infty}{\delta x} = \infty
     \end{array}
 \]
-and this will grow very large as time goes on, so our approximate will be illegitimate.
-
-These concepts of linearization extend beyond simple 1D functions. For example, the linearization of a 2D function is
+Thus this linearization is unstable and will diverge over a long period of time, so it is not a good linearization.
+\\\\These concepts of linearization extend beyond simple 1D functions. For example, the linearization of a 2D function is
 $$f(x^*+\delta x, u^*+\delta u) \approx f(x^*, u^*)+\frac{\partial f}{\partial x}|_{x^*, u^*}\delta x+\frac{\partial f}{\partial u}|_{x^*, u^*}\delta u$$
 We can further generalize the idea of linearization to vector functions.
 \[
@@ -775,14 +808,14 @@ We can define $\vec{v}[t] = \vec{x}[t]-\vec{x}_n[t]$ and $u_v[t] = u[t] - u_n[t]
 Writing this equation in terms of the deviations gives us
 \[
     \begin{array}{c}
-        \frac{d}{dt}\vec{x}[t]=A\vec{x}[t]+\vec{b}u[t]+ \vec{w}[t]\\
-        \frac{d}{dt}(\vec{v}[t]+\vec{x}_n[t]) = A(\vec{v}[t] + \vec{x}_n[t]) + \vec{b}(u_v[t] + u_n[t])+ \vec{w}[t]\\
+        \frac{d}{dt}\vec{x}[t]=A\vec{x}[t]+\vec{b}u[t]+ \vec{w}[t]\\\\
+        \frac{d}{dt}(\vec{v}[t]+\vec{x}_n[t]) = A(\vec{v}[t] + \vec{x}_n[t]) + \vec{b}(u_v[t] + u_n[t])+ \vec{w}[t]\\\\
         \frac{d}{dt}\vec{v}[t] + \cancelto{}{\frac{d}{dt}\vec{x}_n[t])} = (A\vec{v}[t] + \vec{b}u_v[t]) + \cancelto{}{(A\vec{x}_n[t] + u_n[t])} + \vec{w}[t]\\\\
         \frac{d}{dt}\vec{v}[t] = A\vec{v}[t]+\vec{b}u_v[t] + \vec{w}[t]
     \end{array}
 \]
 Since our original system was controllable, this system must be controllable as well. In fact, it will have all the same characteristics as the original system (controllability, stability, observability) since they share the same $A$ and $\vec{b}$.
-This tells us that if the original system was not stable, then we will not be able to follow the trajectory $\vec{x}[n]$ since our deviation from the trajectory $\vec{v}[t]$ can blow up from disturbances.
+\\\\This tells us that if the original system was not stable, then we will not be able to follow the trajectory $\vec{x}[n]$ since our deviation from the trajectory $\vec{v}[t]$ can blow up from disturbances.
 Lets apply feedback control to make sure the deviation does not grow expnentially large.
 \[
     u_v[t] = 
@@ -813,14 +846,12 @@ This lets us compute the controls we need to follow the trajectory by inserting 
 For any generic system, we know that if the system is controllable, we can use controls to take it to any state we want.
 For example, if the state is 10-dimensional, then it will take a maximum of 10 time-steps to move anywhere.
 But what should we do if we want to get to a system in 100 time-steps instead?
-
-One approach is to move to the desired state $x^*$ in 10 time-steps and then do nothing for the remaining 90 time-steps,
+\\\\One approach is to move to the desired state $x^*$ in 10 time-steps and then do nothing for the remaining 90 time-steps,
  but this is a bad solution because the dynamics of the environment may prevent our system from staying in one place at a time (imagine a jumping robot that needs to reach a height at a specific time. Continuously jumping up and down waste's a lot of energy)
-
-Another idea is to visit random states for 90 time-steps and spend the next 10 moving towards the goal, but once again, this wastes energy.
+\\\\Another idea is to visit random states for 90 time-steps and spend the next 10 moving towards the goal, but once again, this wastes energy.
 Ideally, we should take a "natural" path which uses the dynamics of the environment as much as possible.
-A good example of this is a satellite such as Voyager. It could continuously use fuel to get where it needs to go, but it is much more energy efficient for it to use the gravity of planets to gain speed instead.
-This is knowns as minimum energy control
+\\\\A good example of this is a satellite such as Voyager. It could continuously use fuel to get where it needs to go, but it is much more energy efficient for it to use the gravity of planets to gain speed instead.
+This concept is known as minimum energy control.
 \begin{definition}
     The minimum energy control problem is to find $\argmin{||\vec{u}||}$ such that $C\vec{u}=\vec{x}^*$ where 
     C is the controllability matrix for the system, $\vec{x}^*$ is a desired state, and $\vec{u}$ is a vector of inputs applied at each time-step (assuming our inputs are scalar).
@@ -860,9 +891,8 @@ Notice that the product $CV\tilde{\vec{u}}$ is a linear combination of only the 
     \right] = C (\tilde{u}_1\vec{v}_1+...+\tilde{u}_n\vec{v}_n)
 \]
 This is because $C\vec{v}_i\tilde{u}_i=0$ for $i>n$ based on the properties we want out of V.
-Clearly it would be very useful to have this basis $V$ because then we could let $\tilde{u}_i=0$ for $i > n$ to minimize $||\tilde{\vec{u}}$.
-
-At this point, we should try constructing V. We know that any symmetric matrix can be orthogonally diagonalized because of spectral theorem.
+Clearly it would be very useful to have this basis $V$ because then we could let $\tilde{u}_i=0$ for $i > n$ to minimize $||\tilde{\vec{u}}||$.
+\\\\At this point, we should try constructing V. We know that any symmetric matrix can be orthogonally diagonalized because of spectral theorem.
 Lets try finding a symmetric matrix $Q$ such that $Null(Q)=Null(C)$ because then the eigenvectors of Q which form a basis for $Null(Q)$ will also form an orthogonal basis for $Null(C)$. Notice that $C^TC$ has this property.
 \begin{proof}
     $\vec{v}\in Null(C) \implies C\vec{v}=\vec{0}$, then $C^TC\vec{v} \implies \vec{v} \in Null(C^TC)$
@@ -873,15 +903,17 @@ Let's say $V$ is the orthonormal basis of eigenvectors of Q which we know exists
 If we order our eigenvectors such that their corresponding eigenvalues are related by $\lambda_1 \ge \lambda_2 \ge ... \ge \lambda_k \ge 0$,
 then we get
 \[
-    \Lambda = V^T(C^TC)V=\left[
+    \begin{array}{c}
+        \Lambda = V^T(C^TC)V=\left[
         \begin{array}{cccc}
             \lambda_1 & 0 & ... & 0\\
             0 & \lambda _2 & & \vdots\\
             \vdots & & \ddots & \\
             0 & ... & & \lambda_k
         \end{array}
-    \right]
+    \right]\\
     \text{ where only the first } n \text{ diagonal entries are not zero}
+    \end{array}
 \]
 An interesting fact about these eigenvalues is that $\lambda_i = ||C\vec{v}_i||^2$
 \begin{proof}
@@ -965,7 +997,7 @@ Extending a basis can be a lot of work, so there also exists the compact form of
      with $U,V$ having orthonormal columns and $\Sigma$ is square. $k$ is the number of nonzero singular values.
      This is known as the compact form of the SVD.
 \end{definition}
-
+The compact form is found by following the same procedure of finding the SVD but not extending any bases.
 \subsection{Outer Product Form of SVD}
 In the SVD of a matrix A, $A = \sum_{i=1}^{n}{(\sigma_i\vec{w_i}\vec{v}^T_i)}$, the term $\vec{w}\vec{v}^T$ is a special type of product known as an \textbf{outer product}.
 If $\vec{w}\in \mathbb{R}^n$ and $\vec{v}\in \mathbb{R}^m$, then $\vec{w}\vec{v}^T$ produces a $n \times m$ matrix of rank 1.
@@ -997,7 +1029,7 @@ i.e for a matrix $A$ which is $p \times q$
 $$A = \sum_{i=1}^{m}{\sigma_i\vec{u}_i\vec{v}_i^T} \approx \sum_{i=1}^{k}{\sigma_i\vec{u}_i\vec{v}_i^T}$$
 Where $m$ is the smaller dimension of the matrix and $k < m$. The error of this approximation can also be found easily.
 $$A - \hat{A} = \sum_{i=k+1}^{m}{\sigma_i\vec{u}_i\vec{v}_i^T}$$
-Which are merely the thrown away terms. We can reduce this to a number by taking the Frobenius Norm of the error matrix.
+These are merely the thrown away terms. We can reduce this to a number by taking the Frobenius Norm of the error matrix.
 \begin{definition}
     The Froebenius norm of a matrix $A$, written $||A||_F$, is the square root of the sum of the squares of each element.
     $$||A||_F^2 = \sum_{i=1}^{n}{\sum_{j=1}^{m}{|a_{ij}|^2}}$$
@@ -1042,6 +1074,7 @@ where $n > m$. If $Rank(A)=m$, then there will be infinitely many solutions. We 
             \right]U^T \vec{y}
     \end{array}
 \]
+This "undoing" is known as the Moore-Penrose Pseudoinverse.
 \begin{definition}
     The Moore-Penrose Psuedoinverse is $A^\dagger = V\tilde{\Sigma}U^T$ where
     \[
@@ -1058,7 +1091,7 @@ where $n > m$. If $Rank(A)=m$, then there will be infinitely many solutions. We 
     \]
 \end{definition}
 $\tilde{\Sigma}$ can be thought of as $(\Sigma^T)^{-1}$ where divisions by 0 are ignored.
-
+\\\\Notice that the Moore-Penrose Psuedo-inverse gives us the exact solution to the minimum energy control problem which we saw earlier.
 \subsection{PCA}
 PCA is a technique which is closely related to the SVD. It applies to matrices which represent data.
 Lets say we have a matrix $A \in \mathbb{R}^{n \times m}$ in which each row represents a data vector.
@@ -1117,8 +1150,7 @@ Each $-1 \le r_{ij} \le 1$. A correlation of 1 means complete positive linear co
 A correlation of 0 means no correlation at all. The correlation matrix is nice to do analysis on because it tells us how each feature is correlated.
 However, it is painful to calculate and if any of the diagonal entries of the covariance matrix is 0, then the R matrix will be undefined.
 PCA is a way to get around these issues.
-
-PCA finds principal components of the data.
+\\\\PCA finds principal components of the data.
 \begin{definition}
     The principal components of a matrix $A$ are the eigenvectors of the covariance matrix $S$
     i.e, since $S$ is symmetric, it can be othorgonally diagonalized into $S = P\Lambda P^T$.
