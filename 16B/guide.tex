@@ -590,6 +590,11 @@ If we wanted to find the characteristic polynomial, we could look at the last en
 \]
 Notice this is the characteristic polynomial of $A$. That means if we want to simply find what the CCF form of the system looks like, rather than computing the transformation $\mathbb{H}\mathbb{G}^{-1}$,
 we can instead use the fact that $a_0, a_1, ... a_{k-1}$ are the coefficients of the characteristic polynomial.
+\\\\Along the same train of thought, if we want to design feedback controls
+\\$\vec{u}[t]=-\vec{f}^T\vec{z}[t]$ to make the system stable,
+all we need to do is set $f_i = a_i - d_i$ where $d_i$ are the desired coefficients of the desired characteristic polynomial.
+To see why, refer back to the scalar case or try multiplying out $(A_z-\vec{b}_z\vec{f}^T)$.
+ Thus CCF is useful because it makes it extremely easy to place the eigenvalues for any system.
 \\\\Now that we know about this matrix form, the question becomes: can we transform any controllable system with matrix A into controllable canonical form?
 (i.e can we make $\vec{x}[t+1]=A\vec{x}[t]+\vec{b}u[t]$ into $\vec{z}[t+1]=A_z\vec{z}[t]+\vec{b}_zu[t]$)
 \\\\We know that $\vec{b}, A\vec{b}, A^2\vec{b}, ... A^{k-1}\vec{b}$ are linearly independent since our system is controllable. Let this define basis $\mathbb{G}$. If we write the matrix A in the basis of G, we get $\tilde{A}=G^{-1}AG$.
