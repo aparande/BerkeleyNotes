@@ -60,7 +60,10 @@ If $x(0)=x_0$
 Thus the discrete time model is
 $$x[i+1]=e^{\lambda \delta}x[i]+\left(
     \frac{e^{\lambda \delta}-1}{\lambda}\right) u[i]$$
-since the initial condition for the next time-step is simple the value at the previous time-step
+since the initial condition for the next time-step is simple the value at the previous time-step.
+For a vector continuous system, $A_d$ and $B_d$ can be found in the same way by simply solving
+the differential equation for each state variable and converting those to discrete time models
+and combining the results into matrix-vector form.
 
 \subsection{Finding A and B}
 What would happen if we didn't know what A and B were though? It turns out that we can find it by gathering data about the system and then using least squares.
@@ -112,10 +115,10 @@ In words, this means that there exists a sequence of control actions that can ev
     \[
         \mathcal{C} = \left[
             \begin{array}{c|c|c|c|c}
-                B & AB & A^2B & ... & A^{k-1}B
+                A^{k-1}B & A^{k-2}B & ... & AB & A
             \end{array}
         \right]
-        \]
+    \]
 \end{definition}
 However, if we want to check if a system is controllable in 100 time-steps for a 100 state system, it will be painful to calculate the column space of the controllability matrix.
 It turns out that we can stop checking when $dim(col(B, AB,...,A^{p-1}))=dim(col(B, AB, ..., A^p)), (p \leq k)$ (i.e the dimension of the column space stops growing)
@@ -135,6 +138,20 @@ This means we can build the controllability matrix up piece-by-piece and stop ea
     By writing $A^{p+1}$ as a linear combination of $B, AB,...,A^{p-1}$, we have shown $\beta_i$ exists, so by induction, all future vectors $p+m\leq k$ will be linear combinations of these same vectors, 
     so the dimension will never grow again and we can be justified in stopping early.
 \end{proof}
+If we want to figure out the controls needed to reach a particular state in $p < k$ steps, all that needs to be done is solve
+\[
+    \mathcal{C}_p\vec{u} = \vec{x}^* \text{ where } \vec{u} = \left[
+            \begin{array}{c}
+                \vec{u}[0]\\
+                \vec{u}[1]\\
+                \vdots\\
+                \vec{u}[p]\\
+            \end{array}\right], \mathcal{C}_p = \left[
+                \begin{array}{c|c|c|c|c}
+                    A^{p-1}B & A^{p-2}B & ... & AB & A
+                \end{array}
+            \right]
+\]
 \subsection{Observability}
 Another question we can ask about different systems is whether or not we can figure out exactly where we are.
 Often times, we are limited in the measurements we can take, and so we might not be able to "see" the entire state vector $\vec{x}[t]$.
@@ -148,7 +165,7 @@ Instead, we would only be able to see the output $\vec{y}[t]=C\vec{x}[t]$. To st
     \end{array}
 \]
 If we want to recover the state $\vec{x}[0]$, we could apply least squares.
-$$\vec{x}[0] = (\mathcal{O}^T\mathcal{O}^{-1}\mathcal{O}^T\vec{y}$$
+$$\vec{x}[0] = (\mathcal{O}^T\mathcal{O})^{-1}\mathcal{O}^T\vec{y}$$
 where
 \[
     \mathcal{O} = \left[
@@ -188,7 +205,7 @@ and then apply least squares to them to compute the initial state.
 The question of stability is whether or not disturbances will over time control a system if left alone.
 Specificically, it is asking if the disturbances are bounded, will the states be bounded too?
 \begin{definition}
-    Bounded Input, Bounded Output (BIBO) stability means if $|\vec{w}[i| < \epsilon$, then $\exists \delta>0$ such that $|\vec{x}[i| < \delta$
+    Bounded Input, Bounded Output (BIBO) stability means if $|\vec{w}[i]| < \epsilon$, then $\exists \delta>0$ such that $|\vec{x}[i]| < \delta$
 \end{definition}
 
 To see where this definition comes into play, consider the following scalar systems:
@@ -247,6 +264,14 @@ then the system will only be stable if $Re\{\lambda\}<0$. To see why, consider t
     \end{array}
 \]
 Clearly if $\lambda > 0$, this system will grow infinitely large. The same analysis applies to vector cases.
+\begin{theorem}
+    \begin{itemize}
+        \item[]
+        \item[1. ] A continuous system is stable if the real part of its eigenvalues are less than 0 (i.e $Re\{\lambda\} < 0$)
+        \item[2. ] A discrete system is stable if $|\lambda| < 1$
+    \end{itemize}
+\end{theorem}
+
 \subsubsection{Stability for a general A matrix}
 Notice that checking stability based on the eigenvalues requires the matrix $A$ to be diagonalizable becase we need to check all of its eigenvalues.
 This leaves open the question of what happens when $A$ is not diagonalizable, meaning there are not n distinct eigenvalues.
@@ -497,8 +522,7 @@ We can assume $a_0\ne 0$ since we defined the recurrence to have length $k$. Bre
 \]
 We can check through multiplication that this system will be controllable.
 When the A matrix of a system is in this form, we say it is in \textbf{Controllable Canonical Form}.
-
-Let's try finding the eigenvalues of $A_z$. If $A_z$ is large, it'll be hard to calculate the characteristic polynomial, so instead lets guess their form and figure them out that way.
+\\\\Let's try finding the eigenvalues of $A_z$. If $A_z$ is large, it'll be hard to calculate the characteristic polynomial, so instead lets guess their form and figure them out that way.
 \[
     \vec{v}_\lambda = \left[
         \begin{array}{c}
@@ -530,13 +554,11 @@ If we wanted to find the characteristic polynomial, we could look at the last en
         \lambda_k-\sum_{i=0}^{k-1}{a_i\lambda_i}=\lambda*\lambda^{k-1} = 0
     \end{array}
     \]
-
 Now that we know about this matrix form, the question becomes: can we transform any controllable system with matrix A into controllable canonical form?
 (i.e can we make $\vec{x}[t+1]=A\vec{x}[t]+\vec{b}u[t]$ into $\vec{z}[t+1]=A_z\vec{z}[t]+\vec{b}_zu[t]$)
 We know that $\vec{b}, A\vec{b}, A^2\vec{b}, ... A^{k-1}\vec{b}$ are linearly independent since our system is controllable. Let this define basis $\mathbb{G}$. If we write the matrix A in the basis of G, we get $\tilde{A}=G^{-1}AG$
 The naming choice is very appropriate here because this matrix multiplication will be painful by hand, so lets look for another way to get $\tilde{A}$.
-
-Remember that any linear transformation is defined by what it does to the basis vectors. We know
+\\\\Remember that any linear transformation is defined by what it does to the basis vectors. We know
 \[
     \tilde{b} = G^{-1}\vec{b} = \left[
         \begin{array}{c}
@@ -579,7 +601,9 @@ This means
         \end{array}
     \right]
     \]
-which is $A_z^T$. Now we have a basis $\mathbb{G}$ with $(\tilde{A}, \tilde{b}$), but we want a basis $\mathbb{H}$ with $(\tilde{A}^T, \vec{b}_z)$
+which is $A_z^T$.
+This means that our basis $\mathbb{G}$ is essentially the controllability matrix $\mathcal{C}$ except with the rows reordered.
+\\\\Now we have a basis $\mathbb{G}$ with $(\tilde{A}, \tilde{b}$), but we want a basis $\mathbb{H}$ with $(\tilde{A}^T, \vec{b}_z)$
 We want $\tilde{A}^T, \vec{b}_z$ to be controllable, which means $\vec{b}_z, \tilde{A}^T\vec{b}_z,...,(\tilde{A}^T)^{k-1}\vec{b}_z$ are linearly independent.
 Let's construct a matrix H which will take us from a coordinates in basis $\mathbb{H}$ to coordinates in the basis $\mathbb{G}$. 
 \[
@@ -591,11 +615,9 @@ Let's construct a matrix H which will take us from a coordinates in basis $\math
 \]
 Once we have the matrix H, to get $(\tilde{A}^T, \vec{b}_z)$ from $(A, \vec{b})$,
 we can apply the change of coordinates $G^{-1}H$ so $\vec{x}_z[t]=HG^{-1}\vec{x}[t]$ and put our entire system into controllable canonical form.
-The reason we can't find $HG^{-1}$ in a single-step and must go through an intermediary basis is because we might not know what our system will look like in canonical form.
-While we can use $HG^{-1}$ to convert from the normal basis to the CCF basis, if we just want to figure out what the system looks like in CCF, we don't need to do so much work.
-Since $A$ and $A_z$ have the same eigenvalues, they have the same characteristic polynomial. Therefore to find $A_z$, solve
-$$det(\lambda I - A) = det(\lambda I - A_z)$$
-by finding the proper $a_0, a_1, ...$ present in the CCF Form. This works because we already know the form of $A_z$.
+\\\\If we want to simply find what the CCF form of the system looks like, rather than computing the transformation $\mathbb{H}\mathbb{G}^{-1}$,
+ we can instead use the fact that $a_0, a_1, ... a_{k-1}$ are the coefficients of the characteristic polynomial.
+This means $$det(\lambda I - A) = \lambda^{k}-\sum_{i=0}^{k-1}{a_{i}\lambda_{i}}$$
 \subsection{Linearization}
 Up until now, we have been assuming our systems are linear. To understand what this means, we must first understand what linearity means.
 
@@ -928,7 +950,7 @@ However, if the matrix $A$ is $m \times n$, if $A^TA$ will be $n \times n$. If $
 In general, the SVD can be found as follows.
 \begin{itemize}
     \item[] If $m > n$
-    \item[1. ] $\vec{v}_i$ are the eigenvectors of $A^TA$, $sigma_i=\sqrt{\lambda_i}$
+    \item[1. ] $\vec{v}_i$ are the eigenvectors of $A^TA$, $\sigma_i=\sqrt{\lambda_i}$
     \item[2. ] $\vec{u_i}=\frac{A\vec{v_i}}{\sigma_i} \forall \sigma_i \ne 0$
     \item[3. ] Extend the basis of vectors ${\vec{u}_1, \vec{u}_2, ..., \vec{u_n}}$ into an orthonormal basis for $\mathbb{R}^m$ using Gram Schmidt.
     \item[] If $m < n$
@@ -985,10 +1007,57 @@ $$||A-\hat{A}||_F^2 = \sum_{i=k+1}^{m}{\sigma_i^2}$$
 The following theorem contains useful features of the Frobenius Norm and can be proved fairly easily.
 \begin{theorem}
     \begin{itemize}
-        \item[1. ] $||A||_F^2=Tr{A^TA}$
+        \item[]
+        \item[1. ] $||A||_F^2=Tr\{A^TA\}$
         \item[2. ] For an orthonormal matrix $U$, $||A||_F=||UA|_F=||AU||_F$
     \end{itemize}
 \end{theorem}
+\subsubsection{The Moore-Penrose Pseudoinverse}
+SVD gives us insight into how we might find a solution to $A\vec{x}=\vec{y}$ when $A\in \mathbb{R}^{m\times n}$
+where $n > m$. If $Rank(A)=m$, then there will be infinitely many solutions. We can easily construct one solution by "undoing" the SVD.
+\[
+    \begin{array}{c}
+        A\vec{x}=\vec{y}\\
+        U\Sigma V^T\vec{x} = \vec{y}\\
+        \Sigma V^T \vec{x} = U^T\vec{y}\\
+        V^T\vec{x} = \left[
+            \begin{array}{cccc}
+                \frac{1}{\sigma_1} & 0 & ... & 0\\
+                0 & \frac{1}{\sigma_2} & ... & 0\\
+                0 & 0 & \ddots & \\
+                \vdots & \vdots & \vdots & \vdots\\
+                0 & 0 & 0 & 0\\
+                \vdots & \vdots & \vdots & \vdots
+            \end{array}
+            \right]U^T \vec{y}\\
+        \vec{x} = V \left[
+            \begin{array}{cccc}
+                \frac{1}{\sigma_1} & 0 & ... & 0\\
+                0 & \frac{1}{\sigma_2} & ... & 0\\
+                0 & 0 & \ddots & \\
+                \vdots & \vdots & \vdots & \vdots\\
+                0 & 0 & 0 & 0\\
+                \vdots & \vdots & \vdots & \vdots
+            \end{array}
+            \right]U^T \vec{y}
+    \end{array}
+\]
+\begin{definition}
+    The Moore-Penrose Psuedoinverse is $A^\dagger = V\tilde{\Sigma}U^T$ where
+    \[
+        \tilde{\Sigma} = \left[
+            \begin{array}{cccc}
+                \frac{1}{\sigma_1} & 0 & ... & 0\\
+                0 & \frac{1}{\sigma_2} & ... & 0\\
+                0 & 0 & \ddots & \\
+                \vdots & \vdots & \vdots & \vdots\\
+                0 & 0 & 0 & 0\\
+                \vdots & \vdots & \vdots & \vdots
+            \end{array}
+            \right]
+    \]
+\end{definition}
+$\tilde{\Sigma}$ can be thought of as $(\Sigma^T)^{-1}$ where divisions by 0 are ignored.
 
 \subsection{PCA}
 PCA is a technique which is closely related to the SVD. It applies to matrices which represent data.
