@@ -3,6 +3,8 @@
 \usepackage{amsmath}
 \usepackage{mathtools}
 \usepackage{cancel}
+\usepackage{tikz}
+\usepackage{circuitikz}
 \newtheorem{theorem}{Theorem}
 \newtheorem{definition}{Definition}
 \newtheorem{corollary}{Corollary}
@@ -15,6 +17,26 @@
 \author{Anmol Parande}
 \date{Spring 2019 - Professors Anant Sahai, Kris Pister, and Jaijeet Roychowdhury}
 \maketitle
+\section{Digital Circuits}
+\begin{definition}
+    A digital circuit interprets a continuous signal (like voltage) as a discrete quantity (such as logic "1" and logic "0")\\
+    \begin{figure}[!h]
+    \centering
+        $V_{ss}$ \begin{tikzpicture}
+            \draw (4,0) -- (8,0);
+            \draw (4,0.25) -- (4,-0.25);
+            \draw (8,0.25) -- (8,-0.25);
+            \draw (6,0.25) -- (6,-0.25);
+        \end{tikzpicture} $V_{DD}$
+    \end{figure}
+\end{definition}
+The opposite of a digital circuit is an analog circuit.
+\begin{definition}
+    An analog circuit operatoes on continuous signals
+\end{definition}
+In a digital circuit, small changes to inputs don't lead to large changes in output. This makes them more robust to noise.
+
+\subsection{Transistors}
 \section{Discrete Time Models}
 Although circuits and other systems function in continuous time, computers can only act in discrete time.
 This means the signals they send out to try and control the system are piecewise-continuous, and they can only sense the system at specified intervals $\delta$.
