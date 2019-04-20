@@ -3,6 +3,7 @@
 \usepackage{amsmath}
 \usepackage{mathtools}
 \usepackage{cancel}
+\usepackage{tikz}
 \newtheorem{theorem}{Theorem}
 \newtheorem{definition}{Definition}
 \newtheorem{corollary}{Corollary}
@@ -1191,4 +1192,223 @@ This gives us a good basis to analyze our data for tasks like classification bec
 Notice that the matrix $P$ is the same as the matrix $V$ in the SVD of $\tilde{A}$ since 
 $$S=\frac{1}{n}\tilde{A}^T\tilde{A} = \frac{1}{n}V\Sigma^TU^TU\Sigma V^T = \frac{1}{n}V\Sigma^T\Sigma V^T$$
 Thus $\Lambda = \frac{\Sigma^T \Sigma}{n}$. This gives us an easy way to do PCA since we can just do SVD.
+\section{Signal Processing}
+\subsection{Interpolation}
+\begin{definition}
+    Interpolation is the process of reconstructing a signal from a series of samples.
+\end{definition}
+For example, if we have an audio signal and record the waveform's value at specific intervals,
+then interpolation allows us to approximate what the orginal waveform looked like using only the samples.
+\subsubsection{Interpolation with basis functions}
+One way which we can do interpolation is with basis functions.
+\begin{definition}
+    A basis function $\phi(t)$ is a function where
+    \[
+        \phi(t) = \left\{
+            \begin{array}{c}
+                1, \text{ if } t = 0\\
+                0,\text{ if } t=k\Delta,\ k \ne 0
+            \end{array}
+        \right\}
+     \]
+     where $\Delta$ is the time interval at which samples were taken.
+\end{definition}
+If we have samples $y_1, y_2,..., y_n$, then the reconstructed function $f(x)$ is
+$$f(x) = \sum_{i=1}^{n}{y_i\phi(t-\Delta)}$$
+By interpolating with basis functions, our resulting point hits every sample properly
+(which is accomplished by shifting $\phi$ by $\Delta$ for each datapoint).
+\begin{definition}
+    Zero-Order-Hold interpolation is when
+    \[
+        \begin{array}{c}
+            \phi(t) = \left\{
+            \begin{array}{c}
+                1, \text{ if } t = 0\\
+                0, \text{ else}
+            \end{array}
+        \right\}\\\\
+        \begin{tikzpicture}
+            \draw[thick,<->] (-1.5, 0) -- (1.5,0);
+            \draw[thick,->] (0,0) -- (0,2);
+            \foreach \x in {-1,0,1}
+                \draw (\x cm,1pt) -- (\x cm,-1pt) node[anchor=north] {$\x$};
+            \foreach \y in {1}
+                \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+                \draw[scale=1,domain=0:1,smooth,variable=\x,blue] plot ({\x},{1});
+        \end{tikzpicture}
+        \end{array}
+    \]
+\end{definition}
+When used in interpolation, Zero-Order-Hold looks like the following.
+\[
+    \begin{tikzpicture}
+        \draw[thick,->] (0, 0) -- (4.5,0);
+        \draw[thick,->] (0,0) -- (0,3.5);
+        \foreach \x in {0,1, 2, 3, 4}
+            \draw (\x cm,1pt) -- (\x cm,-1pt) node[anchor=north] {$\x \Delta$};
+        \foreach \y in {1,2,3}
+            \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$y_{\y}$};
+        \draw[scale=1,domain=0:1,smooth,variable=\x,blue] plot ({\x},{1});
+        \draw[scale=1,domain=2:3,smooth,variable=\x,blue] plot ({\x},{2});
+        \draw[scale=1,domain=1:2,smooth,variable=\x,blue] plot ({\x},{3});
+        \draw[scale=1,domain=3:4,smooth,variable=\x,blue] plot ({\x},{0});
+        \foreach \Point in {(0,1), (2,2), (1,3), (3, 0)}{
+            \node at \Point {\textbullet};
+        }
+    \end{tikzpicture}
+\]
+Notice that Zero-Order hold interpolation is not continuous, nor is it differentiable.
+In a sense, it is the simplest form of interpolation. Another really simply interpolation is piecewise-linear interpolation.
+\begin{definition}
+    The Piecewise linear basis function is
+    \[
+        \phi(t) = \left\{
+        \begin{array}{c}
+            x + 1, \text{ if } -\Delta < x <= 0\\
+            -x + 1, \text{ if } 0 <= x < \Delta\\
+            0, \text{ else}
+        \end{array}
+        \right\}
+    \]
+    \[
+        \begin{tikzpicture}
+            \draw[thick,<->] (-1.5, 0) -- (1.5,0);
+            \draw[thick,->] (0,0) -- (0,2);
+            \draw[blue] (-1, 0) -- (0, 1);
+            \draw[blue] (0, 1) -- (1, 0);
+            \foreach \x in {-1,0,1}
+                \draw (\x cm,1pt) -- (\x cm,-1pt) node[anchor=north] {$\x$};
+            \foreach \y in {1}
+                \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+        \end{tikzpicture}
+    \]
+\end{definition}
+Piece-wise linear interpolation is equivalent to connecting each sample.
+\[
+    \begin{array}{cc}
+        \begin{tikzpicture}
+            \draw[thick,->] (0, 0) -- (4.5,0);
+            \draw[thick,->] (0,0) -- (0,3.5);
+            \foreach \x in {0,1, 2, 3, 4}
+                \draw (\x cm,1pt) -- (\x cm,-1pt) node[anchor=north] {$\x \Delta$};
+            \foreach \y in {1,2,3}
+                \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$y_{\y}$};
+                \draw[blue] (0, 1) -- (1, 0);
+                \draw[green] (0, 0) -- (1, 3);
+                \draw[green] (1, 3) -- (2, 0);
+                \draw[red] (1, 0) -- (2, 2);
+                \draw[red] (2, 2) -- (3, 0);
+            \foreach \Point in {(0,1), (2,2), (1,3), (3, 0)}{
+                \node at \Point {\textbullet};
+            }
+            \node[above,font=\large\bfseries] at (current bounding box.north) {Basis Functions};
+        \end{tikzpicture}
+        &
+        \begin{tikzpicture}
+            \draw[thick,->] (0, 0) -- (4.5,0);
+            \draw[thick,->] (0,0) -- (0,3.5);
+            \foreach \x in {0,1, 2, 3, 4}
+                \draw (\x cm,1pt) -- (\x cm,-1pt) node[anchor=north] {$\x \Delta$};
+            \foreach \y in {1,2,3}
+                \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$y_{\y}$};
+            \draw[blue] (0, 1) -- (1, 3);
+            \draw[blue] (1, 3) -- (2, 2);
+            \draw[blue] (2, 2) -- (3, 0);
+            \foreach \Point in {(0,1), (2,2), (1,3), (3, 0)}{
+                \node at \Point {\textbullet};
+            }
+            \node[above,font=\large\bfseries] at (current bounding box.north) {f(t)};
+        \end{tikzpicture}
+    \end{array}
+\]
+Piece-wise linear interpolation gives us a function which is continuous but not differentiable.
+\begin{definition}
+    Sinc interpolation has the basis function
+    \[
+        \phi(t) = \left\{
+            \begin{array}{c}
+                1, \text{ if } t = 0\\\\
+                \frac{sin(\pi t)}{\pi t}, t \ne 0
+            \end{array}
+            \right\}
+    \]
+    \[
+        \begin{tikzpicture}
+            \draw[thick,<->] (-3, 0) -- (3,0);
+            \draw[thick,->] (0,0) -- (0,2);
+            \foreach \x in {-3, -2, -1, 0, 1, 2, 3}
+                \draw (\x ,1pt) -- (\x ,-1pt) node[anchor=north] {$\x$};
+            \foreach \y in {1}
+                \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+                \draw[scale=1,domain=-3:-0.001,smooth,variable=\x,blue] plot (\x,{sin((\x r * pi))/(\x * pi)});
+                \draw[scale=1,domain=0.001:3,smooth,variable=\x,blue] plot (\x,{sin((\x r * pi))/(\x * pi)});
+        \end{tikzpicture}
+    \]
+\end{definition}
+Notice how the amplitude is attenuated further from zero. The sinc function is both differentiable and continuous.
+Sinc interpolation will look something like this.
+\[
+    \begin{array}{ccc}
+        \begin{tikzpicture}
+            \draw[thick,->] (0, 0) -- (4.5,0);
+            \draw[thick,->] (0,0) -- (0,3.5);
+            \foreach \x in {0,1, 2, 3, 4}
+                \draw (\x cm,1pt) -- (\x cm,-1pt) node[anchor=north] {$\x \Delta$};
+            \foreach \y in {1,2,3}
+                \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$y_{\y}$};
+                \draw[scale=1,domain=0.001:4,smooth,variable=\x,blue] plot (\x,{sin((\x r * pi))/(\x * pi)});
+                \draw[scale=1,domain=0.001:4,smooth,variable=\x,red] plot (\x,{3*sin(((\x - 1) r * pi))/((\x - 1) * pi)});
+                \draw[scale=1,domain=0.001:4,smooth,variable=\x,green] plot (\x,{2*sin(((\x - 2) r * pi))/((\x - 2) * pi)});
+            \foreach \Point in {(0,1), (2,2), (1,3), (3, 0)}{
+                \node at \Point {\textbullet};
+            }
+            \node[above,font=\large\bfseries] at (current bounding box.north) {Basis Functions};
+        \end{tikzpicture} &
+        \begin{tikzpicture}
+            \draw[thick,->] (0, 0) -- (4.5,0);
+            \draw[thick,->] (0,0) -- (0,3.5);
+            \foreach \x in {0,1, 2, 3, 4}
+                \draw (\x cm,1pt) -- (\x cm,-1pt) node[anchor=north] {$\x \Delta$};
+            \foreach \y in {1,2,3}
+                \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$y_{\y}$};
+                \draw[scale=1,domain=0.001:4,smooth,variable=\x,blue] plot 
+                (\x,{sin((\x r * pi))/(\x * pi) + 3*sin(((\x - 1) r * pi))/((\x - 1) * pi)+2*sin(((\x - 2) r * pi))/((\x - 2) * pi)});
+            \foreach \Point in {(0,1), (2,2), (1,3), (3, 0)}{
+                \node at \Point {\textbullet};
+            }
+            \node[above,font=\large\bfseries] at (current bounding box.north) {f(t)};
+        \end{tikzpicture}
+    \end{array}
+\]
+Another form of interpolation is polynomial interpolation where the datapoints are fit to a polynomial.
+If we have $n$ datapoints, then our polynomial is $y(t) = \sum_{i=0}^{n}{a_i t^i}$
+To fit this polynomial to our datapoints $(x_k, y_k)$, solve the system
+\[
+    \left[
+        \begin{array}{ccccc}
+            1 & x_0 & x_0^2 & ... & x_0^n\\
+            1 & x_1 & x_1^2 & ... & x_1^n\\
+            & & \vdots & &\\
+            1 & x_n & x_n^2 & ... & x_n^n\\
+        \end{array}
+    \right]\left[
+        \begin{array}{c}
+            a_0\\
+            a_1\\
+            \vdots\\
+            a_n\\
+        \end{array}
+    \right]=\left[
+        \begin{array}{c}
+            y_1\\
+            y_2\\
+            \vdots\\
+            y_n\\
+        \end{array}
+    \right]
+\]
+The matrix on the left is called the Vandermonde matrix,
+and it will always be invertible as long as there are no duplicate $(x_k, y_k)$.
+While it might seem like polynomials are the best form of interpolation, they suffer heavily from
+overfitting, so while they may perform well within samples, outside of the sample range, they degenerate very rapidly.
 \end{document}
