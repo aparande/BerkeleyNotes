@@ -1380,6 +1380,7 @@ Sinc interpolation will look something like this.
         \end{tikzpicture}
     \end{array}
 \]
+\subsubsection{Polynomial Interpolation}
 Another form of interpolation is polynomial interpolation where the datapoints are fit to a polynomial.
 If we have $n$ datapoints, then our polynomial is $y(t) = \sum_{i=0}^{n}{a_i t^i}$
 To fit this polynomial to our datapoints $(x_k, y_k)$, solve the system
@@ -1411,4 +1412,25 @@ The matrix on the left is called the Vandermonde matrix,
 and it will always be invertible as long as there are no duplicate $(x_k, y_k)$.
 While it might seem like polynomials are the best form of interpolation, they suffer heavily from
 overfitting, so while they may perform well within samples, outside of the sample range, they degenerate very rapidly.
+\\\\The process of fitting a polynomial to datapoints is computationally expensive because it requires taking an inverse.
+Instead, lets try and find so called Lagrange Polynomials $L_0...L_{n-1}$ to use as our basis functions.
+We know
+\[
+    L_i(x_j) = \left\{
+        \begin{array}{c}
+            1, \text{ if } j = i\\
+            0, \text{ else}
+        \end{array}
+    \right\}
+\]
+Since $L_i(x_j) = 0,\forall j \ne i$, we know that $(x-x_j)$
+must be factors of the Lagrange polynomial. Since $L_i(x_j)=1, i=j$,
+we know there must be a normalizing factor $x_i-x_j$. With these two restrictions,
+we can say the Lagrange polynomials for a set of data are
+\[
+    L_i(x) = \prod_{j=0; j\ne i}^{j=n-1}{\frac{x-x_j}{x_i-x_j}}
+\]
+This makes the problem of fitting a polynomial equivalent to how we did piecewise linear, zero-order hold, and sinc interpolation.
+Namely,
+$$f(x) = \sum_{i=0}^{n-1}{y_i L_i(x)}$$
 \end{document}
