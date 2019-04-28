@@ -4,6 +4,7 @@
 \usepackage{mathtools}
 \usepackage{cancel}
 \usepackage{tikz}
+\usepackage{hyperref}
 \newtheorem{theorem}{Theorem}
 \newtheorem{definition}{Definition}
 \newtheorem{corollary}{Corollary}
@@ -1433,4 +1434,200 @@ we can say the Lagrange polynomials for a set of data are
 This makes the problem of fitting a polynomial equivalent to how we did piecewise linear, zero-order hold, and sinc interpolation.
 Namely,
 $$f(x) = \sum_{i=0}^{n-1}{y_i L_i(x)}$$
+\subsection{Discrete Fourier Transform}
+One technique which is freqently used in signal processing is the Discrete Fourier Transform (DFT).
+An instance in which DFTs are particularly useful is in filtering. Building good filters out of hardware
+can be expensive, so instead, if we can filter signals digitally using the DFT, we can reduce the cost.
+Before exploring the DFT itself, we need to establish some details about complex numbers.
+\subsubsection{Complex Vectors and Matrices}
+\begin{definition}
+    $$||\vec{a}|| = \sqrt{\sum_{i=0}^{n-1}{||a_i||^2}},\text{ where } \vec{a}\in\mathbb{C}$$
+\end{definition}
+The norm of a complex vector is virtually identical to the norm of a real vector except in the complex case, we need to take the magnitude of each entry so we get a real number.
+\begin{definition}
+    The inner product of two complex vectors $<\vec{x}, \vec{y}>$
+    $$<\vec{x},\vec{y}> = \vec{y^*}\vec{x}$$
+\end{definition}
+$\vec{y}^*$ is known as the Hermitian of the vector $\vec{y}$ and is equal to $\bar{\vec{y}}^T$ (the conjugate transpose).
+This inner prodoct reduces into the dot product when both $\vec{x}, \vec{y}\in \mathbb{R}$. Notice however, that $<\vec{x},\vec{y}>\ne <\vec{y},\vec{x}>$.
+Instead, $<\vec{x},\vec{y}>=\bar{<\vec{y},\vec{x}>}$ (i.e, the conjugate of the commuted dot product).
+\subsubsection{Roots of Unity}
+When we allow ourselves to use complex numbers, the nth root of 1 becomes an interesting question.
+Since every complex number can be represented in polar form as $x = Me^{j\theta}$, $x^n = M^ne^{j\theta n}$.
+Graphically, this can be seen as a rotation around the unit circle.
+\[
+    \begin{tikzpicture}[scale=1,cap=round,>=latex]
+        % draw the coordinates
+        \draw[->] (-1.5,0) -- (1.5cm,0cm) node[right,fill=white] {$x$};
+        \draw[->] (0cm,-1.5cm) -- (0cm,1.5cm) node[above,fill=white] {$y$};
+        \draw[thick] (0cm,0cm) circle(1cm);
+        \foreach \x in {0,30,...,90} {
+                % lines from center to point
+                \draw[gray] (0cm,0cm) -- (\x:1cm);
+                % dots at each point
+                \filldraw[black] (\x:1) circle(0.4pt);
+        }
+        \foreach \x/\xtext in {30/e^{j\frac{\pi}{6}}, 60/e^{j\frac{2\pi}{6}}}
+            \draw (\x:1.5cm) node[] {$\xtext$};
+    \end{tikzpicture}
+\]
+With this visual, it is easy to see that if $\theta = \frac{2\pi}{N}$, then $x^N=1$ if $M=1$.
+\begin{definition}
+    The nth roots of unity are $x = e^{\frac{2\pi k}{N}}$ for $k\in[0,N-1]$
+    We say the Nth root of unity is $\omega_N = e^{\frac{2\pi}{N}}$
+\end{definition}
+These roots of unity will play a large part in forming the DFT.
+\subsubsection{The DFT Matrix}
+\begin{definition}
+    The following matrix is known as the DFT matrix.
+    \[
+        F_N =
+        \left[
+            \begin{array}{ccccc}
+                1 & 1 & ... & ... & 1\\
+                1 & \omega_N^{-1*1} & \omega_N^{-1*2} & ... & \omega_N^{-1 * (N-1)}\\
+                \vdots & & \ddots & & \vdots\\
+                1 & \omega_N^{-(N-1)*1} & ... & ... & \omega_N^{-(N-1)(N-1)}
+            \end{array}
+        \right]
+    \]
+\end{definition}
+The ijth entry in the DFT $F_{N(ij)}=\omega_N^{-ij}$.
+To see where the DFT matrix came from, check out \url{http://bit.ly/2XIIjrc}.
+Notice that the DFT matrix is a Vandermonde matrix. We'll call the kth column of the DFT $\vec{u}_k$
+\subsubsection{Properties of the DFT}
+\begin{itemize}
+    \item[1. ] The DFT is invertible.
+    \item[2. ] $F_n = F_N^T$ (The DFT is symmetric)
+    \item[3. ] $||\vec{u}_k|| = \sqrt{N}$ (The norm of each column is $\sqrt{N}$)
+    \item[4. ] $<\vec{u}_i, \vec{u}_k> = 0$ if $k \ne i$ (The columns of $F_N$ are orthogonal)
+    \item[5. ] $\vec{u}_k = \bar{\vec{u}}_{N-k}, k\ne 0$
+\end{itemize}
+While the first three properties are trivial to show, the second two require a bit of proof.
+\begin{proof}
+    To see why the columns of the DFT are orthogonal, consider $\vec{u}_k, \vec{u}_i, i\ne k$
+    \[
+        \begin{array}{cc}
+            \vec{u}_k^* = \left[
+            \begin{array}{cccc}
+                \omega_N^0 & \omega_N^k & ... & \omega_N^{(N-1)*k}
+            \end{array}
+        \right] & 
+        \vec{u}_i = \left[
+            \begin{array}{c}
+                \omega_N^0\\
+                \omega_N^{-i}\\
+                \vdots\\
+                \omega_N^{-(N-1)*i}
+            \end{array}
+        \right]
+        \end{array}
+    \]
+    $$<\vec{u}_k, \vec{u}_i> = \vec{u}_i^*\vec{u}_k = \sum_{l=0}^{N-1}{\omega_N^{il}\omega_N^{-lk}} = $$
+    $$\sum_{l=0}^{N-1}{\omega_N{l(i-k)}}$$
+    This is a finite geometric series with common ratio $\omega_N^(i-lk)$.
+    Therefore 
+    $$\sum_{l=0}^{N-1}{\omega_N{l(i-k)}} = \frac{1 - \omega_N^{N(i-k))}}{1-\omega_N^{i-k}} = 0$$
+    Thus since the inner product between nonequal columns is 0, the columns are orthogonal.
+\end{proof}
+\begin{proof}
+    To see why $\vec{u}_k = \bar{\vec{u}}_{N-k}, k\ne 0$, consider that
+    the entries of $\vec{u}_{N-k}$ are $\omega_N^{-i(N-k)}$
+    $$\omega_N^{-i(N-k)} = \omega_N^{-iN}\omega_N^{ik}=\omega_N{ik}$$
+    $$\bar{\omega_N^{ik}} = \omega_N^{-ik}$$
+    $\omega_N^{-ik}$ are the entries of $\vec{u}_k$, therefore the two columns must be complex conjugates.
+\end{proof}
+\subsubsection{The Inverse DFT}
+Notice that $F_N^*F_N = NI_N$. This means that we can define $F_N^{-1}=\frac{1}{N}F_N^*$ to be the inverse DFT.
+\subsubsection{Using the DFT for frequency decomposition}
+If we pick a fundamental frequency $f_0$, then the so called harmonic frequencies are $0, f_0, 2f_0, ..., Mf_0$
+where $M\in\mathbb{R}$. Any sinusoid which has one of these frequencies will be of the form $x_l(t) = A_lcos(2\pi(lf_0)+\theta_l)$
+where $l\in[0, M]$.\\\\
+Lets define the period to be $T = \frac{1}{f_0}$ since all of our harmonic frequencies will repeat over this period.
+Take one of these sinusoids $x_l(t)$ and sample it at N equally spaced points with $N = 2M+1$.
+This gives us samples $x(k\Delta), \Delta=\frac{T}{N}, k\in[0, N-1]$.
+Take a specific sample $x(k\Delta)$
+$$x(k\Delta) = A_lcos(2\pi(lf_0)k\Delta+\theta_l)=A_lcos(2\pi(lf_0)k\frac{T}{N}+\theta_l) = A_lcos(2\pi l\frac{k}{N}+\theta_l)$$
+In complex form, this is
+$$x(k\Delta) = \frac{A_l}{2}e^{\frac{j2\pi lk}{N}}e^{j\theta_l} + \frac{A_l}{2}e^{\frac{-j2\pi lk}{N}}e^{-j\theta_l}$$
+Notice $e^{\frac{j2\pi lk}{N}} = \omega_N^k$. Lets define $c_l=\frac{A_l}{2}e^{j\theta_l}$
+Then $$x(k\Delta) = c_l\omega_N^{lk}+\bar{c_l}\bar{\omega_N}^{lk}$$
+If we construct a vector out of our samples,
+\[
+    \left[
+        \begin{array}{c}
+            x_0\\
+            x_1\\
+            \vdots\\
+            x_{N-1}
+        \end{array}
+    \right] = c_l \left[
+        \begin{array}{c}
+            \omega_N^{l*0}\\
+            \omega_N^{l*1}\\
+            \vdots\\
+            \omega_N^{l*(N-1)}
+        \end{array}
+    \right] + \bar{c_l}\left[
+        \begin{array}{c}
+            \omega_N^{-l*0}\\
+            \omega_N^{-l*1}\\
+            \vdots\\
+            \omega_N^{-l*(N-1)}
+        \end{array}
+    \right]
+\]
+Notice that these vectors can be expressed in terms of columns of the DFT matrix.
+$$\vec{x}_{lf_0} = c_l\bar{\vec{u}}_l+\bar{c_l}\bar{\vec{u}}_{N-l}$$
+If we apply the DFT matrix to our samples now, 
+$$F_N\vec{x}_{lf_0} = c_lF_N\bar{\vec{u}}_l+\bar{c_l}F_N\bar{\vec{u}}_{N-l}$$
+Since $F_N=F_N^T$,
+\[
+    F_N\bar{\vec{u}}_l = \left[
+        \begin{array}{c}
+            \vec{u}_0\bar{\vec{u}}_l\\
+            \vdots\\
+            \vec{u}_l\bar{\vec{u}}_l\\
+            \vdots\\
+            \vec{u}_{N-1}\bar{\vec{u}}_l
+        \end{array}
+    \right] = \left[
+        \begin{array}{c}
+            0\\
+            \vdots\\
+            N\\
+            \vdots\\
+            0
+        \end{array}
+    \right]
+\]
+This is is just a multiple of the lth unit vector $\vec{e}_l$.
+Thus
+\[
+    \begin{array}{c}
+        \vec{X}_{lf_0} = F_N\vec{x}_{lf_0} = Nc_l\vec{e}_l+N\bar{c}_l\vec{e}_{N-l}\\
+        \vec{X}_{lf_0} = \left[
+            \begin{array}{c}
+                0\\
+                \vdots\\
+                Nc_l\\
+                \vdots\\
+                N\bar{c}_l\\
+                \vdots\\
+                0
+            \end{array}
+        \right]
+    \end{array}
+\]
+This means that if our signal is one of our harmonic frequencies, 
+we can identify which frequency based on the entries in the DFT basis.
+Accordingly, if our signal is a sum of our harmnoic frequencies, then
+\[
+    \begin{array}{c}
+        x(t) = \sum_{i=0}^{M}{A_icos(2\pi(if_0)+\theta_i)}\\\\
+        \vec{x} = \sum_{i=0}^{M}{\vec{x}_i}\\\\
+        \vec{X} = \sum_{i=0}^{M}{\vec{X}_i}\\
+    \end{array}
+\]
+This means we can decompose whatever signal we want into the harmonic frequencies.
 \end{document}
