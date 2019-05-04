@@ -1630,4 +1630,45 @@ Accordingly, if our signal is a sum of our harmnoic frequencies, then
     \end{array}
 \]
 This means we can decompose whatever signal we want into the harmonic frequencies.
+\subsection{Fourier Series}
+The premise upon which the Fourier Series is built is that any periodic waveform can be written
+as a sum of harmonically related frequencies.
+\begin{definition}
+    A function $f(t)$ is periodic iff $f(t+T)=x(t)\ \forall t, T\in \mathbb{R}$
+\end{definition}
+A function which is composed of a periodic function will also be periodic.
+\begin{theorem}
+    If $y(t) = f(x(t))$, and $x(t)$ is T-periodic, then $y(t)$ is also T-periodic
+\end{theorem}
+\subsubsection{Building the Fourier Series}
+Sine and Cosine are both periodic function, so it seems intuitive, even if strange,
+that we can write any function as a sum of them. To begin developing the Fourier Series,
+we will assume this to be true without going into any proof.\\\\
+To begin, let $x(t)$ be a T-periodic funtion. Using our assumption, we can write
+$$x(t) = B_0+B_1cos(2\pi(f_0)t+\theta_1)+B_2cos(2\pi(2f_0)t+\theta_2)+...$$
+Since $cos(x) = \frac{e^{jx}+e^{-jx}}{2}$, we can convert this to complex form.
+$$x(t) = A_0 + A_1e^{j2\pi f_0 t} + A_2e^{j2\pi 2f_0 t} + ... + \bar{A_1}e^{-j2\pi f_0 t} + \bar{A_2}e^{-j2\pi 2f_0 t} + ...$$
+This gives us following infinite sum.
+$$x(t) = \sum_{-\infty}^{\infty}{A_i e^{j2\pi i f_0 t}}$$
+This is the Fourier series of our periodic signal.
+\subsubsection{Finding $A_i$}
+We now need an easy way to find the coefficients $A_i$ in our summation.
+To get the kth coefficient, multiply both sides of the equation by $e^{-j2\pi k f_0t}$
+$$e^{-j2\pi k f_0t} x(t) = \sum_{-\infty}^{\infty}{A_i e^{j2\pi i f_0 t} e^{-j2\pi k f_0t}} = \sum_{-\infty}^{\infty}{A_i e^{j2\pi (i-k) f_0 t}}$$
+Now we can integrate both sides of the equation over our period T.
+$$\int_{0}^{T}{e^{-j2\pi k f_0t} x(t)dt} = \sum_{-\infty}^{\infty}{A_i \int_{0}^{T}{e^{j2\pi (i-k) f_0 t}dt}}$$
+If $i = k$,
+$$\int_{0}^{T}{e^{j2\pi (i-k) f_0 t}dt} = \int_{0}^{T}{e^{j2\pi (k-k) f_0 t}dt} = T$$
+if $i \ne k$
+$$\int_{0}^{T}{e^{j2\pi (i-k) f_0 t}dt} = \frac{1}{j2\pi (i-k)f_0}\left[e^{j2\pi(i-k)f_0 T} - 1 \right] = 1 - 1 = 0$$
+This means
+$$e^{-j2\pi k f_0t} x(t) = \sum_{-\infty}^{\infty}{A_i e^{j2\pi (i-k) f_0 t}} = T A_k$$
+Therefore
+$$A_k = \frac{1}{T}\int_{0}^{T}{e^{-j2\pi k f_0t} x(t)dt}$$
+\subsubsection{Truncated Fourier Series}
+Since the Fourier Series requires an infinite number of terms, it's more useful to be able to truncate it.
+If we change the bounds of the sum from $[-\infty, \infty]$ to $[-M, M]$ for $M\in\mathbb{R}$, then we get the truncated Fourier Series.
+$$\hat{x}(t) = \sum_{-M}{M}{A_i e^{j2\pi(if_0)t}}$$
+We can do this because if we want a particular maximum error $\epsilon$, we can choose our M such that $|\hat{x}(t)-x(t)|<\epsilon$.
+Also, physical systems generally don't have incredibly high frequencies, so we can safely truncate the series because their $A_k$ will be small.
 \end{document}
