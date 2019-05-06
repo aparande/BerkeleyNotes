@@ -6,6 +6,7 @@
 \usepackage{tikz}
 \usepackage{circuitikz}
 \usepackage{float}
+\usepackage{afterpage}
 \usetikzlibrary{calc}
 \newtheorem{theorem}{Theorem}
 \newtheorem{definition}{Definition}
@@ -310,12 +311,134 @@ With transistors, this looks like:
 In general, CMOS circuits can be thought of as "pull down" consisting of PMOS transitors and "push up" networks consisting of NMOS transistors.
 This is because the PMOS transistors serve to "pull" $V_{DD}$ down the output where as the NMOS transistors "push" $V_{SS}$ up to the output.
 \\\\An interesting fact is that NAND, NOR, and NOT gates are universal. This means any logical operator can be constructed out of them.
+\section{Transient Analysis}
+Most often in circuits, the behavior of the circuit is varying with time. This happens when the IV relationships of elements have a time dependence (i.e for a capacitor, $I = \frac{dV_c}{dt}$).
+A time dependent circuit is said to have reached steady state when the currents and voltages have "stabilized."
+\subsection{RC Circuits}
+The simplest time dependent circuit is the RC circuit which contains a charged capacitor, a resistor, and a switch.
+\begin{figure}[H]
+    \centering
+        \begin{circuitikz} \draw
+            (0,0) to[capacitor, l=$V_0$, i=$i_c$] (0,-4)
+            (0, 0) to [switch, n=switch] (4, 0)
+            (4, 0) to[resistor, l=R, i=$i_R$] (4, -4) -- (0, -4)
+            (switch) node[below] {$t=0$};
+        \end{circuitikz}
+    \caption{A capacitor discharging}
+    \label{}
+\end{figure}
+At $t=0$, the switch closes and current starts flowing in the circuit. Lets try and find the voltage across the capacitor $V_C$ over time.
+\[
+    \begin{array}{c}
+        i_c = -i_R\\\\
+        C\frac{dV_c}{dt} = -\frac{V_c}{R}\\\\
+        \frac{dV_c}{dt} = -\frac{V_c}{RC}
+    \end{array}
+\]
+Trying to solve the equation using nodal analysis gives us a first order differential equation.
+The form of this equation looks incredibly similar to the matrix equation $A\vec{v}=\lambda\vec{v}$.
+In this case, $\lambda = -\frac{1}{RC}$. This means we can try and solve this equation by asking ourselves "What are the eigenvectors of differentiation"\\\\
+Remember that $\frac{d}{dt}ce^{\lambda t} = \lambda*ce^{at}$, and this is exactly the form we need.
+That means that we can think of $ce^{\lambda t}$ as an eigenvector of differentiation. Now we know $V_C = ce^{-\frac{t}{RC}}$ for some constant $c$.
+To find c, remember that $V_C(t=0) = V_0$, so solving the equation $ce^{-\frac{0}{RC}} = V_0$ gives $c=V_0$.
+Thus $V_C(t) = V_0e^{-\frac{t}{RC}}$.
+\\\\The value RC is called the time constant of the circuit. At $t=RC$, the voltage on the capacitor is about $V_0e^{-1}\approx 0.67V_0$.
+To better understand the circuit, lets look at the graph of $V_C$.\\
+\begin{center}
+    \begin{tikzpicture}
+        \draw[thick,<->] (0,0) -- (4,0);
+        \draw[thick,->] (0,0) -- (0,3);
+        \foreach \x in {0, 1, 2, 3, 4}
+            \draw (\x ,1pt) -- (\x ,-1pt) node[anchor=north] {$\x RC$};
+        \foreach \y in {2}
+            \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$V_0$};
+            \draw[scale=1,domain=0:4,smooth,variable=\x,blue] plot (\x,{2 * e^(-\x)});
+    \end{tikzpicture}
+\end{center}
+Notice how the voltage decays to zero after a long time.
+Now let's consider how a capacitor charges up.
+\begin{figure}[H]
+    \centering
+        \begin{circuitikz} \draw
+            (0,0) to[battery, l=$V$] (0,-4)
+            (0, 0) to [capacitor, l=$V_C$, i=$i_C$] (4, 0)
+            (4, 0) to[resistor, l=R, i=$i_R$] (4, -4) 
+            to[switch, n=switch] (0, -4)
+            (switch) node[above] {$t=0$};
+        \end{circuitikz}
+    \caption{A capacitor charging}
+    \label{}
+\end{figure}
+At time $t=0$, the switch closes and currents start flowing to charge the capacitor.
+As we did for the discharging capacitor, lets apply nodal analysis.
+\[
+    \begin{array}{c}
+        V - V_C - i_CR = 0\\\\
+        RC\frac{dV_c}{dt} = V - V_C\\\\
+        \frac{dV_c}{dt} = \frac{1}{RC}(V-V_C)
+    \end{array}
+\]
+This equation looks different from the earlier one, but we can solve it in the same way if we just change variables.
+Let $z = V-V_C$.
+\[
+    \begin{array}{c}
+        \frac{dz}{dt} = -\frac{dV_C}{dt}\\\\
+        \therefore -\frac{dz}{dt} = \frac{1}{RC}z\\\\
+        \frac{dz}{dt} = -\frac{1}{RC}z
+    \end{array}
+\]
+This is the same differential equation we saw before, so $z = ce^{-\frac{t}{RC}}$.
+At $t=0$, the capacitor is uncharged, so $V_C=0$, thus $z = V$ at $t=0$. This means $c = V$.
+Now we can change variables back to get $V_C$
+$$ Ve^{-\frac{t}{RC}} = V - V_C$$
+$$ V_C = V(1 - e^{-\frac{t}{RC}}) $$
+Looking at a graph of this tells us how the capacitor charges up.
+\begin{center}
+    \begin{tikzpicture}
+        \draw[thick,<->] (0,0) -- (4,0);
+        \draw[thick,->] (0,0) -- (0,3);
+        \foreach \x in {0, 1, 2, 3, 4}
+            \draw (\x ,1pt) -- (\x ,-1pt) node[anchor=north] {$\x RC$};
+        \foreach \y in {2}
+            \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$V$};
+            \draw[scale=1,domain=0:4,smooth,variable=\x,blue] plot (\x,{2 * (1 - e^(-\x))});
+    \end{tikzpicture}
+\end{center}
+Over time, the voltage on the capacitor takes on the voltage of the battery.
+The time it takes for capacitors to charge and discharge explain why there are limits to how fast computers can work.
+Remember that part of the transistor model contains a capacitor, so the time it takes for the capacitor to charge up limits how fast the transistor can switch between logic 0 and logic 1.
+\subsection{RL Circuits}
+Another circuit element which is commonly used in circuits is the inductor. The inductor tries to oppose changes in voltage.
+Its IV relationship is $V = L\frac{dI}{dt}$ where $L$ is a constant called the inductance.
+\\\\The analysis of inductors is the same as capacitors, but the behaviors are flipped.
+\begin{figure}[H]
+    \centering
+        \begin{circuitikz} \draw
+            (0,0) to[battery, l=$V$] (0,-4)
+            (0, 0) to [inductor, l=$V_L$, i=$i_L$] (4, 0)
+            (4, 0) to[resistor, l=R] (4, -4) 
+            to[switch, n=switch] (0, -4)
+            (switch) node[above] {$t=0$};
+        \end{circuitikz}
+    \caption{}
+    \label{}
+\end{figure}
+\[
+    \begin{array}{c}
+        V - V_L - i_LR = 0\\\\
+        V - L\frac{dI_L}{dt} - i_LR = 0\\\\
+        \frac{dI_L}{dt} = \frac{V_s-i_LR}{L}
+    \end{array}
+\]
+Solving this equation yields $I_L = I_0(1-e^{-\frac{Rt}{L}})$ where $I_0$ is the maximum current.
+Notice how this is the same behavior that a capacitor exhibits but for the current instead.
+\\\\Another easy comparison that can be made between inductors and capacitors is the energy stored in them.
+The energy in a capacitor $U = \frac{1}{2}CV^2$, whereas the energy in an inductor is $\frac{1}{2}LI^2$.
 \section{Discrete Time Models}
 Although circuits and other systems function in continuous time, computers can only act in discrete time.
 This means the signals they send out to try and control the system are piecewise-continuous, and they can only sense the system at specified intervals $\delta$.
 At a discrete time-step $i$, the computer will measure $\vec{x}_d[i]$ and applies the control $\vec{u}[i]$ over the time-interval $[i, i+1]$.
 Keep in mind that $i=\delta t$ where $t$ is the continuous time.
-
 \begin{definition}
     The discrete-time state space model is $\vec{x}_d[i+1]=A_d\vec{x}_d[i]+B_d\vec{u}[i]+\vec{w}[i]$ where $\vec{w}[i]$ is some disturbance.
 \end{definition}
