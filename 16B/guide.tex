@@ -434,6 +434,101 @@ Solving this equation yields $I_L = I_0(1-e^{-\frac{Rt}{L}})$ where $I_0$ is the
 Notice how this is the same behavior that a capacitor exhibits but for the current instead.
 \\\\Another easy comparison that can be made between inductors and capacitors is the energy stored in them.
 The energy in a capacitor $U = \frac{1}{2}CV^2$, whereas the energy in an inductor is $\frac{1}{2}LI^2$.
+\section{Frequency Analysis}
+Solving differential equations is incredibly difficult, and for complex circuits, it is difficult to 
+account for all the variables which are changing and to actually solve the differential equations.
+Moreover, if we stop using DC inputs and instead use AC inputs, the time domain analysis becomes even more complicated.
+\\\\To deal with this issue and to analyze more complex circuits, it becomes easier to analyze the "frequency response" of a circuit.
+In other words, how does it respond to inputs of different frequencies.
+\subsection{Phasor Representation}
+Let's start by analyzing how a simple resistor circuit responds to different frequency voltages.
+\begin{center}
+    \begin{circuitikz} \draw
+        (0,0) to[sV, l=$V$] (0,-4) -- (4, -4)
+        (4, 0) to[resistor, l=R, i=$i_R$] (4, -4)
+        (4, 0) -- (0, 0);
+    \end{circuitikz}
+\end{center}
+Our input to this circuit is $V(t) = V_0cos(\omega t + \theta)$. Using Euler's formula, we can represent this as $V(t) = \frac{V_0}{2}e^{j\theta}(e^{j\omega t}+e^{-j\omega t})$.
+Notice how $e^{-j\omega t}$ is the complex conjugate of $e^{j\omega t}$, which means if we know the angular frequency $\omega$, all of the "information" in the input
+is described by the term $\frac{V_0}{2}e^{j\theta}$ (i.e we have both the amplitude and the phase of the signal encoded into a single complex number).
+This encoding is known as a phasor, and lets call it $\tilde{V} = \frac{V_0}{2}e^{j\theta}$.
+\begin{definition}
+    A phasor encodes both the amplitude and phase of a sinusoidal input to a circuit.
+\end{definition}
+Notice that we can do normal circuit analysis with phasors. For example, the current in this circuit is $I = V/R = \frac{V_0}{R}V_0cos(\omega t + \theta)$. 
+It's phasor representation is $\tilde{I} = \frac{V_0}{2R}e^{j\theta}$. This is exactly what we would get if we applied Ohm's law on the phasor $\tilde{V}$ (i.e, $\tilde{V} = \tilde{I}R$)
+\subsection{Impedance}
+In the time domain, the relationship between the voltage and current is the resistance. In the frequency domain, we define a more general concept called Impedance.
+\begin{definition}
+    The Impedance $Z$ of a circuit element is the ratio between the voltage phasor $\tilde{V}$ and the current phasor $\tilde{I}$.
+    $$Z = \frac{\tilde{V}}{\tilde{I}}$$
+\end{definition}
+\subsubsection{Impedance of a Resistor}
+Recall that for the simple resistor circuit above, $\tilde{V} = \frac{V_0}{2}e^{j\theta}$ and $\tilde{I} = \frac{V_0}{2R}e^{j\theta}$.
+Thus the impedance $Z = \frac{\tilde{V}}{\tilde{I}} = R$. So for a resistor, the impedance is equivalent to the resistance ($Z = R$).
+\subsubsection{Impedance of a Capacitor}
+\begin{center}
+    \begin{circuitikz} \draw
+        (0,0) to[sV, l=$V$] (0,-4) -- (4, -4)
+        (4, 0) to[capacitor, l=C, i=$i_C$] (4, -4)
+        (4, 0) -- (0, 0);
+    \end{circuitikz}
+\end{center}
+Now lets find the impedance of a capacitor.
+$V = V_0cos(\omega t + \theta)$, so $\tilde{V} = \frac{V_0}{2}e^{j\theta}$ hasn't changed.
+$$i_c = C\frac{dV}{dt} = -C\omega V_0sin(\omega t + \theta)$$
+Since $sin(\omega t + \theta) = \frac{1}{2j}(e^{j\omega t}-e^{j\omega t})$
+$$\tilde{I} = \frac{-C\omega V_0}{2j}e^{j\theta} = -C\omega V_0 je^{j\theta}$$
+Now we can compute the impedance
+$$Z = \frac{\tilde{V}}{\tilde{I}} = \frac{1}{j\omega C}$$
+This is the impedance of the capacitor.
+\subsubsection{Impedance of an Inductor}
+\begin{center}
+    \begin{circuitikz} \draw
+        (0,0) to[sV, l=$I$] (0,-4) -- (4, -4)
+        (4, 0) to[inductor, l=L, i=$i_L$] (4, -4)
+        (4, 0) -- (0, 0);
+    \end{circuitikz}
+\end{center}
+Let's do the same analysis for the inductor. Here our input signal is $I = I_0cos(\omega t + \theta)$.
+That means $\tilde{I} = \frac{I_0}{2}e^{j\theta}$.
+$$V = L\frac{dI}{dt} = -LI_0\omega sin(\omega t + \theta)$$
+$$\tilde{V} = -\frac{LI_0\omega}{2j}e^{j\theta} = -\frac{LI_0\omega j}{2}e^{j\theta}$$
+$$Z = \frac{\tilde{V}}{\tilde{I}} = j\omega L$$
+This is the impedance of the inductor.
+\subsection{Phasor Analysis}
+Now that we know the impedances of different circuit components, we can start to analyze circuits with them.
+Consider this RC circuit
+\begin{center}
+    \begin{circuitikz} \draw
+        (0,0) to[sV, l=$V$] (0,-4)
+        (0, 0) to [resistor, l=R] (4, 0)
+        (4, 0) to[capacitor, l=$V_C$] (4, -4) 
+        (4, 0) to[short, -o] node[right] {$V_{out}$} (5, 0)
+        (0, -4) node[ground] {}
+        (4, -4) node[ground] {};
+    \end{circuitikz}
+\end{center}
+If we wanted to find $V_{out}$, we could write out the differential equations and solve, but with phasors, everything becomes easier.
+First we convert everything to the phasor domain. Sinusoidal inputs become DC inputs, and resistors, capacitors, and inductors become impedances.
+\begin{center}
+    \begin{circuitikz}[european resistors] \draw
+        (0,0) to[battery, l=$\tilde{V}$] (0,-4)
+        (0, 0) to [resistor, l=R] (4, 0)
+        (4, 0) to[resistor, l=$\frac{1}{j\omega C}$] (4, -4) 
+        (4, 0) to[short, -o] node[right] {$\tilde{V}_{out}$} (5, 0)
+        (0, -4) node[ground] {}
+        (4, -4) node[ground] {};
+    \end{circuitikz}
+\end{center}
+This is just a voltage divider, so 
+$$\tilde{V}_{out} = \frac{\frac{1}{j\omega C}}{R + \frac{1}{j\omega C}}\tilde{V} = \frac{1}{1 + j\omega RC}\tilde{V}$$
+Lets define $H(\omega) = \frac{1}{1 + j\omega RC}$, so $\tilde{V}_{out} = H(\omega)\tilde{V}$
+Now if our original signal was $V = cos(\omega t)$, then $\tilde{V} = \frac{1}{2}$, so $\tilde{V}_{out} = \frac{1}{2}H(\omega)$.
+To convert this back into the time domain, we know the phasor is encoding some sinusoidal signal,
+so $$V_{out} = \tilde{V}_{out}e^{j\omega t}+\tilde{V}_{out}e^{-j\omega t} = \frac{1}{2}|H(\omega)|cos(\omega t + \angle H(\omega))$$
+Thus we have recovered our output signal using no calculus.
 \section{Discrete Time Models}
 Although circuits and other systems function in continuous time, computers can only act in discrete time.
 This means the signals they send out to try and control the system are piecewise-continuous, and they can only sense the system at specified intervals $\delta$.
