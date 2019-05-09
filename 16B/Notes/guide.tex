@@ -5,6 +5,10 @@
 \usepackage{cancel}
 \usepackage{tikz}
 \usepackage{hyperref}
+\usepackage{circuitikz}
+\usepackage{float}
+\usepackage{afterpage}
+\usetikzlibrary{calc}
 \newtheorem{theorem}{Theorem}
 \newtheorem{definition}{Definition}
 \newtheorem{corollary}{Corollary}
@@ -17,6 +21,689 @@
 \author{Anmol Parande}
 \date{Spring 2019 - Professors Anant Sahai, Kris Pister, and Jaijeet Roychowdhury}
 \maketitle
+\section{Digital Circuits}
+\begin{definition}
+    A digital circuit interprets a continuous signal (like voltage) as a discrete quantity (such as logic "1" and logic "0")\\
+    \begin{figure}[!h]
+    \centering
+        $V_{ss}$ \begin{tikzpicture}
+            \draw (4,0) -- (8,0);
+            \draw (4,0.25) -- (4,-0.25);
+            \draw (8,0.25) -- (8,-0.25);
+            \draw (6,0.25) -- (6,-0.25);
+        \end{tikzpicture} $V_{DD}$
+    \end{figure}
+\end{definition}
+The opposite of a digital circuit is an analog circuit.
+\begin{definition}
+    An analog circuit operatoes on continuous signals
+\end{definition}
+In a digital circuit, small changes to inputs don't lead to large changes in output. This makes them more robust to noise.
+
+\subsection{Transistors}
+\begin{definition}
+    A transistor is an electronic device that, in it most simple form, acts like a voltage controlled switch
+\end{definition}
+\begin{definition}
+    A CMOS (Complimentary metal oxide semiconductor) transistor circuits are made of PMOS and NMOS transistors to make digitial circuits.
+\end{definition}
+CMOS circuits are useful because they use less power than either one alone because current only flows when either the PMOS or NMOS is on, but not when both are off.
+\begin{figure}[H]
+    \centering
+    \begin{circuitikz}[american voltages, european resistors]
+        \draw (0,0) 
+        node[nmos] (nmosA) {}
+        (nmosA.D) to[short,-o] ++(0,0) node[above] {D}
+        (nmosA.G) to[short,-o] ++(0,0) node[left] {G}
+        (nmosA.S) to[short,-o] ++(0,0) node[below] {S};
+    \end{circuitikz}
+    \begin{circuitikz}[american voltages, european resistors]
+        \draw (0,0) 
+          node[pmos] (pmosA) {}
+          (nmosA.D) to[short,-o] ++(0,0) node[above] {S}
+          (nmosA.G) to[short,-o] ++(0,0) node[left] {G}
+          (nmosA.S) to[short,-o] ++(0,0) node[below] {D};
+    \end{circuitikz}
+    \caption{A NMOS transistor (left) and a PMOS transistor (right)}
+    \label{}
+\end{figure}
+For both PMOS and NMOS transistors, they have a gate voltage ($V_G$), a Drain voltage ($V_{DD}$), and a Source voltage ($V_{SS}$).
+They also have a threshold voltage $V_{th}$ which determines when the transistor opens or closed.
+\\\\
+An NMOS transistor will close when $V_{GS} \ge V_{th}$. The Drain is defined as the terminal which has the higher voltage. The Source is the other terminal.
+\\\\
+The PMOS transistor is the opposite. It closes when $|V_{GS}| \ge |V_{th}|$. In contrast to the NMOS, the Source of a PMOS is the terminal with the higher voltage, and the drain is the other one.
+This allows us to most simply model the transistors as switches.
+\begin{figure}[H]
+    \centering
+    \begin{circuitikz}[american voltages, european resistors]
+        \draw
+        (0,2) to[closing switch, o-o, n=switch] (0,0)
+        (switch) node[left] {1}
+        (switch) node[right, yshift=1.1em] {0}
+        (switch) node[above, yshift=3em] {D}
+        (switch) node[below, yshift=-3em] {S};
+    \end{circuitikz}
+    \hspace{2em}
+    \begin{circuitikz}[american voltages, european resistors]
+        \draw
+        (0,2) to[closing switch, o-o, n=switch] (0,0)
+        (switch) node[left] {0}
+        (switch) node[right, yshift=1.1em] {1}
+        (switch) node[above, yshift=3em] {S}
+        (switch) node[below, yshift=-3em] {D};
+    \end{circuitikz}
+    \caption{A NMOS Switch Model (left), PMOS Switch Model (right)}
+    \label{}
+\end{figure}
+Here, a the 0 and 1 represent logical 0 and logical 1.
+In this case, $V_G > V_{th}$ is logical 1 and $V_G < V_{th}$ is logical 0.
+Logical 1 can be thought of as "high voltage" whereas logical 0 can be thought of as "low voltage".
+\\\\
+This simple model is incomplete, however, because transistors dissipate energy (i.e they have resistance).
+A slightly more accurate model will include resistors.
+\begin{figure}[H]
+    \centering
+    \begin{circuitikz}[american voltages]
+        \draw
+        (0, 3) to[R, label=R, o-, n=res] (0,1)
+        (0,1) to[closing switch, n=switch, -o] (0,-1)
+        (res) node[above, yshift=3em] {D}
+        (switch) node[left] {1}
+        (switch) node[right, yshift=1.1em] {0}
+        (switch) node[below, yshift=-3em] {S};
+    \end{circuitikz}
+    \hspace{2em}
+    \begin{circuitikz}[american voltages]
+        \draw
+        (0,3) to[closing switch, o-, n=switch] (0,1)
+        (0,1) to [R, label=R, -o, n=res] (0,-1)
+        (switch) node[left] {0}
+        (switch) node[right, yshift=1.1em] {1}
+        (switch) node[above, yshift=3em] {S}
+        (res) node[below, yshift=-3em] {D};
+    \end{circuitikz}
+    \caption{A NMOS Resistor-Switch Model (left), PMOS Resistor-Switch Model (right)}
+    \label{}
+\end{figure}
+There is another caveat to transistors that even our resistor-switch model doesn't account for, and that is the time it takes for the transistor to actually close.
+To account for this caveat, we can introduce a capacitor into our model.
+\begin{figure}[H]
+    \centering
+    \begin{circuitikz}[]
+        \draw
+        (0, 3) to[R, label=R, o-, n=res] (0,1)
+        (0,1) to[closing switch, n=switch, -o] (0,-1)
+        (0,-0.5) -- (-2, -0.5)
+        (-2,-0.5) -- (-2, 0)
+        (-2,0) to [C, n=cap, -o, label=C] (-2, 2)
+        (cap) node[above, yshift=3em] {G}
+        (res) node[above, yshift=3em] {D}
+        (switch) node[left] {1}
+        (switch) node[right, yshift=1.1em] {0}
+        (switch) node[below, yshift=-3em] {S};
+    \end{circuitikz}
+    \hspace{2em}
+    \begin{circuitikz}[]
+        \draw
+        (0,3) to[closing switch, o-, n=switch] (0,1)
+        (0,2.5) -- (-2, 2.5)
+        (-2,2.5) -- (-2, 2)
+        (-2,2) to [C, n=cap, -o, label=C] (-2, 0)
+        (0,1) to [R, label=R, -o, n=res] (0,-1)
+        (cap) node[below, yshift=-3em] {G}
+        (switch) node[left] {0}
+        (switch) node[right, yshift=1.1em] {1}
+        (switch) node[above, yshift=3em] {S}
+        (res) node[below, yshift=-3em] {D};
+    \end{circuitikz}
+    \caption{A NMOS Model (left), PMOS Model (right)}
+    \label{}
+\end{figure}
+\subsection{Logic Circuits}
+Now that we have a good model for transistors, we can start to use them to build circuits which perform logical operations.
+The simplest logic gate is an inverter
+\begin{definition}
+    The inverter ($Y=\bar{A}$) returns the opposite of the input value.
+    \begin{center}
+            \begin{tabular}{|c | c|} 
+            \hline
+            A & Y\\ 
+            \hline
+            1 & 0\\ 
+            \hline
+            0 & 1 \\
+            \hline
+        \end{tabular}        
+    \end{center} 
+    \begin{center}
+        \begin{circuitikz}
+            \draw
+            (0,0) node[not port] (inv) {} (2, 0)
+            (inv.in) node[left] {A}
+            (inv.out) node[right] {$Y=\bar{A}$};
+        \end{circuitikz}
+    \end{center}
+\end{definition}
+An inverter is made by putting a PMOS and NMOS transistor in series.
+\begin{figure}[H]
+    \centering
+    \begin{circuitikz}[]
+        \draw
+        node[pmos, rotate=-90] (pmosA) {} (2, 0)
+        node[nmos, rotate=-90] (nmosA) {} (0, 0)
+        (pmosA.S) to[short] (nmosA.S)
+        (pmosA.G) to[short] (nmosA.G)
+        (1, 1) to [short,-o] ++(0,0.5) {} node[above] {A}
+        (1, 0) to [short,*-o] ++(0,-0.5) {} node[below] {Y}
+        (pmosA.D) node[left] {$V_{DD}$}
+        (nmosA.D) node[right] {$V_{SS}$};
+    \end{circuitikz}
+    \caption{CMOS Inverter}
+    \label{}
+\end{figure}
+If $A=1$, then the PMOS will be open and the NMOS will be closed, so $Y=V_{SS}$ which is logical 0.
+Likewise, if $A=0$, then the PMOS will be closed and the NMOS will be open, so $Y=V_{DD}$ which is logical 1.
+\begin{definition}
+    The NOR gate ($Y = \overline{A+B}$) returns the opposite of the or operation.
+    \begin{center}
+        \begin{tabular}{|c | c| c|} 
+        \hline
+        A & B & $Y$\\ 
+        \hline
+        0 & 0 & 1\\
+        \hline
+        1 & 0 & 0\\
+        \hline
+        0 & 1 & 0\\ 
+        \hline
+        1 & 1 & 0\\ 
+        \hline
+        \end{tabular}        
+    \end{center} 
+    \begin{center}
+        \begin{circuitikz}
+            \draw
+            (0,0) node[nor port] (inv) {} (2, 0)
+            (inv.in 1) node[left] {A}
+            (inv.in 2) node[left] {B}
+            (inv.out) node[right] {$Y=\overline{A+B}$};
+        \end{circuitikz}
+    \end{center}
+\end{definition}
+With transistors, the NOR gate looks as follows.
+\begin{figure}[H]
+    \centering
+    \begin{circuitikz}[]
+        \draw
+            node[pmos] (pmosA) {}
+            (pmosA.S) to[short, -o] node[above] {$V_{DD}$} (0,1)
+            (pmosA.G) to[short,-o] ++(0,0) node[left] {A}
+            (0, -2) node[pmos] (pmosB) {}
+            (pmosA.D) to[short] (pmosB.S)
+            (pmosB.G) to[short,-o] ++(0,0) node[left] {B}
+            (pmosB.D) to [short] ++(-0.5, 0) {}
+            node[nmos, anchor=D] (nmosA) {}
+            (pmosB.D) to [short] ++(0.5, 0) {}
+            node[nmos, anchor=S, rotate=180] (nmosB) {}
+            (pmosB.D) to [short,-o, n=meas] ++(1,0) {} node[right] {$Y$}
+            (nmosA.G) to[short,-o] ++(0,0) node[left] {A}
+            (nmosB.G) to[short,-o] ++(0,0) node[right] {B}
+            (nmosA.S) to [short, n=vss] ++(1,0) {} 
+            (nmosB.D) to (vss)
+            (vss) to [short,-o] ++(0,-0.5) {} node[below] {$V_{SS}$};
+    \end{circuitikz}
+    \caption{CMOS NOR}
+    \label{}
+\end{figure}
+
+To verify this works, try and see how plugging in different combinations for A and B change the output.
+\begin{definition}
+    The NAND gate ($Y=\overline{A\cdot B}$) returns the opposite of the AND operation.
+    \begin{center}
+        \begin{tabular}{|c | c| c|} 
+        \hline
+        A & B & $Y$\\ 
+        \hline
+        0 & 0 & 1\\
+        \hline
+        1 & 0 & 1\\
+        \hline
+        0 & 1 & 1\\ 
+        \hline
+        1 & 1 & 0\\ 
+        \hline
+        \end{tabular}        
+    \end{center} 
+    \begin{center}
+        \begin{circuitikz}
+            \draw
+            (0,0) node[nand port] (inv) {} (2, 0)
+            (inv.in 1) node[left] {A}
+            (inv.in 2) node[left] {B}
+            (inv.out) node[right] {$Y=\overline{A\cdot B}$};
+        \end{circuitikz}
+    \end{center}
+\end{definition}
+With transistors, this looks like:
+\begin{figure}[H]
+    \centering
+    \begin{circuitikz}[]
+        \draw
+        node[pmos] (pmosA) {}
+        (pmosA.G) to[short,-o] ++(0,0) node[left] {A}
+        (1, 0) node[pmos, rotate=180] (pmosB) {}
+        (pmosB.G) to[short,-o] ++(0,0) node[right] {B}
+        ($(pmosA.S)!0.5!(pmosB.D)$) node [] (vdd) {}
+        (vdd) to[short, o-] ++(0,0.5) node[above] {$V_{DD}$}
+        (pmosA.S) to[short,-] (vdd) to[short,-] (pmosB.D)
+        ($(pmosA.D)!0.5!(pmosB.S)$) node [] (meas) {}
+        (meas) to[short, -o] ++(1,0) node[right] {$Y$}
+        (pmosA.D) to[short,-] (meas) to[short,-] (pmosB.S)
+        (meas) node[nmos, anchor=D] (nmosA) {}
+        (nmosA.G) to[short,o-] ++(0,0) node[left] {A}
+        (nmosA.S) node[nmos, anchor=D] (nmosB) {}
+        (nmosB.G) to[short,o-] ++(0,0) node[left] {B}
+        (nmosB.S) to[short, -o] ++(0, 0) node[below] {$V_{SS}$};
+    \end{circuitikz}
+    \caption{CMOS NOR}
+    \label{}
+\end{figure}
+In general, CMOS circuits can be thought of as "pull down" consisting of PMOS transitors and "push up" networks consisting of NMOS transistors.
+This is because the PMOS transistors serve to "pull" $V_{DD}$ down the output where as the NMOS transistors "push" $V_{SS}$ up to the output.
+\\\\An interesting fact is that NAND, NOR, and NOT gates are universal. This means any logical operator can be constructed out of them.
+\section{Transient Analysis}
+Most often in circuits, the behavior of the circuit is varying with time. This happens when the IV relationships of elements have a time dependence (i.e for a capacitor, $I = \frac{dV_c}{dt}$).
+A time dependent circuit is said to have reached steady state when the currents and voltages have "stabilized."
+\subsection{RC Circuits}
+The simplest time dependent circuit is the RC circuit which contains a charged capacitor, a resistor, and a switch.
+\begin{figure}[H]
+    \centering
+        \begin{circuitikz} \draw
+            (0,0) to[capacitor, l=$V_0$, i=$i_c$] (0,-4)
+            (0, 0) to [switch, n=switch] (4, 0)
+            (4, 0) to[resistor, l=R, i=$i_R$] (4, -4) -- (0, -4)
+            (switch) node[below] {$t=0$};
+        \end{circuitikz}
+    \caption{A capacitor discharging}
+    \label{}
+\end{figure}
+At $t=0$, the switch closes and current starts flowing in the circuit. Lets try and find the voltage across the capacitor $V_C$ over time.
+\[
+    \begin{array}{c}
+        i_c = -i_R\\\\
+        C\frac{dV_c}{dt} = -\frac{V_c}{R}\\\\
+        \frac{dV_c}{dt} = -\frac{V_c}{RC}
+    \end{array}
+\]
+Trying to solve the equation using nodal analysis gives us a first order differential equation.
+The form of this equation looks incredibly similar to the matrix equation $A\vec{v}=\lambda\vec{v}$.
+In this case, $\lambda = -\frac{1}{RC}$. This means we can try and solve this equation by asking ourselves "What are the eigenvectors of differentiation"\\\\
+Remember that $\frac{d}{dt}ce^{\lambda t} = \lambda*ce^{at}$, and this is exactly the form we need.
+That means that we can think of $ce^{\lambda t}$ as an eigenvector of differentiation. Now we know $V_C = ce^{-\frac{t}{RC}}$ for some constant $c$.
+To find c, remember that $V_C(t=0) = V_0$, so solving the equation $ce^{-\frac{0}{RC}} = V_0$ gives $c=V_0$.
+Thus $V_C(t) = V_0e^{-\frac{t}{RC}}$.
+\\\\The value RC is called the time constant of the circuit. At $t=RC$, the voltage on the capacitor is about $V_0e^{-1}\approx 0.67V_0$.
+To better understand the circuit, lets look at the graph of $V_C$.\\
+\begin{center}
+    \begin{tikzpicture}
+        \draw[thick,<->] (0,0) -- (4,0);
+        \draw[thick,->] (0,0) -- (0,3);
+        \foreach \x in {0, 1, 2, 3, 4}
+            \draw (\x ,1pt) -- (\x ,-1pt) node[anchor=north] {$\x RC$};
+        \foreach \y in {2}
+            \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$V_0$};
+            \draw[scale=1,domain=0:4,smooth,variable=\x,blue] plot (\x,{2 * e^(-\x)});
+    \end{tikzpicture}
+\end{center}
+Notice how the voltage decays to zero after a long time.
+Now let's consider how a capacitor charges up.
+\begin{figure}[H]
+    \centering
+        \begin{circuitikz} \draw
+            (0,0) to[battery, l=$V$] (0,-4)
+            (0, 0) to [capacitor, l=$V_C$, i=$i_C$] (4, 0)
+            (4, 0) to[resistor, l=R, i=$i_R$] (4, -4) 
+            to[switch, n=switch] (0, -4)
+            (switch) node[above] {$t=0$};
+        \end{circuitikz}
+    \caption{A capacitor charging}
+    \label{}
+\end{figure}
+At time $t=0$, the switch closes and currents start flowing to charge the capacitor.
+As we did for the discharging capacitor, lets apply nodal analysis.
+\[
+    \begin{array}{c}
+        V - V_C - i_CR = 0\\\\
+        RC\frac{dV_c}{dt} = V - V_C\\\\
+        \frac{dV_c}{dt} = \frac{1}{RC}(V-V_C)
+    \end{array}
+\]
+This equation looks different from the earlier one, but we can solve it in the same way if we just change variables.
+Let $z = V-V_C$.
+\[
+    \begin{array}{c}
+        \frac{dz}{dt} = -\frac{dV_C}{dt}\\\\
+        \therefore -\frac{dz}{dt} = \frac{1}{RC}z\\\\
+        \frac{dz}{dt} = -\frac{1}{RC}z
+    \end{array}
+\]
+This is the same differential equation we saw before, so $z = ce^{-\frac{t}{RC}}$.
+At $t=0$, the capacitor is uncharged, so $V_C=0$, thus $z = V$ at $t=0$. This means $c = V$.
+Now we can change variables back to get $V_C$
+$$ Ve^{-\frac{t}{RC}} = V - V_C$$
+$$ V_C = V(1 - e^{-\frac{t}{RC}}) $$
+Looking at a graph of this tells us how the capacitor charges up.
+\begin{center}
+    \begin{tikzpicture}
+        \draw[thick,<->] (0,0) -- (4,0);
+        \draw[thick,->] (0,0) -- (0,3);
+        \foreach \x in {0, 1, 2, 3, 4}
+            \draw (\x ,1pt) -- (\x ,-1pt) node[anchor=north] {$\x RC$};
+        \foreach \y in {2}
+            \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$V$};
+            \draw[scale=1,domain=0:4,smooth,variable=\x,blue] plot (\x,{2 * (1 - e^(-\x))});
+    \end{tikzpicture}
+\end{center}
+Over time, the voltage on the capacitor takes on the voltage of the battery.
+The time it takes for capacitors to charge and discharge explain why there are limits to how fast computers can work.
+Remember that part of the transistor model contains a capacitor, so the time it takes for the capacitor to charge up limits how fast the transistor can switch between logic 0 and logic 1.
+\subsection{RL Circuits}
+Another circuit element which is commonly used in circuits is the inductor. The inductor tries to oppose changes in voltage.
+Its IV relationship is $V = L\frac{dI}{dt}$ where $L$ is a constant called the inductance.
+\\\\The analysis of inductors is the same as capacitors, but the behaviors are flipped.
+\begin{figure}[H]
+    \centering
+        \begin{circuitikz} \draw
+            (0,0) to[battery, l=$V$] (0,-4)
+            (0, 0) to [inductor, l=$V_L$, i=$i_L$] (4, 0)
+            (4, 0) to[resistor, l=R] (4, -4) 
+            to[switch, n=switch] (0, -4)
+            (switch) node[above] {$t=0$};
+        \end{circuitikz}
+    \caption{}
+    \label{}
+\end{figure}
+\[
+    \begin{array}{c}
+        V - V_L - i_LR = 0\\\\
+        V - L\frac{dI_L}{dt} - i_LR = 0\\\\
+        \frac{dI_L}{dt} = \frac{V_s-i_LR}{L}
+    \end{array}
+\]
+Solving this equation yields $I_L = I_0(1-e^{-\frac{Rt}{L}})$ where $I_0$ is the maximum current.
+Notice how this is the same behavior that a capacitor exhibits but for the current instead.
+\\\\Another easy comparison that can be made between inductors and capacitors is the energy stored in them.
+The energy in a capacitor $U = \frac{1}{2}CV^2$, whereas the energy in an inductor is $\frac{1}{2}LI^2$.
+\section{Frequency Analysis}
+Solving differential equations is incredibly difficult, and for complex circuits, it is difficult to 
+account for all the variables which are changing and to actually solve the differential equations.
+Moreover, if we stop using DC inputs and instead use AC inputs, the time domain analysis becomes even more complicated.
+\\\\To deal with this issue and to analyze more complex circuits, it becomes easier to analyze the "frequency response" of a circuit.
+In other words, how does it respond to inputs of different frequencies.
+\subsection{Phasor Representation}
+Let's start by analyzing how a simple resistor circuit responds to different frequency voltages.
+\begin{center}
+    \begin{circuitikz} \draw
+        (0,0) to[sV, l=$V$] (0,-4) -- (4, -4)
+        (4, 0) to[resistor, l=R, i=$i_R$] (4, -4)
+        (4, 0) -- (0, 0);
+    \end{circuitikz}
+\end{center}
+Our input to this circuit is $V(t) = V_0cos(\omega t + \theta)$. Using Euler's formula, we can represent this as $V(t) = \frac{V_0}{2}e^{j\theta}(e^{j\omega t}+e^{-j\omega t})$.
+Notice how $e^{-j\omega t}$ is the complex conjugate of $e^{j\omega t}$, which means if we know the angular frequency $\omega$, all of the "information" in the input
+is described by the term $\frac{V_0}{2}e^{j\theta}$ (i.e we have both the amplitude and the phase of the signal encoded into a single complex number).
+This encoding is known as a phasor, and lets call it $\tilde{V} = \frac{V_0}{2}e^{j\theta}$.
+\begin{definition}
+    A phasor encodes both the amplitude and phase of a sinusoidal input to a circuit.
+\end{definition}
+Notice that we can do normal circuit analysis with phasors. For example, the current in this circuit is $I = V/R = \frac{V_0}{R}V_0cos(\omega t + \theta)$. 
+It's phasor representation is $\tilde{I} = \frac{V_0}{2R}e^{j\theta}$. This is exactly what we would get if we applied Ohm's law on the phasor $\tilde{V}$ (i.e, $\tilde{V} = \tilde{I}R$)
+\subsection{Impedance}
+In the time domain, the relationship between the voltage and current is the resistance. In the frequency domain, we define a more general concept called Impedance.
+\begin{definition}
+    The Impedance $Z$ of a circuit element is the ratio between the voltage phasor $\tilde{V}$ and the current phasor $\tilde{I}$.
+    $$Z = \frac{\tilde{V}}{\tilde{I}}$$
+\end{definition}
+\subsubsection{Impedance of a Resistor}
+Recall that for the simple resistor circuit above, $\tilde{V} = \frac{V_0}{2}e^{j\theta}$ and $\tilde{I} = \frac{V_0}{2R}e^{j\theta}$.
+Thus the impedance $Z = \frac{\tilde{V}}{\tilde{I}} = R$. So for a resistor, the impedance is equivalent to the resistance ($Z = R$).
+\subsubsection{Impedance of a Capacitor}
+\begin{center}
+    \begin{circuitikz} \draw
+        (0,0) to[sV, l=$V$] (0,-4) -- (4, -4)
+        (4, 0) to[capacitor, l=C, i=$i_C$] (4, -4)
+        (4, 0) -- (0, 0);
+    \end{circuitikz}
+\end{center}
+Now lets find the impedance of a capacitor.
+$V = V_0cos(\omega t + \theta)$, so $\tilde{V} = \frac{V_0}{2}e^{j\theta}$ hasn't changed.
+$$i_c = C\frac{dV}{dt} = -C\omega V_0sin(\omega t + \theta)$$
+Since $sin(\omega t + \theta) = \frac{1}{2j}(e^{j\omega t}-e^{j\omega t})$
+$$\tilde{I} = \frac{-C\omega V_0}{2j}e^{j\theta} = -C\omega V_0 je^{j\theta}$$
+Now we can compute the impedance
+$$Z = \frac{\tilde{V}}{\tilde{I}} = \frac{1}{j\omega C}$$
+This is the impedance of the capacitor.
+\subsubsection{Impedance of an Inductor}
+\begin{center}
+    \begin{circuitikz} \draw
+        (0,0) to[sV, l=$I$] (0,-4) -- (4, -4)
+        (4, 0) to[inductor, l=L, i=$i_L$] (4, -4)
+        (4, 0) -- (0, 0);
+    \end{circuitikz}
+\end{center}
+Let's do the same analysis for the inductor. Here our input signal is $I = I_0cos(\omega t + \theta)$.
+That means $\tilde{I} = \frac{I_0}{2}e^{j\theta}$.
+$$V = L\frac{dI}{dt} = -LI_0\omega sin(\omega t + \theta)$$
+$$\tilde{V} = -\frac{LI_0\omega}{2j}e^{j\theta} = -\frac{LI_0\omega j}{2}e^{j\theta}$$
+$$Z = \frac{\tilde{V}}{\tilde{I}} = j\omega L$$
+This is the impedance of the inductor.
+\subsection{Phasor Analysis}
+Now that we know the impedances of different circuit components, we can start to analyze circuits with them.
+Consider this RC circuit
+\begin{center}
+    \begin{circuitikz} \draw
+        (0,0) to[sV, l=$V$] (0,-4)
+        (0, 0) to [resistor, l=R] (4, 0)
+        (4, 0) to[capacitor, l=$V_C$] (4, -4) 
+        (4, 0) to[short, -o] node[right] {$V_{out}$} (5, 0)
+        (0, -4) node[ground] {}
+        (4, -4) node[ground] {};
+    \end{circuitikz}
+\end{center}
+If we wanted to find $V_{out}$, we could write out the differential equations and solve, but with phasors, everything becomes easier.
+First we convert everything to the phasor domain. Sinusoidal inputs become DC inputs, and resistors, capacitors, and inductors become impedances.
+\begin{center}
+    \begin{circuitikz}[european resistors] \draw
+        (0,0) to[battery, l=$\tilde{V}$] (0,-4)
+        (0, 0) to [resistor, l=R] (4, 0)
+        (4, 0) to[resistor, l=$\frac{1}{j\omega C}$] (4, -4) 
+        (4, 0) to[short, -o] node[right] {$\tilde{V}_{out}$} (5, 0)
+        (0, -4) node[ground] {}
+        (4, -4) node[ground] {};
+    \end{circuitikz}
+\end{center}
+This is just a voltage divider, so 
+$$\tilde{V}_{out} = \frac{\frac{1}{j\omega C}}{R + \frac{1}{j\omega C}}\tilde{V} = \frac{1}{1 + j\omega RC}\tilde{V}$$
+Lets define $H(\omega) = \frac{1}{1 + j\omega RC}$, so $\tilde{V}_{out} = H(\omega)\tilde{V}$
+Now if our original signal was $V = cos(\omega t)$, then $\tilde{V} = \frac{1}{2}$, so $\tilde{V}_{out} = \frac{1}{2}H(\omega)$.
+To convert this back into the time domain, we know the phasor is encoding some sinusoidal signal,
+so $$V_{out} = \tilde{V}_{out}e^{j\omega t}+\tilde{V}_{out}e^{-j\omega t} = \frac{1}{2}|H(\omega)|cos(\omega t + \angle H(\omega))$$
+Thus we have recovered our output signal using no calculus.
+\subsection{Transfer Functions}
+Notice how in the previous example, the relationship between our "output" $\tilde{V}_{out}$ and our input $\tilde{V}$ was described by a function $H(\omega)$.
+This function is called the transfer function.
+\begin{definition}
+    The Transfer Function of a circuit is defined as $H(\omega) = \frac{\tilde{X}}{\tilde{V}}$ where $\tilde{X}$ 
+    is the phasor output and $\tilde{V}$ is the phasor input
+\end{definition}
+The transfer function gives us a convenient way to analyze how a circuit will affect an input signal depending on its angular frequency, effectively treating the circuit like a black box.
+An important note is that transfer functions do not just apply to voltages, they can also apply to currents, but for the most part, we will deal with voltages.
+\\\\All transfer functions can be expressed in the form $H(\omega) = \frac{Z(\omega)}{P(\omega)}$. $Z(\omega)$ and $P(\omega)$ are complex polynomials.
+If we factor $P(\omega)$ and $Z(\omega)$, then we see that all transfer functions can be expressed as follows.
+$$H(\omega) = \frac{(j\omega)^{N_{z0}}}{(j\omega)^{N_{p0}}} \frac{\prod_{z=0}^{n}{(j\omega)^z \alpha_z}}{\prod_{p=0}^{m}{(j\omega)^p \beta_p}} = K \frac{(j\omega)^{N_{z0}}}{(j\omega)^{N_{p0}}}\frac{\prod_{i=0}^{n}{(1+\frac{j\omega}{\omega_{zi}})}}{\prod_{k=0}^{m}{(1+\frac{j\omega}{\omega_{pk}})}}$$
+The constants $\omega_z$ are the zeros of the complex polynomial $Z(\omega)$, and the constants $\omega_p$ are the series of the complex polynomial $P(\omega)$.
+$\omega_z$ are called the zeros of the transfer function, and $\omega_p$ are called the poles.
+$N_{z0}$ and $N_{p0}$ are the number of zeros and poles respecively at $\omega=0$.
+\\\\To see how this makes analysis easier, lets look at the transfer function we saw earlier $H(\omega) = \frac{1}{1 + j\omega RC}$.
+We can rewrite $H(\omega) = \frac{1}{1+\frac{\omega}{\omega_p}}$, where $\omega_p = \frac{1}{RC}$.
+Notice how when $\omega >> \omega_p$, $H(\omega) \approx 0$ and when $\omega << \omega_p, H(\omega) \approx 1$.
+This tells us that for frequencies higher than the pole, the input will be attenuated, but for frequencies less than the pole, the signal will be mostly unaffected.
+\subsection{Bode Plots}
+For more complex transfer functions, we need a easier way of analyzing them than taking limits. This is where Bode Plots come in.
+\begin{definition}
+    A Bode Plot is a plot of $|H(\omega)|$ and $\angle H(\omega)$ on a log-log scale
+\end{definition}
+These visually reveal the behavior of circuits. The log-log scale not only allows us to determine the behavior of Bode plots over a large range of frequencies,
+but they also let us easily figure out what the plot looks like because it converts the transfer function into piecewise linear components.
+\\\\To see why, lets write our transfer function in polar form. 
+$$H(\omega) = K \frac{(j\omega)^{N_{z0}}}{(j\omega)^{N_{p0}}}\frac{\prod_{i=0}^{n}{(1+\frac{j\omega}{\omega_{zi}})}}{\prod_{k=0}^{m}{(1+\frac{j\omega}{\omega_{pk}})}} = Ke^{j\frac{\pi}{2}(N_{z0}-N_{p0})} \frac{\prod_{i=0}^{n}{r_{zi}}}{\prod_{k=0}^{m}{r_{pk}}} e^{j(\sum_{i=0}^{n}{z_i} - \sum_{k=0}^{m}{p_k})}$$
+Each $r$ is the magnitude of a factor $1 + \frac{j\omega}{\omega_n}$ where $\omega_n$ is either a root or a pole, and the $z_i, p_k$ are the phases of each factor.
+By writing $H(\omega)$ this way, it is clear that $$|H(\omega)| = K \frac{\prod_{i=0}^{n}{r_{zi}}}{\prod_{k=0}^{m}{r_{pk}}}$$
+If we take the log of this, we get $$log(|H(\omega)|) = log(K) + \sum_{i=0}^{n}{log(r_{zi})} - \sum_{k=0}^{m}{log(r_{pk})}$$
+Likewise, the exponential form of $H(\omega)$ tells us that $$\angle H(\omega) = \frac{\pi}{2}(N_{z0}-N_{p0})+ (\sum_{i=0}^{n}{z_i} - \sum_{k=0}^{m}{p_k})$$
+Next, we should verify if we can approximate these equations as linear on a log-log scale.
+Take the example transfer function $H(\omega) = \frac{1}{1+\frac{j\omega}{\omega_p}} = \frac{1}{r_p}e^{-j\theta_p}$.
+\[
+    \begin{array}{cccc}
+        \text{if } \omega = \omega_p & H(\omega) = \frac{1}{1+j} & r_p = \sqrt{2} & \theta_p = \frac{\pi}{4}\\
+        \text{if } \omega = 10\omega_p & H(\omega) = \frac{1}{1+10j} & r_p \approx 10 & \theta_p \approx \frac{\pi}{2}\\
+        \text{if } \omega = 0.1\omega_p & H(\omega) = \frac{1}{1+0.1j} & r_p \approx 1 & \theta_p \approx 0\\
+    \end{array}
+\]
+Thus we can see at decades away from the poles and zeros, the magnitudes and the phases will have less of an effect.
+Let's try constructing the Bode Plot for this transfer function.
+\begin{center}
+    \begin{tikzpicture}
+        \draw[thick,->] (0,0) -- (4,0);
+        \draw[thick,->] (0,0) -- (0,3);
+        \draw (4.2, 0) node[] {$\omega$};
+        \draw (0, 3.2) node[] {$|H(\omega)|$};
+        \draw(1, 1pt) -- (1, -1pt) node[anchor=north] {$\frac{\omega_p}{10}$};
+        \draw(2, 1pt) -- (2, -1pt) node[anchor=north] {$\omega_p$};
+        \draw(3, 1pt) -- (3, -1pt) node[anchor=north] {$10\omega_p$};
+        \draw (1pt,2 cm) -- (-1pt,2 cm) node[anchor=east] {$\omega^0$};
+        \draw (1pt,1 cm) -- (-1pt,1 cm) node[anchor=east] {$\omega^{-1}$};
+        \draw (0, 2cm) -- (2, 2cm);
+        \draw (2, 2cm) -- (4, 0cm);
+    \end{tikzpicture}
+    \begin{tikzpicture}
+        \draw[thick,->] (0,0) -- (4,0);
+        \draw (4.2, 0) node[] {$\omega$};
+        \draw (0, 3.2) node[] {$\angle H(\omega)$};
+        \draw[thick,->] (0,0) -- (0,3);
+        \draw(1, 1pt) -- (1, -1pt) node[anchor=north] {$\frac{\omega_p}{10}$};
+        \draw(2, 1pt) -- (2, -1pt) node[anchor=north] {$\omega_p$};
+        \draw(3, 1pt) -- (3, -1pt) node[anchor=north] {$10\omega_p$};
+        \draw (1pt,2.5 cm) -- (-1pt,2.5 cm) node[anchor=east] {$0$};
+        \draw (1pt,0.5 cm) -- (-1pt,0.5 cm) node[anchor=east] {$-\frac{\pi}{2}$};
+        \draw (0, 2.5cm) -- (1, 2.5cm);
+        \draw (1, 2.5cm) -- (3, 0.5cm);
+        \draw (3, 0.5cm) -- (4, 0.5cm);
+    \end{tikzpicture}
+\end{center}
+For the magnitude plot, since there are no poles or zeros at $\omega = 0$, we draw a straight line until the pole kicks in at $\omega = \omega_p$ at which point the slope of the line will be -1.
+For the phase plot, we apply the same logic, except the pole kicks in at $\frac{\omega_p}{10}$ (to see why, look above to see how at $\omega = \omega_p$, the phase is $-\frac{\pi}{4}$).
+We can apply this same logic for more complicated transfer functions too.
+Lets take $$H(\omega) = 10^9 \frac{(1+\frac{j\omega}{10^9})}{(j\omega)(1+\frac{j\omega}{10^7})}$$
+Notice we have a zero at $10^9$, poles at $1, 10^7$, and 9 zeros at $\omega = 0$. With this information, we can see the plots will look like this:
+\begin{center}
+    \begin{tikzpicture}
+        \draw[thick,->] (0,0) -- (4,0);
+        \draw[thick,->] (0,0) -- (0,4);
+        \draw (4.2, 0) node[] {$\omega$};
+        \draw (0, 4.4) node[] {$|H(\omega)|$};
+        \draw(0.5, 1pt) -- (0.5, -1pt) node[anchor=north] {$10^6$};
+        \draw(1.5, 1pt) -- (1.5, -1pt) node[anchor=north] {$10^8$};
+        \draw(2.5, 1pt) -- (2.5, -1pt) node[anchor=north] {$10^{10}$};
+        \draw (1pt,4) -- (-1pt,4) node[anchor=east] {$10^3$};
+        \draw (1pt,3) -- (-1pt,3) node[anchor=east] {$10^1$};
+        \draw (1pt,2) -- (-1pt,2) node[anchor=east] {$10^{-1}$};
+        \draw (1pt,1) -- (-1pt,1) node[anchor=east] {$10^{-3}$};
+        \draw (0.5, 4) -- (1, 3.5);
+        \draw (1, 3.5) -- (2, 1.5);
+        \draw (2, 1.5) -- (3, 0.5);
+    \end{tikzpicture}
+    \begin{tikzpicture}
+        \draw[thick,->] (0,0) -- (4,0);
+        \draw (4.2, 0) node[] {$\omega$};
+        \draw (0, 4.2) node[] {$\angle H(\omega)$};
+        \draw[thick,->] (0,0) -- (0,4);
+        \draw(0.5, 1pt) -- (0.5, -1pt) node[anchor=north] {$10^6$};
+        \draw(1.5, 1pt) -- (1.5, -1pt) node[anchor=north] {$10^8$};
+        \draw(2.5, 1pt) -- (2.5, -1pt) node[anchor=north] {$10^{10}$};
+        \draw (1pt,3.5 cm) -- (-1pt,3.5 cm) node[anchor=east] {$0$};
+        \draw (1pt,0.5 cm) -- (-1pt,0.5 cm) node[anchor=east] {$-\pi$};
+        \draw (0, 1.75cm) -- (0.5, 1.75cm);
+        \draw (0.5, 1.75cm) -- (1.5, 0.5cm);
+        \draw (1.5, 0.5cm) -- (2.5, 1.75cm);
+        \draw (2.5, 1.75cm) -- (3.5, 1.75cm);
+    \end{tikzpicture}
+\end{center}
+The pole at 0 kicks in immediately, causing the decreasing magnitude and starting the phase at $\frac{-\pi}{2}$. The second pole at $10^7$ will kick in next, followed by the zero at $10^9$.
+\subsection{Filters}
+One type of circuit which Bode plots make very easy to analyze are filters.
+\subsubsection{Low Pass Filters}
+\begin{definition}
+    A low pass filter is one which allows frequencies below a particular cutoff frequency to pass through while higher ones are attenuated.
+\end{definition}
+Two common low pass filters are the RC filter and the LR filter.
+\begin{figure}[H]
+    \centering
+        \begin{circuitikz} \draw
+            (0, 0) node[left] {$\tilde{V}_{in}$} to[resistor, o-o, l=R] 
+            (3, 0) node[right] {$\tilde{V}_{out}$}
+            (2.5, 0) to[capacitor, l=C] (2.5, -2) node[ground] {};
+        \end{circuitikz}
+        \begin{circuitikz} \draw
+            (0, 0) node[left] {$\tilde{V}_{in}$} to[inductor, o-o, l=L] 
+            (3, 0) node[right] {$\tilde{V}_{out}$}
+            (2.5, 0) to[resistor, l=R] (2.5, -2) node[ground] {};
+        \end{circuitikz}
+    \caption{Low Pass Filters}
+    \label{}
+\end{figure}
+These both have the transfer function $H(\omega) = \frac{1}{1+\frac{j\omega}{\omega_p}}$ where $\omega_p = \frac{1}{RC}$ or $\omega_p=\frac{R}{L}$ depending on which filter it is.
+In this case, $\omega_p$ is called the cutoff frequency.
+\subsubsection{High Pass Filters}
+\begin{definition}
+    A high pass filter is on which allows frequencies higher than a particular cutoff frequency to pass through while lower ones are attenuated.
+\end{definition}
+Two common high pass filters are the RL and CR filters.
+\begin{figure}[H]
+    \centering
+        \begin{circuitikz} \draw
+            (0, 0) node[left] {$\tilde{V}_{in}$} to[capacitor, o-o, l=C] 
+            (3, 0) node[right] {$\tilde{V}_{out}$}
+            (2.5, 0) to[resistor, l=R] (2.5, -2) node[ground] {};
+        \end{circuitikz}
+        \begin{circuitikz} \draw
+            (0, 0) node[left] {$\tilde{V}_{in}$} to[resistor, o-o, l=R] 
+            (3, 0) node[right] {$\tilde{V}_{out}$}
+            (2.5, 0) to[inductor, l=L] (2.5, -2) node[ground] {};
+        \end{circuitikz}
+    \caption{High Pass Filters}
+    \label{}
+\end{figure}
+These both have the transfer function $H(\omega) = \frac{j\omega}{1+\frac{\omega}{\omega_p}}$
+where $\omega_p = \frac{1}{RC}$ or $\omega_p=\frac{R}{L}$ depending on which filter it is.
+Once again, $\omega_p$ is called the cutoff frequency.
+\subsubsection{LC Tank}
+\begin{definition}
+    The LC tank is an inductor and a capacitor in series. When the input is at the resonating frequency, these act like an infinite impedance.
+\end{definition}
+\begin{figure}[H]
+    \centering
+        \begin{circuitikz} \draw
+            (0, 0) node[left] {$\tilde{V}_{in}$} to[capacitor, o-o, l=C] 
+            (3, 0) node[right] {$\tilde{V}_{out}$}
+            (2.5, 0) to[inductor, l=L] (2.5, -2) node[ground] {};
+        \end{circuitikz}
+    \caption{LC Tank}
+    \label{}
+\end{figure}
+The transfer function $H(\omega) = \frac{j\omega L}{j\omega L + \frac{1}{j\omega C}}$. If $\omega = \omega_n = \sqrt{\frac{1}{LC}}$, 
+then this transfer function gets infinitely large effectively acting like an infinite impedance. $\omega_n$ is called the resonant frequency.
 \section{Discrete Time Models}
 Although circuits and other systems function in continuous time, computers can only act in discrete time.
 This means the signals they send out to try and control the system are piecewise-continuous, and they can only sense the system at specified intervals $\delta$.
@@ -26,7 +713,6 @@ Keep in mind that $t=\delta i$ where $t$ is the continuous time.
 \begin{definition}
     The discrete-time state space model is $$\vec{x}_d[i+1]=A_d\vec{x}_d[i]+B_d\vec{u}[i]+\vec{w}[i]$$ where $\vec{w}[i]$ is some disturbance.
 \end{definition}
-
 \subsection{Converting between continuous time and discrete time}
 To see how to convert between a continuous time model to a discrete time model, consider the following system.
 \[
