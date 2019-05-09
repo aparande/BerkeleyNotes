@@ -21,22 +21,26 @@
 \author{Anmol Parande}
 \date{Spring 2019 - Professors Anant Sahai, Kris Pister, and Jaijeet Roychowdhury}
 \maketitle
+\tableofcontents
+\newpage
 \section{Digital Circuits}
 \begin{definition}
     A digital circuit interprets a continuous signal (like voltage) as a discrete quantity (such as logic "1" and logic "0")\\
     \begin{figure}[!h]
     \centering
-        $V_{ss}$ \begin{tikzpicture}
+        \begin{tikzpicture}
             \draw (4,0) -- (8,0);
-            \draw (4,0.25) -- (4,-0.25);
-            \draw (8,0.25) -- (8,-0.25);
+            \draw (4 ,3pt) -- (4 ,-3pt) node[anchor=north] {$V_{SS}$};
+            \draw (8 ,3pt) -- (8 ,-3pt) node[anchor=north] {$V_{DD}$};
+            \draw (5, 6pt) node[] {0};
+            \draw (7, 6pt) node[] {1};
             \draw (6,0.25) -- (6,-0.25);
-        \end{tikzpicture} $V_{DD}$
+        \end{tikzpicture}
     \end{figure}
 \end{definition}
 The opposite of a digital circuit is an analog circuit.
 \begin{definition}
-    An analog circuit operatoes on continuous signals
+    An analog circuit operates on continuous signals
 \end{definition}
 In a digital circuit, small changes to inputs don't lead to large changes in output. This makes them more robust to noise.
 
@@ -45,9 +49,9 @@ In a digital circuit, small changes to inputs don't lead to large changes in out
     A transistor is an electronic device that, in it most simple form, acts like a voltage controlled switch
 \end{definition}
 \begin{definition}
-    A CMOS (Complimentary metal oxide semiconductor) transistor circuits are made of PMOS and NMOS transistors to make digitial circuits.
+    CMOS (Complimentary metal oxide semiconductor) transistor circuits are made of PMOS and NMOS transistors to make digitial circuits.
 \end{definition}
-CMOS circuits are useful because they use less power than either one alone because current only flows when either the PMOS or NMOS is on, but not when both are off.
+CMOS circuits are useful because they use less power than if each transistor type was used alone because current only flows when either the PMOS or NMOS is on, but not when both are off.
 \begin{figure}[H]
     \centering
     \begin{circuitikz}[american voltages, european resistors]
@@ -96,7 +100,7 @@ This allows us to most simply model the transistors as switches.
     \caption{A NMOS Switch Model (left), PMOS Switch Model (right)}
     \label{}
 \end{figure}
-Here, a the 0 and 1 represent logical 0 and logical 1.
+Here, the 0 and 1 represent logical 0 and logical 1.
 In this case, $V_G > V_{th}$ is logical 1 and $V_G < V_{th}$ is logical 0.
 Logical 1 can be thought of as "high voltage" whereas logical 0 can be thought of as "low voltage".
 \\\\
@@ -309,7 +313,7 @@ With transistors, this looks like:
     \caption{CMOS NOR}
     \label{}
 \end{figure}
-In general, CMOS circuits can be thought of as "pull down" consisting of PMOS transitors and "push up" networks consisting of NMOS transistors.
+In general, CMOS circuits can be thought of as a "pull down" networks consisting of PMOS transitors and "push up" networks consisting of NMOS transistors.
 This is because the PMOS transistors serve to "pull" $V_{DD}$ down the output where as the NMOS transistors "push" $V_{SS}$ up to the output.
 \\\\An interesting fact is that NAND, NOR, and NOT gates are universal. This means any logical operator can be constructed out of them.
 \section{Transient Analysis}

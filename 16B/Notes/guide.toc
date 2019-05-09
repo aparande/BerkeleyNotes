@@ -1,0 +1,53 @@
+\contentsline {section}{\numberline {1}Digital Circuits}{3}{section.1}
+\contentsline {subsection}{\numberline {1.1}Transistors}{3}{subsection.1.1}
+\contentsline {subsection}{\numberline {1.2}Logic Circuits}{5}{subsection.1.2}
+\contentsline {section}{\numberline {2}Transient Analysis}{7}{section.2}
+\contentsline {subsection}{\numberline {2.1}RC Circuits}{7}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}RL Circuits}{10}{subsection.2.2}
+\contentsline {section}{\numberline {3}Frequency Analysis}{11}{section.3}
+\contentsline {subsection}{\numberline {3.1}Phasor Representation}{11}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Impedance}{12}{subsection.3.2}
+\contentsline {subsubsection}{\numberline {3.2.1}Impedance of a Resistor}{12}{subsubsection.3.2.1}
+\contentsline {subsubsection}{\numberline {3.2.2}Impedance of a Capacitor}{12}{subsubsection.3.2.2}
+\contentsline {subsubsection}{\numberline {3.2.3}Impedance of an Inductor}{13}{subsubsection.3.2.3}
+\contentsline {subsection}{\numberline {3.3}Phasor Analysis}{13}{subsection.3.3}
+\contentsline {subsection}{\numberline {3.4}Transfer Functions}{14}{subsection.3.4}
+\contentsline {subsection}{\numberline {3.5}Bode Plots}{15}{subsection.3.5}
+\contentsline {subsection}{\numberline {3.6}Filters}{17}{subsection.3.6}
+\contentsline {subsubsection}{\numberline {3.6.1}Low Pass Filters}{17}{subsubsection.3.6.1}
+\contentsline {subsubsection}{\numberline {3.6.2}High Pass Filters}{17}{subsubsection.3.6.2}
+\contentsline {subsubsection}{\numberline {3.6.3}LC Tank}{18}{subsubsection.3.6.3}
+\contentsline {section}{\numberline {4}Discrete Time Models}{18}{section.4}
+\contentsline {subsection}{\numberline {4.1}Converting between continuous time and discrete time}{18}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}System Identification}{19}{subsection.4.2}
+\contentsline {section}{\numberline {5}Control Theory}{20}{section.5}
+\contentsline {subsection}{\numberline {5.1}Controllability}{20}{subsection.5.1}
+\contentsline {subsection}{\numberline {5.2}Observability}{21}{subsection.5.2}
+\contentsline {subsection}{\numberline {5.3}Stability}{22}{subsection.5.3}
+\contentsline {subsubsection}{\numberline {5.3.1}Stability for a general A matrix}{24}{subsubsection.5.3.1}
+\contentsline {subsection}{\numberline {5.4}Closed Loop Control}{27}{subsection.5.4}
+\contentsline {subsection}{\numberline {5.5}Linearization}{31}{subsection.5.5}
+\contentsline {subsection}{\numberline {5.6}Planning}{34}{subsection.5.6}
+\contentsline {subsubsection}{\numberline {5.6.1}Open Loop Control}{34}{subsubsection.5.6.1}
+\contentsline {subsubsection}{\numberline {5.6.2}Minimum Energy Control}{35}{subsubsection.5.6.2}
+\contentsline {section}{\numberline {6}SVD and PCA}{38}{section.6}
+\contentsline {subsection}{\numberline {6.1}Computing the SVD}{38}{subsection.6.1}
+\contentsline {subsection}{\numberline {6.2}Outer Product Form of SVD}{39}{subsection.6.2}
+\contentsline {subsection}{\numberline {6.3}Approximating a matrix}{39}{subsection.6.3}
+\contentsline {subsubsection}{\numberline {6.3.1}The Moore-Penrose Pseudoinverse}{40}{subsubsection.6.3.1}
+\contentsline {subsection}{\numberline {6.4}PCA}{41}{subsection.6.4}
+\contentsline {section}{\numberline {7}Signal Processing}{43}{section.7}
+\contentsline {subsection}{\numberline {7.1}Interpolation}{43}{subsection.7.1}
+\contentsline {subsubsection}{\numberline {7.1.1}Interpolation with basis functions}{43}{subsubsection.7.1.1}
+\contentsline {subsubsection}{\numberline {7.1.2}Polynomial Interpolation}{45}{subsubsection.7.1.2}
+\contentsline {subsection}{\numberline {7.2}Discrete Fourier Transform}{46}{subsection.7.2}
+\contentsline {subsubsection}{\numberline {7.2.1}Complex Vectors and Matrices}{46}{subsubsection.7.2.1}
+\contentsline {subsubsection}{\numberline {7.2.2}Roots of Unity}{47}{subsubsection.7.2.2}
+\contentsline {subsubsection}{\numberline {7.2.3}The DFT Matrix}{47}{subsubsection.7.2.3}
+\contentsline {subsubsection}{\numberline {7.2.4}Properties of the DFT}{47}{subsubsection.7.2.4}
+\contentsline {subsubsection}{\numberline {7.2.5}The Inverse DFT}{48}{subsubsection.7.2.5}
+\contentsline {subsubsection}{\numberline {7.2.6}Using the DFT for frequency decomposition}{48}{subsubsection.7.2.6}
+\contentsline {subsection}{\numberline {7.3}Fourier Series}{50}{subsection.7.3}
+\contentsline {subsubsection}{\numberline {7.3.1}Building the Fourier Series}{50}{subsubsection.7.3.1}
+\contentsline {subsubsection}{\numberline {7.3.2}Finding $A_i$}{51}{subsubsection.7.3.2}
+\contentsline {subsubsection}{\numberline {7.3.3}Truncated Fourier Series}{51}{subsubsection.7.3.3}
