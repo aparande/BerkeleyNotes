@@ -529,6 +529,180 @@ Now if our original signal was $V = cos(\omega t)$, then $\tilde{V} = \frac{1}{2
 To convert this back into the time domain, we know the phasor is encoding some sinusoidal signal,
 so $$V_{out} = \tilde{V}_{out}e^{j\omega t}+\tilde{V}_{out}e^{-j\omega t} = \frac{1}{2}|H(\omega)|cos(\omega t + \angle H(\omega))$$
 Thus we have recovered our output signal using no calculus.
+\subsection{Transfer Functions}
+Notice how in the previous example, the relationship between our "output" $\tilde{V}_{out}$ and our input $\tilde{V}$ was described by a function $H(\omega)$.
+This function is called the transfer function.
+\begin{definition}
+    The Transfer Function of a circuit is defined as $H(\omega) = \frac{\tilde{X}}{\tilde{V}}$ where $\tilde{X}$ 
+    is the phasor output and $\tilde{V}$ is the phasor input
+\end{definition}
+The transfer function gives us a convenient way to analyze how a circuit will affect an input signal depending on its angular frequency, effectively treating the circuit like a black box.
+An important note is that transfer functions do not just apply to voltages, they can also apply to currents, but for the most part, we will deal with voltages.
+\\\\All transfer functions can be expressed in the form $H(\omega) = \frac{Z(\omega)}{P(\omega)}$. $Z(\omega)$ and $P(\omega)$ are complex polynomials.
+If we factor $P(\omega)$ and $Z(\omega)$, then we see that all transfer functions can be expressed as follows.
+$$H(\omega) = \frac{(j\omega)^{N_{z0}}}{(j\omega)^{N_{p0}}} \frac{\prod_{z=0}^{n}{(j\omega)^z \alpha_z}}{\prod_{p=0}^{m}{(j\omega)^p \beta_p}} = K \frac{(j\omega)^{N_{z0}}}{(j\omega)^{N_{p0}}}\frac{\prod_{i=0}^{n}{(1+\frac{j\omega}{\omega_{zi}})}}{\prod_{k=0}^{m}{(1+\frac{j\omega}{\omega_{pk}})}}$$
+The constants $\omega_z$ are the zeros of the complex polynomial $Z(\omega)$, and the constants $\omega_p$ are the series of the complex polynomial $P(\omega)$.
+$\omega_z$ are called the zeros of the transfer function, and $\omega_p$ are called the poles.
+$N_{z0}$ and $N_{p0}$ are the number of zeros and poles respecively at $\omega=0$.
+\\\\To see how this makes analysis easier, lets look at the transfer function we saw earlier $H(\omega) = \frac{1}{1 + j\omega RC}$.
+We can rewrite $H(\omega) = \frac{1}{1+\frac{\omega}{\omega_p}}$, where $\omega_p = \frac{1}{RC}$.
+Notice how when $\omega >> \omega_p$, $H(\omega) \approx 0$ and when $\omega << \omega_p, H(\omega) \approx 1$.
+This tells us that for frequencies higher than the pole, the input will be attenuated, but for frequencies less than the pole, the signal will be mostly unaffected.
+\subsection{Bode Plots}
+For more complex transfer functions, we need a easier way of analyzing them than taking limits. This is where Bode Plots come in.
+\begin{definition}
+    A Bode Plot is a plot of $|H(\omega)|$ and $\angle H(\omega)$ on a log-log scale
+\end{definition}
+These visually reveal the behavior of circuits. The log-log scale not only allows us to determine the behavior of Bode plots over a large range of frequencies,
+but they also let us easily figure out what the plot looks like because it converts the transfer function into piecewise linear components.
+\\\\To see why, lets write our transfer function in polar form. 
+$$H(\omega) = K \frac{(j\omega)^{N_{z0}}}{(j\omega)^{N_{p0}}}\frac{\prod_{i=0}^{n}{(1+\frac{j\omega}{\omega_{zi}})}}{\prod_{k=0}^{m}{(1+\frac{j\omega}{\omega_{pk}})}} = Ke^{j\frac{\pi}{2}(N_{z0}-N_{p0})} \frac{\prod_{i=0}^{n}{r_{zi}}}{\prod_{k=0}^{m}{r_{pk}}} e^{j(\sum_{i=0}^{n}{z_i} - \sum_{k=0}^{m}{p_k})}$$
+Each $r$ is the magnitude of a factor $1 + \frac{j\omega}{\omega_n}$ where $\omega_n$ is either a root or a pole, and the $z_i, p_k$ are the phases of each factor.
+By writing $H(\omega)$ this way, it is clear that $$|H(\omega)| = K \frac{\prod_{i=0}^{n}{r_{zi}}}{\prod_{k=0}^{m}{r_{pk}}}$$
+If we take the log of this, we get $$log(|H(\omega)|) = log(K) + \sum_{i=0}^{n}{log(r_{zi})} - \sum_{k=0}^{m}{log(r_{pk})}$$
+Likewise, the exponential form of $H(\omega)$ tells us that $$\angle H(\omega) = \frac{\pi}{2}(N_{z0}-N_{p0})+ (\sum_{i=0}^{n}{z_i} - \sum_{k=0}^{m}{p_k})$$
+Next, we should verify if we can approximate these equations as linear on a log-log scale.
+Take the example transfer function $H(\omega) = \frac{1}{1+\frac{j\omega}{\omega_p}} = \frac{1}{r_p}e^{-j\theta_p}$.
+\[
+    \begin{array}{cccc}
+        \text{if } \omega = \omega_p & H(\omega) = \frac{1}{1+j} & r_p = \sqrt{2} & \theta_p = \frac{\pi}{4}\\
+        \text{if } \omega = 10\omega_p & H(\omega) = \frac{1}{1+10j} & r_p \approx 10 & \theta_p \approx \frac{\pi}{2}\\
+        \text{if } \omega = 0.1\omega_p & H(\omega) = \frac{1}{1+0.1j} & r_p \approx 1 & \theta_p \approx 0\\
+    \end{array}
+\]
+Thus we can see at decades away from the poles and zeros, the magnitudes and the phases will have less of an effect.
+Let's try constructing the Bode Plot for this transfer function.
+\begin{center}
+    \begin{tikzpicture}
+        \draw[thick,->] (0,0) -- (4,0);
+        \draw[thick,->] (0,0) -- (0,3);
+        \draw (4.2, 0) node[] {$\omega$};
+        \draw (0, 3.2) node[] {$|H(\omega)|$};
+        \draw(1, 1pt) -- (1, -1pt) node[anchor=north] {$\frac{\omega_p}{10}$};
+        \draw(2, 1pt) -- (2, -1pt) node[anchor=north] {$\omega_p$};
+        \draw(3, 1pt) -- (3, -1pt) node[anchor=north] {$10\omega_p$};
+        \draw (1pt,2 cm) -- (-1pt,2 cm) node[anchor=east] {$\omega^0$};
+        \draw (1pt,1 cm) -- (-1pt,1 cm) node[anchor=east] {$\omega^{-1}$};
+        \draw (0, 2cm) -- (2, 2cm);
+        \draw (2, 2cm) -- (4, 0cm);
+    \end{tikzpicture}
+    \begin{tikzpicture}
+        \draw[thick,->] (0,0) -- (4,0);
+        \draw (4.2, 0) node[] {$\omega$};
+        \draw (0, 3.2) node[] {$\angle H(\omega)$};
+        \draw[thick,->] (0,0) -- (0,3);
+        \draw(1, 1pt) -- (1, -1pt) node[anchor=north] {$\frac{\omega_p}{10}$};
+        \draw(2, 1pt) -- (2, -1pt) node[anchor=north] {$\omega_p$};
+        \draw(3, 1pt) -- (3, -1pt) node[anchor=north] {$10\omega_p$};
+        \draw (1pt,2.5 cm) -- (-1pt,2.5 cm) node[anchor=east] {$0$};
+        \draw (1pt,0.5 cm) -- (-1pt,0.5 cm) node[anchor=east] {$-\frac{\pi}{2}$};
+        \draw (0, 2.5cm) -- (1, 2.5cm);
+        \draw (1, 2.5cm) -- (3, 0.5cm);
+        \draw (3, 0.5cm) -- (4, 0.5cm);
+    \end{tikzpicture}
+\end{center}
+For the magnitude plot, since there are no poles or zeros at $\omega = 0$, we draw a straight line until the pole kicks in at $\omega = \omega_p$ at which point the slope of the line will be -1.
+For the phase plot, we apply the same logic, except the pole kicks in at $\frac{\omega_p}{10}$ (to see why, look above to see how at $\omega = \omega_p$, the phase is $-\frac{\pi}{4}$).
+We can apply this same logic for more complicated transfer functions too.
+Lets take $$H(\omega) = 10^9 \frac{(1+\frac{j\omega}{10^9})}{(j\omega)(1+\frac{j\omega}{10^7})}$$
+Notice we have a zero at $10^9$, poles at $1, 10^7$, and 9 zeros at $\omega = 0$. With this information, we can see the plots will look like this:
+\begin{center}
+    \begin{tikzpicture}
+        \draw[thick,->] (0,0) -- (4,0);
+        \draw[thick,->] (0,0) -- (0,4);
+        \draw (4.2, 0) node[] {$\omega$};
+        \draw (0, 4.4) node[] {$|H(\omega)|$};
+        \draw(0.5, 1pt) -- (0.5, -1pt) node[anchor=north] {$10^6$};
+        \draw(1.5, 1pt) -- (1.5, -1pt) node[anchor=north] {$10^8$};
+        \draw(2.5, 1pt) -- (2.5, -1pt) node[anchor=north] {$10^{10}$};
+        \draw (1pt,4) -- (-1pt,4) node[anchor=east] {$10^3$};
+        \draw (1pt,3) -- (-1pt,3) node[anchor=east] {$10^1$};
+        \draw (1pt,2) -- (-1pt,2) node[anchor=east] {$10^{-1}$};
+        \draw (1pt,1) -- (-1pt,1) node[anchor=east] {$10^{-3}$};
+        \draw (0.5, 4) -- (1, 3.5);
+        \draw (1, 3.5) -- (2, 1.5);
+        \draw (2, 1.5) -- (3, 0.5);
+    \end{tikzpicture}
+    \begin{tikzpicture}
+        \draw[thick,->] (0,0) -- (4,0);
+        \draw (4.2, 0) node[] {$\omega$};
+        \draw (0, 4.2) node[] {$\angle H(\omega)$};
+        \draw[thick,->] (0,0) -- (0,4);
+        \draw(0.5, 1pt) -- (0.5, -1pt) node[anchor=north] {$10^6$};
+        \draw(1.5, 1pt) -- (1.5, -1pt) node[anchor=north] {$10^8$};
+        \draw(2.5, 1pt) -- (2.5, -1pt) node[anchor=north] {$10^{10}$};
+        \draw (1pt,3.5 cm) -- (-1pt,3.5 cm) node[anchor=east] {$0$};
+        \draw (1pt,0.5 cm) -- (-1pt,0.5 cm) node[anchor=east] {$-\pi$};
+        \draw (0, 1.75cm) -- (0.5, 1.75cm);
+        \draw (0.5, 1.75cm) -- (1.5, 0.5cm);
+        \draw (1.5, 0.5cm) -- (2.5, 1.75cm);
+        \draw (2.5, 1.75cm) -- (3.5, 1.75cm);
+    \end{tikzpicture}
+\end{center}
+The pole at 0 kicks in immediately, causing the decreasing magnitude and starting the phase at $\frac{-\pi}{2}$. The second pole at $10^7$ will kick in next, followed by the zero at $10^9$.
+\subsection{Filters}
+One type of circuit which Bode plots make very easy to analyze are filters.
+\subsubsection{Low Pass Filters}
+\begin{definition}
+    A low pass filter is one which allows frequencies below a particular cutoff frequency to pass through while higher ones are attenuated.
+\end{definition}
+Two common low pass filters are the RC filter and the LR filter.
+\begin{figure}[H]
+    \centering
+        \begin{circuitikz} \draw
+            (0, 0) node[left] {$\tilde{V}_{in}$} to[resistor, o-o, l=R] 
+            (3, 0) node[right] {$\tilde{V}_{out}$}
+            (2.5, 0) to[capacitor, l=C] (2.5, -2) node[ground] {};
+        \end{circuitikz}
+        \begin{circuitikz} \draw
+            (0, 0) node[left] {$\tilde{V}_{in}$} to[inductor, o-o, l=L] 
+            (3, 0) node[right] {$\tilde{V}_{out}$}
+            (2.5, 0) to[resistor, l=R] (2.5, -2) node[ground] {};
+        \end{circuitikz}
+    \caption{Low Pass Filters}
+    \label{}
+\end{figure}
+These both have the transfer function $H(\omega) = \frac{1}{1+\frac{j\omega}{\omega_p}}$ where $\omega_p = \frac{1}{RC}$ or $\omega_p=\frac{R}{L}$ depending on which filter it is.
+In this case, $\omega_p$ is called the cutoff frequency.
+\subsubsection{High Pass Filters}
+\begin{definition}
+    A high pass filter is on which allows frequencies higher than a particular cutoff frequency to pass through while lower ones are attenuated.
+\end{definition}
+Two common high pass filters are the RL and CR filters.
+\begin{figure}[H]
+    \centering
+        \begin{circuitikz} \draw
+            (0, 0) node[left] {$\tilde{V}_{in}$} to[capacitor, o-o, l=C] 
+            (3, 0) node[right] {$\tilde{V}_{out}$}
+            (2.5, 0) to[resistor, l=R] (2.5, -2) node[ground] {};
+        \end{circuitikz}
+        \begin{circuitikz} \draw
+            (0, 0) node[left] {$\tilde{V}_{in}$} to[resistor, o-o, l=R] 
+            (3, 0) node[right] {$\tilde{V}_{out}$}
+            (2.5, 0) to[inductor, l=L] (2.5, -2) node[ground] {};
+        \end{circuitikz}
+    \caption{High Pass Filters}
+    \label{}
+\end{figure}
+These both have the transfer function $H(\omega) = \frac{j\omega}{1+\frac{\omega}{\omega_p}}$
+where $\omega_p = \frac{1}{RC}$ or $\omega_p=\frac{R}{L}$ depending on which filter it is.
+Once again, $\omega_p$ is called the cutoff frequency.
+\subsubsection{LC Tank}
+\begin{definition}
+    The LC tank is an inductor and a capacitor in series. When the input is at the resonating frequency, these act like an infinite impedance.
+\end{definition}
+\begin{figure}[H]
+    \centering
+        \begin{circuitikz} \draw
+            (0, 0) node[left] {$\tilde{V}_{in}$} to[capacitor, o-o, l=C] 
+            (3, 0) node[right] {$\tilde{V}_{out}$}
+            (2.5, 0) to[inductor, l=L] (2.5, -2) node[ground] {};
+        \end{circuitikz}
+    \caption{LC Tank}
+    \label{}
+\end{figure}
+The transfer function $H(\omega) = \frac{j\omega L}{j\omega L + \frac{1}{j\omega C}}$. If $\omega = \omega_n = \sqrt{\frac{1}{LC}}$, 
+then this transfer function gets infinitely large effectively acting like an infinite impedance. $\omega_n$ is called the resonant frequency.
 \section{Discrete Time Models}
 Although circuits and other systems function in continuous time, computers can only act in discrete time.
 This means the signals they send out to try and control the system are piecewise-continuous, and they can only sense the system at specified intervals $\delta$.
