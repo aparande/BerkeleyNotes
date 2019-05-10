@@ -461,7 +461,7 @@ This encoding is known as a phasor, and lets call it $\tilde{V} = \frac{V_0}{2}e
 \begin{definition}
     A phasor encodes both the amplitude and phase of a sinusoidal input to a circuit.
 \end{definition}
-Notice that we can do normal circuit analysis with phasors. For example, the current in this circuit is $I = V/R = \frac{V_0}{R}V_0cos(\omega t + \theta)$. 
+Notice that we can do normal circuit analysis with phasors. For example, the current in this circuit is $I = \frac{V}{R} = \frac{V_0}{R}cos(\omega t + \theta)$. 
 It's phasor representation is $\tilde{I} = \frac{V_0}{2R}e^{j\theta}$. This is exactly what we would get if we applied Ohm's law on the phasor $\tilde{V}$ (i.e, $\tilde{V} = \tilde{I}R$)
 \subsection{Impedance}
 In the time domain, the relationship between the voltage and current is the resistance. In the frequency domain, we define a more general concept called Impedance.
@@ -2275,11 +2275,11 @@ Since $F_N=F_N^T$,
 \[
     F_N\bar{\vec{u}}_l = \left[
         \begin{array}{c}
-            \vec{u}_0\bar{\vec{u}}_l\\
+            \vec{u}_0^T\bar{\vec{u}}_l\\
             \vdots\\
-            \vec{u}_l\bar{\vec{u}}_l\\
+            \vec{u}_l^T\bar{\vec{u}}_l\\
             \vdots\\
-            \vec{u}_{N-1}\bar{\vec{u}}_l
+            \vec{u}_{N-1}^T\bar{\vec{u}}_l
         \end{array}
     \right] = \left[
         \begin{array}{c}
@@ -2310,7 +2310,7 @@ Thus
     \end{array}
 \]
 This means that if our signal is one of our harmonic frequencies, 
-we can identify which frequency based on the entries in the DFT basis.
+we can identify which frequency it is based on the entries in the DFT basis.
 Accordingly, if our signal is a sum of our harmnoic frequencies, then
 \[
     \begin{array}{c}
@@ -2344,21 +2344,21 @@ This is the Fourier series of our periodic signal.
 \subsubsection{Finding $A_i$}
 We now need an easy way to find the coefficients $A_i$ in our summation.
 To get the kth coefficient, multiply both sides of the equation by $e^{-j2\pi k f_0t}$
-$$e^{-j2\pi k f_0t} x(t) = \sum_{-\infty}^{\infty}{A_i e^{j2\pi i f_0 t} e^{-j2\pi k f_0t}} = \sum_{-\infty}^{\infty}{A_i e^{j2\pi (i-k) f_0 t}}$$
+$$e^{-j2\pi k f_0t} x(t) = \sum_{i=-\infty}^{\infty}{A_i e^{j2\pi i f_0 t} e^{-j2\pi k f_0t}} = \sum_{i=-\infty}^{\infty}{A_i e^{j2\pi (i-k) f_0 t}}$$
 Now we can integrate both sides of the equation over our period T.
-$$\int_{0}^{T}{e^{-j2\pi k f_0t} x(t)dt} = \sum_{-\infty}^{\infty}{A_i \int_{0}^{T}{e^{j2\pi (i-k) f_0 t}dt}}$$
+$$\int_{0}^{T}{e^{-j2\pi k f_0t} x(t)dt} = \sum_{i=-\infty}^{\infty}{A_i \int_{0}^{T}{e^{j2\pi (i-k) f_0 t}dt}}$$
 If $i = k$,
 $$\int_{0}^{T}{e^{j2\pi (i-k) f_0 t}dt} = \int_{0}^{T}{e^{j2\pi (k-k) f_0 t}dt} = T$$
 if $i \ne k$
 $$\int_{0}^{T}{e^{j2\pi (i-k) f_0 t}dt} = \frac{1}{j2\pi (i-k)f_0}\left[e^{j2\pi(i-k)f_0 T} - 1 \right] = 1 - 1 = 0$$
 This means
-$$e^{-j2\pi k f_0t} x(t) = \sum_{-\infty}^{\infty}{A_i e^{j2\pi (i-k) f_0 t}} = T A_k$$
+$$e^{-j2\pi k f_0t} x(t) = \sum_{i=-\infty}^{\infty}{A_i e^{j2\pi (i-k) f_0 t}} = T A_k$$
 Therefore
 $$A_k = \frac{1}{T}\int_{0}^{T}{e^{-j2\pi k f_0t} x(t)dt}$$
 \subsubsection{Truncated Fourier Series}
 Since the Fourier Series requires an infinite number of terms, it's more useful to be able to truncate it.
 If we change the bounds of the sum from $[-\infty, \infty]$ to $[-M, M]$ for $M\in\mathbb{R}$, then we get the truncated Fourier Series.
-$$\hat{x}(t) = \sum_{-M}{M}{A_i e^{j2\pi(if_0)t}}$$
+$$\hat{x}(t) = \sum_{i=-M}^{M}{A_i e^{j2\pi(if_0)t}}$$
 We can do this because if we want a particular maximum error $\epsilon$, we can choose our M such that $|\hat{x}(t)-x(t)|<\epsilon$.
 Also, physical systems generally don't have incredibly high frequencies, so we can safely truncate the series because their $A_k$ will be small.
 \end{document}
