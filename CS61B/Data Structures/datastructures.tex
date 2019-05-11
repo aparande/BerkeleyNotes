@@ -213,4 +213,14 @@ The root node will hold the number of children (the weight) as its element.
      isConnected & $\Theta(logN)$ & $\Theta(logN)$\\
     \end{tabular}
 \end{center}
+\section{Graph}
+\begin{center}
+    \begin{tabular}{ c | c | c | c | c}
+     Representation & addEdge & print & hasEdge & Space\\
+     \hline
+     Adjacency Matrix & $\Theta(1)$ & $\Theta(V^2)$ & $\Theta(1)$ & $\Theta(V^2)$\\ 
+     List of Edges & $\Theta(1)$ & $\Theta(E)$ & $\Theta(E)$ & $\Theta(E)$\\ 
+     Adjacency List & $\Theta(1)$ & $\Theta(V + E)$ & $\Theta(ElogV)$ & $\Theta(E+V)$\\ 
+    \end{tabular}
+\end{center}
 \end{document}
