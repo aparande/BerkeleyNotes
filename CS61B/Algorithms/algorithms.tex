@@ -12,46 +12,36 @@
 \section{Tree Traversals}
 \subsection{Preorder Traversal}
 In a preorder traversal a node is visited before any of its children are visited.
-\begin{lstlisting}[language=Java]
-    public void preorder(TreeNode node) {
-        if (node == null) {
-            return;
-        }
-        visit(node);
-        for (TreeNode child : node.children) {
-            preorder(child);
-        }
-    }
+\begin{lstlisting}[]
+    if node == null:
+        return
+    visit(node);
+    for child in node.children:
+        preorder(child)
 \end{lstlisting}
 \subsection{In Order Traversal}
 For a Binary Tree, an in order traversal is simply the elements when read from left to right.
-\begin{lstlisting}[language=Java]
-    public void inorder(BNode node) {
-        if (node == null) {
-            return;
-        }
-        inorder(node.left);
-        visit(node);
-        inorder(node.right);
-    }
+\begin{lstlisting}
+    if node == null
+        return
+    inorder(node.left)
+    visit(node)
+    inorder(node.right)
 \end{lstlisting}
 \subsection{Post Order Traversal}
 In a postorder traversal, a node is visited after its children are visited.
-\begin{lstlisting}[language=Java]
-    public void postorder(TreeNode node) {
-        if (node == null) {
-            return;
-        }
-        for (TreeNode child : node.children) {
-            postorder(child);
-        }
-        visit(child);
-    }
+\begin{lstlisting}
+    if node == null
+        return
+    for child in node.children:
+        postorder(child)
+    visit(child)
 \end{lstlisting}
 \subsection{Level Order Traversal}
 In a level order traversal, the nodes of each level of the tree are visited in order.
 It is done through a Breadth-First Search of the tree (see below)
-\section{Breath-First Search}
+\section{Graph Traversal}
+\subsection{Breath-First Search}
 The idea of breadth first search is to visit all children before visiting the children's children.
 Its runtime is $O(|V|+|E|)$ where $V$ is the set of vertices and $E$ is the set of edges.
 \begin{lstlisting}
@@ -62,11 +52,12 @@ Its runtime is $O(|V|+|E|)$ where $V$ is the set of vertices and $E$ is the set 
             keep track of some statistic
             add n to end the queue
 \end{lstlisting}
-\section{Depth-First Search}
+Breadth-first search is a good algorithm for finding the shortest path between two nodes in an unweighted graph.
+\subsection{Depth-First Search}
 The idea of depth-first search is to visit all the children of a child before visiting the nodes other children.
 The preorder is the order in which DFS calls are made. The postorder is the order of DFS returns.
 It's runtime is $O(|V|+|E|)$.
-\subsection{Pre-Order}
+\subsubsection{Pre-Order}
 \begin{lstlisting}
     add start node to the stack
     while stack is not empty:
@@ -76,18 +67,13 @@ It's runtime is $O(|V|+|E|)$.
             mark(n)
             stack.push(n)
 \end{lstlisting}
-\subsection{PostOrder}
+\subsubsection{PostOrder}
 \begin{lstlisting}
-    DFS(Vertex v) {
-        mark v visited
-        set color of v to gray
-        for each successor v' of v {
-	        if v' not yet visited {
-	            DFS(v')
-	        }
-        }
-        doAction(v)
-    }
+    mark v as visited
+    for each successor v' of v {
+        if v' not yet visited:
+            DFS(v')
+    doAction(v)
 \end{lstlisting}
 \section{Dijkstra's Algorithm}
 Dijkstra's algorithm helps build the shortest paths tree starting from a particular source node.
@@ -294,7 +280,7 @@ If N is the number of elements in the array and R is the size of the alphabet
 \textbf{Time Complexity: } $\Theta(N + R)$\\
 \textbf{Space Complexity: } $\Theta(N + R)$\\
 \textbf{Stable?: } Yes\\
-\textbf{Note: } As long as $N >> R$ then counting sort will be very fast.
+\textbf{Note: } As long as $N \ge R$ then counting sort will be very fast.
 \subsection{LSD Radix Sort}
 Least Significant Digit Radix sort uses counting sort to sort elements comprised of a sequency of a finite alphabet (like Strings or Integers).
 The idea is to apply counting sort for each digit starting with the least significant digit and working leftwards.
@@ -306,6 +292,7 @@ If N is the number of elements, W is the length of the longest word, and R is th
 \textbf{Time Complexity: } $\Theta(WN + WR)$\\
 \textbf{Space Complexity: } $\Theta(N + R)$\\
 \textbf{Stable?: } Yes
+\textbf{Identifying Characteristics: } The last few digits of the array elements are sorted.
 \subsection{MSD Radix Sort}
 Most Significant Radix Sort is like LSD Radix Sort except it starts with the most significant digit and works its way rightwards.
 However, if we proceed the same way as we did LSD radix sort, our sort will not be accurate. For MSD radix sort, it is necessary
@@ -321,8 +308,9 @@ to only apply counting sort to each subproblem after we sort each subsequent dig
 \end{lstlisting}
 \textbf{Best Case Time Complexity: } $\Theta(N + R)$\\
 \textbf{Worst Case Time Complexity: } $\Theta(WN + WR)$\\
-\textbf{Space Complexity: } $\Theta(N + WR)$\\
+\textbf{Space Complexity: } $\Theta(N + R)$\\
 \textbf{Stable?: } Yes\\
+\textbf{Identifying Characteristics: } Intermediary steps all have the front few digits in sorted order.
 \textbf{Notes: } The best case time complexity comes about when each element is distinguished only by the most significant digit.
 \subsection{Comparing Sorts}
 \begin{centering}
@@ -353,14 +341,13 @@ to only apply counting sort to each subproblem after we sort each subsequent dig
 The problem of a topological sort is given a directed acyclic graph (DAG), find an ordering of vertices that satisfies the directionality of the edges in the graph.
 I.e, if the edges of a graph indicate that a task must come after a specific task, then find a valid ordering of tasks.
 \begin{lstlisting}
-    procedure:
-        while not all visited:
-            DFS(v) for arbitrary v
-            if not all visited:
-                repeat on unmarked vertex
-            record DFS post order
-        reverse DFS post-order
+    while not all visited:
+        DFS(v) for arbitrary v
+        if not all visited:
+            repeat on unmarked vertex
+        record DFS post order
+    reverse DFS post-order
 \end{lstlisting}
-\textbf{Time Complexity: } $O(V+E)$
-\textbf{Space Complexity: } $(\Theta(V))$
+\textbf{Time Complexity: } $O(V+E)$\\
+\textbf{Space Complexity: } $\Theta(V)$
 \end{document}
