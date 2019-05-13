@@ -8,7 +8,7 @@
     \author{Anmol Parande}
     \date{Spring 2019 - Professor Josh Hug}
     \maketitle
-
+\tableofcontents
 \section{Tree Traversals}
 \subsection{Preorder Traversal}
 In a preorder traversal a node is visited before any of its children are visited.
@@ -75,7 +75,21 @@ It's runtime is $O(|V|+|E|)$.
             DFS(v')
     doAction(v)
 \end{lstlisting}
-\section{Dijkstra's Algorithm}
+\subsubsection{Topological Sort}
+The problem of a topological sort is given a directed acyclic graph (DAG), find an ordering of vertices that satisfies the directionality of the edges in the graph.
+I.e, if the edges of a graph indicate that a task must come after a specific task, then find a valid ordering of tasks.
+\begin{lstlisting}
+    while not all visited:
+        DFS(v) for arbitrary v
+        if not all visited:
+            repeat on unmarked vertex
+        record DFS post order
+    reverse DFS post-order
+\end{lstlisting}
+\textbf{Time Complexity: } $O(V+E)$\\
+\textbf{Space Complexity: } $\Theta(V)$
+\section{SPTs}
+\subsection{Dijkstra's Algorithm}
 Dijkstra's algorithm helps build the shortest paths tree starting from a particular source node.
 \begin{lstlisting}
     add all vertices to priority queue with infinity priority
@@ -94,7 +108,7 @@ The relaxation procedure is as follows
         priority = w
 \end{lstlisting}
 Dijkstra's algorithm runs in $O(|E|log|V|)$
-\section{$A^*$ Search}
+\subsection{$A^*$ Search}
 $A^*$ search is like Dijkstra's in that it finds the shortest path between two nodes.
 However, it is different because the priority of each vertex is the distance to that vertex plus a heuristic value
 \\\\
@@ -312,7 +326,7 @@ to only apply counting sort to each subproblem after we sort each subsequent dig
 \textbf{Stable?: } Yes\\
 \textbf{Identifying Characteristics: } Intermediary steps all have the front few digits in sorted order.
 \textbf{Notes: } The best case time complexity comes about when each element is distinguished only by the most significant digit.
-\subsection{Comparing Sorts}
+\subsection{Runtime Table}
 \begin{centering}
     \begin{tabular}{| c | c | c | c | c |}
         \hline
@@ -337,17 +351,4 @@ to only apply counting sort to each subproblem after we sort each subsequent dig
         
     \end{tabular}
 \end{centering}
-\section{Topological Sort}
-The problem of a topological sort is given a directed acyclic graph (DAG), find an ordering of vertices that satisfies the directionality of the edges in the graph.
-I.e, if the edges of a graph indicate that a task must come after a specific task, then find a valid ordering of tasks.
-\begin{lstlisting}
-    while not all visited:
-        DFS(v) for arbitrary v
-        if not all visited:
-            repeat on unmarked vertex
-        record DFS post order
-    reverse DFS post-order
-\end{lstlisting}
-\textbf{Time Complexity: } $O(V+E)$\\
-\textbf{Space Complexity: } $\Theta(V)$
 \end{document}
