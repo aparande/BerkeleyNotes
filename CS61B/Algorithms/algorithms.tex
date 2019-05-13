@@ -136,4 +136,206 @@ The runtime is $O(|E|log|V|)$.
             add e to MST
 \end{lstlisting}
 The runtime is also $O(|E|log|V|)$.
+\section{Sorting}
+In sorting, an \textbf{Inversion} is a pair of elements which is out of order.
+The goal of sorting is to reduce the number of inversions to 0.\\\\
+A sort is \textbf{stable} if the ordering of equal elements in the sorted array is the same as their ordering in the original array.
+\\\\
+All comparison sorts are bounded below by $\Omega(NlogN)$, but sorts which do not rely on comparisons can do better.
+\subsection{Selection Sort}
+Selection sort maintains a sorted portion of the array by searching through the array for the minimum element and swapping it to the front.
+\begin{lstlisting}[]
+    def selectionSort(arr):
+        for (i=0; i < arr.length; i++):
+            minIndex = i
+            for (j=i+1; j < arr.leng; j++):
+                if (arr[j] < arr[i]):
+                    minIndex = j;
+            temp = arr[i];
+            arr[i] = arr[minIndex];
+            arr[minIndex] = temp;
+\end{lstlisting}
+\textbf{Time Complexity: } $\Theta(N^2)$\\
+\textbf{Space Complexity: } $\Theta(1)$\\
+\textbf{Stable?: } Yes\\
+\textbf{Identifying Characteristics: } In intermediate steps, the beginning portion of the array will always be in sorted order. 
+\subsection{Heap Sort}
+The essential idea of heap sort is to put the entire array into a max-heap, and then build up the sorted array backwards by popping of the top element.\\
+If we do this naiively (i.e by copying the original array into a new heap and then building a new array, the space complexity is $\Theta(N)$). However, it can be done in place
+using array heapification.\\\\
+\textbf{Best Case Time Complexity: }$\Theta(N)$ (All elements are equal)\\
+\textbf{Worst Case Time Complexity: }$\Theta(NlogN)$\\
+\textbf{Space Complexity: }$\Theta(1)$\\
+\textbf{Stable?: }No\\
+\textbf{Identifying Characteristics: }The maximum values are sent to the back of the array during intermediate steps.
+\subsubsection{Bottom-Up Heapification}
+Bottom-Up Heapification turns an array into a Max-Heap in place.
+Simply sink the nodes in reverse level order and you will get a Max Heap.
+Once this is done, heap sort can proceed mostly as usual.
+\subsection{Merge Sort}
+Mergesort is a recursive sort which divides the array in two, sorts both halves, and then merges the results.
+\begin{lstlisting}[language=Python]
+    def mergeSort(arr):
+        if arr.length = 1:
+            return arr
+        mid = arr.length // 2
+        leftHalf = mergeSort(arr[:mid])
+        rightHalf = mergeSort(arr[mid:])
+        i, j, k = 0, 0, 0
+        sortedArr = new T[arr.length]
+        while (i < leftHalf.length && j < rightHalf.length):
+            if (leftHalf[i] <= rightHalf[j]): 
+                sortedArr[k] = leftHalf[i] 
+                i++
+            else:
+                sortedArr[k] = rightHalf[j] 
+                j++
+            k++
+        } 
+    
+        while (i < leftHalf.length):
+            sortedArr[k] = leftHalf[i]
+            i++
+            k++
+    
+        while (j < rightHalf.length): 
+            sortedArr[k] = rightHalf[j]
+            j++
+            k++
+        return sortedArr
+\end{lstlisting}
+\textbf{Time Complexity: } $\Theta(NlogN)$\\
+\textbf{Space Complexity: } $\Theta(N)$\\
+\textbf{Stable?: } Yes\\
+\textbf{Identifying Characteristics: } Elements from different halves of the array do not cross during intermediate steps of the algorithm.
+\subsection{Insertion Sort}
+Insertion sort maintains a sorted portion in the beginning of the array. Out of place elements are swapped backwards until they arrive in their correct position.
+Insertion sort performs very well on arrays with few inversions and with few elements.
+\begin{lstlisting}[]
+    def insertionSort(arr):
+        n = arr.length; 
+        for (int i = 1; i < n; i++) { 
+            key = arr[i]
+            j = i - 1
+            while (j >= 0 && arr[j] > key):
+                arr[j + 1] = arr[j]
+                j--
+            arr[j + 1] = key; 
+\end{lstlisting}
+\textbf{Best Case Time Complexity: } $\Theta(N)$\\
+\textbf{Worst Case Time Complexity: } $\Theta(N^2)$\\
+\textbf{Space Complexity: } $\Theta(1)$\\
+\textbf{Stable?: } Yes\\
+\textbf{Identifying Characteristics: } A distinct sorted portion exists at the beginning of the array.
+\subsection{QuickSort}
+QuickSort works based on the idea of partionining. To partition an array based on a particular pivot element,
+reorder the array so everything left of the pivot is smaller and everything to the right is larger or equal.
+Essentially, if we partition the array, and then QuickSort both halves, we will arrive at a sorted array.
+\begin{lstlisting}
+    def quicksort(arr):
+        pivotIndex = choosePivot(arr)
+        arr = partition(arr, pivotIndex)
+        leftHalf = quicksort(arr[:pivotIndex])
+        rightHalf = quicksort(arr[pivotIndex+1:])
+        return leftHalf + rightHalf
+\end{lstlisting}
+\subsubsection{3 Scan Partitioning}
+\begin{lstlisting}
+    pivot = arr[0]
+    partitionedArr = new array
+    copy elements < pivot into partitionedArr
+    copy elements = pivot into partitionedArr
+    copy elements > pivot into partitionedArr
+    return partitionedArr
+\end{lstlisting}
+\subsubsection{Hoare Partitioning}
+\begin{lstlisting}
+    left,right = 0, arr.length - 1
+    while (left < right):
+        while arr[left] < pivot:
+            left++
+        while arr[right] < pivot:
+            right++
+        swap(arr[left], arr[right])
+        left++
+        right--
+\end{lstlisting}
+\textbf{Best Case Time Complexity: } $\Theta(NlogN)$\\
+\textbf{Worst Case Time Complexity: } $\Theta(N^2)$\\
+\textbf{Space Complexity: } $\Theta(1)$\\
+\textbf{Stable?: } No\\
+\textbf{Identifying Characteristics: } During intermediary steps, everything left of where the first element in the unsorted array
+ends up is less than the pivot and everything to the right is larger or equal.\\
+\textbf{Note: } The properties of quicksort depends on the partioning scheme, pivot strategy, and whether or not randomization was used.
+\subsection{Counting Sort}
+Counting sort is a non-comparison sort which requires a finitely sized alphabet.
+It merely counts the occurence of each item and then copies them into the proper locations in the sorted array.
+\begin{lstlisting}
+    def countingSort(arr):
+        max = maxElement(arr)
+        int n= arr.length
+        int B[]=new int[n]
+        int C[]=new int[max+1]
+
+        for (int i=0; i <=max; i++)
+            C[i] = 0
+
+        for (int j=0; j<n; j++):
+            C[arr[j]] = C[arr[j]] + 1
+    
+        for (int i=1; i<max+1; i++):
+            C[i] = C[i] + C[i-1]
+
+        for (int j=n-1; j>=0; j--):
+            B[C[arr[j]]-1] = arr[j]
+            C[arr[j]] = C[arr[j]] - 1
+\end{lstlisting}
+If N is the number of elements in the array and R is the size of the alphabet
+\textbf{Time Complexity: } $\Theta(N + R)$\\
+\textbf{Space Complexity: } $\Theta(N + R)$\\
+\textbf{Stable?: } Yes\\
+\textbf{Note: } As long as $N >> R$ then counting sort will be very fast.
+\subsection{LSD Radix Sort}
+Least Significant Digit Radix sort uses counting sort to sort elements comprised of a sequency of a finite alphabet (like Strings or Integers).
+The idea is to apply counting sort for each digit starting with the least significant digit and working leftwards.
+\begin{lstlisting}
+    for (i=0; i < longestElement.length; i++):
+        counting sort based on ith digit
+\end{lstlisting}
+If N is the number of elements, W is the length of the longest word, and R is the size of the alphabet.
+\textbf{Time Complexity: } $\Theta(WN + WR)$\\
+\textbf{Space Complexity: } $\Theta(N + R)$\\
+\textbf{Stable?: } Yes
+\subsection{MSD Radix Sort}
+Most Significant Radix Sort is like LSD Radix Sort except it starts with the most significant digit and works its way rightwards.
+However, if we proceed the same way as we did LSD radix sort, our sort will not be accurate. For MSD radix sort, it is necessary
+to only apply counting sort to each subproblem after we sort each subsequent digit.
+\\\\
+\begin{lstlisting}
+    subproblems = [arr]
+    for (i=longestElement.length-1; i >= 0; i--):
+        for each problem in subproblems:
+            counting sort problem on ith digit
+            add new subproblem to array
+    combine sorted subproblems to get sorted array
+\end{lstlisting}
+\textbf{Best Case Time Complexity: } $\Theta(N + R)$\\
+\textbf{Worst Case Time Complexity: } $\Theta(WN + WR)$\\
+\textbf{Space Complexity: } $\Theta(N + WR)$\\
+\textbf{Stable?: } Yes\\
+\textbf{Notes: } The best case time complexity comes about when each element is distinguished only by the most significant digit.
+\section{Topological Sort}
+The problem of a topological sort is given a directed acyclic graph (DAG), find an ordering of vertices that satisfies the directionality of the edges in the graph.
+I.e, if the edges of a graph indicate that a task must come after a specific task, then find a valid ordering of tasks.
+\begin{lstlisting}
+    procedure:
+        while not all visited:
+            DFS(v) for arbitrary v
+            if not all visited:
+                repeat on unmarked vertex
+            record DFS post order
+        reverse DFS post-order
+\end{lstlisting}
+\textbf{Time Complexity: } $O(V+E)$
+\textbf{Space Complexity: } $(\Theta(V))$
 \end{document}
