@@ -6,7 +6,7 @@
 \begin{document}
     \title{CS61B -- Algorithms}
     \author{Anmol Parande}
-    \date{Spring 2019 - Professor Hug}
+    \date{Spring 2019 - Professor Josh Hug}
     \maketitle
 
 \section{Tree Traversals}
@@ -324,6 +324,31 @@ to only apply counting sort to each subproblem after we sort each subsequent dig
 \textbf{Space Complexity: } $\Theta(N + WR)$\\
 \textbf{Stable?: } Yes\\
 \textbf{Notes: } The best case time complexity comes about when each element is distinguished only by the most significant digit.
+\subsection{Comparing Sorts}
+\begin{centering}
+    \begin{tabular}{| c | c | c | c | c |}
+        \hline
+        Sort & Space Complexity & Best Case Time Complexity & Worst Case Time Complexity & Stable\\
+        \hline
+        Insertion & $\Theta(1)$ & $\Theta(N)$ & $\Theta(N^2)$ & Yes\\
+        \hline
+        Selection & $\Theta(1)$ & $\Theta(N^2)$ & $\Theta(N^2)$ & No\\
+        \hline
+        Heap & $\Theta(1)$ & $\Theta(N)$ & $\Theta(NLogN)$ & No\\
+        \hline
+        Merge& $\Theta(N)$ & $\Theta(NlogN)$ & $\Theta(NLogN)$ & Yes\\
+        \hline
+        Quick& $\Theta(logN)$ & $\Theta(NlogN)$ & $\Theta(N^2)$ & No\\
+        \hline
+        Counting & $\Theta(N+R)$ & $\Theta(N+R)$ & $\Theta(N+R)$ & Yes\\
+        \hline
+        LSD & $\Theta(N+R)$ & $\Theta(WN+WR)$ & $\Theta(WN+WR)$ & Yes\\
+        \hline
+        MSD & $\Theta(N+R)$ & $\Theta(N+R)$ & $\Theta(WN+WR)$ & Yes\\
+        \hline
+        
+    \end{tabular}
+\end{centering}
 \section{Topological Sort}
 The problem of a topological sort is given a directed acyclic graph (DAG), find an ordering of vertices that satisfies the directionality of the edges in the graph.
 I.e, if the edges of a graph indicate that a task must come after a specific task, then find a valid ordering of tasks.
