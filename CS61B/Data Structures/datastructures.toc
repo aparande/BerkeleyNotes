@@ -1,39 +1,39 @@
-\contentsline {section}{\numberline {1}Lists}{3}
-\contentsline {subsection}{\numberline {1.1}SLLists}{3}
-\contentsline {subsubsection}{\numberline {1.1.1}Big-$\Theta $ Bounds}{3}
-\contentsline {subsection}{\numberline {1.2}DLLists}{3}
-\contentsline {subsubsection}{\numberline {1.2.1}Big-$\Theta $ Bounds}{4}
-\contentsline {subsection}{\numberline {1.3}ArrayList}{4}
-\contentsline {subsubsection}{\numberline {1.3.1}Big-$\Theta $ Bounds}{4}
+\contentsline {section}{\numberline {1}Lists}{2}
+\contentsline {subsection}{\numberline {1.1}SLLists}{2}
+\contentsline {subsubsection}{\numberline {1.1.1}Big-$\Theta $ Bounds}{2}
+\contentsline {subsection}{\numberline {1.2}DLLists}{2}
+\contentsline {subsubsection}{\numberline {1.2.1}Big-$\Theta $ Bounds}{3}
+\contentsline {subsection}{\numberline {1.3}ArrayList}{3}
+\contentsline {subsubsection}{\numberline {1.3.1}Big-$\Theta $ Bounds}{3}
 \contentsline {section}{\numberline {2}Trees}{4}
 \contentsline {subsection}{\numberline {2.1}Binary Search Tree}{4}
-\contentsline {subsubsection}{\numberline {2.1.1}Invariants}{5}
-\contentsline {subsubsection}{\numberline {2.1.2}Big-$\Theta $ Bounds}{5}
-\contentsline {subsubsection}{\numberline {2.1.3}Hibbard Deletion}{5}
+\contentsline {subsubsection}{\numberline {2.1.1}Invariants}{4}
+\contentsline {subsubsection}{\numberline {2.1.2}Big-$\Theta $ Bounds}{4}
+\contentsline {subsubsection}{\numberline {2.1.3}Hibbard Deletion}{4}
 \contentsline {subsection}{\numberline {2.2}2-3, 2-3-4 Tree}{5}
 \contentsline {subsubsection}{\numberline {2.2.1}Invariants}{5}
-\contentsline {subsubsection}{\numberline {2.2.2}Big-$\Theta $ Bounds}{6}
-\contentsline {subsection}{\numberline {2.3}Left Leaning Red Black Tree}{6}
-\contentsline {subsubsection}{\numberline {2.3.1}Tree Rotations}{6}
-\contentsline {subsubsection}{\numberline {2.3.2}Inserting into a LLRB}{6}
-\contentsline {subsubsection}{\numberline {2.3.3}Invariants}{6}
+\contentsline {subsubsection}{\numberline {2.2.2}Big-$\Theta $ Bounds}{5}
+\contentsline {subsection}{\numberline {2.3}Left Leaning Red Black Tree}{5}
+\contentsline {subsubsection}{\numberline {2.3.1}Tree Rotations}{5}
+\contentsline {subsubsection}{\numberline {2.3.2}Inserting into a LLRB}{5}
+\contentsline {subsubsection}{\numberline {2.3.3}Invariants}{5}
 \contentsline {subsubsection}{\numberline {2.3.4}Big-$\Theta $ Bounds}{6}
 \contentsline {subsection}{\numberline {2.4}KD-Tree}{6}
-\contentsline {subsubsection}{\numberline {2.4.1}Invariants}{7}
-\contentsline {section}{\numberline {3}Hashtables}{7}
-\contentsline {subsection}{\numberline {3.1}Invariants}{7}
-\contentsline {subsection}{\numberline {3.2}Big-$\Theta $ Bounds}{7}
-\contentsline {section}{\numberline {4}Heaps}{7}
+\contentsline {subsubsection}{\numberline {2.4.1}Invariants}{6}
+\contentsline {section}{\numberline {3}Hashtables}{6}
+\contentsline {subsection}{\numberline {3.1}Invariants}{6}
+\contentsline {subsection}{\numberline {3.2}Big-$\Theta $ Bounds}{6}
+\contentsline {section}{\numberline {4}Heaps}{6}
 \contentsline {subsection}{\numberline {4.1}Invariants}{7}
-\contentsline {subsection}{\numberline {4.2}Big-$\Theta $ Bounds}{8}
-\contentsline {section}{\numberline {5}Tries}{8}
-\contentsline {subsection}{\numberline {5.1}Invariants}{8}
-\contentsline {subsection}{\numberline {5.2}Big-$\Theta $ Bounds}{8}
-\contentsline {section}{\numberline {6}Disjoint Sets}{8}
-\contentsline {subsection}{\numberline {6.1}QuickFind}{8}
+\contentsline {subsection}{\numberline {4.2}Big-$\Theta $ Bounds}{7}
+\contentsline {section}{\numberline {5}Tries}{7}
+\contentsline {subsection}{\numberline {5.1}Invariants}{7}
+\contentsline {subsection}{\numberline {5.2}Big-$\Theta $ Bounds}{7}
+\contentsline {section}{\numberline {6}Disjoint Sets}{7}
+\contentsline {subsection}{\numberline {6.1}QuickFind}{7}
 \contentsline {subsubsection}{\numberline {6.1.1}Big-$\Theta $ Bounds}{8}
-\contentsline {subsection}{\numberline {6.2}Quick Union}{9}
-\contentsline {subsubsection}{\numberline {6.2.1}Big-$\Theta $ Bounds}{9}
-\contentsline {subsection}{\numberline {6.3}Weighted Quick Union}{9}
-\contentsline {subsubsection}{\numberline {6.3.1}Big-$\Theta $ Bounds}{9}
-\contentsline {section}{\numberline {7}Graphs}{9}
+\contentsline {subsection}{\numberline {6.2}Quick Union}{8}
+\contentsline {subsubsection}{\numberline {6.2.1}Big-$\Theta $ Bounds}{8}
+\contentsline {subsection}{\numberline {6.3}Weighted Quick Union}{8}
+\contentsline {subsubsection}{\numberline {6.3.1}Big-$\Theta $ Bounds}{8}
+\contentsline {section}{\numberline {7}Graphs}{8}

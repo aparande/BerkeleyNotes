@@ -3,11 +3,12 @@
 \usepackage{amsmath}
 \usepackage{mathtools}
 \usepackage{listings}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
 \begin{document}
     \title{CS61B -- Algorithms}
     \author{Anmol Parande}
     \date{Spring 2019 - Professor Josh Hug}
-    \maketitle
+\maketitle
 \tableofcontents
 \section{Tree Traversals}
 \subsection{Preorder Traversal}
@@ -171,7 +172,13 @@ using array heapification.\\\\
 \subsubsection{Bottom-Up Heapification}
 Bottom-Up Heapification turns an array into a Max-Heap in place.
 Simply sink the nodes in reverse level order and you will get a Max Heap.
-Once this is done, heap sort can proceed mostly as usual.
+Once this is done, heap sort can proceed mostly as usual.\\\\
+The runtime of bottom-up heapification is $\Theta(N)$
+The worst case will occur when we try to bottom-up heapify a min-heap into a max-heap.
+The bottom level has $\floor{logN}$ elements and will sink 0 times.
+The 2nd to last level has $\floor{logN} - 1$ elements and will sink 1 time.
+The kth level has $2^{\floor{logN}-k}$ elements and will sink k times.
+This means the number of sink operations is $\sum_{k=0}^{\floor{logN}}{k2^{log_2k-1}} = 2N - log_2N - 2$ 
 \subsection{Merge Sort}
 Mergesort is a recursive sort which divides the array in two, sorts both halves, and then merges the results.
 \begin{lstlisting}[language=Python]
@@ -260,7 +267,7 @@ Essentially, if we partition the array, and then QuickSort both halves, we will 
         left++
         right--
 \end{lstlisting}
-\textbf{Best Case Time Complexity: } $\Theta(NlogN)$\\
+\textbf{Best Case Time Complexity:  } $\Theta(NlogN)$\\
 \textbf{Worst Case Time Complexity: } $\Theta(N^2)$\\
 \textbf{Space Complexity: } $\Theta(1)$\\
 \textbf{Stable?: } No\\
