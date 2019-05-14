@@ -170,15 +170,16 @@ using array heapification.\\\\
 \textbf{Stable?: }No\\
 \textbf{Identifying Characteristics: }The maximum values are sent to the back of the array during intermediate steps.
 \subsubsection{Bottom-Up Heapification}
-Bottom-Up Heapification turns an array into a Max-Heap in place.
-Simply sink the nodes in reverse level order and you will get a Max Heap.
+Bottom-Up Heapification turns an array into a Max-Heap in place. Simply sink the nodes in reverse level order and you will get a Max Heap.
 Once this is done, heap sort can proceed mostly as usual.\\\\
 The runtime of bottom-up heapification is $\Theta(N)$
 The worst case will occur when we try to bottom-up heapify a min-heap into a max-heap.
-The bottom level has $\floor{logN}$ elements and will sink 0 times.
-The 2nd to last level has $\floor{logN} - 1$ elements and will sink 1 time.
-The kth level has $2^{\floor{logN}-k}$ elements and will sink k times.
-This means the number of sink operations is $\sum_{k=0}^{\floor{logN}}{k2^{log_2k-1}} = 2N - log_2N - 2$ 
+\begin{itemize}
+    \item The bottom level has $\floor{logN}$ elements and will sink 0 times.
+    \item The 2nd to last level has $\floor{logN} - 1$ elements and will sink 1 time.
+    \item The kth level has $2^{\floor{logN}-k}$ elements and will sink k times.
+\end{itemize}
+If we count the number of sink operations, we get $$\sum_{k=0}^{\floor{logN}}{k2^{log_2k-1}} = 2N - log_2N - 2 \in \Theta(N)$$
 \subsection{Merge Sort}
 Mergesort is a recursive sort which divides the array in two, sorts both halves, and then merges the results.
 \begin{lstlisting}[language=Python]
@@ -358,4 +359,25 @@ to only apply counting sort to each subproblem after we sort each subsequent dig
         
     \end{tabular}
 \end{centering}
+\section{Compression}
+The central idea behind compression is to take a bunch of data and figure out how to compactly represent it.
+One way to do this is to assign a specific codeword to a symbol in the document we want to compress (i.e each letter in the alphabet or each byte in an image).
+In \textbf{Prefix-Free Codes}, none of our codewords is a prefix for the others (i.e \lstinline{01} and \lstinline{010} can't both be codewords because \lstinline{01} prefixes \lstinline{010}). This avoid ambiguity in decoding.
+\subsection{Huffman Encoding}
+Huffman encoding is a special way of constructing a prefix-free code.
+The pseudo-code below describes Huffman Encoding.
+\begin{lstlisting}
+    Calculate the relative frequency of each symbol
+    Assign each symbol to a node with weight = relative frequency
+    Repeat until all nodes belong to a tree:
+        p, q = 2 smallest nodes
+        Make supernode of pq with weight p + q
+\end{lstlisting}
+The resulting tree which Huffman Encoding builds is the encoding tree.
+It is a Trie where each link represents an element of the alphabet we are using to create our codewords.
+Each node appears at the end of a codeword.
+\\\\
+To encode a document, simply convert each symbol into its codeword by looking it up in the Trie.
+To decode a document, find the longest matching prefix of the decoding text, retreive the corresponding symbol,
+and repeat with the rest of the document.
 \end{document}
