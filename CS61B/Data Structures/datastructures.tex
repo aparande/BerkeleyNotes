@@ -8,7 +8,82 @@
     \author{Anmol Parande}
     \date{Spring 2019 - Professor Josh Hug}
     \maketitle
-
+\tableofcontents
+\newpage
+\section{Lists}
+\subsection{SLLists}
+A Single-Linked-List is a one way Linked List (i.e each node keeps a reference to its successor)
+\begin{lstlisting}[language=Java]
+    class SLListNode<T> {
+        T item;
+        SLListNode next;
+    }
+\end{lstlisting}
+To make the logic of methods in SLList easier, we often make the first node in an SLList a $\textbf{Sentinel Node}$.
+The sentinel node contains a null item. If the SLList is empty, then \lstinline{sentinel.next = null}.
+Otherwise, \lstinline{sentinel.next} is the first item of the SLList.
+\subsubsection{Big-$\Theta$ Bounds}
+\begin{center}
+    \begin{tabular}{ c | c }
+     Operation & Time Complexity\\
+     \hline
+     Size & $\Theta(1)$\\ 
+     AddFront & $\Theta(1)$\\  
+     AddLast & $\Theta(N)$\\
+     DeleteFront & $\Theta(1)$\\
+     DeleteLast & $\Theta(N)$\\
+     Get & $\Theta(N)$
+    \end{tabular}
+\end{center}
+\subsection{DLLists}
+Since SLLists take long time to add to the front and to the back, a Double Linked List (DLList) can speed these up.
+\begin{lstlisting}[language=Java]
+    class DLListNode<T> {
+        T item;
+        DLListNode next;
+        DLListNode prev;
+    }
+\end{lstlisting}
+Like in SLLists, we can have a sentinel node to help us simplify operations.
+\lstinline{sentinel.next} will be the first element in the list whereas \lstinline{sentinel.prev} is the last element of the list.
+\subsubsection{Big-$\Theta$ Bounds}
+\begin{center}
+    \begin{tabular}{ c | c }
+     Operation & Time Complexity\\
+     \hline
+     Size & $\Theta(1)$\\ 
+     AddFront & $\Theta(1)$\\  
+     AddLast & $\Theta(1)$\\
+     DeleteFront & $\Theta(1)$\\
+     DeleteLast & $\Theta(1)$\\
+     Get & $\Theta(N)$
+    \end{tabular}
+\end{center}
+\subsection{ArrayList}
+LinkedLists are a poor choice for retrieving information inside of them unless we are only looking for the front or back element (or if the list is short).
+For longer lists, we can make an array-based list called an ArrayList.
+\begin{lstlisting}
+    public class ArrayList<T> {
+        T[] items
+        public void resize(int N);
+    }
+\end{lstlisting}
+An ArrayList simply maintains an array of all the items it has. The caveat is that when the array becomes full, we must resize it.
+The way we resize the array affects its runtimes. If we increase the size of the array by a multiplicative factor (i.e doubling the array each time),
+then the amortized (on average) runtime will still be constant.
+\subsubsection{Big-$\Theta$ Bounds}
+\begin{center}
+    \begin{tabular}{ c | c }
+     Operation & Time Complexity\\
+     \hline
+     Size & $\Theta(1)$\\ 
+     AddFront & $\Theta(1)$\\  
+     AddLast & $\Theta(1)$\\
+     DeleteFront & $\Theta(1)$\\
+     DeleteLast & $\Theta(1)$\\
+     Get & $\Theta(1)$
+    \end{tabular}
+\end{center}
 \section{Trees}
 \subsection{Binary Search Tree}
 In a Binary Search Tree, each node has a value, a left child, and a right child.
@@ -213,7 +288,7 @@ The root node will hold the number of children (the weight) as its element.
      isConnected & $\Theta(logN)$ & $\Theta(logN)$\\
     \end{tabular}
 \end{center}
-\section{Graph}
+\section{Graphs}
 \begin{center}
     \begin{tabular}{ c | c | c | c | c}
      Representation & addEdge & print & hasEdge & Space\\
