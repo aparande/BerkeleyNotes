@@ -147,7 +147,7 @@ A sort is \textbf{stable} if the ordering of equal elements in the sorted array 
 \\\\
 All comparison sorts are bounded below by $\Omega(NlogN)$, but sorts which do not rely on comparisons can do better.
 \subsection{Selection Sort}
-Selection sort maintains a sorted portion of the array by searching through the array for the minimum element and swapping it to the front.
+Selection sort maintains a sorted portion of the array by searching through the array for the minimum element and swapping it to the back of the unsorted part of the array.
 \begin{lstlisting}[]
     def selectionSort(arr):
         for (i=0; i < arr.length; i++):
@@ -162,7 +162,7 @@ Selection sort maintains a sorted portion of the array by searching through the 
 \textbf{Time Complexity: } $\Theta(N^2)$\\
 \textbf{Space Complexity: } $\Theta(1)$\\
 \textbf{Stable?: } Yes\\
-\textbf{Identifying Characteristics: } In intermediate steps, the beginning portion of the array will always be in sorted order. 
+\textbf{Identifying Characteristics: } In intermediate steps, the beginning portion of the array will always be in sorted order starting with the smallest values. 
 \subsection{Heap Sort}
 The essential idea of heap sort is to put the entire array into a max-heap, and then build up the sorted array backwards by popping of the top element.\\
 If we do this naiively (i.e by copying the original array into a new heap and then building a new array, the space complexity is $\Theta(N)$). However, it can be done in place
@@ -262,14 +262,15 @@ Essentially, if we partition the array, and then QuickSort both halves, we will 
 \subsubsection{Hoare Partitioning}
 \begin{lstlisting}
     left,right = 0, arr.length - 1
-    while (left < right):
+    while (left <= right):
         while arr[left] < pivot:
             left++
-        while arr[right] < pivot:
+        while arr[right] > pivot:
             right++
         swap(arr[left], arr[right])
         left++
         right--
+    swap(pivot, arr[right])
 \end{lstlisting}
 \textbf{Best Case Time Complexity:  } $\Theta(NlogN)$\\
 \textbf{Worst Case Time Complexity: } $\Theta(N^2)$\\
@@ -313,10 +314,10 @@ The idea is to apply counting sort for each digit starting with the least signif
     for (i=0; i < longestElement.length; i++):
         counting sort based on ith digit
 \end{lstlisting}
-If N is the number of elements, W is the length of the longest word, and R is the size of the alphabet.
+If N is the number of elements, W is the length of the longest word, and R is the size of the alphabet.\\
 \textbf{Time Complexity: } $\Theta(WN + WR)$\\
 \textbf{Space Complexity: } $\Theta(N + R)$\\
-\textbf{Stable?: } Yes
+\textbf{Stable?: } Yes\\
 \textbf{Identifying Characteristics: } The last few digits of the array elements are sorted.
 \subsection{MSD Radix Sort}
 Most Significant Radix Sort is like LSD Radix Sort except it starts with the most significant digit and works its way rightwards.
@@ -335,7 +336,7 @@ to only apply counting sort to each subproblem after we sort each subsequent dig
 \textbf{Worst Case Time Complexity: } $\Theta(WN + WR)$\\
 \textbf{Space Complexity: } $\Theta(N + R)$\\
 \textbf{Stable?: } Yes\\
-\textbf{Identifying Characteristics: } Intermediary steps all have the front few digits in sorted order.
+\textbf{Identifying Characteristics: } Intermediary steps all have the front few digits in sorted order.\\
 \textbf{Notes: } The best case time complexity comes about when each element is distinguished only by the most significant digit.
 \subsection{Runtime Table}
 \begin{centering}
@@ -351,7 +352,7 @@ to only apply counting sort to each subproblem after we sort each subsequent dig
         \hline
         Merge& $\Theta(N)$ & $\Theta(NlogN)$ & $\Theta(NLogN)$ & Yes\\
         \hline
-        Quick& $\Theta(logN)$ & $\Theta(NlogN)$ & $\Theta(N^2)$ & No\\
+        Quick& $\Theta(1)$ & $\Theta(NlogN)$ & $\Theta(N^2)$ & No\\
         \hline
         Counting & $\Theta(N+R)$ & $\Theta(N+R)$ & $\Theta(N+R)$ & Yes\\
         \hline
