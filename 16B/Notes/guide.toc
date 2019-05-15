@@ -42,7 +42,7 @@
 \contentsline {subsubsection}{\numberline {7.1.2}Polynomial Interpolation}{45}{subsubsection.7.1.2}
 \contentsline {subsection}{\numberline {7.2}Discrete Fourier Transform}{46}{subsection.7.2}
 \contentsline {subsubsection}{\numberline {7.2.1}Complex Vectors and Matrices}{46}{subsubsection.7.2.1}
-\contentsline {subsubsection}{\numberline {7.2.2}Roots of Unity}{47}{subsubsection.7.2.2}
+\contentsline {subsubsection}{\numberline {7.2.2}Roots of Unity}{46}{subsubsection.7.2.2}
 \contentsline {subsubsection}{\numberline {7.2.3}The DFT Matrix}{47}{subsubsection.7.2.3}
 \contentsline {subsubsection}{\numberline {7.2.4}Properties of the DFT}{47}{subsubsection.7.2.4}
 \contentsline {subsubsection}{\numberline {7.2.5}The Inverse DFT}{48}{subsubsection.7.2.5}

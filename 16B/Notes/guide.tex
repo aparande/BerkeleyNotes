@@ -1916,7 +1916,7 @@ By interpolating with basis functions, our resulting point hits every sample pro
         \begin{array}{c}
             \phi(t) = \left\{
             \begin{array}{c}
-                1, \text{ if } t = 0\\
+                1, \text{ if } t \in [0, \Delta)\\
                 0, \text{ else}
             \end{array}
         \right\}\\\\
@@ -1924,7 +1924,7 @@ By interpolating with basis functions, our resulting point hits every sample pro
             \draw[thick,<->] (-1.5, 0) -- (1.5,0);
             \draw[thick,->] (0,0) -- (0,2);
             \foreach \x in {-1,0,1}
-                \draw (\x cm,1pt) -- (\x cm,-1pt) node[anchor=north] {$\x$};
+                \draw (\x cm,1pt) -- (\x cm,-1pt) node[anchor=north] {$\x\Delta$};
             \foreach \y in {1}
                 \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
                 \draw[scale=1,domain=0:1,smooth,variable=\x,blue] plot ({\x},{1});
@@ -1957,8 +1957,7 @@ In a sense, it is the simplest form of interpolation. Another really simply inte
     \[
         \phi(t) = \left\{
         \begin{array}{c}
-            x + 1, \text{ if } -\Delta < x <= 0\\
-            -x + 1, \text{ if } 0 <= x < \Delta\\
+            1 - |x|, \text{ if } t\in (-\Delta, \Delta)\\
             0, \text{ else}
         \end{array}
         \right\}
@@ -2215,11 +2214,11 @@ While the first three properties are trivial to show, the second two require a b
         \right]
         \end{array}
     \]
-    $$<\vec{u}_k, \vec{u}_i> = \vec{u}_i^*\vec{u}_k = \sum_{l=0}^{N-1}{\omega_N^{il}\omega_N^{-lk}} = $$
-    $$\sum_{l=0}^{N-1}{\omega_N{l(i-k)}}$$
-    This is a finite geometric series with common ratio $\omega_N^(i-lk)$.
+    $$<\vec{u}_i, \vec{u}_k> = \vec{u}_k^*\vec{u}_i = \sum_{l=0}^{N-1}{\omega_N^{kl}\omega_N^{-li}} = $$
+    $$\sum_{l=0}^{N-1}{\omega_N^{l(k-i)}}$$
+    This is a finite geometric series with common ratio $\omega_N^{l(k-i)}$.
     Therefore 
-    $$\sum_{l=0}^{N-1}{\omega_N{l(i-k)}} = \frac{1 - \omega_N^{N(i-k))}}{1-\omega_N^{i-k}} = 0$$
+    $$\sum_{l=0}^{N-1}{\omega_N^{l(k-i)}} = \frac{1 - \omega_N^{N(k-i))}}{1-\omega_N^{k-i}} = 0$$
     Thus since the inner product between nonequal columns is 0, the columns are orthogonal.
 \end{proof}
 \begin{proof}
@@ -2322,6 +2321,16 @@ Accordingly, if our signal is a sum of our harmnoic frequencies, then
     \end{array}
 \]
 This means we can decompose whatever signal we want into the harmonic frequencies.
+We can even find a simple formula for the coefficients $X_i$ in our DFT vector $\vec{X}$.
+\[
+    X_i = \left\{
+        \begin{array}{c}
+            N A_0 \text{ if } i=0\\\\
+            \frac{N}{2}A_ie^{j\theta_i} \text{ if } i\in[1, M]\\\\
+            \overline{X}_{N-i} \text{ if } i\in[M+1, N-1]
+        \end{array}
+    \right\}
+\]
 \subsection{Fourier Series}
 The premise upon which the Fourier Series is built is that any periodic waveform can be written
 as a sum of harmonically related frequencies.
