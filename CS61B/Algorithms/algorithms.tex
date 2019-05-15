@@ -96,27 +96,28 @@ I.e, if the edges of a graph indicate that a task must come after a specific tas
 \subsection{Dijkstra's Algorithm}
 Dijkstra's algorithm helps build the shortest paths tree starting from a particular source node.
 \begin{lstlisting}
-    add all vertices to priority queue with infinity priority
-    set the source's priority to 0
-    while priority queue is not empty
-        remove the smallest vertex v
-        mark v 
-        relax edges from v
+    priorityQueue.add(source, 0)
+    For other vertices v:
+        priorityQueue.add(v, infinity)
+    While priorityQueue is not empty:
+        p = priorityQueue.removeSmallest()
+        Relax all edges from p
 \end{lstlisting}
-The relaxation procedure is as follows
+The relaxation procedure for edge e from p to q with weight w.
 \begin{lstlisting}
-    if w is visited
-        return
-    w = weight(parent) + edge.weight
-    if w < v.priority
-        priority = w
+    If distTo[p] + w < distTo[q]:
+        distTo[q] = distTo[p] + w
+        edgeTo[q] = p
+        PQ.changePriority(q, distTo[q])
 \end{lstlisting}
-Dijkstra's algorithm runs in $O(|E|log|V|)$
+Dijkstra's algorithm runs in $O(ElogV + VlogV)$ because there are $V$ \lstinline{priorityQueue.add} operations(each taking $logV$ time),
+$V$ \lstinline{priorityQueue.removeSmallest} operations (each taking $logV$ time), and
+$E$ \lstinline{priorityQueue.changePriority} operations (each taking $logV$ time).
 \subsection{$A^*$ Search}
 $A^*$ search is like Dijkstra's in that it finds the shortest path between two nodes.
 However, it is different because the priority of each vertex is the distance to that vertex plus a heuristic value
 \\\\
-$A^*$ requires a goal vertex to run. It's runtime is $O(|E|log|V|)$
+$A^*$ requires a goal vertex to run. It's runtime analysis is the same as Dijkstra's
 \section{MSTs}
 A Minimum Spanning Tree (MST) is a tree connecting all vertices in a graph which has the minimum total weight (the sum of its edges is minimized).
 \subsection{Prim's Algorithm}
@@ -128,7 +129,10 @@ A Minimum Spanning Tree (MST) is a tree connecting all vertices in a graph which
             relax(V) using the distance to the tree
 \end{lstlisting}
 Notice that this is basically Dijkstra's algorithm but we are using distance to tree rather than distance to source.
-The runtime is $O(|E|log|V|)$.
+Because of this, it's runtime analysis is the same as Dijkstra's.
+Prim's algorithm runs in $O(ElogV + VlogV)$ because there are $V$ \lstinline{priorityQueue.add} operations(each taking $logV$ time),
+$V$ \lstinline{priorityQueue.removeSmallest} operations (each taking $logV$ time), and
+$E$ \\ \lstinline{priorityQueue.changePriority} operations (each taking $logV$ time).
 \subsection{Kruskal's Algorithm}
 \begin{lstlisting}
     Make a priority queue of all edges
@@ -139,7 +143,22 @@ The runtime is $O(|E|log|V|)$.
             connect(source, target)
             add e to MST
 \end{lstlisting}
-The runtime is also $O(|E|log|V|)$.
+Its runtime is $O(E + VlogV+ElogV)$ if we count all of our operations.
+\begin{center}
+    \begin{tabular}{| c | c | c | c |}
+        \hline
+        Operation & Times Called & Runtime & Total\\
+        \hline
+        PQ.insert & E & O(E) & O(E)\\
+        \hline
+        PQ.deleteMin & E & O(logE) & O(ElogE)\\
+        \hline
+        WQU.union & V & O(logV) & O(VlogV)\\
+        \hline
+        WQU.isConnected & E & O(logV) & O(ElogV)\\
+        \hline
+    \end{tabular}
+\end{center}
 \section{Sorting}
 In sorting, an \textbf{Inversion} is a pair of elements which is out of order.
 The goal of sorting is to reduce the number of inversions to 0.\\\\
