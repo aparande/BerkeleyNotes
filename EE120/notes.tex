@@ -1,0 +1,100 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{cancel}
+\usepackage{tikz}
+\usepackage{hyperref}
+\usepackage{circuitikz}
+\usepackage{float}
+\usepackage{afterpage}
+\usetikzlibrary{calc}
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proof}{Proof}
+
+\DeclareMathOperator*{\argmin}{argmin}
+
+\begin{document}
+\title{EE120 Course Notes}
+\author{Anmol Parande}
+\date{Fall 2019 - Professor Murat Arcak}
+\maketitle
+\textbf{Disclaimer: }These notes reflect 120 when I took the course (Fall 2019). They may not accurately reflect current course content, so use at your own risk.
+If you find any typos, errors, etc, please raise an issue on the \href{https://github.com/parandea17/BerkeleyNotes}{GitHub repository}.\\
+\tableofcontents
+\newpage
+\section{Introduction to Signals and Systems}
+\subsection{Types of Signals}
+\begin{definition}
+    A signal is a function of one or more variables
+\end{definition}
+\begin{definition}
+    A signal $x(t)$ is continuous if $x: \mathbb{R} \rightarrow \mathbb{R}$
+\end{definition}
+\begin{definition}
+    A signal $x[n]$ is discrete if $x: \mathbb{Z} \rightarrow \mathbb{R}$
+\end{definition}
+\begin{definition}
+    The unit impulse is defined as 
+    \[
+        \delta[n] = \left\{
+            \begin{array}{cc}
+                1, \text{if } n=0\\
+                0, \text{ else}
+            \end{array}
+            \right\}
+    \]
+\end{definition}
+\begin{definition}
+    The unit step is defined as 
+    \[
+        u[n] = \left\{
+            \begin{array}{cc}
+                1, \text{if } n \geq 0\\
+                0, \text{ else}
+            \end{array}
+            \right\}
+    \]
+\end{definition}
+\subsection{Signal transformations}
+Signals can be transformed by modifying the variable.
+\begin{itemize}
+    \item $x(t - \tau)$: Shift a signal left by $\tau$ steps.
+    \item $x(-t)$: Rotate a signal about the $t=0$
+    \item $x(kt)$: Stretch a signal by a factor of $k$
+\end{itemize}
+These operations can be combined to give more complex transformations.
+For example, $y(t) = x(\tau - t) = x(-(t-\tau))$ flips $x$ and shifts it right by $\tau$ timesteps.
+This is equivalent to shifting $x$ left by $\tau$ timesteps and then flipping it.
+\subsection{Systems and their properties}
+\begin{definition}
+    A system is a process by which input signals are transformed to output signals
+\end{definition}
+\begin{definition}
+    A memoryless system has output which is only determined by the input's present value
+\end{definition}
+\begin{definition}
+    A causal system has output which only depends on input at present or past times
+\end{definition}
+\begin{definition}
+    A stable system produces bounded output when given a bounded input. By extension,
+    this means an unstable system is when $\exists$ a bounded input that makes the output unbounded.
+\end{definition}
+\begin{definition}
+    A system is time-invariant if the original input $x(t)$ is transformed to $y(t)$, then
+    $x(t-\tau)$ is transformed to $y(t-\tau)$
+\end{definition}
+\begin{definition}
+    A system $f(x)$ is linear if and only if
+    \begin{itemize}
+        \item If $y(t) = f(x(t))$, then $f(a x(t)) = a y(t)$ (Scaling)
+        \item If $y_1(t) = f(x_1(t))$ and $y_2(t) = f(x_2(t))$, then $f(x_1(t) + x_2(t)) = y_1(t) + y_2(t)$ (Superposition)
+    \end{itemize}
+\end{definition}
+\textbf{Notice: } The above conditions on linearity require that $x(0) = 0$ because if $a = 0$, then we need $y(0) = 0$ for scaling to be satisfied
+\begin{definition}
+    The impulse response of a system $f[x]$ is $h[n] = f[\delta[n]]$, which is how it response to an impulse input. 
+\end{definition}
+\end{document}
