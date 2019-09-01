@@ -1,0 +1,94 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{cancel}
+\usepackage{tikz}
+\usepackage{hyperref}
+\usepackage{circuitikz}
+\usepackage{float}
+\usepackage{afterpage}
+\usetikzlibrary{calc}
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proof}{Proof}
+
+\DeclareMathOperator*{\argmin}{argmin}
+
+\begin{document}
+\title{CS70 Course Notes}
+\author{Anmol Parande}
+\date{Fall 2019 - Professors Alistair Sinclair and Yun Song}
+\maketitle
+\textbf{Disclaimer: }These notes reflect CS60 when I took the course (Fall 2019). They may not accurately reflect current course content, so use at your own risk.
+If you find any typos, errors, etc, please report them on the \href{https://github.com/parandea17/BerkeleyNotes}{GitHub repository}.\\
+\tableofcontents
+\newpage
+\section{Propositional Logic}
+\begin{definition}
+    A proposition $P$ is a statement that is either true or false
+\end{definition}
+Propositions can depend on one or more variables. This is denoted by $P(x, y, ...)$
+\subsection{Connectives}
+\begin{definition}
+    A connective is an operator which joins two or more propositions together in some way
+\end{definition}
+Connectives are fully defined by a \textbf{Truth Table} which enumerates the values of the connective
+given all possible combination of inputs.
+\begin{definition}
+    The base connectives are those which can be combined to create any other connective.
+    \begin{itemize}
+        \item $\land$: P AND Q
+        \item $\lor$: P OR Q
+        \item $\lnot$: NOT P
+    \end{itemize}
+\end{definition}
+One important connective is the \textbf{implies} connective.
+
+\begin{center}
+    \begin{tabular}{c|c|c} 
+     P & Q & $P \implies Q$ \\
+     \hline
+     T & T & T \\ 
+     T & F & F \\
+     F & T & T \\
+     F & F & T \\ 
+
+    \end{tabular}
+\end{center}
+Notice that $P \implies Q$ has the same truth table as $\lnot P \lor Q$. This means they are equivalent.
+\begin{definition}
+    The contrapositive of $P \implies Q$ is $\lnot Q \implies \lnot P$
+\end{definition}
+\textbf{Notice: }The contrapositive is logically equivalent to the original statement
+\begin{definition}
+    The converse of $P \implies Q$ is $Q \implies P$
+\end{definition}
+\textbf{Notice: }This is not always equivalent to the original statement
+The \textbf{if and only if} connective $P \iff Q$ is equivalent to $(P \implies Q) \land (Q \implies P)$
+\begin{center}
+    \begin{tabular}{c|c|c} 
+     P & Q & $P \iff Q$ \\
+     \hline
+     T & T & T \\ 
+     T & F & F \\
+     F & T & F \\
+     F & F & T \\ 
+    \end{tabular}
+\end{center}
+\subsection{Quantifiers}
+Quantifiers help introduce variables into our propositions.
+\begin{itemize}
+    \item $\forall$: For all
+    \item $\exists$: There exists
+\end{itemize}
+\textbf{Important: }The order of quantifiers matters.
+\subsection{DeMorgan's Laws}
+\begin{itemize}
+    \item $\lnot(P \land Q) \equiv \lnot P \lor \lnot Q$
+    \item $\lnot(P \lor Q) \equiv \lnot P \land \lnot Q$
+    \item $\lnot(\forall x P(x)) \equiv \exists x (\lnot P(x))$
+    \item $\lnot(\exists x P(x)) \equiv \forall x (\lnot P(x))$
+\end{itemize}
+\end{document}
