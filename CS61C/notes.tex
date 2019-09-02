@@ -1,0 +1,67 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{cancel}
+\usepackage{tikz}
+\usepackage{hyperref}
+\usepackage{circuitikz}
+\usepackage{float}
+\usepackage{afterpage}
+\usetikzlibrary{calc}
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proof}{Proof}
+
+\DeclareMathOperator*{\argmin}{argmin}
+
+\begin{document}
+\title{CS61C Course Notes}
+\author{Anmol Parande}
+\date{Fall 2019 - Professors Dan Garcia and Miki Lustig}
+\maketitle
+\tableofcontents
+\newpage
+\textbf{Disclaimer: }These notes reflect 61C when I took the course (Spring 2019). They may not accurately reflect current course content, so use at your own risk.
+If you find any typos, errors, etc, please report them on the \href{https://github.com/parandea17/BerkeleyNotes}{GitHub repository}.
+\section{Binary Representation}
+Each bit of information can either be 1 or 0. As a result, $N$ bits can represent at most $2^N$ values.
+\subsection{Base conversions}
+\textbf{Binary to Hex conversion}
+\begin{itemize}
+    \item Left pad the number with 0's to make 4 bit groups
+    \item Convert each group its appropriate hex representation
+\end{itemize}
+\textbf{Hex to Binary Conversion}
+\begin{itemize}
+    \item Expand each digit to its binary representation
+    \item Drop any leading zeros
+\end{itemize}
+\subsection{Numeric Representations}
+When binary bit patterns are used to represent numbers, there are nuances to how the resulting representations are used.
+\begin{definition}
+    Unsigned integers are decimal integers directly converted into binary. They cannot be negative.
+\end{definition}
+\begin{definition}
+    Signed integers are decimal integers whose representation in binary contains information denoting negative numbers.
+\end{definition}
+Binary math follows the same algorithms as decimal math. However, because computers only have a finite number of bits
+allocated to each number, if an operation's result exceeds the number of allocated bits, the leftmost bits are lost.
+This is called \textbf{overflow}
+\subsubsection{Sign and Magnitude}
+In the sign and magnitude representation, the leftmost bit is the sign bit.
+A 1 means the number is negative where as 0 means it is positive. The downside to this is when overflow occurs, adding one does not wrap the bits properly.
+\subsubsection{One's Complement}
+To fix the bit wrapping, to form the negative number, we can flip each bit. This solves the wrapping issue so even with overflow, when adding 1, the result will continue increasing.
+\subsubsection{Two's Complement}
+To convert from decimal to two's complement:
+\begin{itemize}
+    \item Invert each bit of the positive version of the number
+    \item Add one to the result
+\end{itemize}
+The same process can be utilized to go from the negative version of a number to the positive version.
+\subsubsection{Bias Encoding}
+With bias encoding, the number is equal to its unsigned representation plus a bias turn. With a negative bias,
+we can center a positive range of $0 \rightarrow 2^N - 1$ on 0.
+\end{document}

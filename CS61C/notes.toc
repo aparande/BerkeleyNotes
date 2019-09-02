@@ -1,0 +1,7 @@
+\contentsline {section}{\numberline {1}Binary Representation}{2}{section.1}
+\contentsline {subsection}{\numberline {1.1}Base conversions}{2}{subsection.1.1}
+\contentsline {subsection}{\numberline {1.2}Numeric Representations}{2}{subsection.1.2}
+\contentsline {subsubsection}{\numberline {1.2.1}Sign and Magnitude}{2}{subsubsection.1.2.1}
+\contentsline {subsubsection}{\numberline {1.2.2}One's Complement}{2}{subsubsection.1.2.2}
+\contentsline {subsubsection}{\numberline {1.2.3}Two's Complement}{3}{subsubsection.1.2.3}
+\contentsline {subsubsection}{\numberline {1.2.4}Bias Encoding}{3}{subsubsection.1.2.4}
