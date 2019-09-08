@@ -1,4 +1,16 @@
 \contentsline {section}{\numberline {1}Introduction to Signals and Systems}{2}{section.1}
 \contentsline {subsection}{\numberline {1.1}Types of Signals}{2}{subsection.1.1}
+\contentsline {subsubsection}{\numberline {1.1.1}Properties of the Unit Impulse}{2}{subsubsection.1.1.1}
 \contentsline {subsection}{\numberline {1.2}Signal transformations}{2}{subsection.1.2}
-\contentsline {subsection}{\numberline {1.3}Systems and their properties}{2}{subsection.1.3}
+\contentsline {subsection}{\numberline {1.3}Convolution}{3}{subsection.1.3}
+\contentsline {subsection}{\numberline {1.4}Systems and their properties}{3}{subsection.1.4}
+\contentsline {subsection}{\numberline {1.5}Exponential Signals}{4}{subsection.1.5}
+\contentsline {section}{\numberline {2}Linear Time-Invariant Systems}{4}{section.2}
+\contentsline {subsection}{\numberline {2.1}Impulse Response of LTI systems}{4}{subsection.2.1}
+\contentsline {subsubsection}{\numberline {2.1.1}The discrete case}{4}{subsubsection.2.1.1}
+\contentsline {subsubsection}{\numberline {2.1.2}The continuous case}{4}{subsubsection.2.1.2}
+\contentsline {subsection}{\numberline {2.2}Determining Properties of an LTI system}{5}{subsection.2.2}
+\contentsline {subsubsection}{\numberline {2.2.1}Causality}{5}{subsubsection.2.2.1}
+\contentsline {subsubsection}{\numberline {2.2.2}Memory}{5}{subsubsection.2.2.2}
+\contentsline {subsubsection}{\numberline {2.2.3}Stability}{5}{subsubsection.2.2.3}
+\contentsline {subsection}{\numberline {2.3}Frequency Response}{6}{subsection.2.3}

@@ -36,8 +36,9 @@ If you find any typos, errors, etc, please raise an issue on the \href{https://g
 \begin{definition}
     A signal $x[n]$ is discrete if $x: \mathbb{Z} \rightarrow \mathbb{R}$
 \end{definition}
+\subsubsection{Properties of the Unit Impulse}
 \begin{definition}
-    The unit impulse is defined as 
+    The unit impulse in discrete time is defined as 
     \[
         \delta[n] = \left\{
             \begin{array}{cc}
@@ -47,6 +48,27 @@ If you find any typos, errors, etc, please raise an issue on the \href{https://g
             \right\}
     \]
 \end{definition}
+\begin{itemize}
+    \item $f[n]\delta[n] = f[0]\delta[n]$
+    \item $f[t]\delta[n-N] = f[N]\delta[n-N]$
+\end{itemize}
+\begin{definition}
+    The unit impulse in continuous time is the dirac delta function
+    $$\delta(t)=lim_{\Delta\rightarrow 0}\delta_{\Delta}(t)$$
+    \[
+        \delta_{\Delta}=\left\{
+            \begin{array}{c}
+                \frac{1}{\Delta},\text{ if }\ge 0 \\
+                0 else
+            \end{array}
+        \right\}
+    \]
+\end{definition}
+\begin{itemize}
+    \item $f(t)\delta(t) = f(0)\delta(t)$
+    \item $f(t)\delta(t-\tau) = f(\tau)\delta(t-\tau)$
+    \item $\delta(at) = \frac{1}{|a|}\delta(t)$
+\end{itemize}
 \begin{definition}
     The unit step is defined as 
     \[
@@ -68,6 +90,23 @@ Signals can be transformed by modifying the variable.
 These operations can be combined to give more complex transformations.
 For example, $y(t) = x(\tau - t) = x(-(t-\tau))$ flips $x$ and shifts it right by $\tau$ timesteps.
 This is equivalent to shifting $x$ left by $\tau$ timesteps and then flipping it.
+\subsection{Convolution}
+\begin{definition}
+    The convolution of two signals in discrete time
+    $$(x*h)[n] = \sum_{k=-\infty}^{\infty}{x[k]h[n-k]}$$
+\end{definition}
+\begin{definition}
+    The convolution of two signals in continuous time
+    $$(x*h)(t) = \int_{\infty}^{\infty}{x(\tau)h(t-\tau)d\tau}$$
+\end{definition}
+While written in discrete time, these properties apply in continuous time as well.
+\begin{itemize}
+    \item $(x*\delta)[n] = x[n]$
+    \item $x[n]*\delta[n-N]=x[n-N]$
+    \item $(x*h)[n] = (h*x)[n]$
+    \item $x * (h_1 + h_2) = x*h_1 + x*h_2$
+    \item $x * (h_1 * h_2) = (x * h_1) * h_2$
+\end{itemize}
 \subsection{Systems and their properties}
 \begin{definition}
     A system is a process by which input signals are transformed to output signals
@@ -97,4 +136,76 @@ This is equivalent to shifting $x$ left by $\tau$ timesteps and then flipping it
 \begin{definition}
     The impulse response of a system $f[x]$ is $h[n] = f[\delta[n]]$, which is how it response to an impulse input. 
 \end{definition}
+\subsection{Exponential Signals}
+Exponential signals are important because they can succinctly represent
+complicated signals using complex numbers. This makes analyzing them much easier.
+$$x(t) = e^{st}, x[n] = z^n (s, z \in \mathbb{C})$$
+\begin{definition}
+    The frequency response of a system is how a system responds to a purely oscillatory signal
+\end{definition}
+\section{Linear Time-Invariant Systems}
+\begin{definition}
+    LTI systems are ones which are both linear and time-invariant.
+\end{definition}
+\subsection{Impulse Response of LTI systems}
+LTI systems are special systems because their output can be determined entirely the impulse response $h[n]$.
+\subsubsection{The discrete case}
+We can think of the original signal $x[n]$ in terms of the impulse function.
+$$x[n] = x[0]\delta[n]+x[1]\delta[n-1]+... = \sum_{k=-\infty}^{\infty}{x[k]\delta[n-k]}$$
+This signal will be transformed in some way to get the output $y[n]$.
+Since the LTI system applies a functional $F$ and the LTI is linear and time-invariant,
+$$y[n] = F(\sum_{k=-\infty}^{\infty}{x[k]\delta[n-k]}) = \sum_{k=-\infty}^{\infty}{x[k]F(\delta[n-k])} = \sum_{k=-\infty}^{\infty}{x[k]h[n-k]}$$
+Notice this operation is the convolution between the input and the impulse response.
+$$y(t) = \int_{\infty}^{\infty}{x(\tau)h(t-\tau)}$$
+\subsubsection{The continuous case}
+We can approximate the function by breaking it into intervals of length $\Delta$.
+$$x(t) \approx \sum_{k=-\infty}^{\infty}{x(k\Delta)\delta_{\Delta}(t-k\Delta)\Delta}$$
+$$x(t) = lim_{\Delta \rightarrow 0}\sum_{k=-\infty}^{\infty}{x(k\Delta)\delta_{\Delta}(t-k\Delta)\Delta}$$
+After applying the LTI system to it,
+$$y(n) = \int_{-\infty}^{\infty}{x(\tau)h(t-\tau)}$$
+Notice this operation is the convolution between the input and the impulse response.
+\subsection{Determining Properties of an LTI system}
+Because an LTI system is determined entirely by its impulse response, we can determine its properties from the impulse response.
+\subsubsection{Causality}
+\begin{theorem}
+    An LTI system is causal when $h[n] = 0, \forall n < 0$
+\end{theorem}
+\begin{proof}
+Assume $h[n] = 0, \forall n < 0$
+$$y[n] = (x*h)[n] = \sum_{k=-\infty}^{\infty}{x[n-k]h[k]}=\sum_{k=0}^{\infty}{x[n-k]h[k]}$$
+\end{proof}
+Notice that this does not depend on time steps prior to $n=0$
+\subsubsection{Memory}
+\begin{theorem}
+    An LTI system is memoryless if $h[n]=0, if \forall n \ne 0$
+\end{theorem}
+\subsubsection{Stability}
+\begin{theorem}
+    A system is stable if $\sum_{n=-\infty}^{\infty}{|h[n]|}$ converges.
+\end{theorem}
+\begin{proof}
+    \textbf{\\1. } Assume $|x[n]| \le B_x$ to show $|y[n]| < D$ where D is some bound.
+    $$|y[n]| = |\sum_{k=-\infty}^{\infty}{x[n-k]h[k]}| \le \sum_{k}{|x[n-k]h[k]|} = \sum_{k}{|x[n-k]||h[k]|}\le B_x\sum_{k}{|h[k]}$$
+    This means as long as $\sum_{k}{|h[k]}$ converges, $y[n]$ will be bounded.\\
+    \textbf{\\2. } Assume $\sum_{n}{|h[n]|}$ does not converge. Show that the system is unstable.
+    Choose $x[n]=sgn\{h[-n]\}$
+    $$y[n]=\sum_{k}{x[n-k]h[k]}$$ so 
+    $$y[0] = \sum_{k}{x[-k]h[k]} = \sum_{k}{|h[k]|}$$
+    And this is unbounded, so $y[n]$ is unbounded.
+\end{proof}
+\subsection{Frequency Response}
+If we pass a complex exponential into an LTI system, the output signal is the same signal but scaled.
+In otherwise, it is an eigenfunction of LTI systems.
+$$y(t)=\int_{-\infty}^{\infty}{e^{s(t-\tau)}h(\tau)d\tau}=e^{st}\int_{-\infty}^{\infty}{e^{-s\tau}h(\tau)}$$
+The integral is a constant, and the original function is unchanged.
+The same analysis can be done in the discrete case.
+$$y[n]=\sum_{k=-\infty}^{\infty}z^{n-k}h[k] = z^n \sum_{k=-\infty}^{\infty}z^{-k}h[k]$$
+\begin{definition}
+    The frequency response of a system is the output when passed a purely oscillatory signal
+\end{definition}
+\begin{definition}
+    The transfer function of an LTI system $H(\omega)$ is how the system scales a pure tone of frequency $\omega$
+    $$H(\omega):=\int_{-\infty}^{\infty}{h(\tau)e^{-j\omega\tau}d\tau}, H(\omega):= \sum_{k=-\infty}^{\infty}{h[k]e^{-j\omega k}}$$
+\end{definition}
+
 \end{document}
