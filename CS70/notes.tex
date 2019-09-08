@@ -91,4 +91,58 @@ Quantifiers help introduce variables into our propositions.
     \item $\lnot(\forall x P(x)) \equiv \exists x (\lnot P(x))$
     \item $\lnot(\exists x P(x)) \equiv \forall x (\lnot P(x))$
 \end{itemize}
+\section{Proofs}
+\begin{definition}
+    A proof is a sequency of statements, each of which follows from the preceding ones
+    by a valid law of reasoning.
+\end{definition}
+\begin{definition}
+    An Axiom is a basic fact which can be assumed without proof
+\end{definition}
+\subsection{Direct Proof}
+\textbf{Goal:} Prove $P \implies Q$\\
+\textbf{Approach:}
+\begin{itemize}
+    \item[1. ] Assume $P$
+    \item[2. ] Deduce $Q$ through logical steps
+\end{itemize}
+\subsection{Proof by Contraposition}
+Since the contrapositive of a statement is logically equivalent to the original statement,
+we can prove the original statement by proving the contrapositive.\\
+\textbf{Goal:} To prove $P \implies Q$\\
+\textbf{Approach:}
+\begin{itemize}
+    \item[1. ] Assume $\lnot Q$
+    \item[2. ] Deduce $\lnot P$ through logical steps 
+\end{itemize}
+\begin{theorem}
+    The pigeonhole principle says that if $n$ objects are placed in $k$ boxes and $n > k$, 
+    then some box contains $\ge 1$ object.
+\end{theorem}
+\subsection{Proof by Contradiction}
+\textbf{Goal:} Prove $P \implies Q$
+\textbf{Approach:}
+\begin{itemize}
+    \item[1. ]Assume $\lnot P$
+    \item[2. ]Deduce $\lnot P \implies (R \and \lnot R)$ 
+\end{itemize}
+$R$ and $\lnot R$ are two facts which can be deduced from assumign $\lnot P$
+\subsection{Proof by Cases}
+\textbf{Goal: } Prove $P \implies Q$\\
+\textbf{Approach: }
+\begin{itemize}
+    \item[1. ]Break P into cases $1...n$
+    \item[2. ]Prove $P$ holds in all cases 
+\end{itemize}
+\subsection{Proof by Induction}
+\textbf{Goal:} Prove $\forall n, P(n)$
+\textbf{Approach: }
+\begin{itemize}
+    \item[1. ]Prove a based case
+    \item[2. ]Assume P(k) (Induction hypothesis)
+    \item[3. ]Prove $P(k) \implies P(k+1)$ (Inductive Step)
+\end{itemize}
+\subsubsection{Strong Induction}
+Because induction requires that $P(k)$ be true to prove $P(k+1)$,
+it might be easier to just assume $P(0)\land P(1) \land ... \land P(k)$ when proving $P(k+1)$.
 \end{document}
