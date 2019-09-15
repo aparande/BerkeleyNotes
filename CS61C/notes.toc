@@ -5,3 +5,15 @@
 \contentsline {subsubsection}{\numberline {1.2.2}One's Complement}{2}{subsubsection.1.2.2}
 \contentsline {subsubsection}{\numberline {1.2.3}Two's Complement}{3}{subsubsection.1.2.3}
 \contentsline {subsubsection}{\numberline {1.2.4}Bias Encoding}{3}{subsubsection.1.2.4}
+\contentsline {section}{\numberline {2}C}{3}{section.2}
+\contentsline {subsection}{\numberline {2.1}C Features}{3}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Bitwise Operators}{3}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Pointers}{3}{subsection.2.3}
+\contentsline {subsubsection}{\numberline {2.3.1}Pointer Operators}{4}{subsubsection.2.3.1}
+\contentsline {subsection}{\numberline {2.4}Arrays}{4}{subsection.2.4}
+\contentsline {subsection}{\numberline {2.5}Structs}{4}{subsection.2.5}
+\contentsline {subsubsection}{\numberline {2.5.1}Struct Operators}{5}{subsubsection.2.5.1}
+\contentsline {subsection}{\numberline {2.6}Memory Management}{5}{subsection.2.6}
+\contentsline {subsubsection}{\numberline {2.6.1}The Stack}{5}{subsubsection.2.6.1}
+\contentsline {subsubsection}{\numberline {2.6.2}The Heap}{6}{subsubsection.2.6.2}
+\contentsline {subsubsection}{\numberline {2.6.3}Heap Management}{6}{subsubsection.2.6.3}

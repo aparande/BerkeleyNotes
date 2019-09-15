@@ -8,6 +8,7 @@
 \usepackage{circuitikz}
 \usepackage{float}
 \usepackage{afterpage}
+\usepackage{listings}
 \usetikzlibrary{calc}
 \newtheorem{theorem}{Theorem}
 \newtheorem{definition}{Definition}
@@ -64,4 +65,140 @@ The same process can be utilized to go from the negative version of a number to 
 \subsubsection{Bias Encoding}
 With bias encoding, the number is equal to its unsigned representation plus a bias turn. With a negative bias,
 we can center a positive range of $0 \rightarrow 2^N - 1$ on 0.
+\section{C}
+\subsection{C Features}
+\begin{itemize}
+    \item C is a compiled language $\implies$ executables are rebuilt for each new system
+    \item Every variable holds garbage until initialization
+    \item Function parameters are pass by value
+\end{itemize}
+\subsection{Bitwise Operators}
+Bitwise operators are operators which change the bits of integer-like objects (ints, chars, etc)
+\begin{itemize}
+    \item $\&$: Bitwise AND. Useful for creating masks
+    \item $|$: Bitwise OR. Useful for flipping bits on
+    \item $\wedge$: Bitwise XOR. Useful for flipping bits off
+    \item $<<$: Left shifts the bits of the first operand left by the number of bits specified by the second operand.
+    \item $>>$: Right shifts the bits of the first operand right by the number of bits specified by the second operand.
+    \item $~$: Inverts the bits.
+\end{itemize}
+\subsection{Pointers}
+\begin{definition}
+    The address of an object is its location in memory
+\end{definition}
+\begin{definition}
+    A pointer is a variable whose value is the address of an object in memory
+\end{definition}
+\subsubsection{Pointer Operators}
+\begin{itemize}
+    \item $\&$: Get the address of a variable
+    \item $*$: Get the value pointed to by a pointer
+\end{itemize}
+Because C is pass by value, pointers allow us to pass around objects without having them copied.
+They can also lead to cleaner, more compact code. However, always remember that declaring a pointer
+creates space for an object but \textbf{does not} put anything in that space (i.e it will be garbage).\\\\
+Pointers can point to anything, even other points. For example, $int **a$ is a pointer to an integer pointer. 
+This is called a handle
+\subsection{Arrays}
+In C, arrays are represented as adjacent blocks of memory. The way that we interact with them is through pointers.
+Consider
+\begin{lstlisting}[language=C]
+    int a[];
+    int *b;
+\end{lstlisting}
+Both of these variables represent arrays in C. They point to the first memory location of the array.
+C arrays can be indexed into using [] subscripts like other programming languages. They can also be
+index into using pointer arithmatic. For example, $*(a+2) \equiv a[2]$. By adding 2 to a, C knows to 
+look two memory locations into the array (i.e the third element).\\\\
+C is able to do this because it automatically computes the size of the objects in the array to know how
+much to advance the pointer by.
+\begin{lstlisting}[language=C]
+    int a[] = {1, 2, 3, 4, 5}; //ints are 4 bytes;
+    printf("%u", &a); // 0x2000
+    printf("%u", &(a+2)); // 0x2008
+    char *c = "abcdef"; //ints are 1 byte
+    printf("%u", &a); // 0x3000
+    printf("%u", &(a+2)); // 0x3002
+\end{lstlisting}
+One important thing to remember is that declared arrays are only allocated while the scope is valid.
+That means once a function returns, their memory is free to be taken.\\\\
+Another important consideration in C is that C arrays do not know their own lengths and they do not check their bounds.
+This means whenever you are passing an array to a function, you should always be passing its size as well.
+\subsection{Structs}
+Structs are the basic datastructures in C. Like classes, they are composed of simpler data structures,
+but there is no inheritance.
+\subsubsection{Struct Operators}
+\begin{itemize}
+    \item $=>$: dereference a struct and get a subfield
+\end{itemize}
+$typedef$ can be a useful command with structs because it lets us name them cleanly.
+\subsection{Memory Management}
+In C, there are four sections of memory: the stack, the heap, static, and code.
+\begin{definition}
+    The Stack is where local variables are stored. This includes parameters and return addresses. It is the "highest" level of memory and grows "downward" towards heap memory.
+\end{definition}
+\begin{definition}
+    The Heap is where dynamic memory is stored. Data lives here until the programmer deallocates it. It sits below the stack and grows upwards to toward it.
+\end{definition}
+\begin{definition}
+    Static storage is where global variables are stored. This storage does not change sizes and is mostly permanent.
+\end{definition}
+\begin{definition}
+    Code storage is where the "code" is located. This includes preprocessing instructions and function calls.
+\end{definition}
+\begin{definition}
+    Stackoverflow is when the stack grows so large that it intersects with heap memory. This is mostly unavoidable.
+\end{definition}
+\begin{definition}
+    Heap pileup is when the heap grows so large that it starts to intersect with the stack. This is very avoidable because the programmer manages it.
+\end{definition}
+\begin{definition}
+    All of the memory which a program uses is collectively referred to as the address space of the program.
+\end{definition}
+\subsubsection{The Stack}
+The stack is named that way because every time a function call is made, a stack frame is created.
+A stack frame includes the address of the return instruction and the parameters to the function. As the function executes,
+local variables are added to the frame. When the function returns, the frame is popped off. In this way, frames are handled in 
+Last-In-First-Out (LIFO) order.
+\begin{definition}
+    The stack pointer is a pointer which points to the current stack frame.
+\end{definition} 
+\textbf{Important: }Deallocated memory is not cleared. It is merely overwritten later.
+\subsubsection{The Heap}
+The heap is a larger pool of memory than the stack and it is not in contiguous order. Back to back allocations to the heap may be very far apart.
+\begin{definition}
+    Heap fragmentation is when most of the free memory in the heap is in many small chunks
+\end{definition}
+Fragmentation is bad because if we want to allocate space for a large object, we may have enough cumulative space on the heap,
+but if none of the remaining contiguous spaces are open, then there is no way to create our object.\\\\
+\textbf{Implementation:}\\\\
+Every block in the heap has a header containing its size and a pointer to the next block.
+The free blocks of memory are stored as a circular linked list.
+When memory needs to be allocated to the heap, this linked list is searched.
+When memory is freed, adjacent empty blocks are coalesced into a single larger block.
+There are three different strategies which can be used to do this allocation/freeing.
+\begin{definition}
+    Best-fit allocation is where the entire linked list is searched to find the smallest block large enough to fit the requirements
+\end{definition}
+\begin{definition}
+    First-fit allocation is where the first block that is large enough to fit the requirement is returned
+\end{definition}
+\begin{definition}
+    Next-fit allocation is like first-fit allocation except the memory manager remembers where it left off in the free list and resumes searching from there.
+\end{definition}
+\subsubsection{Heap Management}
+As a C programmer, it is up to us to manage the heap memory. This is done through the $malloc$ function.
+$$malloc(size_t size)$$
+Malloc takes a size in bytes and returns a pointer to the allocated memory in the heap. If there is no space in the heap, then it returns $NULL$.
+Any space created with $malloc$ must be freed using the $free$ function.\\
+\textbf{Things to watch out for: }\\\\
+\begin{itemize}
+    \item Dangling reference (A pointer used before malloc)
+    \item Memory Leak (When $free$ isn't called or the pointer is lost but $free$ wasn't called)
+    \item Do not free the same memory twice
+    \item Do not use free on something not created with malloc
+    \item malloc does not overwrite what was in the current memory location.
+\end{itemize}
+Because we need to tell $malloc$ how much space we need allocated, we will often use the $sizeof$ function.
+This returns the size in bytes of whatever type or object you give it. This allows us to write code for different architectures (i.e 32bit vs 64bit)
 \end{document}
