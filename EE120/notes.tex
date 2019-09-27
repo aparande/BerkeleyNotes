@@ -136,6 +136,14 @@ While written in discrete time, these properties apply in continuous time as wel
 \begin{definition}
     The impulse response of a system $f[x]$ is $h[n] = f[\delta[n]]$, which is how it response to an impulse input. 
 \end{definition}
+\begin{definition}
+    A system has a Finite Impulse Response (FIR) if $h[n]$ decays to zero in a finite
+    amount of time
+\end{definition}
+\begin{definition}
+    A system has an Infinite Impulse Response (IIR) if $h[n]$ does not decay to zero in a finite
+    amount of time
+\end{definition}
 \subsection{Exponential Signals}
 Exponential signals are important because they can succinctly represent
 complicated signals using complex numbers. This makes analyzing them much easier.
@@ -143,21 +151,214 @@ $$x(t) = e^{st}, x[n] = z^n (s, z \in \mathbb{C})$$
 \begin{definition}
     The frequency response of a system is how a system responds to a purely oscillatory signal
 \end{definition}
+\section{The Fourier Series}
+\subsection{Continuous Time}
+\begin{definition}
+    A function $x(t)$ is periodic if $\exists T$ such that $\forall t, x(t-T)=x(t)$.
+\end{definition}
+The smalled such $T$ which satisfies the periodicity property is known as the \textbf{Fundamental Period}.
+\begin{theorem}
+    If $x(t)$ and $y(t)$ are functions with period $T_1$ and $T_2$ respectively, then $x(t)+y(t)$ is periodic
+    if $\exists m, n \in \mathbb{Z}$ such that $mT_1 = nT_2$.
+\end{theorem}
+\begin{definition}
+    Given a periodic function $x(t)$ with fundamental period $T$ and fundamental frequency $\omega_0=\frac{2\pi}{T}$,
+    the Fourier Series of $x$ is a weighted sum of the harmonic functions.
+    $$x(t) = \sum_{k=-\infty}^{\infty}{a_ke^{jk\omega_0t}}$$
+\end{definition}
+To find the coefficients $a_k$:
+$$x(t) \cdot e^{-jn\omega_0t} = \sum_{k=-\infty}^{\infty}{a_ke^{j\omega_0t(k-n)}}$$
+\[
+    \int_{T}{x(t) \cdot e^{-jn\omega_0t}dt} = \sum_{k=-\infty}^{\infty}{a_k\int_{T}{e^{j\omega_0t(k-n)}}dt}
+    = \left\{
+        \begin{array}{cc}
+            Ta_k & \text{if }$k=n$\\
+            0 & \text{else}
+        \end{array}
+    \right\}
+\]
+Rearranging this, we can see that
+$$a_n = \frac{1}{T}\int_{T}{x(t)e^{-jn\omega_0t}dt}$$.
+For $a_0$, the DC offset term, this formula makes a lot of sense because it is just the average value of the function over one period.
+$$a_0 = \frac{1}{T}\int_{T}{x(t)dt}$$
+Because the Fourier Series is an infinite sum, there is a worry that for some functions $x(t)$, it will not converge.
+The \textbf{Dirichlet Convergent Requirements} tell us when the Fourier Series converges.
+More specificially, they tell us when
+$$\lim_{M \rightarrow \infty}{x_M(\tau) = x(\tau)} \forall \tau, x_M(t) = \sum_{k=-M}^{M}{a_k e^{jk\omega_0t}}$$
+will converge.
+\begin{theorem}
+    The Fourier Series of a continuous time periodic function $x(t)$ will converge when
+    $x$ is piecewise continuous and $\frac{d}{dt}x$ is piecewise continuous.
+    \begin{itemize}
+        \item If $x$ is continuous at $\tau$, $\lim_{M \rightarrow \infty}x_M(\tau) = x(\tau)$
+        \item If $x$ is discontinuous at $\tau$, then $\lim_{M\rightarrow \infty}x_M(\tau) = \frac{1}{2}(x(\tau^- + x(\tau^+)))$ 
+    \end{itemize}
+\end{theorem}
+These convergence requirements are for pointwise convergence only. They do not necessarily imply that the graphs of the Fourier Series
+and the original function will look the same.
+\subsection{Discrete Time}
+The definition for periodicity in discrete time is the exact same as the definition in continuous time.
+\begin{definition}
+    A function $x[n]$ is periodic with period $N \in \mathbb{Z}$ if $\forall n, x[n+N]=x[n]$
+\end{definition}
+However, there are some differences. For example, $x[n] = cos(\omega_0 n)$
+is only periodic in discrete time if $\exists N, M \in \mathbb{Z}, \omega_0 N = 2 \pi M$.
+\begin{theorem}
+    The sum of two discrete periodic signals is periodic
+\end{theorem}
+The above statement is not always true in continuous time but it is in discrete time.\\\\
+The Fourier Series in discrete time is the same idea as the Fourier series in continuous time: 
+to express every signal as a linear combination of complex exponentials.
+The discrete time basis that we use are the Nth roots of unity.
+$$\phi_k[n] = e^{jk\frac{2\pi}{N}n}$$
+\begin{itemize}
+    \item $\phi_k[n]$ is perioidic in n (i.e $\phi_k[n+N] = \phi_k[n]$)
+    \item $\phi_k[n]$ is periodic in k (i.e $\phi_{k+N}[n] = \phi_k[n]$)
+    \item $\phi_k[n]\cdot \phi_m[n] = \phi_{k + m}[n]$
+\end{itemize}
+Notice that with this basis, there are only N unique functions that we can use.
+An additional property of the $\phi_k[n]$ is that
+\[
+    \sum_{n=<N>}{\phi_k[n]} = \left\{
+        \begin{array}{cc}
+            N &\text{if } k = 0,\pm N, \pm 2N\\
+            0 &\text{otherwise} 
+        \end{array}
+    \right\}
+\]
+\begin{definition}
+    Given a periodic discrete-time function $x[n]$ with period $N$, 
+    the Fourier series of the function is a weighted sum of the roots of unity basis functions.
+    $$x[n] = \sum_{k=0}^{N-1}{a_k\phi_k[n]}$$
+\end{definition}
+In order to find the values of $a_k$, we can perform a similar process as in continuous time.
+$$x[n] = \sum_{k=0}^{N-1}{a_k\phi_k[n]}$$
+$$x[n]\phi_{-M}[n] = \sum_{k=0}^{N-1}{a_k\phi_k[n]\phi_{-M}[n]}$$
+$$\sum_{n=<N>}{x[n]\phi_{-M}[n]} = \sum_{n=<N>}{\sum_{k=<N>}{a_k\phi_{k-M}[n]}} = \sum_{k=<N>}{a_k\sum_{n=<N>}{\phi_{k-M}[n]}}$$
+$$\sum_{n=<N>}{x[n]\phi_{-M}[n]} = a_MN$$
+$$a_M = \frac{1}{N}\sum_{n=<N>}{x[n]\phi_{-M}[n]}$$
+\subsection{Properties of the Fourier Series}
+\textbf{Linearity: }
+If $a_k$ and $b_k$ are the coefficients of the Fourier Series of $x(t)$ and $y(t)$ respectively, then
+$Aa_k + Bb_k$ are the coefficients of the Fourier series of $Ax(t)+By(t)$\\\\
+\textbf{Time Shift: }
+If $a_k$ are the coefficients of the Fourier Series of $x(t)$,
+then $b_k = e^{-jk\frac{2\pi}{T}t_0}a_k$ are the coefficients of the Fourier Series of $\hat{x}(t)=x(t-t_0)$\\\\
+\textbf{Time Reversal: }
+If $a_k$ are the coefficients of the Fourier Series of $x(t)$,
+then $b_k=a_{-k}$ are the coefficients of the Fourier Series of $x(-t)$\\\\
+\textbf{Conjugate Symmetry: }
+If $a_k$ are the coefficients of the Fourier Series of $x(t)$,
+then $a_k^*$ are the coefficients of the Fourier Series of $x^*(t)$. 
+This means that $x(t)$ is a real valued signal, then $a_k=a_{-k}^*$
+\begin{theorem}[Parseval's Theorem]
+    \begin{equation*}
+        \frac{1}{T}\int{|x(t)|^2dt} = \sum_{k=-\infty}^{\infty}{|a_k|^2} (Continous Time)
+    \end{equation*}
+    \begin{equation*}
+        \frac{1}{N}\sum_{k=<N>}{|x[n]|^2} = \sum_{k=<N>}{|a_k|^2} (Discrete Time)
+    \end{equation*}
+\end{theorem}
+\subsection{Interpreting the Fourier Series}
+A good way to interpret the Fourier Series is as a change of basis. In both the continuous and discrete case,
+we are projecting our signal $x$ onto a set of basis functions, and the coefficients $a_k$ are the coordinates
+of our signal in the new space.
+\subsubsection{Discrete Time}
+Since in discrete time, signal is peroidic in $N$, we can turn any it into a vector $\vec{x}\in \mathbb{C}^N$.
+\[
+    \vec{x} = \left[
+        \begin{array}{c}
+            x[0]\\
+            x[1]\\
+            \vdots\\
+            x[N-1]
+        \end{array}
+    \right] \in \mathbb{C}^N
+\]
+We can use this to show that $\phi_k$ form an orthogonal basis.
+If we take two of them $\phi_k[n]$ and $\phi_M[n]$ ($k\ne M$) and compute their dot product of their vector forms, then
+$$\phi_k[n] \cdot \phi_M[n] = \phi_M^*\phi_k = \sum_{<n>}{\phi_{k-M}[n]} = 0$$
+That means that $\phi_k$ and $\phi_M$ are orthogonal, and they are $N$ of them, therefore they are a basis.
+If we compute their magnitudes, we see
+$$\phi_k \cdot \phi_k = ||\phi_k||^2 = N, \therefore ||\phi_k|| = \sqrt{N}$$
+Finally, if we compute $\vec{x}\phi_M$ where $\vec{x}$ is the vector form of an N-periodic signal,
+$$\vec{x}\cdot \vec{\phi_M} = (\sum_{i=0}^{N-1}{a_i\phi_i})\cdot \phi_M = Na_m$$
+$$a_m = \frac{1}{N}\vec{x}\cdot \phi_M$$
+This is exactly the equation we use for finding the Fourier Series coefficients, and notice that it is a
+projection since $N = ||\phi_m||^2$. This gives a nice geometric intution for Parseval's theorem.
+$$\frac{1}{N}\sum{|x[n]|^2} = \frac{1}{N}||\vec{x}||^2 = \sum{|a_k|^2}$$
+because we know the norms of two vectors in different bases must be equal.
+\subsection{Continuous Time}
+In continuous time, our bases functions are $\phi_k(t) = e^{jk\frac{2\pi}{T}t}$ for $k \in (-\infty, \infty)$
+Since we can't convert continuous functions into vectors, these $\phi_k$ are really a basis for the vector space
+of square integrable functions on the interval $[0, T]$.
+The inner product for this vector space is 
+$$<x, y> = \int_{0}^{T}{x(t)y^*(t)}$$
+We can use this inner product to conduct the same proof as we did in discrete time.
+\section{The Fourier Transform}
+\subsection{Continuous Time Fourier Transform}
+\begin{definition}
+    The Continuous Time Fourier Transform converts an aperiodic signal into the frequency domain.
+    $$X(\omega) = \int_{-\infty}^{\infty}{x(t)e^{-j\omega t}dt}$$
+\end{definition}
+The intuition for this transform comes from the Fourier Series. Only periodic signals can be represented by the Fourier Series.
+If we start with a finite signal $x(t)$, then we can just make it periodic by copying the domain over which it is nonzero so 
+it repeats over a period $T$. Call this signal $\tilde{x}(t)$. Since $\tilde{x}$ is perioidc,
+we can find its fourier series coefficients.
+\[
+    a_k = \frac{1}{T}\int_{T}{\tilde{x}(t)e^{-jn\frac{2\pi}{T}t}} = 
+    \frac{1}{T}\int_{T}{x(t)e^{-jn\frac{2\pi}{T}t}} = \frac{1}{T}\int_{-\infty}^{\infty}{x(t)e^{-jn\frac{2\pi}{T}t}}
+\]
+These steps are possible because $\tilde{x}(t) = x(t)$ over a single period, and $x(t)$ is zero outside that period.
+$$Ta_k = \int_{-\infty}^{\infty}{x(t)e^{-jn\frac{2\pi}{T}t}}$$
+notice that if we let $T$ approach infinity, then $\omega_0 = \frac{2\pi}{T}$ becomes very small, so the $Ta_k$
+can almost be thought of as samples of some continuous time function. What this means is for a general aperiodic signal,
+regardless of if it is finite or not, we can think of it as having "infinite period" and thus made up of a continuous set of frequencies.
+This is what motivates the continuous time fourier transform.
+\begin{definition}
+    The Inverse Continuous Time Fourier Transform takes us from the frequency domain
+    reprsentation of a function $X(\omega)$ to its time domain representation $x(t)$
+    $$x(t) = \frac{1}{2\pi}\int_{-\infty}^{\infty}{X(\omega)e^{j\omega t}d\omega}$$
+\end{definition}
+We can arrive at this equation by starting from the Fourier series again
+Our faux signal $\tilde{x}(t)$ which was the periodic function we constructed out of our aperiod one
+is represented by its Fourier Series
+$$\tilde{x}(t) = \sum_{k-\infty}^{\infty}{a_ke^{jk\omega_0t}} = \sum_{k=-\infty}^{\infty}{(\frac{1}{T}X(\omega))e^{j\omega t}}|_{w=k\omega_0}$$
+Notice this is just rewrite $a_k$ as the samples of the Fourier Transform $X(\omega)$. $T = \frac{2\pi}{\omega_0}$ so
+$$\tilde{x}(t) = \frac{1}{2\pi} \sum_{k=-\infty}^{\infty}{\omega_0X(\omega)e^{j\omega t}}|_{w=k\omega_0}$$
+$$x(t) = \lim_{T->\infty}{\tilde{x}(t)} = lim_{\omega_0->0}{\tilde{x}(t)} = \frac{1}{2\pi}\int_{-\infty}^{\infty}{X(\omega)e^{j\omega t}d\omega}$$
+\subsubsection{Properties of the CTFT}
+For all these properties, assume that $x(t) \leftrightarrow X(\omega)$ and $y(t) \leftrightarrow Y(\omega)$\\
+\textbf{Linearity: } 
+$$ax(t) + by(t) \leftrightarrow aX(\omega) + bY(\omega)$$
+\textbf{Time Shift: }
+$$x(t-t_0) \leftrightarrow e^{-j\omega t_0}X(\omega)$$
+\textbf{Time/Frequency Scaling: }
+$$x(at) \leftrightarrow \frac{1}{|a|}X(\frac{\omega}{a})$$
+\textbf{Conjugation: } 
+$$x^*(t) \leftrightarrow X^*(-\omega)$$
+\textbf{Derivative: } 
+$$\frac{d}{dt}x(t) \leftrightarrow j\omega X(\omega), \frac{d}{d\omega}X(\omega) \leftrightarrow -jt x(t)$$
+\textbf{Convolution/Multiplication: } 
+$$(x*y)(t) \leftrightarrow X(\omega)Y(\omega), x(t)y(t) \leftrightarrow \frac{1}{2\pi}(X*Y)(\omega)$$
+\textbf{Frequency Shift: } 
+$$e^{j\omega_0 t}x(t) \leftrightarrow X(\omega - \omega_0)$$
+\textbf{Parsevals Theorem: }
+$$\int_{-\infty}^{\infty}{|x(t)|^2dt} = \frac{1}{2\pi}\int_{-\infty}^{\infty}{|X(\omega)|^2d\omega}$$
 \section{Linear Time-Invariant Systems}
 \begin{definition}
     LTI systems are ones which are both linear and time-invariant.
 \end{definition}
 \subsection{Impulse Response of LTI systems}
 LTI systems are special systems because their output can be determined entirely the impulse response $h[n]$.
-\subsubsection{The discrete case}
+\subsubsection{The Discrete Case}
 We can think of the original signal $x[n]$ in terms of the impulse function.
 $$x[n] = x[0]\delta[n]+x[1]\delta[n-1]+... = \sum_{k=-\infty}^{\infty}{x[k]\delta[n-k]}$$
 This signal will be transformed in some way to get the output $y[n]$.
 Since the LTI system applies a functional $F$ and the LTI is linear and time-invariant,
 $$y[n] = F(\sum_{k=-\infty}^{\infty}{x[k]\delta[n-k]}) = \sum_{k=-\infty}^{\infty}{x[k]F(\delta[n-k])} = \sum_{k=-\infty}^{\infty}{x[k]h[n-k]}$$
 Notice this operation is the convolution between the input and the impulse response.
-$$y(t) = \int_{\infty}^{\infty}{x(\tau)h(t-\tau)}$$
-\subsubsection{The continuous case}
+\subsubsection{The Continuous Case}
 We can approximate the function by breaking it into intervals of length $\Delta$.
 $$x(t) \approx \sum_{k=-\infty}^{\infty}{x(k\Delta)\delta_{\Delta}(t-k\Delta)\Delta}$$
 $$x(t) = lim_{\Delta \rightarrow 0}\sum_{k=-\infty}^{\infty}{x(k\Delta)\delta_{\Delta}(t-k\Delta)\Delta}$$
@@ -194,18 +395,59 @@ Notice that this does not depend on time steps prior to $n=0$
     And this is unbounded, so $y[n]$ is unbounded.
 \end{proof}
 \subsection{Frequency Response}
+\begin{definition}
+    The frequency response of a system is the output when passed a purely oscillatory signal
+\end{definition}
 If we pass a complex exponential into an LTI system, the output signal is the same signal but scaled.
 In otherwise, it is an eigenfunction of LTI systems.
 $$y(t)=\int_{-\infty}^{\infty}{e^{s(t-\tau)}h(\tau)d\tau}=e^{st}\int_{-\infty}^{\infty}{e^{-s\tau}h(\tau)}$$
 The integral is a constant, and the original function is unchanged.
 The same analysis can be done in the discrete case.
 $$y[n]=\sum_{k=-\infty}^{\infty}z^{n-k}h[k] = z^n \sum_{k=-\infty}^{\infty}z^{-k}h[k]$$
-\begin{definition}
-    The frequency response of a system is the output when passed a purely oscillatory signal
-\end{definition}
+We give these constant terms a special name called the transfer function.
 \begin{definition}
     The transfer function of an LTI system $H(\omega)$ is how the system scales a pure tone of frequency $\omega$
     $$H(\omega):=\int_{-\infty}^{\infty}{h(\tau)e^{-j\omega\tau}d\tau}, H(\omega):= \sum_{k=-\infty}^{\infty}{h[k]e^{-j\omega k}}$$
 \end{definition}
-
+\textbf{Notice: }The transfer function is the fourier transform of the impulse response!
+This means the Fourier Transform takes us from the impulse response of the system to the frequency response. 
+\subsection{Special LTI Systems}
+\subsubsection{Linear Constant Coefficient Difference/Differential Equations}
+\begin{definition}
+    A linear constant coefficient difference equation is a system of one of the following forms
+    $$\text{Discrete: } \sum_{k=0}^{N}{a_k y[n-k]} = \sum_{k=0}^{M}{b_k x[n-k]}$$
+    $$\text{Continuous: } \sum_{k=0}^{N}{a_k\frac{d^ky}{dt^k}} = \sum_{k=0}^{M}{b_k\frac{d^kx}{dt^k}}$$
+\end{definition}
+\begin{theorem}
+    Systems described by a linear constant coefficient difference equation are causal LTI iff $a_0 \ne 0$
+    and the system is initially at rest ($y[n] = 0 for n < n_0$ where $n_0$ is the first instant $x[n] \ne 0$)
+\end{theorem}
+Notice that if $a_1..a_n = 0$, then the system will have a finite impulse response because eventually the signal will die out.
+It turns out that all causal FIR systems can be written as a linear constant coefficient difference equation.
+\begin{theorem}
+    Systems of the form
+    $$y[n] = \sum_{k=0}^{M}{b_k x[n-k]}$$ are causal, FIR LTI systems and their impulse response is
+    $$h[n] = \sum_{k=0}^{M}{b_k \delta[n-k]}$$
+\end{theorem}
+\begin{theorem}
+    Given a constant coefficient difference/differential equation, the transfer function $H(\omega)$ is
+    $$H(\omega) = \frac{Y(\omega)}{X(\omega)} = \frac{\sum_{k=0}^{M}{b_k(j\omega)^k}}{\sum_{k=0}^{N}{a_k(j\omega)^k}}\text{ [Continuous Case]}$$
+    $$H(\omega) = \frac{Y(\omega)}{X(\omega)} = \frac{\sum_{k=0}^{M}{b_ke^{-j\omega k}}}{\sum_{k=0}^{N}{a_ke^{-j\omega k}}}\text{ [Discrete Case]}$$
+\end{theorem}
+\begin{proof}
+    \textbf{\\The Continuous Case}
+    $$\sum_{k=0}^{N}{a_k\frac{d^ky}{dt^k}} = \sum_{k=0}^{M}{b_k\frac{d^kx}{dt^k}}$$
+    Taking the Fourier Transform,
+    $$\sum_{k=0}^{N}{a_k(j\omega)^k Y(\omega)} = \sum_{k=0}^{M}{b_k(j\omega)^k X(\omega)}$$
+    $$\frac{Y(\omega)}{X(\omega)} = \frac{\sum_{k=0}^{M}{b_k(j\omega)^k}}{\sum_{k=0}^{N}{a_k(j\omega)^k}}$$
+    $$y(t) = (h*x)(t) \leftrightarrow H(\omega)X(\omega)$$
+    $$\therefore H(\omega) = \frac{Y(\omega)}{X(\omega)} = \frac{\sum_{k=0}^{M}{b_k(j\omega)^k}}{\sum_{k=0}^{N}{a_k(j\omega)^k}}$$
+    \textbf{The Discrete Case}
+    $$\sum_{k=0}^{N}{a_k y[n-k]} = \sum_{k=0}^{M}{b_k x[n-k]}$$
+    Remember the frequecy response is the impulse response, so let $x[n] = \delta[n]$
+    $$\sum_{k=0}^{N}{a_k y[n-k]} = \sum_{k=0}^{M}{b_k \delta[n-k]}$$
+    Take the DTFT
+    $$\sum_{k=0}^{N}{a_k e^{-j\omega k}H(\omega)} = \sum_{k=0}^{M}{b_k e^{-j\omega k}}$$
+    $$H(\omega) = \frac{\sum_{k=0}^{M}{b_k e^{-j\omega k}}}{\sum_{k=0}^{N}{a_k e^{-j\omega k}}}$$
+\end{proof}
 \end{document}
