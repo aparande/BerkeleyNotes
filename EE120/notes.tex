@@ -288,7 +288,7 @@ This is exactly the equation we use for finding the Fourier Series coefficients,
 projection since $N = ||\phi_m||^2$. This gives a nice geometric intution for Parseval's theorem.
 $$\frac{1}{N}\sum{|x[n]|^2} = \frac{1}{N}||\vec{x}||^2 = \sum{|a_k|^2}$$
 because we know the norms of two vectors in different bases must be equal.
-\subsection{Continuous Time}
+\subsubsection{Continuous Time}
 In continuous time, our bases functions are $\phi_k(t) = e^{jk\frac{2\pi}{T}t}$ for $k \in (-\infty, \infty)$
 Since we can't convert continuous functions into vectors, these $\phi_k$ are really a basis for the vector space
 of square integrable functions on the interval $[0, T]$.
@@ -345,6 +345,96 @@ $$(x*y)(t) \leftrightarrow X(\omega)Y(\omega), x(t)y(t) \leftrightarrow \frac{1}
 $$e^{j\omega_0 t}x(t) \leftrightarrow X(\omega - \omega_0)$$
 \textbf{Parsevals Theorem: }
 $$\int_{-\infty}^{\infty}{|x(t)|^2dt} = \frac{1}{2\pi}\int_{-\infty}^{\infty}{|X(\omega)|^2d\omega}$$
+\subsubsection{Convergence of the CTFT}
+A big question that arises when thinking about the Fourier Transform is whether or not the integral $\int{x(t)e^{-j\omega t}}$
+actually converges.
+\begin{theorem}
+    If $\int_{-\infty}^{\infty}{|x(t)|dt}$ converges, then $X(\omega)$ exists and is continuous.
+    In addition, $X(\omega)$ approaches 0 as $|\omega|$ approaches $\infty$
+\end{theorem}
+Conceptually, this theorem makes sense because
+$$|x(t)e{-j\omega t}| = |x(t)| |e^{-j\omega t}| = |x(t)|$$
+So if one converges, the other must converge. However, this means that $x(t)=1$, $x(t)=sin(\omega t)$, $x(t)=cos(\omega t)$
+don't have a "strict" Fourier Series because the integral doesn't converge for these periodic signals. In order to get around this,
+we can define a "generalized" Fourier Transform which operates on periodic signals.\\\\
+Starting with $x(t)=1$, we know that in the frequency domain, the only consituent frequency is $\omega=0$.
+This means that $X(\omega) = k\delta(\omega)$ where $k$ is some scalar.
+Using the Inverse Fourier Transform,
+$$x(t) = \frac{1}{2\pi}\int{k\delta(\omega)e^{j\omega t}d\omega} = \frac{k}{2\pi}$$
+That means $k = 2\pi$, so
+$$x(t) = 1 \leftrightarrow X(\omega) = 2\pi \delta(\omega)$$
+Now if we apply the frequency shift property, we see that
+$$x(t) = e^{j\omega_0 t} = 2\pi \delta(\omega - \omega_0)$$.
+With this, we can define our generalized Fourier Transform for periodic signals.
+\begin{definition}
+    The generalized Fourier Transform for a periodic signal $x(t)$ is
+    $$X(\omega) = \sum_{-\infty}^{\infty}{a_k\cdot 2\pi \delta(\omega - \omega_0)}$$
+    where $a_k$ are the coefficients of the Fourier Series of $x(t)$
+\end{definition}
+This definition works because any periodic signal can be represented by its Fourier Series.
+The rational behind using the Dirac Delta in this generalized Fourier Transform is exlained by the 
+Theory of Distributions which can be found in the Appendix. %TODO: Link to Appendix
+\subsection{Discrete Time Fourier Transform}
+\begin{definition}
+    The Discrete Time Fourier Transform converts aperiodic discrete signals into the frequency domain.
+    $$X(\omega) = \sum_{-\infty}^{\infty}{x[n]e^{-j\omega n}}$$
+\end{definition}
+The intution for the discrete time fourier transform is more or less the same as that of the Continuous Time Fourier Transform.
+\begin{definition}
+    The Inverse Discrete Time Fourier Transform converts the frequency domain representation of a signal
+    back into its time domain representation.
+    $$x[n] = \frac{1}{2\pi}\int_{<2\pi>}{X(\omega)e^{j\omega n}d\omega}$$
+\end{definition}
+\subsubsection{Properties of the DTFT}
+For all these properties, assume that $x[n] \leftrightarrow X(\omega)$ and $y[n]\leftrightarrow (\omega)$\\
+\textbf{Time Shift: }
+$$ x[n-n_0] \leftrightarrow e^{-j\omega n_0}X(\omega)$$
+\textbf{Frequency Shift: }
+$$ X(\omega - \omega_0) \leftrightarrow e^{j\omega n_0}x[n]$$
+\textbf{Time Reversal: }
+$$ x[-n] \leftrightarrow X(-\omega)$$
+\textbf{Conjugation: }
+$$ x^*[n] = X^*(-\omega)$$
+\textbf{Time Expansion: }\\
+In discrete time, compression of a signal doesn't make sense because we can't have partial steps (i.e n must be an integer).
+However, we can stretch a signal.
+\[
+    x_M[n] \leftrightarrow X(M\omega), x_M[n] = \left\{
+        \begin{array}{cc}
+            x[\frac{n}{M}] & \text{when } M | n\\
+            0 & \text{else}
+        \end{array}
+    \right\}
+\]
+\textbf{Derivative Property: }
+$$nx[n] \leftrightarrow j \frac{d}{d\omega}X(\omega)$$
+\textbf{Multiplication Property: }
+$$ x[n]y[n] \leftrightarrow \frac{1}{2\pi}\int_{2\pi}{X(\theta)Y(\omega-\theta)d\theta}$$
+\textbf{Convolution Property: }
+$$(x*y)[n] = X(\omega)Y(\omega)$$
+\subsubsection{Convergence of the DTFT}
+Just like in continuous time, it was unclear whether or not the integral would converge,
+in discrete time, it is unclear if the infinite sum will converge. The convergence theorem for both are essentially the same.
+\begin{theorem}
+    If $\sum_{-\infty}^{\infty}{|x[n]|}$ converges, then $X(\omega)$ exists and is continuous.
+\end{theorem}
+Just like in continuous time, periodic signals like $x[n] = 1, x[n] = sin(\omega_0t), x[n]=cos(\omega_0t)...$
+are problematic because they don't converge under the "strict" transform, so they require a generalied transform.
+In the frequency domain, a constant signal like $x[n] = 1$ will be the sum of all frequencies. This will look like
+a sum of Dirac Deltas.
+$$X(\omega) = k \sum_{l=-\infty}^{\infty}{\delta(\omega - 2\pi l)}$$
+Applying the synthesis equation to this, we get
+$$x(t) = \frac{1}{2\pi}\int_{2\pi}{k \sum_{l=-\infty}^{\infty}{\delta(\omega - 2\pi l)}} = \frac{k}{2\pi}\sum_{l=-\infty}^{\infty}{\int_{2\pi}{\delta(\omega - 2\pi l)}} = \frac{k}{2\pi}\int_{2\pi}{\delta(\omega - 2\pi \cdot 0)} = \frac{k}{2\pi}$$
+Therefore $k = 2\pi$, so
+$$x[n] = 1 \leftrightarrow X(\omega) = 2\pi\sum_{l=-\infty}^{\infty}{\delta{\omega - 2\pi l}}$$
+and we can apply the frequency shift property to get
+$$x[n] = e^{j\omega_0n} \leftrightarrow X(\omega) = 2\pi\sum_{l=-\infty}^{\infty}{\delta{\omega - \omega_0 - 2\pi l}}$$
+Once again using the Fourier Series representation of $x[n]$, we can define the generalized Discrete Time Fourier Transform.
+\begin{definition}
+    For a perioidic signal $x[n]$, the generalized Discrete Fourier Transform is
+    $$x[n] \leftrightarrow 2\pi\sum_{-\infty}^{\infty}{a_k\delta(\omega-\omega_0k)}$$
+    where $a_k$ are the Fourier Series coefficients of $x[n]$
+\end{definition}
 \section{Linear Time-Invariant Systems}
 \begin{definition}
     LTI systems are ones which are both linear and time-invariant.
@@ -450,4 +540,33 @@ It turns out that all causal FIR systems can be written as a linear constant coe
     $$\sum_{k=0}^{N}{a_k e^{-j\omega k}H(\omega)} = \sum_{k=0}^{M}{b_k e^{-j\omega k}}$$
     $$H(\omega) = \frac{\sum_{k=0}^{M}{b_k e^{-j\omega k}}}{\sum_{k=0}^{N}{a_k e^{-j\omega k}}}$$
 \end{proof}
+\section{Appendix}
+\subsection{Theory of Distributions}
+The Theory of Distributions is the mathematical framework which underlies the generalized Fourier Transforms.
+\begin{definition}
+    Given a test function $x$, a distribution $T$ operates on $x$ to produce a number $<T,x>$.
+\end{definition}
+\begin{definition}
+    The distrbution induced by a function $g$ is defined as
+    $$<T_g, x> = \int_{-\infty}^{\infty}{g(t)^*x(t)dt}$$
+\end{definition}
+Notice two things:
+\begin{itemize}
+    \item $<T_g, x>$ is linear
+    \item $<\alpha T_g, x> = \alpha^*<T_g, x>$
+\end{itemize}
+With these definitions, we can now define the Dirac delta in terms of distrubions.
+Let $g$ be any function such that
+$$\int_{\infty}^{\infty}{g(t)dt} = 1$$
+Define $g_\epsilon$ to be
+$$g_\epsilon = \frac{1}{\epsilon}g(\frac{t}{\epsilon})$$
+Now we can defined $\delta(t) = \lim_{\epsilon \rightarrow 0}{T_{g_\epsilon}}$
+$$<\delta, x> = \int_{-\infty}^{\infty}{\delta(t)x(t)dt} = x(0)$$ 
+which is the property of the Dirac Delta we want. Now we can define the generalized Fourier Transform
+in terms of distributions.
+\begin{definition}
+    The generalized Continuous Time Fourier Transform of a distrubtion $T$ is
+    $$<FT, X> = 2\pi<T, x$$
+    for test function $x$ whose Fourier Transform is $X$
+\end{definition}
 \end{document}
