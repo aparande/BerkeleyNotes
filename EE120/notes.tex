@@ -31,10 +31,10 @@ If you find any typos, errors, etc, please raise an issue on the \href{https://g
     A signal is a function of one or more variables
 \end{definition}
 \begin{definition}
-    A signal $x(t)$ is continuous if $x: \mathbb{R} \rightarrow \mathbb{R}$
+    A continuous signal $x(t)$ maps $\mathbb{R} \rightarrow \mathbb{R}$
 \end{definition}
 \begin{definition}
-    A signal $x[n]$ is discrete if $x: \mathbb{Z} \rightarrow \mathbb{R}$
+    A discrete signal $x[n]$ maps $\mathbb{Z} \rightarrow \mathbb{R}$
 \end{definition}
 \subsubsection{Properties of the Unit Impulse}
 \begin{definition}
@@ -97,7 +97,7 @@ This is equivalent to shifting $x$ left by $\tau$ timesteps and then flipping it
 \end{definition}
 \begin{definition}
     The convolution of two signals in continuous time
-    $$(x*h)(t) = \int_{\infty}^{\infty}{x(\tau)h(t-\tau)d\tau}$$
+    $$(x*h)(t) = \int_{-\infty}^{\infty}{x(\tau)h(t-\tau)d\tau}$$
 \end{definition}
 While written in discrete time, these properties apply in continuous time as well.
 \begin{itemize}
@@ -256,7 +256,7 @@ This means that $x(t)$ is a real valued signal, then $a_k=a_{-k}^*$
         \frac{1}{T}\int{|x(t)|^2dt} = \sum_{k=-\infty}^{\infty}{|a_k|^2} (Continous Time)
     \end{equation*}
     \begin{equation*}
-        \frac{1}{N}\sum_{k=<N>}{|x[n]|^2} = \sum_{k=<N>}{|a_k|^2} (Discrete Time)
+        \frac{1}{N}\sum_{n=<N>}{|x[n]|^2} = \sum_{k=<N>}{|a_k|^2} (Discrete Time)
     \end{equation*}
 \end{theorem}
 \subsection{Interpreting the Fourier Series}
@@ -364,7 +364,7 @@ $$x(t) = \frac{1}{2\pi}\int{k\delta(\omega)e^{j\omega t}d\omega} = \frac{k}{2\pi
 That means $k = 2\pi$, so
 $$x(t) = 1 \leftrightarrow X(\omega) = 2\pi \delta(\omega)$$
 Now if we apply the frequency shift property, we see that
-$$x(t) = e^{j\omega_0 t} = 2\pi \delta(\omega - \omega_0)$$.
+$$x(t) = e^{j\omega_0 t} = 2\pi \delta(\omega - \omega_0)$$
 With this, we can define our generalized Fourier Transform for periodic signals.
 \begin{definition}
     The generalized Fourier Transform for a periodic signal $x(t)$ is
@@ -390,7 +390,7 @@ For all these properties, assume that $x[n] \leftrightarrow X(\omega)$ and $y[n]
 \textbf{Time Shift: }
 $$ x[n-n_0] \leftrightarrow e^{-j\omega n_0}X(\omega)$$
 \textbf{Frequency Shift: }
-$$ X(\omega - \omega_0) \leftrightarrow e^{j\omega n_0}x[n]$$
+$$ X(\omega - \omega_0) \leftrightarrow e^{j\omega_0 n}x[n]$$
 \textbf{Time Reversal: }
 $$ x[-n] \leftrightarrow X(-\omega)$$
 \textbf{Conjugation: }
@@ -426,13 +426,13 @@ $$X(\omega) = k \sum_{l=-\infty}^{\infty}{\delta(\omega - 2\pi l)}$$
 Applying the synthesis equation to this, we get
 $$x(t) = \frac{1}{2\pi}\int_{2\pi}{k \sum_{l=-\infty}^{\infty}{\delta(\omega - 2\pi l)}} = \frac{k}{2\pi}\sum_{l=-\infty}^{\infty}{\int_{2\pi}{\delta(\omega - 2\pi l)}} = \frac{k}{2\pi}\int_{2\pi}{\delta(\omega - 2\pi \cdot 0)} = \frac{k}{2\pi}$$
 Therefore $k = 2\pi$, so
-$$x[n] = 1 \leftrightarrow X(\omega) = 2\pi\sum_{l=-\infty}^{\infty}{\delta{\omega - 2\pi l}}$$
+$$x[n] = 1 \leftrightarrow X(\omega) = 2\pi\sum_{l=-\infty}^{\infty}{\delta(\omega - 2\pi l)}$$
 and we can apply the frequency shift property to get
-$$x[n] = e^{j\omega_0n} \leftrightarrow X(\omega) = 2\pi\sum_{l=-\infty}^{\infty}{\delta{\omega - \omega_0 - 2\pi l}}$$
+$$x[n] = e^{j\omega_0n} \leftrightarrow X(\omega) = 2\pi\sum_{l=-\infty}^{\infty}{\delta(\omega - \omega_0 - 2\pi l)}$$
 Once again using the Fourier Series representation of $x[n]$, we can define the generalized Discrete Time Fourier Transform.
 \begin{definition}
     For a perioidic signal $x[n]$, the generalized Discrete Fourier Transform is
-    $$x[n] \leftrightarrow 2\pi\sum_{-\infty}^{\infty}{a_k\delta(\omega-\omega_0k)}$$
+    $$x[n] \leftrightarrow 2\pi\sum_{-\infty}^{\infty}{a_k\delta(\omega-\frac{2\pi}{N}k)}$$
     where $a_k$ are the Fourier Series coefficients of $x[n]$
 \end{definition}
 \section{Linear Time-Invariant Systems}
@@ -566,7 +566,7 @@ which is the property of the Dirac Delta we want. Now we can define the generali
 in terms of distributions.
 \begin{definition}
     The generalized Continuous Time Fourier Transform of a distrubtion $T$ is
-    $$<FT, X> = 2\pi<T, x$$
+    $$<FT, X> = 2\pi<T, x>$$
     for test function $x$ whose Fourier Transform is $X$
 \end{definition}
 \end{document}
