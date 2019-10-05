@@ -8,11 +8,13 @@
 \usepackage{circuitikz}
 \usepackage{float}
 \usepackage{afterpage}
+\usepackage{listings}
 \usetikzlibrary{calc}
 \newtheorem{theorem}{Theorem}
 \newtheorem{definition}{Definition}
 \newtheorem{corollary}{Corollary}
 \newtheorem{proof}{Proof}
+\newtheorem{lemma}{Lemma}
 
 \DeclareMathOperator*{\argmin}{argmin}
 
@@ -145,4 +147,96 @@ $R$ and $\lnot R$ are two facts which can be deduced from assumign $\lnot P$
 \subsubsection{Strong Induction}
 Because induction requires that $P(k)$ be true to prove $P(k+1)$,
 it might be easier to just assume $P(0)\land P(1) \land ... \land P(k)$ when proving $P(k+1)$.
+\section{Stable Marriage Algorithm}
+\subsection{The algorithm}
+The stable marriage algorithm uses a list of preferences to make pairings from two disjoint groups of people.
+\begin{lstlisting}
+    Input: 
+        - n men, n women
+        - For each man, a ranked list of the women
+        - For each woman, a ranked list of the men
+    Goal: Pair men and women up in a way such that 
+          two people from different pairings would be 
+          happier together if they switched partners
+
+    Algorithm:
+
+        Each Day:
+            1. Each man proposes to the first woman on 
+                his list who has not yet rejected him
+            2. Each woman says "maybe" to the man she 
+                likes best among her proposals and 
+                rejects the others
+            3. Each man crosses off his list the woman 
+                who just rejected him
+        Repeat until there are no rejections
+\end{lstlisting}
+\subsection{Proving the Algorithm}
+There are four things we must prove in order to make sure that the stable marriage algorithm works.
+\begin{itemize}
+    \item[1. ] SMA terminates
+    \item[2. ] SMA must output a pairing
+    \item[3. ] The pairing outputted by SMA is stable
+\end{itemize}
+Beginning with proving the SMA terminates,
+\begin{proof}[SMA Terminates]
+    On each iteration, when SMA doesn't halt, some man got rejected. If a man gets 
+    rejected, he crossed a woman off his list. If every man gets rejected by every woman on his list, then
+    there is a maximum of $n^2$ rejections. This will take a maximum of $n^2$ days, therefore the algorithm
+    terminates after $n^2$ days.
+\end{proof}
+Before proving that the SMA must output a pairing, it is first useful to prove something called the improvement lemma
+\begin{lemma}[Improvement lemma]
+    Suppose $M$ proposes to $W$ on iteration $K$. On every day $J \ge K$,
+    $W$ has said "maybe" to a man she likes at least as much as $M$ 
+\end{lemma}
+\begin{proof}[Improvement Lemma]
+    Proceed with induction on the number of days $k$\\\\
+    \textbf{Base Case: }$J = K$\\
+    $M$ proposes to $W$, so the statement holds because even if $M$ is her worst proposal,
+    she will only say "maybe" to a better man.\\\\
+    \textbf{Induction Hypothesis: } Assume the lemma is true for day $J$\\
+    \textbf{Inductive Step: }\\
+    On day $J$, $W$ has said "maybe" to $M'$ she likes at least as much as $M$. $M'$ will propose again on
+    day $J+1$, so no matter who else proposes to $W$, she will at least have $M'$ who is better than $M$
+\end{proof}
+\begin{proof}[SMA outputs a pairing]
+    Suppose the algirhtm produces no pairing. Then there exists $M$ who is rejected by all $n$ women
+    when the algorithm terminates. By the improvement lemma, all women at the end of the algorithm have a men
+    whom they've said maybe to. So $n$ women can only have rejected $n-1$ men which is a contradiction, therefore
+    SMA must output a pairing.
+\end{proof}
+Before proving that the output of SMA is stable, we should define what stability means.
+\begin{definition}
+    A pairing outputted by SMA is stable if there is not a man and a woman 
+    who would rather be with each other than their current partners (a rogue couple).
+\end{definition}
+\begin{proof}[SMA outputs a stable pairing]
+    Suppose the pairing outputted by SMA is $\{...(M, W)...(M', W')\}$ and $M$
+    likes $W'$ more than $W$. Since M likes $W'$ more than $W$, M must have proposed
+    to $W'$. By the improvement lemma, $M'$ must be better than $M$, so $(M, W')$ is not
+    a rogue couple, so there are no rogue couples and the pairing is stable.
+\end{proof}
+\begin{definition}
+    For a given $M$ the optimal $W$ is the highest woman on his list that he is paired with
+    in any stable pairing
+\end{definition}
+\begin{definition}
+    The male optimal pairing is the one in which every man is paired with his optimal woman.
+\end{definition}
+\begin{proof}[SMA is male-optimal]
+    Proceed by induction on $k$ (the number of days). $\forall k \ge 0$, on day $k$, no man gets rejected by his optimal woman.\\\\
+    \textbf{Base Case: } $k=0$
+    \\Nothing to prove, no rejections have happened\\\\
+    \textbf{Inductive Step: }\\
+    Assume for all $0 \le k \le j$, no man is rejected by his optimal woman. Suppose for contradiction
+    that on day $j+1$ M gets rejected by his optimal woman $W^*$ meaning some other man was accepted $M^*$.
+    Since $W^*$ is M's optimal woman, there exists a stable pairing $\{...(M, W^*)...(M^*, W')\}$
+    since $W^*$ prefers $M^*$ to M because she rejected M. By the inductive hypothesis, $M^*$ has not yet
+    been rejected by his optimal woman, so he likes $W^*$ at least as much as $W'$ because there is a stabe
+    pairing with $W'$. Hence $(M^*, W^*)$ is rogue because they like each other better than their partners.
+\end{proof}
+\begin{theorem}
+    The male-optimal pairing is the female-pessimal pairing.
+\end{theorem}
 \end{document}
