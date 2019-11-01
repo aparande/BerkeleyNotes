@@ -57,11 +57,14 @@ A 1 means the number is negative where as 0 means it is positive. The downside t
 To fix the bit wrapping, to form the negative number, we can flip each bit. This solves the wrapping issue so even with overflow, when adding 1, the result will continue increasing.
 \subsubsection{Two's Complement}
 To convert from decimal to two's complement:
+If the number is positive, convert to binary as normal.
+If the number is Negative:
 \begin{itemize}
-    \item Invert each bit of the positive version of the number
-    \item Add one to the result
+    \item[1.] Convert the positive version of the number to binary
+    \item[2.] Invert each bit
+    \item[3.] Add one to the result
 \end{itemize}
-The same process can be utilized to go from the negative version of a number to the positive version.
+If given a two's complement number, you can find -1 times that number by following the same process (invert bits and add 1).
 \subsubsection{Bias Encoding}
 With bias encoding, the number is equal to its unsigned representation plus a bias turn. With a negative bias,
 we can center a positive range of $0 \rightarrow 2^N - 1$ on 0.
@@ -124,7 +127,7 @@ Bitwise operators are operators which change the bits of integer-like objects (i
     \item $\wedge$: Bitwise XOR. Useful for flipping bits off
     \item $<<$: Left shifts the bits of the first operand left by the number of bits specified by the second operand.
     \item $>>$: Right shifts the bits of the first operand right by the number of bits specified by the second operand.
-    \item $~$: Inverts the bits.
+    \item $\sim$: Inverts the bits.
 \end{itemize}
 \subsection{Pointers}
 \begin{definition}
@@ -160,9 +163,9 @@ much to advance the pointer by.
     int a[] = {1, 2, 3, 4, 5}; //ints are 4 bytes;
     printf("%u", &a); // 0x2000
     printf("%u", &(a+2)); // 0x2008
-    char *c = "abcdef"; //ints are 1 byte
-    printf("%u", &a); // 0x3000
-    printf("%u", &(a+2)); // 0x3002
+    char *c = "abcdef"; //chars are 1 byte
+    printf("%u", &c); // 0x3000
+    printf("%u", &(a+c)); // 0x3002
 \end{lstlisting}
 One important thing to remember is that declared arrays are only allocated while the scope is valid.
 That means once a function returns, their memory is free to be taken.\\\\
@@ -173,7 +176,7 @@ Structs are the basic datastructures in C. Like classes, they are composed of si
 but there is no inheritance.
 \subsubsection{Struct Operators}
 \begin{itemize}
-    \item $=>$: dereference a struct and get a subfield
+    \item $->$: dereference a struct and get a subfield
 \end{itemize}
 $typedef$ can be a useful command with structs because it lets us name them cleanly.
 \section{Memory Management}
@@ -482,4 +485,33 @@ When the linker encounters a label, it does the following.
 This approach is known as \textbf{Static Linking} because the executable doesn't change. By contrast,
 with dynamic linking, libraries are loaded during runtime to make the program smaller. However, this adds
 runtime overhead because libraries must be searched for during runtime.
+\subsection{Loader}
+The Loader is responsible for taking an executable and running it.
+\begin{itemize}
+    \item[1.]Load text and data segments into memory
+    \item[2.]Copy command line arguments into stack
+    \item[3.]Initialize the registers
+    \item[4.]Set the PC and run  
+\end{itemize}
+\section{Synchronous Digital Systems}
+\textbf{Synchronous Digital Systems} are the systems which run in our computers. They are \textbf{Digital} because electric signals are interpreted
+as either a 1(asserted) or a 0 (unasserted).
+They are \textbf{Synchronous} because all of the operations are coordinated by a clock. The clock is a device in the computer
+which alternates between being 1 and 0 at a regular interval, called the \textbf{clock period}. There are two critical elements in SDS.
+\begin{itemize}
+    \item[1.]Combinational logic element: An element whose output is only a function of the inputs
+    \item[2.]State Element: An element which stores a value for an indeterminate amout of time
+\end{itemize}
+Combinational logic elements are used to perform operations on inputs while state elements are used to store information
+and control the flow of information between combinational logic blocks.
+\subsection{Registers}
+Registers are state elements frequently used in circuits. On the rising edge of the clock, the input $d$ is sampled
+and transferred the output $q$. At all other times, the input $d$ is ignored. There are three critical timing requirements
+which are specific to registers
+\begin{itemize}
+    \item[1.]Setup Time: How long the input must be stable before the rising edge of the clock for the register to properly read it
+    \item[2.]Hold Time: How long the input must be stable after the rising edge of the clock for the register to properly read it
+    \item[3.]Clock-to-Q Time: How long after the rising edge of the clock it takes for input to appear at the registers output  
+\end{itemize}
+
 \end{document}

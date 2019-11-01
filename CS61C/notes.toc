@@ -30,3 +30,6 @@
 \contentsline {subsubsection}{\numberline {4.4.1}Compiler}{13}{subsubsection.4.4.1}
 \contentsline {subsubsection}{\numberline {4.4.2}Assembler}{13}{subsubsection.4.4.2}
 \contentsline {subsection}{\numberline {4.5}Linker}{14}{subsection.4.5}
+\contentsline {subsection}{\numberline {4.6}Loader}{15}{subsection.4.6}
+\contentsline {section}{\numberline {5}Synchronous Digital Systems}{15}{section.5}
+\contentsline {subsection}{\numberline {5.1}Registers}{16}{subsection.5.1}
