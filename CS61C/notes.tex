@@ -24,7 +24,7 @@
 \maketitle
 \tableofcontents
 \newpage
-\textbf{Disclaimer: }These notes reflect 61C when I took the course (Spring 2019). They may not accurately reflect current course content, so use at your own risk.
+\textbf{Disclaimer: }These notes reflect 61C when I took the course (Fall 2019). They may not accurately reflect current course content, so use at your own risk.
 If you find any typos, errors, etc, please report them on the \href{https://github.com/parandea17/BerkeleyNotes}{GitHub repository}.
 \section{Binary Representation}
 Each bit of information can either be 1 or 0. As a result, $N$ bits can represent at most $2^N$ values.
@@ -65,6 +65,50 @@ The same process can be utilized to go from the negative version of a number to 
 \subsubsection{Bias Encoding}
 With bias encoding, the number is equal to its unsigned representation plus a bias turn. With a negative bias,
 we can center a positive range of $0 \rightarrow 2^N - 1$ on 0.
+\subsection{Floating Point Representation}
+To represent decimal numbers in binary, we use floating point representation.
+Any number in scientific notation has the following components
+\begin{itemize}
+    \item Mantissa: The number in front of the point
+    \item Significand: The digits after the point
+    \item Radix: The base of the number
+    \item Exponent: How many times the point should be shifted to recover the original number
+\end{itemize}
+\[
+    \underbrace{1}_{\text{Mantissa}}\underbrace{.}_{\text{Binary Point}}\underbrace{01}_{\text{significand}} \cdot \underbrace{2 ^ {\overbrace{-1}^{\text{exponent}}}}_{\text{radix}} 
+\]
+If we have a 32 bit system, then by the floating point convention:
+\[
+    \underbrace{0}_{\text{Sign Bit}}\overbrace{00000000}^{\text{Exponent Bits}}\underbrace{00000000000000000000000}^{\text{Significand}}
+\]
+In the floating point representation, the manissa is always one because we are using scientific notation, so we don't bother storing it.
+\begin{itemize}
+    \item Sign Bit: Determines the sign of the floating point number
+    \item Exponent: 8 bit biased number (-127 bias)
+    \item Significand: 23 significand bits representing $2^{-1}, 2^{-2}...$
+\end{itemize}
+Given a number in floating point representation, we can convert it back to decimal by applying the following formula:
+$$n = (-1)^s(1+significand)\cdot2^{exponent - 127}$$
+Notice a couple things about this representation.
+\begin{itemize}
+    \item If the exponent is larger than 8 bits, then overflow will occur
+    \item If a negative exponent is more than 8 bits, then underflow occurs
+    \item There are 2 0's. Positive 0 and negative 0
+\end{itemize}
+Because of the way that floating point is built, certain sequences are designated to be specific numbers
+\begin{center}
+    \begin{tabular}{c|c|c}
+     Exponent & Significand & Object \\
+     \hline
+     0 & 0 & 0 \\  
+     0 & nonzero & denorm\\
+     1-254 & anything & $\pm$ \#\\
+     255 & 0 & $\pm \infty$\\
+     255 & nonzero & NaN    
+    \end{tabular}
+\end{center}
+A \textbf{denormed number} is a number where we don't have an implicit 1 as the mantissa. These
+numbers let us represent incredibly small numbers. They have an implicit exponent of $-126$.
 \section{C}
 \subsection{C Features}
 \begin{itemize}
@@ -132,8 +176,22 @@ but there is no inheritance.
     \item $=>$: dereference a struct and get a subfield
 \end{itemize}
 $typedef$ can be a useful command with structs because it lets us name them cleanly.
-\subsection{Memory Management}
-In C, there are four sections of memory: the stack, the heap, static, and code.
+\section{Memory Management}
+\subsection{Memory Basics}
+In memory, a \textbf{word} is 4 bytes. When objects are saved to memory, they are saved by words. How the words are ordered depends on the type of system.
+In \textbf{Little Endian} systems, the Least Significant Byte is placed at the lowest memory address. In other words, the memory address points to the least significant byte\\\\
+The opposite is true in \textbf{Big Endian} systems.
+For example, lets say we have the number $0x12345678$ stored at the memory address $0x00$
+\begin{center}
+    \begin{tabular}{c|c|c|c|c}
+        & $0x00$ & $0x04$ & $0x08$ & $0x0C$\\
+        \hline
+        Little Endian: & 78 & 56 & 34 & 12\\
+        \hline
+        Big Endian: & 12 & 34 & 56 & 78
+    \end{tabular}
+\end{center}
+There are four sections of memory: the stack, the heap, static, and code. 
 \begin{definition}
     The Stack is where local variables are stored. This includes parameters and return addresses. It is the "highest" level of memory and grows "downward" towards heap memory.
 \end{definition}
@@ -155,7 +213,7 @@ In C, there are four sections of memory: the stack, the heap, static, and code.
 \begin{definition}
     All of the memory which a program uses is collectively referred to as the address space of the program.
 \end{definition}
-\subsubsection{The Stack}
+\subsection{The Stack}
 The stack is named that way because every time a function call is made, a stack frame is created.
 A stack frame includes the address of the return instruction and the parameters to the function. As the function executes,
 local variables are added to the frame. When the function returns, the frame is popped off. In this way, frames are handled in 
@@ -164,7 +222,7 @@ Last-In-First-Out (LIFO) order.
     The stack pointer is a pointer which points to the current stack frame.
 \end{definition} 
 \textbf{Important: }Deallocated memory is not cleared. It is merely overwritten later.
-\subsubsection{The Heap}
+\subsection{The Heap}
 The heap is a larger pool of memory than the stack and it is not in contiguous order. Back to back allocations to the heap may be very far apart.
 \begin{definition}
     Heap fragmentation is when most of the free memory in the heap is in many small chunks
@@ -186,12 +244,14 @@ There are three different strategies which can be used to do this allocation/fre
 \begin{definition}
     Next-fit allocation is like first-fit allocation except the memory manager remembers where it left off in the free list and resumes searching from there.
 \end{definition}
-\subsubsection{Heap Management}
+\subsection{Heap Management}
 As a C programmer, it is up to us to manage the heap memory. This is done through the $malloc$ function.
-$$malloc(size_t size)$$
+\begin{lstlisting}[language=C]
+    malloc(size_t size)
+\end{lstlisting}
 Malloc takes a size in bytes and returns a pointer to the allocated memory in the heap. If there is no space in the heap, then it returns $NULL$.
 Any space created with $malloc$ must be freed using the $free$ function.\\
-\textbf{Things to watch out for: }\\\\
+\textbf{Things to watch out for: }
 \begin{itemize}
     \item Dangling reference (A pointer used before malloc)
     \item Memory Leak (When $free$ isn't called or the pointer is lost but $free$ wasn't called)
@@ -201,4 +261,225 @@ Any space created with $malloc$ must be freed using the $free$ function.\\
 \end{itemize}
 Because we need to tell $malloc$ how much space we need allocated, we will often use the $sizeof$ function.
 This returns the size in bytes of whatever type or object you give it. This allows us to write code for different architectures (i.e 32bit vs 64bit)
+\section{RISC-V}
+\subsection{Basics of Assembly Languages}
+In Assembly Languages like RISC-V, instructions are executed directly by the CPU. The basic job of the CPU is to taken
+a set of instructions and execute them in order. The \textbf{Instruction Set Architecture} (ISA) determines how this is done.
+In \textbf{Reduced Instruction Set Computing} (RISC) languages, the instruction set is limited because it makes the hardware simple.
+Complex operations are left to the software.\\\\
+\textbf{Registers} are the operands of assembly language operations. A register is a memory location on the CPU itself. There are a limited
+number of them, but they are very fast. In RISC-V processors, there are 32 registers. Each register can store one \textbf{word}.
+This is 32 bits on a 32-bit system.\\\\
+Registers are labeled x0-x31. x0 is a special register because it always holds the value 0. Unlike variables, registers have no types. The operation
+is what determines what the content of the register is treated as.\\\\
+\textbf{Immediates} are numerical constants. They can also be used as the operands of assembly intructions.
+\subsection{RISC-V Structure}
+The general format of a RISC-V instruction is
+\begin{lstlisting}
+    operation_name destination source1 source2
+\end{lstlisting}
+\textbf{Labels} are text in the program which denote certain locations in code. \textbf{Branches} change the flow of the program,
+usually by jumping to a label or an address in the code portion of memory.\\\\
+\textbf{Pseudo-instructions} are instructions which are translated into different instructions by the assembler. They exist because they increase
+readability of the program.\\\\
+In order to increase program legibility, labels are hardly referred to by their number (x15, x20, etc). Instead, they have symbolic names. Here are a few.
+\begin{itemize}
+    \item a0 - a7: The argument registers
+    \item s0 - s7: The saved registers
+    \item ra: return address register
+    \item sp: stack pointer register
+    \item pc: Program Counter
+\end{itemize}
+\subsubsection{Caller Callee Convention}
+Because functions can always overwrite registers, programmers set up conventions for calling and returning from functions.
+The \textbf{Caller} is the function which calls another function. The \textbf{Callee} is a function which is being called.\\\\
+\textbf{Functional Control Flow}
+\begin{itemize}
+    \item[1.] Put paramters where the function can access them (a0-a7)
+    \item[2.] Transfer control to the function (jump)
+    \item[3.] Acquire the local storage resources for function (Increase stack)
+    \item[4.] Perform the desired task of the function
+    \item[5.] Put result in $a0$ where the calling function can access it
+    \item[6.] Release local variables and return data to used registers so the caller can access them (Decrease stack)
+    \item[7.] Return control to the calling function (Jump to $ra$)    
+\end{itemize}
+Because every function must have this control flow, the caller-callee convention was set up as follows
+\begin{itemize}
+    \item[1.] sp, gp, tp, s0-s11 are preserved across a function call
+    \item[2.] t0-t7, a0-a7 are not preserved across a function call
+\end{itemize}
+If a register is not preserved across a function call, then the caller cannot expect its value to be the same
+after the callee returns. In order to preserve registers across a function call, we use the \textbf{stack}. The
+Stack Frame stores the variables which need to be saved in order to adhere to caller callee convention. Every RISC-V
+function has a \textbf{Prologue} where it saves the neccessary registers to the stack. An example might look like
+\begin{lstlisting}
+    addi sp, sp, -16
+    sw s0, 0(sp)
+    sw s1, 4(sp)
+    sw s2, 8(sp)
+    sw ra, 12(sp)
+\end{lstlisting}
+This function must use the s0-s3 saved registers. We first create the stack frame by decrementing the stack pointer.
+Then we save the saved registers to the newly allocated memory. This function must be calling another function, so it
+has to remember its return address. That is why we save it to stack. The \textbf{Epilogue} is the part of the function
+before it returns where everything on the stack is put back.
+\begin{lstlisting}
+    lw s0, 0(sp)
+    lw s1, 4(sp)
+    lw s2, 8(sp)
+    lw ra, 12(sp)
+    jr ra
+\end{lstlisting}
+\subsubsection{Directives}
+Directives are special demarcations in an assembly file which designated different pieces of data.
+\begin{itemize}
+    \item[.text:] Subsequent items are put into the text segment of memory (i.e the code)
+    \item[.data:] Subsequent items are put into the data segment of memory (i.e static variables)
+    \item[.global sym:] Declares a symbol to be global, meaning it can be referenced from other files
+    \item[.string str] Stores a null-terminated string in the data memory segment
+    \item[.word] Store n 32 bit quantities into contiguous memory words.
+\end{itemize}
+\subsection{Instruction Formats}
+In a \textbf{Stored Program Computer}, instructions are represented as bit patterns. They are stored in
+memory just like data. As a result, everything has a memory address, including lines of code. The \textbf{Program Counter}
+is the memory address of the current instruction. Each instruction in RISC-V is 1 word, or 32 bits.
+It is divided into fields, each of which tells the processor something about the instruction.
+\begin{itemize}
+    \item[R Type:] Register-register arithmetic 
+    \item[I Type:] Register-immediate arithmetic
+    \item[S Type:] Store instructions
+    \item[B Type:] Branch instructions
+    \item[U Type:] 20 bit upper immediate instructions
+    \item[J Type:] Jump Instructions    
+\end{itemize}
+Every instruction type has a 7 bit \textbf{opcode} which tells the processor what instruction type it is processing.
+These are always the last 7 bits. Some instructions also have \textbf{funct3} and \textbf{funct7} fields which define
+the operation to perform in conjunction with the opcode.\\\\
+\textbf{R-Type}
+\begin{center}
+    \begin{tabular}{|c|c|c|c|c|c|}
+        31:25& 24:20& 19:15& 14:12 & 11:7 & 6:0\\
+        \hline
+        funct7 & rs2 & rs1 & funct3 & rd & opcode\\
+        \hline
+    \end{tabular}
+\end{center}
+\textbf{I-Type}
+\begin{center}
+    \begin{tabular}{|c|c|c|c|c|}
+        31:20& 19:15& 14:12 & 11:7 & 6:0\\
+        \hline
+        Imm[11:0] & rs1 & funct3 & rd & opcode\\
+        \hline
+    \end{tabular}
+\end{center}
+\textbf{S-Type}
+\begin{center}
+    \begin{tabular}{|c|c|c|c|c|c|}
+        31:25 & 24:20 & 19:15 & 14:12 & 11:7 & 6:0\\
+        \hline
+        Imm[11:5] & rs2 & rs1 & funct3 & Imm[4:0] & opcode\\
+        \hline
+    \end{tabular}
+\end{center}
+\textbf{B-Type}
+\begin{center}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+        31 & 30:25 & 24:20 & 19:15 & 14:12 & 11:8 & 7 & 6:0\\
+        \hline
+        Imm[12] & Imm[10:5] & rs2 & rs1 & funct3 & Imm[4:1] & Imm[11] & opcode\\
+        \hline
+    \end{tabular}
+\end{center}
+\textbf{U-Type}
+\begin{center}
+    \begin{tabular}{|c|c|c|}
+        31:12 & 11:7 & 6:0\\
+        \hline
+        Imm[31:12] & rd & opcode\\
+        \hline
+    \end{tabular}
+\end{center}
+\textbf{J-Type}
+\begin{center}
+    \begin{tabular}{|c|c|c|c|c|c|}
+        31 & 30:21 & 20 & 19:12 & 11:7 & 6:0\\
+        \hline
+        Imm[20] & Imm[10:1] & Imm[11] & Imm[19:12] & rd & opcode\\
+        \hline
+    \end{tabular}
+\end{center}
+\subsubsection{Addressing}
+Notice that the J-Type and B-Type instructions require use a label in code.
+These labels are encoded in the instruction format as an offset from the program counter.
+This is known as \textbf{PC Relative Addressing}. Since each instruction in RISC-V is 1 word,
+we will never have an odd address. As a result, we don't need to store the last bit of the immediate
+in B-Type and J-Type instructions because it is automatically 0.
+\subsection{Compiling, Assembling, Linking, Loading}
+Compiling, Asssembling, Linking, and Loading (\textbf{CALL}) are the four steps of loading a program.
+\subsubsection{Compiler}
+The input to the compiler is a file written in a high level programming language. It outputs assembly language
+code which is built for the machine the code was compiled on. The output of the compile may still include 
+pseudo-instructions in assembly.
+\subsubsection{Assembler}
+The Assembler is the program which converts assembly language code to machine language code. It reads and uses
+directives, replaces psuedo-instructions with their real equivalent, and produces machine language code (i.e bits)
+where it can.\\\\
+The output of the assembler is an object file. The object file contains the following elements:
+\begin{itemize}
+    \item Object file header: The Size and position of the different sections of the object files
+    \item Text Segment: The code
+    \item Data Segment: binary representation of the static data in the source
+    \item Relocation Table: A special data structure which contains the lines of code needing to be fixed
+    \item Symbol Table: A special data structure which lists the files global labels and static data labels
+    \item Debugging information
+\end{itemize}
+The symbol table contains information which is public to other files in the program.
+\begin{itemize}
+    \item Global function labels
+    \item Data Labels
+\end{itemize}
+The Relocation Table contains information that needs to be relocated in later steps. It essentially tracks
+everything that the Assembler cannot directly convert to machine code immediately because it doesn't have
+enough information.
+\begin{itemize}
+    \item List of labels this file doesn't know about
+    \item List of absolute labels that are jumped took
+    \item Any piece of data in the static section
+\end{itemize}
+% TODO: Double Check This
+When the assembler parses a file, instructions which don't have a label are converted into machine language. When a label is defined,
+it's position is stored in the relocation table. When a label is encountered in code, the assembler looks to see if it's position
+was defined in the relocation table. If it is found, the label is replaced with the immediate and converted to machine code.
+Otherwise, the line is marked for relocation.\\\\
+In order to do its job, the assembler must take two passes through the code. This is because of the \textbf{forward reference problem}.
+If a label is used before it is defined in the same file, the first time the assembler encounters it, it won't know how to convert it to machine code.
+To resolve this, the assembler simply takes two passes so it finds all labels in the first pass and convert the lines it originally couldn't in the second pass.
+\subsection{Linker}
+The Linker is responsible for linking all of the object files together and producing the final executable.
+The linker operates in three steps:
+\begin{itemize}
+    \item [1.] Put the text segments together
+    \item [2.] Put the data segments together
+    \item [3.] Resolve any referencing issues
+\end{itemize}
+After the linking step, the entire program is finally in pure machine code because all references to labels must be resolved.
+The linker knows the length of each text and data segment. It can use these lengths to order the segments appropriately. It assumes
+that the first word will be stored at $0x10000000$ and can calculate the absolute address of each word from there. To resolve references,
+it uses the relocation table to change addresses to their appropriate values.
+\begin{itemize}
+    \item PC-Relative Addresses: Never relocated
+    \item Absolute Function Addresses: Always relocated
+    \item External Function Addresses: Always relocated
+    \item Static data: Always relocated
+\end{itemize}
+When the linker encounters a label, it does the following.
+\begin{itemize}
+    \item[1.] Search for the reference in the symbol tables
+    \item[2.] Search for the reference libraries if the reference is not in the symbol tables
+    \item[3.] Fill in the machine code once the absolute address is determined 
+\end{itemize}
+This approach is known as \textbf{Static Linking} because the executable doesn't change. By contrast,
+with dynamic linking, libraries are loaded during runtime to make the program smaller. However, this adds
+runtime overhead because libraries must be searched for during runtime.
 \end{document}
