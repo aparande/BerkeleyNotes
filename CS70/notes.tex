@@ -27,12 +27,12 @@
 If you find any typos, errors, etc, please report them on the \href{https://github.com/parandea17/BerkeleyNotes}{GitHub repository}.\\
 \tableofcontents
 \newpage
-\section{Propositional Logic}
+\section{Logic and Proofs}
+\subsection{Propositional Logic}
 \begin{definition}
     A proposition $P$ is a statement that is either true or false
 \end{definition}
 Propositions can depend on one or more variables. This is denoted by $P(x, y, ...)$
-\subsection{Connectives}
 \begin{definition}
     A connective is an operator which joins two or more propositions together in some way
 \end{definition}
@@ -79,21 +79,19 @@ The \textbf{if and only if} connective $P \iff Q$ is equivalent to $(P \implies 
      F & F & T \\ 
     \end{tabular}
 \end{center}
-\subsection{Quantifiers}
 Quantifiers help introduce variables into our propositions.
 \begin{itemize}
     \item $\forall$: For all
     \item $\exists$: There exists
 \end{itemize}
 \textbf{Important: }The order of quantifiers matters.
-\subsection{DeMorgan's Laws}
 \begin{itemize}
     \item $\lnot(P \land Q) \equiv \lnot P \lor \lnot Q$
     \item $\lnot(P \lor Q) \equiv \lnot P \land \lnot Q$
     \item $\lnot(\forall x P(x)) \equiv \exists x (\lnot P(x))$
     \item $\lnot(\exists x P(x)) \equiv \forall x (\lnot P(x))$
 \end{itemize}
-\section{Proofs}
+\subsection{Proofs}
 \begin{definition}
     A proof is a sequency of statements, each of which follows from the preceding ones
     by a valid law of reasoning.
@@ -101,14 +99,14 @@ Quantifiers help introduce variables into our propositions.
 \begin{definition}
     An Axiom is a basic fact which can be assumed without proof
 \end{definition}
-\subsection{Direct Proof}
+\subsubsection{Direct Proof}
 \textbf{Goal:} Prove $P \implies Q$\\
 \textbf{Approach:}
 \begin{itemize}
     \item[1. ] Assume $P$
     \item[2. ] Deduce $Q$ through logical steps
 \end{itemize}
-\subsection{Proof by Contraposition}
+\subsubsection{Proof by Contraposition}
 Since the contrapositive of a statement is logically equivalent to the original statement,
 we can prove the original statement by proving the contrapositive.\\
 \textbf{Goal:} To prove $P \implies Q$\\
@@ -121,7 +119,7 @@ we can prove the original statement by proving the contrapositive.\\
     The pigeonhole principle says that if $n$ objects are placed in $k$ boxes and $n > k$, 
     then some box contains $\ge 1$ object.
 \end{theorem}
-\subsection{Proof by Contradiction}
+\subsubsection{Proof by Contradiction}
 \textbf{Goal:} Prove $P \implies Q$
 \textbf{Approach:}
 \begin{itemize}
@@ -129,14 +127,14 @@ we can prove the original statement by proving the contrapositive.\\
     \item[2. ]Deduce $\lnot P \implies (R \and \lnot R)$ 
 \end{itemize}
 $R$ and $\lnot R$ are two facts which can be deduced from assumign $\lnot P$
-\subsection{Proof by Cases}
+\subsubsection{Proof by Cases}
 \textbf{Goal: } Prove $P \implies Q$\\
 \textbf{Approach: }
 \begin{itemize}
     \item[1. ]Break P into cases $1...n$
     \item[2. ]Prove $P$ holds in all cases 
 \end{itemize}
-\subsection{Proof by Induction}
+\subsubsection{Proof by Induction}
 \textbf{Goal:} Prove $\forall n, P(n)$
 \textbf{Approach: }
 \begin{itemize}
@@ -147,8 +145,8 @@ $R$ and $\lnot R$ are two facts which can be deduced from assumign $\lnot P$
 \subsubsection{Strong Induction}
 Because induction requires that $P(k)$ be true to prove $P(k+1)$,
 it might be easier to just assume $P(0)\land P(1) \land ... \land P(k)$ when proving $P(k+1)$.
-\section{Stable Marriage Algorithm}
-\subsection{The algorithm}
+\subsection{Case Study: Stable Marriage Algorithm}
+\subsubsection{The algorithm}
 The stable marriage algorithm uses a list of preferences to make pairings from two disjoint groups of people.
 \begin{lstlisting}
     Input: 
@@ -171,7 +169,7 @@ The stable marriage algorithm uses a list of preferences to make pairings from t
                 who just rejected him
         Repeat until there are no rejections
 \end{lstlisting}
-\subsection{Proving the Algorithm}
+\subsubsection{Proving the Algorithm}
 There are four things we must prove in order to make sure that the stable marriage algorithm works.
 \begin{itemize}
     \item[1. ] SMA terminates
