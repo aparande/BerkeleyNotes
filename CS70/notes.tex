@@ -237,4 +237,86 @@ Before proving that the output of SMA is stable, we should define what stability
 \begin{theorem}
     The male-optimal pairing is the female-pessimal pairing.
 \end{theorem}
+\section{Polynomials}
+\begin{definition}
+    A polynomial of a single variable $x$ with degree $d$ is a function of the from
+    $$P(x) = \sum_{i=0}^{d}{a_ix^i}$$
+\end{definition}
+In simplest terms, a polynomial is simply a function. The degree of the polynomial is its highest exponent. The $a_i$ are called the coefficients of the polynomial.
+\begin{definition}
+    A value $a \in \mathbb{R}$ is a root of the polynomial $P(x)$ if $P(a)=0$
+\end{definition}
+We say that two polynomials are equal when they are equal at all values x ($P(x) = Q(x)\ \forall x$)
+\subsection{Properties of Polynomials}
+\begin{itemize}
+    \item[1.] A nonzero polynomial of degree $d$ has at most $d$ roots
+    \item[2.] Given $d+1$ pairs $(x_1, y_1)...(x_{d+1}, y_{d+1})$ with the $x_i$ being distinct, there exists a unique polynomial of degree at most $d$ such that $P(x_i)=y_i, \ \forall i\in[1, d+1]$
+\end{itemize}
+While seemingly complex, the second property tells us something very simple about polynomials: each polynomial of degree $d$ is uniquely defined by $d+1$ points.
+Thus given a set of points, we can find the polynomial which yielded those points. This can be done by regression or solving a system of linear equations.
+A "faster" technique, however, is Lagrange interpolation.\\\\
+Given points $(x_1, y_1),...,(x_{d+1}, y_{d+1})$,
+$$P(x) = \sum_{i=1}^{d+1}{y_i\frac{\prod_{j\ne i}(x-x_j)}{\prod_{j\ne i}{(x_i-x_j)}}}$$
+This works because we need $P(x_i)=y_i$. Looking at our formula, whenever $x = x_i$, the fraction term becomes 1 only for the ith term
+and 0 otherwise (because $x_i$ is a root for the numerator for all terms except the ith one). That forces $P(x_i)=y_i$.
+We can use Lagrange Interpolation to prove other interesting facts about polynomials. As an example,
+\begin{lemma}
+    If $a$ is a root of a degree of polynomial $p$, then we can write $p(x)=(x-a)q(x)$
+    for a polynomial $q(x)$ with degree $d-1$.
+\end{lemma}
+\subsection{Polynomials over Finite Fields}
+Normally, we treat polynomials over the real numbers. However, we can also consider polynomials over a finite field.
+An particularly useful field is a Galois Field, which is the integers modulo p. This is denoted by $GF(p)$.
+This field contains only the values between $0$ and $p-1$. 
+\begin{definition}
+    A polynomial $P(x)$ over a finite field $GF(p)$ is equivalent
+    the function $Q(x) = P(x) \text{ mod p}$
+\end{definition}
+Notice a couple things about polynomials about finite fields.
+\begin{itemize}
+    \item There are $p^{d+1}$ polynomials of degree $\le d$ over $GF(p)$ because there are $d+1$ points and we havce $p$ choices for the values.
+    \item Given $k \le d+1$ points, we can find $p^{d+1-k}$ unique polynomials which go through these points because we have $d+1-k$ points for which we can choose values, and there are $p$ values to choose 
+\end{itemize}
+\subsubsection{Case Study: Secret Sharing}
+One interesting use of polynomials over finite fields is to force people to collaborate in order to obtain a secret.
+Suppose that we have $n$ generals with whom we want to share a secret encoded by an integer $s$. If a single general obtained
+the secret, they could destroy the other generals, so we want to make sure that at least $k$ generals must work together to learn the secret (because then its mutually assured destruction).
+If any group of less than $k$ generals works together, they should get no information about $s$.
+\begin{lstlisting}
+    - Choose a large prime number p: p > s, p > n
+    - Construct a "random" polynomial q(x) w/ 
+      degree (k-1) mod p such that q(0) = s
+    - Give the ith general the value q(i) mod p
+\end{lstlisting}
+With this scheme, if $k$ generals get together, then they can use lagrange interpolation to recover $q(x)$
+and find $s$ by computing $q(0)$. However if $d < k$ polynomials get together, there are going to be $p^{k-d}$
+possible polynomials, so any secret value will be possible.
+\subsubsection{Case Study: Error-Correcting Codes}
+Another use for polynomials over finite fields is in creating error-correcting codes.
+Suppose we have a message which is a sequence of integers $m_1, m_2, ..., m_n$.
+We are going to send this message over an unreliable channel, so we need to transmit some redundant information.
+Lets send code words $c_1, c_2, ..., c_m$ where $m>n$ to create the redundancy we need. Some of these packets may be dropped
+or modified, so we will receive a message $r_1, r_2,..., r_p$.\\\\
+Suppose we know the following about the channel:
+\begin{itemize}
+    \item Up to $k$ of the $c_i$ will get erased, and we will know which ones do
+    \item Up to $k$ of the $c_i$ will be corrupted and we don't know which ones.
+    \item The maximum number of errors is $k$
+\end{itemize}
+Since we are tolerating $k$ errors, lets send $n+2k$ codewords over the channel. That way we
+are guaranteed $n+k$ of the $r_i$ are equal to the corresponding $c_i$.
+\begin{itemize}
+    \item[1.] Define $q > n + 2k$ to be a large prime so we can encode our message as integers mod $q$
+    \item[2.] Let $P(x)$ be a unique degree $n-1$ polynomial over $GF(q)$ such that $P(i)=m_i,\ i\in[1, n]$
+    \item[3.] Compute $2k$ extra values $p(n+1)...p(n+2k)$
+    \item[4.] Send all points $c_i=p(i),\ i\in[1, n+2k]$    
+\end{itemize}
+We know we will receive at least $n+k$ of our packets, but some of them may be modified. There must a degree $n-1$ polynomial $p$
+which goes through at least $n+k$ of these points $(i, r_i)$. Suppose the location of the errors are ${e_1, e_2, ..., e_k}$
+We can define the error locator polynomial $$E(x) = (x-e_1)(x-e_2)...(x-e_k) = x^k+\sum_{i=1}^{k-1}{b_ix^i}$$
+Now notice that $P(i)E(i)=r_iE(i)$ since $P(i) = r_i$ for the non-error points, and $E(i)=0$ at the error points.
+Now define
+$$Q(x) = P(x)E(x) = \sum_{i=0}^{n+k-1}{a_ix^i}$$
+Since $Q(i) = r_iE(i)$, this gives us $n+2k$ equations which we can use to find the coefficients of
+$Q(i)$ and $E(i)$. We can now simply find $P(x) = \frac{Q(x)}{E(x)}$. 
 \end{document}
