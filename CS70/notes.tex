@@ -9,7 +9,7 @@
 \usepackage{float}
 \usepackage{afterpage}
 \usepackage{listings}
-\usetikzlibrary{calc}
+\usetikzlibrary{calc,trees,positioning,arrows,fit,shapes,calc,matrix}
 \newtheorem{theorem}{Theorem}
 \newtheorem{definition}{Definition}
 \newtheorem{corollary}{Corollary}
@@ -318,5 +318,168 @@ Now notice that $P(i)E(i)=r_iE(i)$ since $P(i) = r_i$ for the non-error points, 
 Now define
 $$Q(x) = P(x)E(x) = \sum_{i=0}^{n+k-1}{a_ix^i}$$
 Since $Q(i) = r_iE(i)$, this gives us $n+2k$ equations which we can use to find the coefficients of
-$Q(i)$ and $E(i)$. We can now simply find $P(x) = \frac{Q(x)}{E(x)}$. 
+$Q(i)$ and $E(i)$. We can now simply find $P(x) = \frac{Q(x)}{E(x)}$.
+\section{Counting and Countability}
+\subsection{Sets and Functions}
+A set is a collection of distinct objects. We say a set is finite if there are a non-infinite
+number of elements in the set. 
+\begin{definition}
+    The cardinality of a set $X$, denoted $|X|$ is the number of elements in $X$.
+\end{definition}
+When it comes to counting, the cardinality of a set is what we care about most.
+\begin{definition}
+    The power set of a set $A$, denoted by $\mathcal{P}(A)$ is the set of all subsets of $A$
+\end{definition}
+Notice the cardinality of $\mathcal{P}(A)$ is $2^{|A|}$ if $A$ is finite.
+One thing we can do with sets is set up functions which map between the elements of two sets.
+\begin{definition}
+    A function $f:A\rightarrow B$ is a mapping from elements in the domain $A$ to elements in the codomain $B$ where each element in $A$ is mapped to
+    a single element in $B$
+\end{definition}
+Functions come in a variety of shapes and forms. One of these forms is what is known as a surjection.
+\begin{definition}
+    A surjection $f:A\rightarrow B$ is function where $\forall y\in B, \exists x\in A$ such that $f(x)=y$.
+\end{definition}
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[ele/.style={fill=black,circle,minimum width=.8pt,inner sep=1pt},every fit/.style={ellipse,draw,inner sep=-2pt}]
+     \node[ele,label=left:$a$] (a1) at (0,4) {};    
+     \node[ele,label=left:$b$] (a2) at (0,3) {};    
+     \node[ele,label=left:$c$] (a3) at (0,2) {};
+     \node[ele,label=left:$d$] (a4) at (0,1) {};
+   
+     \node[ele,,label=right:$1$] (b1) at (4,4) {};
+     \node[ele,,label=right:$2$] (b2) at (4,3) {};
+     \node[ele,,label=right:$3$] (b3) at (4,2) {};
+   
+     \node[draw,fit= (a1) (a2) (a3) (a4),minimum width=2cm] {} ;
+     \node[draw,fit= (b1) (b2) (b3), minimum width=2cm] {} ;  
+     \draw[->,thick,shorten <=2pt,shorten >=2] (a1) -- (b1);
+     \draw[->,thick,shorten <=2pt,shorten >=2] (a2) -- (b2);
+     \draw[->,thick,shorten <=2pt,shorten >=2] (a3) -- (b3);
+     \draw[->,thick,shorten <=2pt,shorten >=2] (a4) -- (b3);
+    \end{tikzpicture}
+\end{figure}
+Another name for a surjection is an "onto" function because the we are mapping $A$ onto the entirety of $B$.
+\begin{definition}
+    An injection $f:A\rightarrow B$ is a function where $\forall (x_1, x_2) \in A, ((x_1\ne x_2)\implies f(x_1)\ne f(x_2))$
+\end{definition}
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[ele/.style={fill=black,circle,minimum width=.8pt,inner sep=1pt},every fit/.style={ellipse,draw,inner sep=-2pt}]
+     \node[ele,label=left:$a$] (a1) at (0,4) {};    
+     \node[ele,label=left:$b$] (a2) at (0,3) {};    
+     \node[ele,label=left:$c$] (a3) at (0,2) {};
+   
+     \node[ele,,label=right:$1$] (b1) at (4,4) {};
+     \node[ele,,label=right:$2$] (b2) at (4,3) {};
+     \node[ele,,label=right:$3$] (b3) at (4,2) {};
+     \node[ele,,label=right:$4$] (b4) at (4,1) {};
+   
+     \node[draw,fit= (a1) (a2) (a3),minimum width=2cm] {} ;
+     \node[draw,fit= (b1) (b2) (b3) (b4), minimum width=2cm] {} ;  
+     \draw[->,thick,shorten <=2pt,shorten >=2] (a1) -- (b1);
+     \draw[->,thick,shorten <=2pt,shorten >=2] (a2) -- (b2);
+     \draw[->,thick,shorten <=2pt,shorten >=2] (a3) -- (b3);
+    \end{tikzpicture}
+\end{figure}
+In English, this means that every element in the codomain corresponds to at most 1 element in the domain. This is why injections
+are also called "one-one" functions. Notice that not all elements in $B$ have to have a corresponding element in $A$.
+\begin{definition}
+    A function $f:A\rightarrow B$ is a bijection if $f$ is both an injection and a surjection.
+\end{definition}
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[ele/.style={fill=black,circle,minimum width=.8pt,inner sep=1pt},every fit/.style={ellipse,draw,inner sep=-2pt}]
+     \node[ele,label=left:$a$] (a1) at (0,4) {};    
+     \node[ele,label=left:$b$] (a2) at (0,3) {};    
+     \node[ele,label=left:$c$] (a3) at (0,2) {};
+     \node[ele,label=left:$d$] (a4) at (0,1) {};
+   
+     \node[ele,,label=right:$1$] (b1) at (4,4) {};
+     \node[ele,,label=right:$2$] (b2) at (4,3) {};
+     \node[ele,,label=right:$3$] (b3) at (4,2) {};
+     \node[ele,,label=right:$4$] (b4) at (4,1) {};
+   
+     \node[draw,fit= (a1) (a2) (a3) (a4),minimum width=2cm] {} ;
+     \node[draw,fit= (b1) (b2) (b3) (b4), minimum width=2cm] {} ;  
+     \draw[->,thick,shorten <=2pt,shorten >=2] (a1) -- (b1);
+     \draw[->,thick,shorten <=2pt,shorten >=2] (a2) -- (b2);
+     \draw[->,thick,shorten <=2pt,shorten >=2] (a3) -- (b3);
+     \draw[->,thick,shorten <=2pt,shorten >=2] (a4) -- (b4);
+    \end{tikzpicture}
+\end{figure}
+Bijections are nice because every element in the codomain is corresponds to a single element in the domain (one-one)
+and every element in the codomain is covered by an element in the domain (onto). This gives us an interesting way to 
+check if two sets are of equal size. Let's say from sets $X$ and $Y$, we pair up $(x_i, y_i)$. If you can be done no 
+elements left over, then the two sets are the same size. If you have elements from either set which are left over 
+after pairing the elements up, the sets must be different sizes. Notice that this is the same thing as forming a bijection
+between the two sets. This leads us to an important theorem.
+\begin{theorem}
+    Two sets have the same cardinality if and only if there exists a bijection between them
+\end{theorem}
+It turns out that sometimes we don't even have to find the actual bijection to prove that two sets have the same cardinality because of the following theorem.
+\begin{theorem}
+    If there exists an injection $f:A\rightarrow B$ and an injection $g:B\rightarrow A$, then
+    there exists a bijection $h:A\rightarrow B$
+\end{theorem}
+\subsection{Countable Sets}
+By using the bijection method of measuring cardinalities, we can "count" sets with an infinite number of elements because all we have to do is
+establish a bijection between this set and another set we know is countable. What makes a set countable?
+\begin{definition}
+    A set $S$ is countable if there exists a bijection $f:S\rightarrow\mathbb{N}$ or some subset of $\mathbb{N}$
+\end{definition}
+We can think of the natural numbers, a.k.a the counting numbers, as the most fundamental countably infinite set. There are many different
+ways which we can construct bijections. One way is to explicitly define the mathematically relationship
+which forms the bijection. Another method is to do this pictorally. For example, when checking if $\mathbb{N}\times\mathbb{N}$
+is countable, we might draw the following picture:
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}
+        \matrix(m)[matrix of math nodes,column sep=1cm,row sep=1cm]{
+            (0, 3) & \cdots \\
+            (0, 2) & (1, 2) & \cdots \\
+            (0, 1) & (1, 1) & (2, 1) & \cdots \\
+            (0, 0) & (1, 0) & (2, 0) & (3, 0) & \cdots \\
+        };
+        
+        \draw[->]
+            (m-4-1)edge(m-4-2)
+            (m-4-2)edge(m-3-1)
+            (m-3-1)edge(m-2-1)
+            (m-2-1)edge(m-3-2)
+            (m-3-2)edge(m-4-3)
+            (m-4-3)edge(m-4-4)
+            (m-4-4)edge(m-3-3)
+            (m-3-3)edge(m-2-2)
+            (m-2-2)edge(m-1-1);
+        \end{tikzpicture}
+\end{figure}
+Notice that this enumerates all of the possible tuples in $\mathbb{N}\times\mathbb{N}$.
+We can also use the theorem presented above where if we can inject $A$ into $B$ and $B$ into $A$, then
+then there is bijection between the two sets. This is powerful because we don't actually have to find the bijection.
+\subsection{Uncountable Sets}
+Just like $\mathbb{N}$ is the "fundamental" countable infinite set, $\mathbb{R}$ is the "fundamental" Uncountable set.
+\begin{theorem}
+    $\mathbb{R}$ is uncountable, and every interval in $\mathbb{R}$ is uncountable.
+\end{theorem}
+One way to prove a set is uncountable is to prove a bijection exists to $\mathbb{R}$. However, sometimes this can be quite difficult.
+In that case, a proof technique called Cantors Diagonalization can be useful. To see how it works, lets apply it to prove the interval $[0, 1]\in\mathbb{R}$
+is uncountable.
+\begin{proof}[Cantors Diagonalization]
+    We can write $r\in[0, 1]$ as an infinite decimal with no trailing 0s.
+    Suppose for contradiction that there exists a bijection from $\mathbb{N}$ to $[0, 1]$.
+    This bijection might look as follows:
+    \centering
+    \begin{tabular}{cccccccc}
+        f(0) = 0. & 3 & 7 & 2 & 6 & 5 & 9 & ...\\
+        f(1) = 0. & 9 & 9 & 9 & 9 & 9 & 9 & ...\\
+        f(2) = 0. & 1 & 0 & 1 & 0 & 1 & 0 & ...\\
+        & & & & \vdots
+    \end{tabular}
+    We can now construct a real number $s\in[0, 1]$ that differs from $f(i)$ in the $ith$ digit $\forall i\in\mathbb{N}$
+(a.k.a the diagonal elements). This number must be enumerated by $f(n)$ for $n\in\mathbb{N}$. However, by construction,
+$s$ differs from $f(n)$ in the nth digit. This a contradiciton, therefore no such bijection can exist, so the interval is uncountable.
+\end{proof}
+All diagonalization proofs layout in that same fashion.
 \end{document}

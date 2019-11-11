@@ -15,3 +15,7 @@
 \contentsline {subsection}{\numberline {2.2}Polynomials over Finite Fields}{7}{subsection.2.2}
 \contentsline {subsubsection}{\numberline {2.2.1}Case Study: Secret Sharing}{8}{subsubsection.2.2.1}
 \contentsline {subsubsection}{\numberline {2.2.2}Case Study: Error-Correcting Codes}{8}{subsubsection.2.2.2}
+\contentsline {section}{\numberline {3}Counting and Countability}{9}{section.3}
+\contentsline {subsection}{\numberline {3.1}Sets and Functions}{9}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Countable Sets}{11}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}Uncountable Sets}{12}{subsection.3.3}
