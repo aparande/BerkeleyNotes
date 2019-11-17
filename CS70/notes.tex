@@ -319,7 +319,7 @@ Now define
 $$Q(x) = P(x)E(x) = \sum_{i=0}^{n+k-1}{a_ix^i}$$
 Since $Q(i) = r_iE(i)$, this gives us $n+2k$ equations which we can use to find the coefficients of
 $Q(i)$ and $E(i)$. We can now simply find $P(x) = \frac{Q(x)}{E(x)}$.
-\section{Counting and Countability}
+\section{Countability}
 \subsection{Sets and Functions}
 A set is a collection of distinct objects. We say a set is finite if there are a non-infinite
 number of elements in the set. 
@@ -482,4 +482,36 @@ is uncountable.
 $s$ differs from $f(n)$ in the nth digit. This a contradiciton, therefore no such bijection can exist, so the interval is uncountable.
 \end{proof}
 All diagonalization proofs layout in that same fashion.
+\section{Counting}
+A very useful skill to have is counting all of the possible ways we can do something. In general, counting problems fall in 4 broad categories.
+\begin{itemize}
+    \item[1.] Ordered objects, sampling with replacement
+    \item[2.] Ordered objects, sampling without replacement
+    \item[3.] Unordered objects, sampling with replacement
+    \item[4.] Unordered objects, sampling without replacement    
+\end{itemize}
+When we say "orderered objects" that means ordering matters in the different possibilities. For example, putting $n$ people 
+into a line is fundamentally ordered because their position in line matters. When we say sampling with replacement, that means
+the same object can show up in one of our possibilities twice. Without replacement means each object in our possibility is distinct.
+When we consider how to count each of these scenarios, we use the first and second rules of counting.
+\begin{theorem}[First Rule of Counting]
+    Suppose an object is formed by a succession of $k$ choices. The total number of distinct objects we can form is
+    $\prod_{i=1}^{k}{n_k}$ where $n_k$ is the number of ways the $ith$ choice can happen.
+\end{theorem}
+\begin{theorem}[Second Rule of Counting]
+    Suppose an object is formed by a succesion of $k$ choices, but the order of those choices does not matter.
+    The number of possible objects is the number of objects where order doesn't matter divided by the number of ways
+    we can rearrage the elements in each object.
+    $$\frac{\prod_{i=1}^{k}{n_k}}{k!}$$
+\end{theorem}
+The first and second rules correspond to counting ordered and unordered objects respectively. Let's see how they can be applied to 4 different
+types of counting problems.
+\subsection{Ordered Objects, Sampling with replacement}
+We can apply the first rule of counting. We are making $k$ choices, and there are $n$ objects to choose from
+for each choice we make. This means there are $n^k$ total choices.
+\subsection{Ordered Objects, Sampling without replacement}
+Once again, we can apply the first rule of counting. We are making $k$ choices. For the first choice, there are $n$ options.
+For the second choice, there are $n-1$ options because we can't pick the same element twice. Likewise, for the 3rd choice, we have $n-2$ options.
+This gives the product
+$$n(n-1)(n-2)...(n-k+1) = \frac{n!}{(n-k)!}$$
 \end{document}
