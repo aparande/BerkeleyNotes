@@ -737,6 +737,35 @@ If we want to find the transfer function of the system, we can use the Laplace t
 Notice that the poles of the transfer function are simply the eigenvalues of $A$. This is because
 if $s$ is an eigenvalue of $A$, $(sI-A)^{-1}$ is not invertible so the transfer function is undefined
 just like it is at the poles.
+\subsubsection{Second Order Systems}
+Most of the time, higher order systems only have 2 dominant poles. Accordingly, they can be approximated by second order systems (i.e systems with two poles).
+One way to write the transfer function of this system is
+$$H(s)=\frac{\omega_n^2}{s^2+2\zeta\omega_ns+\omega_n^2}$$
+The parameter $\zeta$ is known as the damping ratio, and the parameter $\omega_n$ is known as the natural frequency.
+This parameterization is useful because it gives us an insight into how the system will behave. First, notice that when
+$\zeta \in [0, 1]$, we will get two complex poles. Suppose we want to find the impulse response of this system. Because the poles are complex, 
+we can write the poles in the form
+$$\overbrace{-\omega_ncos\theta}^{\sigma} \pm j\overbrace{\omega_nsin\theta}^{\omega_d}$$
+where $\zeta=cos\theta$. These new paramters allow us to rewrite our transfer function as
+$$H(s) = \frac{\omega_n^2}{(s+\sigma)^2+\omega_d^2}$$
+Using common laplace transform pairs, this corresponds to
+$$h(t) = \frac{\omega_n^2}{\omega_d}e^{-\sigma t}sin(\omega_dt)u(t)$$
+This is a damped sinusoid. Notice how $\zeta$, which is related to $\sigma$ controls the exponential and therefore the damping factor.
+If we find the step response of the second order system, we will get
+$$y(t) = \left[1-e^{-\sigma t}\left(cos\omega_dt+\frac{\sigma}{\omega_d}sin\omega_dt\right)\right]u(t)$$
+There are several key features of this step response:
+\begin{itemize}
+    \item Rise Time ($t_r$): Time to go from 10\% to 90\% of the steady state value
+    \item Peak Overshoot ($M_p$): $\frac{peak - steady}{steady}$
+    \item Peaking Time ($t_p$): Time to peak overshoot
+    \item Settling Time ($t_s$): Time after which step response stays within 1\% if steadt state.
+\end{itemize}
+Using the step response, we can calculate some of these values.
+\[
+    \begin{array}{ccc}
+        t_p=\frac{\pi}{\omega_d} & M_p=y\left(\frac{\pi}{\omega_d}\right)=1+e^{-\sigma\frac{\pi}{\omega_d}} & t_s = \frac{ln(0.01)}{-\sigma}
+    \end{array}
+\]
 \section{Sampling}
 \subsection{Continuous Time}
 Sampling a continuous-time signal means representing it as a sequence of points measured at regular intervals $T$.

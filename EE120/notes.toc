@@ -37,9 +37,10 @@
 \contentsline {subsection}{\numberline {5.4}Special LTI Systems}{22}{subsection.5.4}
 \contentsline {subsubsection}{\numberline {5.4.1}Linear Constant Coefficient Difference/Differential Equations}{22}{subsubsection.5.4.1}
 \contentsline {subsubsection}{\numberline {5.4.2}State Space Equations}{23}{subsubsection.5.4.2}
-\contentsline {section}{\numberline {6}Sampling}{24}{section.6}
-\contentsline {subsection}{\numberline {6.1}Continuous Time}{24}{subsection.6.1}
-\contentsline {subsection}{\numberline {6.2}Discrete Time}{26}{subsection.6.2}
-\contentsline {subsection}{\numberline {6.3}Sampling as a System}{26}{subsection.6.3}
-\contentsline {section}{\numberline {7}Appendix}{27}{section.7}
-\contentsline {subsection}{\numberline {7.1}Theory of Distributions}{27}{subsection.7.1}
+\contentsline {subsubsection}{\numberline {5.4.3}Second Order Systems}{24}{subsubsection.5.4.3}
+\contentsline {section}{\numberline {6}Sampling}{25}{section.6}
+\contentsline {subsection}{\numberline {6.1}Continuous Time}{25}{subsection.6.1}
+\contentsline {subsection}{\numberline {6.2}Discrete Time}{27}{subsection.6.2}
+\contentsline {subsection}{\numberline {6.3}Sampling as a System}{27}{subsection.6.3}
+\contentsline {section}{\numberline {7}Appendix}{28}{section.7}
+\contentsline {subsection}{\numberline {7.1}Theory of Distributions}{28}{subsection.7.1}
