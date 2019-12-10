@@ -9,6 +9,7 @@
 \usepackage{float}
 \usepackage{afterpage}
 \usepackage{pgfplots}
+\usepackage{textcomp}
 \usetikzlibrary{calc, arrows}
 \newtheorem{theorem}{Theorem}
 \newtheorem{definition}{Definition}
@@ -16,6 +17,13 @@
 \newtheorem{proof}{Proof}
 \tikzstyle{int}=[draw, fill=blue!20, minimum size=2em]
 \tikzstyle{init} = [pin edge={to-,thin,black}]
+
+\tikzstyle{block} = [draw, fill=blue!20, rectangle, 
+    minimum height=3em, minimum width=6em]
+\tikzstyle{sum} = [draw, fill=blue!20, circle, node distance=1cm]
+\tikzstyle{input} = [coordinate]
+\tikzstyle{output} = [coordinate]
+\tikzstyle{pinstyle} = [pin edge={to-,thin,black}]
 
 \DeclareMathOperator*{\argmin}{argmin}
 
@@ -507,6 +515,19 @@ $$\frac{d}{dt}x(t) \leftrightarrow s X(s), \frac{d}{ds}X(s) \leftrightarrow -t x
 $$(x*y)(t) \leftrightarrow X(s)Y(s)$$
 \textbf{Frequency Shift: } 
 $$e^{s_0 t}x(t) \leftrightarrow X(s - s_0)\text{, ROC: }s\in R+s_0$$
+\subsection{The Unilateral Laplace Transform}
+In the normal laplace transform, we integrate over all the real numbers. For the Unilateral Laplace Transform
+we only integrate over the right half of the real numbers.
+$$\mathcal{X}(s)=\int_{0^-}^{\infty}{x(t)e^{-st}dt}$$
+The because the unilateral laplace transform is basically the same as the original, the properties of it are largely the same as well.
+However, Convolution and Differentiation change.\\\\
+\textbf{Convolution:} $(x_1*x_2)(t) \leftrightarrow \mathcal{X}_1(s)\mathcal{X}_2(s)$ if $x_1$ and $x_2$ are right sided (i.e 0 for $t<0$)\\\\
+This should be clear because the unilateral laplace transform only considers the right half of the reals, so unless the signal itself is right-sided,
+the convolution is going to blend together the left side of the signal with the right side.\\\\
+\textbf{Differentiation:} $\frac{d^n}{dt^n}\leftrightarrow s^n\mathcal{X}(s)-\sum_{k=1}^{n}{s^{n-k}\frac{d^{k-1}}{dt^{k-1}}x(0^-)}$\\\\
+Unlike the regular Laplace transform, differentiating a signal introduces initial conditions for the the Unilateral Laplace Transform. This actually makes it useful
+for solving differential equations because given the differential equation, we can take the Unilateral Laplace Transform of both sides, solve for our variable in the Laplace domain,
+and then take the inverse Laplace Transform to convert back to the time domain.
 \section{Linear Time-Invariant Systems}
 \begin{definition}
     LTI systems are ones which are both linear and time-invariant.
@@ -766,6 +787,200 @@ Using the step response, we can calculate some of these values.
         t_p=\frac{\pi}{\omega_d} & M_p=y\left(\frac{\pi}{\omega_d}\right)=1+e^{-\sigma\frac{\pi}{\omega_d}} & t_s = \frac{ln(0.01)}{-\sigma}
     \end{array}
 \]
+\section{Feedback Control}
+In feedback control, we have some physical system $H_p(s)$ called a plant which we would like to control using a system of our choice $H_c(s)$
+in order to follow some reference signal $r(t)$.
+\begin{figure}[H]
+    \centering
+    
+    % The block diagram code is probably more verbose than necessary
+    \begin{tikzpicture}[auto, node distance=2cm,>=latex']
+        % We start by placing the blocks
+        \node [input, name=input] {};
+        \node [sum, right of=input] (sum) {};
+        \node [block, right of=sum] (controller) {$H_c(s)$};
+        \node [block, right of=controller, node distance=3cm] (system) {$H_p(s)$};
+        % We draw an edge between the controller and system block to 
+        % calculate the coordinate u. We need it to place the measurement block. 
+        \draw [->] (controller) -- node[name=x] {$x(t)$} (system);
+        \node [output, right of=system] (output) {};
+        \node [below of=x] (measurements) {};
+
+        % Once the nodes are placed, connecting them is easy. 
+        \draw [draw,->] (input) -- node {$r(t)$} (sum);
+        \draw [->] (sum) -- node {$e$} (controller);
+        \draw [->] (system) -- node [name=y] {$y(t)$}(output);
+        \draw [-] (y) |- (measurements);
+        \draw [->] (measurements) -- ++ (2,0) -| node [pos=0.99] {$-$} (sum);
+    \end{tikzpicture}   
+\end{figure}
+Notice how the output signal is subtracted from a reference signal, and we use the difference (a.k.a the error)
+to determine what input we pass into the plant. Looking at the overall transfer function of the system, we see that
+\begin{align*}
+    Y(s) &= (R(s)-Y(s))H_c(s)H_p(s)\\
+    (1+H_c(s)H_p(s))Y(s) &= H_c(s)H_p(s)R(s)\\
+    H(s) = \frac{Y(s)}{R(s)} &= \frac{H_c(s)H_p(s)}{1+H_c(s)H_p(s)}
+\end{align*}
+Depending on what control we use for $H_c(s)$, we can shape this transfer function to be what we want.
+\subsection{Types of Control}
+\subsubsection{Constant Gain Control}
+When $H_c(s) = K_0$, this is known as constant gain control.
+$$H(s) = \frac{K_0H_p(s)}{1+K_0H_p(s)}$$
+The poles of this system are clearly when $1+K_0H_p(s)=0$.
+\subsubsection{Lead Control}
+Lead controllers are of the form
+$$H_c(s) = K_0\frac{s-\beta}{s-\alpha}$$
+Their poles are when
+$$1 + K_0\frac{s-\beta}{s-\alpha}H_p(s) = 0$$
+\subsubsection{Integral Control}
+Integral controller are of the form
+$$H_c(s) = \frac{K_0}{s}$$
+Their poles are when 
+$$1 + \frac{K_0}{s}H_p(s) = 0$$
+\subsection{Root Locus Analysis}
+For all forms of control, we need to choose a constant which places our poles where we want. Root Locus Analysis
+is the technique which helps us determine how our poles will move as $K_0\rightarrow \infty$.
+Assuming we only have a single gain to choose, we the poles of the new transfer function will be the roots of
+$$1 + K_0H(s)$$ where $H(s)$ is some transfer function that results in the denominator (For example, in constant gain control, $H(s) = H_p(s)$ but for
+lead control, $H_s = \frac{s-\beta}{s-\alpha}H_p(s)$).
+\begin{definition}
+    The root locus is the set of all points $s_0\in \mathbb{C}$ such that $\exists K_0>0$ such that $1+K_0H(s)=0$.
+\end{definition}
+This definition implies that $H(s_0)=\frac{1}{K_0}$ for some $K_0$, meaning the root locus is all points such that $\angle H(s_0)=-180$\textdegree.
+The first step of RLA is to factor the numerator and denominator of $H(s)$
+$$H(s) = \frac{\prod_{i=0}^{m}{(s-\beta_i)}}{\prod_{i=0}^{n}{(s-\alpha_i)}}$$
+As $k\rightarrow 0, H(s_0)=-\frac{1}{K_0}\rightarrow \infty$, so the root locus begins at the poles.
+As $k\rightarrow \infty, H(s_0)=-\frac{1}{K_0}\rightarrow 0$, so the root locus will end at the open loop zeros.
+However, if $m < n$, (i.e there are more poles than 0's), not all of the poles can converge to a zero.
+Instead $n-m$ branches will approach $\infty$ witth asymptotes at
+$$\frac{\sum_i^n\alpha_i-\sum_i^m\beta_i}{n-m}$$ and angles of
+$$\frac{180 + (i-1)*360}{n-m}$$
+The final rule of RLA is that parts of the real line left of an odd number of real poles and zeros are on the root locus.
+RLA tells us that we have to be careful when choosing our gain $K_0$ because we could by mistake cause instability. In particular, high gain will cause instability if
+\begin{itemize}
+    \item $H(s)$ has zeros in the right half of the plane
+    \item if $n-m \ge 3$, then the asympototes will cross the imaginary axis.
+\end{itemize}
+\subsection{Feedback Controller Design}
+When we design systems to use in feedback control, there are certain properties we want besides just basic ones like stability.
+Because signals can be thought of as a series of step signals, when analyzing these properties,
+we will assume $r(t)=u(t)$ 
+\subsubsection{Steady State Tracking Accuracy}
+\begin{figure}[H]
+    \centering
+    
+    % The block diagram code is probably more verbose than necessary
+    \begin{tikzpicture}[auto, node distance=2cm,>=latex']
+        % We start by placing the blocks
+        \node [input, name=input] {};
+        \node [sum, right of=input] (sum) {};
+        \node [block, right of=sum] (controller) {$H_c(s)$};
+        \node [block, right of=controller, node distance=3cm] (system) {$H_p(s)$};
+        % We draw an edge between the controller and system block to 
+        % calculate the coordinate u. We need it to place the measurement block. 
+        \draw [->] (controller) -- node[name=x] {$x(t)$} (system);
+        \node [output, right of=system] (output) {};
+        \node [below of=x] (measurements) {};
+
+        % Once the nodes are placed, connecting them is easy. 
+        \draw [draw,->] (input) -- node {$u(t)$} (sum);
+        \draw [->] (sum) -- node {$e$} (controller);
+        \draw [->] (system) -- node [name=y] {$y(t)$}(output);
+        \draw [-] (y) |- (measurements);
+        \draw [->] (measurements) -- ++ (2,0) -| node [pos=0.99] {$-$} (sum);
+    \end{tikzpicture}   
+\end{figure}
+\begin{definition}
+    A system has steady state tracking accurracy if the different between the reference and the output signals
+    tends to 0 as $t\rightarrow \infty$
+    $$e_{ss} := \lim_{t\rightarrow\infty}{e(t)}=0$$
+\end{definition}
+A useful theorem which can help us evaluate this limit is the final value theorem.
+\begin{theorem}[Final Value Theorem]
+    $$\lim_{t\rightarrow\infty}{e(t)} = \lim_{s\rightarrow0}{sE(s)}$$
+    As long as a limit exists and $e(t)=0$ for $t<0$
+\end{theorem}
+Looking at the relationship between $E(s)$ and $R(s)$, we see that 
+$$\frac{E(s)}{R(s)} = \frac{1}{1+H_c(s)H_p(s)} \implies E(s) = \frac{\frac{1}{s}}{1+H_c(s)H_p(s)}$$
+Thus
+$$e_{ss}=\lim_{s\rightarrow0}{\frac{1}{1+H_c(s)H_p(s)}}$$
+Thus as long as $H_c(s)H_p(s)$ has at least one pole at $s=0$, then $e_{ss}=0$.
+Notice that integral control gives us a pole at $s_0$, so it is guaranteed that an integral controller will be steady-state accurate.
+\subsubsection{Disturbance Rejection}
+\begin{figure}[H]
+    \centering
+    
+    % The block diagram code is probably more verbose than necessary
+    \begin{tikzpicture}[auto, node distance=2cm,>=latex']
+        % We start by placing the blocks
+        \node [input, name=input] {};
+        \node [sum, right of=input] (sum) {};
+        \node [block, right of=sum] (controller) {$H_c(s)$};
+        \node [sum, right of=controller, node distance=2cm, pin={[pinstyle]above:d}] (disturbance) {+};
+        \node [block, right of=disturbance, node distance=2cm] (system) {$H_p(s)$};
+        % We draw an edge between the controller and system block to 
+        % calculate the coordinate u. We need it to place the measurement block. 
+        \node [output, right of=system] (output) {};
+        \node [below of=x] (measurements) {};
+
+        % Once the nodes are placed, connecting them is easy. 
+        \draw [draw,->] (input) -- node {$u(t)$} (sum);
+        \draw [->] (sum) -- node {$e$} (controller);
+        \draw [->] (controller) -- (disturbance);
+        \draw [->] (disturbance) -- (system);
+        \draw [->] (system) -- node [name=y] {$y(t)$}(output);
+        \draw [-] (y) |- (measurements);
+        \draw [->] (measurements) -- ++ (2,0) -| node [pos=0.99] {$-$} (sum);
+    \end{tikzpicture}   
+\end{figure}
+Sometimes the output of our controller can be disturbed before it goes into the plant. Ideally, our system
+should be robust to these disturbances.
+\begin{align*}
+    Y(s) &= H_p(s)\left[H_c(s)(R_s-Y_s)+D(s)\right]\\
+    Y(s) &= \frac{H_c(s)H_p(s)}{1+H_c(s)H_p(s)}R(s) + \frac{H_p(s)}{1+H_c(s)H_p(s)}D(s)
+\end{align*}
+The system will reject disturbances if the $\frac{H_p(s)}{1+H_c(s)H_p(s)}D(s)$ is close to $0$ in the steady state.
+Assuming that $d(t) = u(t)$, we see that
+$$\delta_{ss} = \lim_{s\rightarrow0}{s\frac{H_p(s)}{1+H_c(s)H_p(s)}\frac{1}{s}}=\lim_{s\rightarrow0}{\frac{H_p(s)}{1+H_c(s)H_p(s)}}$$
+Thus as long as $H_c$ has a pole at $0$, then the system will reject disturbances. Notice that integral control guarantees disturbance rejection
+as well.
+\subsubsection{Noise Insensitivity}
+\begin{figure}[H]
+    \centering
+    
+    % The block diagram code is probably more verbose than necessary
+    \begin{tikzpicture}[auto, node distance=2cm,>=latex']
+        % We start by placing the blocks
+        \node [input, name=input] {};
+        \node [sum, right of=input] (sum) {};
+        \node [block, right of=sum] (controller) {$H_c(s)$};
+        \node [sum, right of=controller, node distance=2cm, pin={[pinstyle]above:d}] (disturbance) {+};
+        \node [block, right of=disturbance, node distance=2cm] (system) {$H_p(s)$};
+        % We draw an edge between the controller and system block to 
+        % calculate the coordinate u. We need it to place the measurement block. 
+        \node [output, right of=system] (output) {};
+        \draw [->] (system) -- node [name=y] {$y(t)$}(output);
+        \node [sum, below of=y, pin={[pinstyle]right:n}] (noise) {};
+        \node [below of=x] (measurements) {};
+
+        % Once the nodes are placed, connecting them is easy. 
+        \draw [draw,->] (input) -- node {$u(t)$} (sum);
+        \draw [->] (sum) -- node {$e$} (controller);
+        \draw [->] (controller) -- (disturbance);
+        \draw [->] (disturbance) -- (system);
+        
+        \draw [->] (y) -- (noise);
+        \draw [-] (noise) |- (measurements);
+        \draw [->] (measurements) -- ++ (2,0) -| node [pos=0.99] {$-$} (sum);
+    \end{tikzpicture}   
+\end{figure}
+In real systems, our measurement of the output $y(t)$ is not always 100\% accurate. One way to model this is to add a noise term to the output.
+Looking at the relationship between the noise and the output signal, we see
+$$H(s) = \frac{-H_c(s)H_p(s)}{1+H_c(s)H_p(s)}$$
+In order to reject this noise, we want this term to be close to 0, so ideally $H_c(s)H_p(s) << 1$ as $s\rightarrow 0$.
+However, this conflicts with our desire for $H_c(s)H_p(s)$ to have a pole at 0 to guarantee steady state tracking. Thus it is difficult to make a controler
+that is both accurate and robust to noise. However, because noise is usually a high frequency signal and the reference is a low frequency signal, we can mitigate
+this by choosing $H_c(s)H_p(s)$ to be a low-pass filter.
 \section{Sampling}
 \subsection{Continuous Time}
 Sampling a continuous-time signal means representing it as a sequence of points measured at regular intervals $T$.
