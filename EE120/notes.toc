@@ -21,20 +21,25 @@
 \contentsline {subsubsection}{\numberline {3.2.2}Convergence of the DTFT}{13}{subsubsection.3.2.2}
 \contentsline {subsection}{\numberline {3.3}Discrete Fourier Transform}{14}{subsection.3.3}
 \contentsline {subsection}{\numberline {3.4}2D Fourier Transforms}{15}{subsection.3.4}
-\contentsline {section}{\numberline {4}Linear Time-Invariant Systems}{15}{section.4}
-\contentsline {subsection}{\numberline {4.1}Impulse Response of LTI systems}{15}{subsection.4.1}
-\contentsline {subsubsection}{\numberline {4.1.1}The Discrete Case}{16}{subsubsection.4.1.1}
-\contentsline {subsubsection}{\numberline {4.1.2}The Continuous Case}{16}{subsubsection.4.1.2}
-\contentsline {subsection}{\numberline {4.2}Determining Properties of an LTI system}{16}{subsection.4.2}
-\contentsline {subsubsection}{\numberline {4.2.1}Causality}{16}{subsubsection.4.2.1}
-\contentsline {subsubsection}{\numberline {4.2.2}Memory}{17}{subsubsection.4.2.2}
-\contentsline {subsubsection}{\numberline {4.2.3}Stability}{17}{subsubsection.4.2.3}
-\contentsline {subsection}{\numberline {4.3}Frequency Response}{17}{subsection.4.3}
-\contentsline {subsection}{\numberline {4.4}Special LTI Systems}{18}{subsection.4.4}
-\contentsline {subsubsection}{\numberline {4.4.1}Linear Constant Coefficient Difference/Differential Equations}{18}{subsubsection.4.4.1}
-\contentsline {section}{\numberline {5}Sampling}{19}{section.5}
-\contentsline {subsection}{\numberline {5.1}Continuous Time}{19}{subsection.5.1}
-\contentsline {subsection}{\numberline {5.2}Discrete Time}{21}{subsection.5.2}
-\contentsline {subsection}{\numberline {5.3}Sampling as a System}{22}{subsection.5.3}
-\contentsline {section}{\numberline {6}Appendix}{23}{section.6}
-\contentsline {subsection}{\numberline {6.1}Theory of Distributions}{23}{subsection.6.1}
+\contentsline {section}{\numberline {4}Laplace Transform}{15}{section.4}
+\contentsline {subsection}{\numberline {4.1}Properties of the Laplace Transform}{16}{subsection.4.1}
+\contentsline {section}{\numberline {5}Linear Time-Invariant Systems}{16}{section.5}
+\contentsline {subsection}{\numberline {5.1}Impulse Response of LTI systems}{17}{subsection.5.1}
+\contentsline {subsubsection}{\numberline {5.1.1}The Discrete Case}{17}{subsubsection.5.1.1}
+\contentsline {subsubsection}{\numberline {5.1.2}The Continuous Case}{17}{subsubsection.5.1.2}
+\contentsline {subsection}{\numberline {5.2}Determining Properties of an LTI system}{17}{subsection.5.2}
+\contentsline {subsubsection}{\numberline {5.2.1}Causality}{18}{subsubsection.5.2.1}
+\contentsline {subsubsection}{\numberline {5.2.2}Memory}{18}{subsubsection.5.2.2}
+\contentsline {subsubsection}{\numberline {5.2.3}Stability}{18}{subsubsection.5.2.3}
+\contentsline {subsection}{\numberline {5.3}Frequency Response and Transfer Functions}{18}{subsection.5.3}
+\contentsline {subsubsection}{\numberline {5.3.1}Stability of $H(s)$}{19}{subsubsection.5.3.1}
+\contentsline {subsubsection}{\numberline {5.3.2}Bode Plots}{19}{subsubsection.5.3.2}
+\contentsline {subsection}{\numberline {5.4}Special LTI Systems}{22}{subsection.5.4}
+\contentsline {subsubsection}{\numberline {5.4.1}Linear Constant Coefficient Difference/Differential Equations}{22}{subsubsection.5.4.1}
+\contentsline {subsubsection}{\numberline {5.4.2}State Space Equations}{23}{subsubsection.5.4.2}
+\contentsline {section}{\numberline {6}Sampling}{24}{section.6}
+\contentsline {subsection}{\numberline {6.1}Continuous Time}{24}{subsection.6.1}
+\contentsline {subsection}{\numberline {6.2}Discrete Time}{26}{subsection.6.2}
+\contentsline {subsection}{\numberline {6.3}Sampling as a System}{26}{subsection.6.3}
+\contentsline {section}{\numberline {7}Appendix}{27}{section.7}
+\contentsline {subsection}{\numberline {7.1}Theory of Distributions}{27}{subsection.7.1}
