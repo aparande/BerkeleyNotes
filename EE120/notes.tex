@@ -485,7 +485,8 @@ It turns out that when a 2D signal is simply a multiplication of two 1D signals,
 \begin{theorem}
     If $x(t_1, t_2) = x(t_1)x(t_2)$, then $X(\omega_1, \omega_2) = X(\omega_1)X(\omega_2)$
 \end{theorem}
-\section{Laplace Transform}
+\section{Generalized transforms}
+\subsection{Laplace Transform}
 It turns out the CTFT  is just a specific case of a more general transform called the Laplace transform.
 \begin{definition}
     $$X(s) = \int_{-\infty}^{\infty}{x(t)e^{-st}dt} \text { for } s\in\mathbb{C}$$
@@ -498,7 +499,7 @@ However, for many LTI systems/signals, we can use partial fraction expansion and
 Two useful features of laplace transforms are their poles and zeros. Suppose
 $$X(s) = \frac{N(s)}{D(s)}$$
 The poles of the system are $\{s | D(s)=0\}$ and the zeros are $\{s | N(s)=0\}$
-\subsection{Properties of the Laplace Transform}
+\subsubsection{Properties of the Laplace Transform}
 The properties of the Laplace transform are largely the same as the properties of the Fourier Transform. One must just be careful about the Region of Convergence.
 For all these properties, assume that $x(t) \leftrightarrow X(s)$ and $y(t) \leftrightarrow Y(s)$ with original region of convergence $R$.\\
 \textbf{Linearity: } 
@@ -528,6 +529,39 @@ the convolution is going to blend together the left side of the signal with the 
 Unlike the regular Laplace transform, differentiating a signal introduces initial conditions for the the Unilateral Laplace Transform. This actually makes it useful
 for solving differential equations because given the differential equation, we can take the Unilateral Laplace Transform of both sides, solve for our variable in the Laplace domain,
 and then take the inverse Laplace Transform to convert back to the time domain.
+\subsection{The Z Transform}
+Just like the Laplace Transform generalizes the CTFT, the Z-Transform generalizes the DTFT.
+$$X(z) = \sum_{n=-\infty}^{\infty}{x[n]z^{-n}}$$
+When $z = e^{j\omega}$, we recover the DTFT
+$$X(e^{j\omega})=\sum_{n=-\infty}^{\infty}{x[n]e^{-j\omega n}}$$
+We know that the DTFT will be well defined as long as the region of convergence of the Z-transform contains the unit circle (because that represents all points $e^{j\omega})$.
+Unlike the ROC of the laplace transform, which is a rectangular section of the plane, the ROC of the Z-transform is a circular section.
+This means the only possible shapes for the ROC of a Z-transform are a ring, the interior of a circle, the exterior of a circle, or the empty set.
+For right-sided signals, the ROC is the exterior of the circle defined by the outermost pole. Like the Laplace transform, the best way to take the inverse Z transform is to use partial fraction decomposition.
+\subsubsection{Properties of the Z-Transform}
+\textbf{Linearity: } 
+$$ax[n] + by[n] \leftrightarrow aX(z) + bY(z)$$
+\textbf{Time Shift: }
+$$x[n-n_0] \leftrightarrow z^{-n_0}X(z)$$
+\textbf{Scaling: }
+$$z_0^nx[n] \leftrightarrow X\left(\frac{z}{z_0}\right)$$
+\textbf{Time Reversal: } 
+$$x[-n] \leftrightarrow X(z^{-1})$$
+\textbf{Derivative: } 
+$$-nx[n] \leftrightarrow z\frac{dX(z)}{dz}$$
+\textbf{Convolution/Multiplication: } 
+$$(x*y)[n] \leftrightarrow X(z)Y(z)$$
+\begin{theorem}[Initial Value Theorem]
+    Given $X(z)$ and $x[n]=0$ for $n<0$, then $$x[0] = \lim_{z\rightarrow\infty}{X(z)}$$
+\end{theorem}
+\subsection{Unilateral Z-Transform}
+Like the Laplace Transform, the Z-Transform has a unilateral variant.
+$$\mathcal{X}(z) = \sum_{n=0}^{\infty}{x[n]z^{-n}}$$
+Like before, convolution with the Unilateral transform is only valid for right sided signals.
+The time-delay property also changes for the unilateral z-transform.
+$$x[n-n_0] \leftrightarrow z^{-n_0}\mathcal{X}(s)+\sum_{k=1}^{n_0-1}{z^{-n_0+k}x[-k]}$$
+Notice how this property can now help us solve difference equations because we can simply take the unilateral z-transform
+of both sides, solve for our output, and then convert back to the time domain.
 \section{Linear Time-Invariant Systems}
 \begin{definition}
     LTI systems are ones which are both linear and time-invariant.
@@ -601,13 +635,19 @@ There is no reason to limit ourselves to the Fourier Domain though
     The transfer function of an LTI system $H(s)$ is how the system responds to complex exponentials.
 \end{definition}
 The transfer function is merely the Laplace Transform of the impulse response. In many ways, this can be more useful than the frequency response.
-\subsubsection{Stability of $H(s)$}
+\subsubsection{Stability of transfer functions}
 Recall that an LTI system is stable if the impulse response is absolutely integrable. We can determine this from the transfer function.
 \begin{theorem}
-    A causal LTI system is stable iff all poles of $H(s)$ have negative real parts.
+    A causal continuous LTI system is stable iff all poles of $H(s)$ have negative real parts.
 \end{theorem}
+
 The proof of this theorem stems from some facts about the Laplace Transform. If the system is causual, then the ROC is the half place demarcated by the right most pole.
 When this ROC includes the imaginary axis, the Fourier Transform is well defined, and this only happens when $h(t)$ is absolutely integrable.
+Applying the same logic to the discrete case,
+\begin{theorem}
+    A causal discrete LTI system is stable iff all poles of $H(z)$ lie within the unit circle.
+\end{theorem}
+This is because we know the ROC extends from the right-most pole for causal systems, and for the Fourier Transform to exist (making $h[n]$ absolutely integrable), the ROC must contain the unit circle.
 \subsubsection{Bode Plots}
 Because transfer functions, and hence the frequency response, can be quite complex, we need a easy way to visualize how a system responds to different frequencies.
 \begin{definition}
@@ -720,25 +760,23 @@ It turns out that all causal FIR systems can be written as a linear constant coe
     $$h[n] = \sum_{k=0}^{M}{b_k \delta[n-k]}$$
 \end{theorem}
 \begin{theorem}
-    Given a constant coefficient difference/differential equation, the transfer function $H(\omega)$ is
-    $$H(\omega) = \frac{Y(\omega)}{X(\omega)} = \frac{\sum_{k=0}^{M}{b_k(j\omega)^k}}{\sum_{k=0}^{N}{a_k(j\omega)^k}}\text{ [Continuous Case]}$$
-    $$H(\omega) = \frac{Y(\omega)}{X(\omega)} = \frac{\sum_{k=0}^{M}{b_ke^{-j\omega k}}}{\sum_{k=0}^{N}{a_ke^{-j\omega k}}}\text{ [Discrete Case]}$$
+    Given a constant coefficient difference/differential equation, the transfer function is
+    $$H(s) = \frac{Y(\omega)}{X(\omega)} = \frac{\sum_{k=0}^{M}{b_ks^k}}{\sum_{k=0}^{N}{a_ks^k}}\text{ [Continuous Case]}$$
+    $$H(z) = \frac{Y(\omega)}{X(\omega)} = \frac{\sum_{k=0}^{M}{b_kz^{-k}}}{\sum_{k=0}^{N}{a_kz^{-k}}}\text{ [Discrete Case]}$$
 \end{theorem}
 \begin{proof}
     \textbf{\\The Continuous Case}
     $$\sum_{k=0}^{N}{a_k\frac{d^ky}{dt^k}} = \sum_{k=0}^{M}{b_k\frac{d^kx}{dt^k}}$$
-    Taking the Fourier Transform,
-    $$\sum_{k=0}^{N}{a_k(j\omega)^k Y(\omega)} = \sum_{k=0}^{M}{b_k(j\omega)^k X(\omega)}$$
-    $$\frac{Y(\omega)}{X(\omega)} = \frac{\sum_{k=0}^{M}{b_k(j\omega)^k}}{\sum_{k=0}^{N}{a_k(j\omega)^k}}$$
+    Taking the Laplace Transform,
+    $$\sum_{k=0}^{N}{a_ks^k Y(\omega)} = \sum_{k=0}^{M}{b_ks^k X(\omega)}$$
+    $$\frac{Y(s)}{X(s)} = \frac{\sum_{k=0}^{M}{b_ks^k}}{\sum_{k=0}^{N}{a_ks^k}}$$
     $$y(t) = (h*x)(t) \leftrightarrow H(\omega)X(\omega)$$
-    $$\therefore H(\omega) = \frac{Y(\omega)}{X(\omega)} = \frac{\sum_{k=0}^{M}{b_k(j\omega)^k}}{\sum_{k=0}^{N}{a_k(j\omega)^k}}$$
+    $$\therefore H(s) = \frac{Y(s)}{X(s)} = \frac{\sum_{k=0}^{M}{b_ks^k}}{\sum_{k=0}^{N}{a_ks^k}}$$
     \textbf{The Discrete Case}
     $$\sum_{k=0}^{N}{a_k y[n-k]} = \sum_{k=0}^{M}{b_k x[n-k]}$$
-    Remember the frequecy response is the impulse response, so let $x[n] = \delta[n]$
-    $$\sum_{k=0}^{N}{a_k y[n-k]} = \sum_{k=0}^{M}{b_k \delta[n-k]}$$
-    Take the DTFT
-    $$\sum_{k=0}^{N}{a_k e^{-j\omega k}H(\omega)} = \sum_{k=0}^{M}{b_k e^{-j\omega k}}$$
-    $$H(\omega) = \frac{\sum_{k=0}^{M}{b_k e^{-j\omega k}}}{\sum_{k=0}^{N}{a_k e^{-j\omega k}}}$$
+    Taking the Z Transform
+    $$\sum_{k=0}^{N}{a_k z^{-k}Y(z)} = \sum_{k=0}^{M}{b_k z^{-k}X(z)}$$
+    $$H(z) = \frac{\sum_{k=0}^{M}{b_k z^{-k}}}{\sum_{k=0}^{N}{a_k z^{-k}}}$$
 \end{proof}
 \subsubsection{State Space Equations}
 When we have a LCCDE of the form
@@ -757,7 +795,15 @@ If we want to find the transfer function of the system, we can use the Laplace t
 \end{align*}
 Notice that the poles of the transfer function are simply the eigenvalues of $A$. This is because
 if $s$ is an eigenvalue of $A$, $(sI-A)^{-1}$ is not invertible so the transfer function is undefined
-just like it is at the poles.
+just like it is at the poles.\\\\
+\textbf{Important: This is valid in Discrete Time as well!}\\\\
+In general, state-space equations are useful because they allow us to find transfer functions of complex systems very easily.
+\begin{itemize}
+    \item[Step 1:] Label the output of delay (discrete) or differentiation (continuous) blocks as the state variables.
+    \item[Step 2:] Write the state equations using inputs and delays/derivatives. Express each as a weighted sum of states and inputs.
+    \item[Step 3:] Write $y[n]$ in terms of $x[n]$ and the state variables
+    \item[Step 4:] Use the formula above to find the transfer function.  
+\end{itemize}
 \subsubsection{Second Order Systems}
 Most of the time, higher order systems only have 2 dominant poles. Accordingly, they can be approximated by second order systems (i.e systems with two poles).
 One way to write the transfer function of this system is
