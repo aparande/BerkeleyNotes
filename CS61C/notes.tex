@@ -9,7 +9,8 @@
 \usepackage{float}
 \usepackage{afterpage}
 \usepackage{listings}
-\usetikzlibrary{calc}
+\usepackage{caption}
+\usetikzlibrary{calc, shapes.gates.logic.US, positioning}
 \newtheorem{theorem}{Theorem}
 \newtheorem{definition}{Definition}
 \newtheorem{corollary}{Corollary}
@@ -513,5 +514,196 @@ which are specific to registers
     \item[2.]Hold Time: How long the input must be stable after the rising edge of the clock for the register to properly read it
     \item[3.]Clock-to-Q Time: How long after the rising edge of the clock it takes for input to appear at the registers output  
 \end{itemize}
-
+\subsubsection{Pipelining}
+One place where registerrs become useful is in pipelining. Pipelining a circuit means
+placing registers after combinational logic blocks. This stops delay times from adding up
+because now intermediate quantities must be stored in the register before being passed to the next block.
+This allows for higher clock frequencies because we are no longer limited by the logic delays, only by our registers.
+\subsection{Combinational Logic Elements}
+\begin{figure}[H]
+    \begin{minipage}[b][2cm][b]{.30\textwidth}
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \node (x) at (0, 1) {$x$};
+            \node (y) at (2, 1) {$\bar{x}$};
+            \node[not gate US, draw] at ($(x) + (0.8, 0)$) (notx) {};
+            \draw (x) -- (notx.input);
+            \draw (notx.output) -- ([xshift=0.2cm]notx.output) -- (y);
+        \end{tikzpicture}
+        \vfill
+        \caption*{Not Gate}
+    \end{minipage}
+    \begin{minipage}[b][2cm][b]{.30\textwidth}
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \node (x) at (0, 0) {$x$};
+            \node (y) at (0, -1) {$y$};
+            \node[and gate US, draw, rotate=0, logic gate inputs=nn] at ($(x) + (0.8, -0.5)$) (and) {};
+            \node[right= 0.25cm of and] (out) {$x\cdot y$};
+            \draw (x) |- (and.input 1);
+            \draw (y) |- (and.input 2);
+            \draw (and.output) -- ([xshift=0.2cm]and.output) -- (out);
+        \end{tikzpicture}
+        \vfill
+        \caption*{And Gate}
+    \end{minipage}
+    \begin{minipage}[b][2cm][b]{.30\textwidth}
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \node (x) at (0, 0) {$x$};
+            \node (y) at (0, -1) {$y$};
+            \node[or gate US, draw, rotate=0, logic gate inputs=nn] at ($(x) + (0.8, -0.5)$) (and) {};
+            \node[right= 0.25cm of and] (out) {$x+y$};
+            \draw (x) |- (and.input 1);
+            \draw (y) |- (and.input 2);
+            \draw (and.output) -- ([xshift=0.2cm]and.output) -- (out);
+        \end{tikzpicture}
+        \vfill
+        \caption*{Or Gate}
+    \end{minipage}
+    \begin{minipage}[b][2cm][b]{.30\textwidth}
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \node (x) at (0, 0) {$x$};
+            \node (y) at (0, -1) {$y$};
+            \node[xor gate US, draw, rotate=0, logic gate inputs=nn] at ($(x) + (0.8, -0.5)$) (and) {};
+            \node[right= 0.25cm of and] (out) {$(x+y)\cdot\overline{(x\cdot y)}$};
+            \draw (x) |- (and.input 1);
+            \draw (y) |- (and.input 2);
+            \draw (and.output) -- ([xshift=0.2cm]and.output) -- (out);
+        \end{tikzpicture}
+        \vfill
+        \caption*{Xor Gate}
+    \end{minipage}
+    \begin{minipage}[b][2cm][b]{.30\textwidth}
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \node (x) at (0, 0) {$x$};
+            \node (y) at (0, -1) {$y$};
+            \node[nand gate US, draw, rotate=0, logic gate inputs=nn] at ($(x) + (0.8, -0.5)$) (and) {};
+            \node[right= 0.25cm of and] (out) {$\overline{(x\cdot y)}$};
+            \draw (x) |- (and.input 1);
+            \draw (y) |- (and.input 2);
+            \draw (and.output) -- ([xshift=0.2cm]and.output) -- (out);
+        \end{tikzpicture}
+        \vfill
+        \caption*{Nand Gate}
+    \end{minipage}
+    \begin{minipage}[b][2.5cm][b]{.30\textwidth}
+        \centering
+        \vfill
+        \begin{tikzpicture}
+            \node (x) at (0, 0) {$x$};
+            \node (y) at (0, -1) {$y$};
+            \node[nor gate US, draw, rotate=0, logic gate inputs=nn] at ($(x) + (0.8, -0.5)$) (and) {};
+            \node[right= 0.25cm of and] (out) {$\overline{(x\cdot y)}$};
+            \draw (x) |- (and.input 1);
+            \draw (y) |- (and.input 2);
+            \draw (and.output) -- ([xshift=0.2cm]and.output) -- (out);
+        \end{tikzpicture}
+        \vfill
+        \caption*{Nor Gate}\label{}
+    \end{minipage}
+\end{figure}
+These are the basic gates which are used in combinational logic. Using Boolean Algebra, we can simplify complicated logic
+statements/circuits.
+\begin{center}
+    \begin{tabular}{c|c}
+     $x\cdot\bar{x} = 0$ & $x+\bar{x}=1$ \\ 
+     $x\cdot 0 = 0$ & $x+1=1$ \\  
+     $x\cdot 1 = x$ & $x+0=x$ \\ 
+     $x\cdot x = x$ & $x+x=x$ \\
+     $x\cdot y = y \cdot x$ & $x+y=y+x$ \\
+     $(xy)z = x(yz)$ & $(x+y)+z=x+(y+z)$ \\
+     $x(y+z)=xy+xz $ & $x+yz=(x+y)(x+z)$ \\
+     $xy+x = x $ & $(x+y)x=x$ \\
+     $\overline{xy}=\bar{x}+\bar{y} $ & $\overline{x+y}=\bar{x}\bar{y}$ \\
+    \end{tabular}
+\end{center}
+One other important circuit element is the data multiplexor (mux). A mux takes in $n$ different sources of data and selects one of those
+sources to output. It does this using select inputs. For example, if a mux has 3 select bits, then it can choose from 8 different streams of data.
+\subsection{Timing}
+In circuits, timing is incredibly importat because combinational logic blocks have propagation delays (i.e the output does not change instantaneously with the input).
+When used in conjuction with registers (which what their own timing requirements), if one is not careful, we could build a circuit which produces inaccurate outputs.
+When checking whether or not a circuit will do what it is designed to do, we need to look at two special paths:
+\begin{itemize}
+    \item Longest CL Path: The longest path of combinational logic blocks between two registers
+    \item Shortest CL Path: The shortest path of combinational logic blocks between two registers.
+\end{itemize}
+This will let us analyze things like the maximum clock rate we can achieve or the maximum hold time our registers can have.
+$$t_{delay} = t_{setup}+t_{clk2q}+t_{longestCL}$$
+This first formula tells us the maximum amount of time it takes for an input to propagate from a register to another register.
+When the clock rises, the first register will read the input and output it $t_{clk2q}$ later. The input will then go through the combinational logic
+elements. Since we are looking for the maximum, we only consider the longest CL path. Finally, the output needs to be stable for $t_{setup}$ in order for the
+destination register to read it properly. As long as our clock period is longer than the max delay, our circuit will work properly.
+$$t_{hold}=t_{clk2q}+t_{shortestCL}$$
+This second formula tells us the maximum hold time which our registers can have. When the clock rises, the first register reads the input and outputs it $t_{clk2q}$ later.
+The input will then go through the combinational logic elements. Hold time is how long the input needs to be stable after the rising edge of the clock, so if the combinational
+logic works incredibly fast, we will need a fast hold time because otherwise the output will change faster than the hold time of the output register. This is why we look at the
+shortest CL path. As long as our registers have a hold time which is less than the max-hold, our circuit will work properly.
+\section{Datapath}
+The processor is the part of the computer which manipulates data and makes decisions. The processor is split into two parts: datapath and control. 
+The datapath is the part of the processor with the necessary hardware to perform the operations required by the ISA. THe control tells the datapath what needs to be done.
+On every tick of the clock, processors execute a single instruction. Instruction execution takes place in 5 stages.
+\begin{itemize}
+    \item[1. ] Instruction Fetch
+    \item[2. ] Instruction Decode
+    \item[3. ] Execute
+    \item[4. ] Memory Access
+    \item[5. ] Write Back 
+\end{itemize}
+Each datapath has several main state elements
+\begin{itemize}
+    \item Register File: An array of registers which the processor uses to keep information out of memory
+    \item Program Counter: A special register which keeps track of where the processor is in the program
+    \item IMem: A read-only section of memory containing the instructions that need to be executed
+    \item DMem: Section of memory which contains data the processor needs to read/write to
+\end{itemize}
+Important combinational logic elements of the datapath include
+\begin{itemize}
+    \item Immediate Generator: Generates the immediate
+    \item Branch Comparator: Decides whether or not branches should be taken
+    \item ALU: Performs mathematical operations
+\end{itemize}
+All parts of the datapath operate at the same time. The control is how the processor chooses which output to work with.
+Control can either be done through combinational logic or by using ROM (Read-Only Memory).
+\subsection{Pipelined Datapath}
+A single-cycle datapath is one where every instruction passes through the datapath one at a time. However, this is
+inefficient because faster stages (such as register reading) are left unused while waiting for slower stages (such as memory reading).
+One way to fix this is to pipeline the datapath. This allows multiple instructions to use different parts of the datapath at once, speeding up the
+processor because no stage is left unutilized. All we need to do is add registers after each datapath stage. However, this introduces "hazards" into the processor.
+\subsubsection{Structural Hazards}
+\begin{definition}
+    A structural hazard is when two or more instructions compete for access to the same physical resource.
+\end{definition}
+One solution is to have the instructions take turns to access the resource. The other option is to add more hardware to distribute that resource.
+For example, a Regfile structural hazard would be when the processor needs to read registers for one instruction and write a register for another.
+This is solved by giving the Regfile two independent read ports and one independent write port. Another example is a memory structural hazard where
+instructional memory and data memory are used simultaneously. This is solved by separating them into IMem and DMem.
+\subsubsection{Data Hazards}
+\begin{definition}
+    A data hazard is when two instructions have a data dependency between them
+\end{definition}
+\textbf{Problem: } One instruction is reading from a register that a previous instruction is writing back to\\
+\textbf{Solution: } The WB stage will always update the value first before Instruction Decode reads a new value\\\\
+\textbf{Problem: } The result from the ALU will take 2 cycles to be written back. An instruction might need it before then\\
+\textbf{Solution 1: } We could stall by introducing no-ops (instructions that do nothing), but this would kill performance.\\
+\textbf{Solution 2: } WE can add a loop from the output of the ALU to the ALU input via a mux and add a control element to 
+determine when we should use the forwarded value\\\\
+\textbf{Problem: } Suppose a load instruction is followed by an instrucction that requires the data loaded from DMEM. The ALU thus needs the data as it is being read. This slot after a load is known as the load delay slot.
+If the load delay slot instruction uses the result of the load, then we need to stall for a cycle\\
+\textbf{Solution 1: } We could insert a no-op into the code\\
+\textbf{Solution 2: } Turn off all write enables and run the second instruction twice
+\textbf{Solution 3: } Reorder instructions so that the load delay slot doesn't use the loaded result
+\subsubsection{Control Hazards}
+\begin{definition}
+    A control hazard is when the program flow changes so instructions in the pipeline are no longer relevant
+\end{definition}
+Notice that this is only a problem when a branch is taken because it means the pipeline must be flushed to get the wrong instructions out of the pipeline (by converting them to no-ops).
+A more advanced way to fix this is to implement branch prediction which is where the processor attempts to predict whether or not a branch is taken and load instructions based on that.
 \end{document}

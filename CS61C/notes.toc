@@ -33,3 +33,11 @@
 \contentsline {subsection}{\numberline {4.6}Loader}{15}{subsection.4.6}
 \contentsline {section}{\numberline {5}Synchronous Digital Systems}{15}{section.5}
 \contentsline {subsection}{\numberline {5.1}Registers}{16}{subsection.5.1}
+\contentsline {subsubsection}{\numberline {5.1.1}Pipelining}{16}{subsubsection.5.1.1}
+\contentsline {subsection}{\numberline {5.2}Combinational Logic Elements}{16}{subsection.5.2}
+\contentsline {subsection}{\numberline {5.3}Timing}{17}{subsection.5.3}
+\contentsline {section}{\numberline {6}Datapath}{18}{section.6}
+\contentsline {subsection}{\numberline {6.1}Pipelined Datapath}{19}{subsection.6.1}
+\contentsline {subsubsection}{\numberline {6.1.1}Structural Hazards}{19}{subsubsection.6.1.1}
+\contentsline {subsubsection}{\numberline {6.1.2}Data Hazards}{19}{subsubsection.6.1.2}
+\contentsline {subsubsection}{\numberline {6.1.3}Control Hazards}{20}{subsubsection.6.1.3}
