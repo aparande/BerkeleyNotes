@@ -706,4 +706,126 @@ If the load delay slot instruction uses the result of the load, then we need to 
 \end{definition}
 Notice that this is only a problem when a branch is taken because it means the pipeline must be flushed to get the wrong instructions out of the pipeline (by converting them to no-ops).
 A more advanced way to fix this is to implement branch prediction which is where the processor attempts to predict whether or not a branch is taken and load instructions based on that.
+\section{The Memory Hierarchy}
+Computers have several levels of memory, each one serving different purposes. On the processor itself, we have the Regfile which provides
+fast read and write access. Right below it, we have the caches as welll as main memory (a.k.a DRAM) which has more capacity than registers but is much slower. After DRAM,
+we have Disk, which is even larger but incredibly slow. Different systems control the transfer of data between different parts of memory.
+\begin{itemize}
+    \item Registers $\leftrightarrow$ Memory: The compiler/assembly programmer
+    \item Cache $\leftrightarrow$ Main Memory: Cache Controller
+    \item Main Memory $\leftrightarrow$ Disk: Operating System
+\end{itemize}
+\subsection{Caching}
+The closer memory is to the processor, the faster it is. However, that also makes it more expensive. The idea of caching is to copy a subset of main memory
+and keep it close to the processor. We can then stack multiple layers of caches (each one with more storage than the other) before we actually need to read DRAM.
+\begin{definition}
+    Temporal locality is the idea that if data is used now, it will be used later on
+\end{definition}
+\begin{definition}
+    Spatial locality is the idea that if data is used now, nearby data will likely be used later
+\end{definition}
+Caches take advantage of both temporal and spatial locality to provide quick memory access.
+\subsubsection{Direct Mapped Cache}
+In a direct mapped cache, data is transferred between main memory and the cache in segments called blocks. Each memory address is associated with one possible block in the cache. That way, when checking whether or not the data located at a particular address
+is located in the cache, we only need to check a single location. Each address is split into three parts.
+\begin{itemize}
+    \item Offset: The number of the byte within the block that should be accessed.
+    \item Index: The block in the cache
+    \item Tag: Remaining bits which distinguish all memory addresses mapping to the same block
+\end{itemize}
+\begin{center}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        Tag & Index & Offset\\
+        \hline
+    \end{tabular}
+\end{center}
+In this way, the direct-mapped cache is similar to a Hashmap where the key is the Index and the Tag.
+When given an address, the direct mapped cache will first go the block specified by the address' index. It will then compare the tags.\\\\
+\textbf{Important: } Note that in addition to the data stored in memory, the DM Cache also stores the tag that data is associated with.
+\subsubsection{Fully Associative Cache}
+In a fully associated cache, the cache is divided into a set of blocks. These blocks contain a tag and the data stored inside memory. When checking whether or not
+a particular memory address is inside the cache, we check all of the tags in parallel. Because there is no concept of positioning within the cache, we don't need an index,
+so each address is split into 2 parts.
+\begin{itemize}
+    \item Offset: the number of the byte within the block that should be accessed
+    \item Tag: Remaining bits which distinguish memory addresses from each other
+\end{itemize}
+\begin{center}
+    \begin{tabular}{|c|c|}
+        \hline
+        Tag & Offset\\
+        \hline
+    \end{tabular}
+\end{center}
+In this way, fully associative caches are like an array. When looking data up in the array, we search through it.
+The benefit of this is that we have no more conflict misses because there are no mappings between memory addresses. The drawback
+is that we need a comparator for every single entry.
+\subsubsection{N-Way Set Associative Cache}
+An N-Way set associative cache combines the ideas of a direct mapped caches and fully associative caches.
+Like the direct mapped cache, the N-Way set is divided into a series of sections called sets. Each set is fully associative cache with N blocks inside.
+When checking whether or not the data for a particular memory address is stored inside the cache, we first identify the set using the index
+and then check all of the tags in that set. This is why the address is split into 3 parts:
+\begin{itemize}
+    \item Offset: The number of the byte within the block that should be accessed.
+    \item Index: The set the data maps to
+    \item Tag: Remaining bits which distinguish all memory addresses mapping to the same block
+\end{itemize}
+\begin{center}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        Tag & Index & Offset\\
+        \hline
+    \end{tabular}
+\end{center}
+We can think of N-Way Fully Associative caches like Hashmaps where the key is the index and the value is an array. We must search through the array (by checking tags) to actually get the correct block and then use the offset to retrieve the data at a location in the block.
+N-Way fully associative caches are useful because now we get the benefits of fully-associative caches but we only need N comparators to check the tags, allowing us to build larger caches.
+\subsubsection{Cache Metrics}
+The general flow of cache access is as follows:
+\begin{itemize}
+    \item[1.] The processor issues the address to the cache
+    \item[2.] If the data is in the cache, the data is sent to the processor
+    \item[3.] If the data is not in the cache, memory will read the address, load the data into the cache, save the cache, and then the cache sends the data to the processor  
+\end{itemize}
+\begin{definition}
+    A cache hit is when the cache contains the requested data and passes it to the processor
+\end{definition}
+\begin{definition}
+    A cache miss is when the cache does not contain the requested data, so it must read from memory
+\end{definition}
+There are 3 different types of cache misses
+\begin{itemize}
+    \item Compulsory Miss: When the program first starts, the cache is empty so misses are guaranteed.
+    \item Conflict Miss: Two memory addresses map to the same cache location so the one currently in the cache must be replaced
+    \item Capacity Miss: Cache capacity is full so something must be replaced (this is the primary miss of a associative cache)
+\end{itemize}
+The hit rate is the fraction of accesses which are hits whereas the miss rate is the fraction of accesses that are misses.
+It takes time to replace data in the cache because it must be read from memory, so there is some miss penalty which is how long it takes to replace that data.
+Likewise, the hit time is how long it takes to access cache memory.\\\\
+When choosing parameters for a cache, one must keep these metrics in mind. For example, a large block size might give us better spatial locality, but eventually
+the number of cache misses will increase, and they will have a larger penalty because more memory is being accessed at once.
+\subsubsection{Writing to the Cache}
+Reading data from the cache is simple because data just needs to be passed to a single location (the processor). However, writing data means the value must be updated in both
+memory and the cache. Caches have a write policy which they use to determine how they handle writes.
+\begin{definition}
+    A write-through cache policy is when writes update both the cache and the memory
+\end{definition}
+\begin{definition}
+    A write-back cache policy is when a write updates data in the cache and only updates memory once the data is removed from the cache.
+\end{definition}
+A write-back policy is more complicated because it allows memory to be stale for some time. To keep track of which blocks in the cache have been written to, we add a dirty bit to the cache and update
+memory if a dirty block is removed from the cache. This allows the memory and cache to be inconsistent but can be useful if we are making multiple writes at the same time because we don't have to go to memory each time.
+\subsubsection{Block Replacement}
+Just like caches can have different write policies, they can also have different replacement policies which determine how to replace a block if there is a cache miss.
+For a Direct mapped cache, the index fully specifies the location of the block, so the only possible policy is a whole block replacement of whatever was already in that location.
+For N-Way and Fully Associative caches, however, we have a choice as to which block in a set we want to replace.
+\begin{definition}
+    A First in First Out (FIFO) replacement policy will remove the block that entered the set first
+\end{definition}
+A FIFO policy doesn't take into account accesses. Because of this, even frequently accessed data can be removed from the cache.
+\begin{definition}
+    A Least Recently Used (LRU) replacement policy will remove the block from the set which has been accessed the least recently.
+\end{definition} 
+LRU replacement policies make sure that frequently accessed data stays in the cache. Note that both FIFO and LRU replacement policies only kick in once the Fully Associative cache is full
+or a set in the N-Way Associative cache is full.
 \end{document}

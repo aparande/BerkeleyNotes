@@ -41,3 +41,11 @@
 \contentsline {subsubsection}{\numberline {6.1.1}Structural Hazards}{19}{subsubsection.6.1.1}
 \contentsline {subsubsection}{\numberline {6.1.2}Data Hazards}{19}{subsubsection.6.1.2}
 \contentsline {subsubsection}{\numberline {6.1.3}Control Hazards}{20}{subsubsection.6.1.3}
+\contentsline {section}{\numberline {7}The Memory Hierarchy}{20}{section.7}
+\contentsline {subsection}{\numberline {7.1}Caching}{20}{subsection.7.1}
+\contentsline {subsubsection}{\numberline {7.1.1}Direct Mapped Cache}{21}{subsubsection.7.1.1}
+\contentsline {subsubsection}{\numberline {7.1.2}Fully Associative Cache}{21}{subsubsection.7.1.2}
+\contentsline {subsubsection}{\numberline {7.1.3}N-Way Set Associative Cache}{21}{subsubsection.7.1.3}
+\contentsline {subsubsection}{\numberline {7.1.4}Cache Metrics}{22}{subsubsection.7.1.4}
+\contentsline {subsubsection}{\numberline {7.1.5}Writing to the Cache}{23}{subsubsection.7.1.5}
+\contentsline {subsubsection}{\numberline {7.1.6}Block Replacement}{23}{subsubsection.7.1.6}
