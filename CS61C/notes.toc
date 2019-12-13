@@ -1,0 +1,64 @@
+\contentsline {section}{\numberline {1}Binary Representation}{3}{section.1}
+\contentsline {subsection}{\numberline {1.1}Base conversions}{3}{subsection.1.1}
+\contentsline {subsection}{\numberline {1.2}Numeric Representations}{3}{subsection.1.2}
+\contentsline {subsubsection}{\numberline {1.2.1}Sign and Magnitude}{3}{subsubsection.1.2.1}
+\contentsline {subsubsection}{\numberline {1.2.2}One's Complement}{3}{subsubsection.1.2.2}
+\contentsline {subsubsection}{\numberline {1.2.3}Two's Complement}{4}{subsubsection.1.2.3}
+\contentsline {subsubsection}{\numberline {1.2.4}Bias Encoding}{4}{subsubsection.1.2.4}
+\contentsline {subsection}{\numberline {1.3}Floating Point Representation}{4}{subsection.1.3}
+\contentsline {section}{\numberline {2}C}{5}{section.2}
+\contentsline {subsection}{\numberline {2.1}C Features}{5}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Bitwise Operators}{5}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Pointers}{6}{subsection.2.3}
+\contentsline {subsubsection}{\numberline {2.3.1}Pointer Operators}{6}{subsubsection.2.3.1}
+\contentsline {subsection}{\numberline {2.4}Arrays}{6}{subsection.2.4}
+\contentsline {subsection}{\numberline {2.5}Structs}{7}{subsection.2.5}
+\contentsline {subsubsection}{\numberline {2.5.1}Struct Operators}{7}{subsubsection.2.5.1}
+\contentsline {section}{\numberline {3}Memory Management}{7}{section.3}
+\contentsline {subsection}{\numberline {3.1}Memory Basics}{7}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}The Stack}{8}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.3}The Heap}{8}{subsection.3.3}
+\contentsline {subsection}{\numberline {3.4}Heap Management}{9}{subsection.3.4}
+\contentsline {section}{\numberline {4}RISC-V}{9}{section.4}
+\contentsline {subsection}{\numberline {4.1}Basics of Assembly Languages}{9}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}RISC-V Structure}{10}{subsection.4.2}
+\contentsline {subsubsection}{\numberline {4.2.1}Caller Callee Convention}{10}{subsubsection.4.2.1}
+\contentsline {subsubsection}{\numberline {4.2.2}Directives}{11}{subsubsection.4.2.2}
+\contentsline {subsection}{\numberline {4.3}Instruction Formats}{12}{subsection.4.3}
+\contentsline {subsubsection}{\numberline {4.3.1}Addressing}{13}{subsubsection.4.3.1}
+\contentsline {subsection}{\numberline {4.4}Compiling, Assembling, Linking, Loading}{13}{subsection.4.4}
+\contentsline {subsubsection}{\numberline {4.4.1}Compiler}{13}{subsubsection.4.4.1}
+\contentsline {subsubsection}{\numberline {4.4.2}Assembler}{13}{subsubsection.4.4.2}
+\contentsline {subsection}{\numberline {4.5}Linker}{14}{subsection.4.5}
+\contentsline {subsection}{\numberline {4.6}Loader}{15}{subsection.4.6}
+\contentsline {section}{\numberline {5}Synchronous Digital Systems}{15}{section.5}
+\contentsline {subsection}{\numberline {5.1}Registers}{16}{subsection.5.1}
+\contentsline {subsubsection}{\numberline {5.1.1}Pipelining}{16}{subsubsection.5.1.1}
+\contentsline {subsection}{\numberline {5.2}Combinational Logic Elements}{16}{subsection.5.2}
+\contentsline {subsection}{\numberline {5.3}Timing}{17}{subsection.5.3}
+\contentsline {section}{\numberline {6}Datapath}{18}{section.6}
+\contentsline {subsection}{\numberline {6.1}Pipelined Datapath}{19}{subsection.6.1}
+\contentsline {subsubsection}{\numberline {6.1.1}Structural Hazards}{19}{subsubsection.6.1.1}
+\contentsline {subsubsection}{\numberline {6.1.2}Data Hazards}{19}{subsubsection.6.1.2}
+\contentsline {subsubsection}{\numberline {6.1.3}Control Hazards}{20}{subsubsection.6.1.3}
+\contentsline {section}{\numberline {7}The Memory Hierarchy}{20}{section.7}
+\contentsline {subsection}{\numberline {7.1}Caching}{20}{subsection.7.1}
+\contentsline {subsubsection}{\numberline {7.1.1}Direct Mapped Cache}{21}{subsubsection.7.1.1}
+\contentsline {subsubsection}{\numberline {7.1.2}Fully Associative Cache}{21}{subsubsection.7.1.2}
+\contentsline {subsubsection}{\numberline {7.1.3}N-Way Set Associative Cache}{21}{subsubsection.7.1.3}
+\contentsline {subsubsection}{\numberline {7.1.4}Cache Metrics}{22}{subsubsection.7.1.4}
+\contentsline {subsubsection}{\numberline {7.1.5}Writing to the Cache}{23}{subsubsection.7.1.5}
+\contentsline {subsubsection}{\numberline {7.1.6}Block Replacement}{23}{subsubsection.7.1.6}
+\contentsline {subsection}{\numberline {7.2}Virtual Memory}{24}{subsection.7.2}
+\contentsline {subsubsection}{\numberline {7.2.1}Memory Access}{24}{subsubsection.7.2.1}
+\contentsline {subsubsection}{\numberline {7.2.2}Virtual Memory and the Disk}{25}{subsubsection.7.2.2}
+\contentsline {subsubsection}{\numberline {7.2.3}Virtual Memory Performance Metrics}{25}{subsubsection.7.2.3}
+\contentsline {section}{\numberline {8}Parallelism}{25}{section.8}
+\contentsline {subsection}{\numberline {8.1}Data Level Parallelism and SIMD}{26}{subsection.8.1}
+\contentsline {subsection}{\numberline {8.2}Thread Level Parallelism}{26}{subsection.8.2}
+\contentsline {subsubsection}{\numberline {8.2.1}Threads}{26}{subsubsection.8.2.1}
+\contentsline {subsubsection}{\numberline {8.2.2}Synchronization}{27}{subsubsection.8.2.2}
+\contentsline {subsubsection}{\numberline {8.2.3}Cache Coherence}{27}{subsubsection.8.2.3}
+\contentsline {subsubsection}{\numberline {8.2.4}OpenMP}{28}{subsubsection.8.2.4}
+\contentsline {subsubsection}{\numberline {8.2.5}Amdahls Law}{28}{subsubsection.8.2.5}
+\contentsline {section}{\numberline {9}Input/Output}{28}{section.9}
