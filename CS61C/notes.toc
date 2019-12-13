@@ -49,3 +49,16 @@
 \contentsline {subsubsection}{\numberline {7.1.4}Cache Metrics}{22}{subsubsection.7.1.4}
 \contentsline {subsubsection}{\numberline {7.1.5}Writing to the Cache}{23}{subsubsection.7.1.5}
 \contentsline {subsubsection}{\numberline {7.1.6}Block Replacement}{23}{subsubsection.7.1.6}
+\contentsline {subsection}{\numberline {7.2}Virtual Memory}{24}{subsection.7.2}
+\contentsline {subsubsection}{\numberline {7.2.1}Memory Access}{24}{subsubsection.7.2.1}
+\contentsline {subsubsection}{\numberline {7.2.2}Virtual Memory and the Disk}{25}{subsubsection.7.2.2}
+\contentsline {subsubsection}{\numberline {7.2.3}Virtual Memory Performance Metrics}{25}{subsubsection.7.2.3}
+\contentsline {section}{\numberline {8}Parallelism}{25}{section.8}
+\contentsline {subsection}{\numberline {8.1}Data Level Parallelism and SIMD}{26}{subsection.8.1}
+\contentsline {subsection}{\numberline {8.2}Thread Level Parallelism}{26}{subsection.8.2}
+\contentsline {subsubsection}{\numberline {8.2.1}Threads}{26}{subsubsection.8.2.1}
+\contentsline {subsubsection}{\numberline {8.2.2}Synchronization}{27}{subsubsection.8.2.2}
+\contentsline {subsubsection}{\numberline {8.2.3}Cache Coherence}{27}{subsubsection.8.2.3}
+\contentsline {subsubsection}{\numberline {8.2.4}OpenMP}{28}{subsubsection.8.2.4}
+\contentsline {subsubsection}{\numberline {8.2.5}Amdahls Law}{28}{subsubsection.8.2.5}
+\contentsline {section}{\numberline {9}Input/Output}{28}{section.9}

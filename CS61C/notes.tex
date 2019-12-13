@@ -11,10 +11,14 @@
 \usepackage{listings}
 \usepackage{caption}
 \usetikzlibrary{calc, shapes.gates.logic.US, positioning}
+\usetikzlibrary{shapes.geometric, arrows}
 \newtheorem{theorem}{Theorem}
 \newtheorem{definition}{Definition}
 \newtheorem{corollary}{Corollary}
 \newtheorem{proof}{Proof}
+
+\tikzstyle{box} = [rectangle, rounded corners, minimum width=2cm, minimum height=1cm, text centered, draw=black]
+\tikzstyle{arrow} = [thick,->,>=stealth]
 
 \DeclareMathOperator*{\argmin}{argmin}
 
@@ -828,4 +832,183 @@ A FIFO policy doesn't take into account accesses. Because of this, even frequent
 \end{definition} 
 LRU replacement policies make sure that frequently accessed data stays in the cache. Note that both FIFO and LRU replacement policies only kick in once the Fully Associative cache is full
 or a set in the N-Way Associative cache is full.
+\subsection{Virtual Memory}
+So far, we have been assuming our computer is only running a single program at a time, so each program has access to the full memory. This, however, is never the case with modern computers.
+Modern computers run hundreds of processes simultaneously. At an even more basic level, not all computers have the same size of main memory, so how can memory-intensive programs run on low-RAM machines?
+These are the problems which virtual memory tackles.
+\begin{definition}
+    An address space is the set of addresses for all available memory locations.
+\end{definition}
+The main idea of \textbf{Virtual Memory} is to have programs operate using virtual addresses and have the operating system
+translate those into physical addresses.
+\begin{definition}
+    The virtual address space is the set of all addresses that the user program knows about and has available to run its code.
+\end{definition}
+\begin{definition}
+    The physical address space is the set of addresses which map to a location in physical memory (i.e DRAM)
+\end{definition}
+Both the virtual address space and physical address space are chunked into units called pages (similar to blocks in caches).
+Pages are the units of transfer from Virtual Memory to Physical Memory and Physical Memory to Disk.
+\begin{definition}
+    The page table tells us which virtual page maps to which physical page
+\end{definition}
+The page table also contains information such as access rights for that page.
+\begin{definition}
+    The page table base register tells the processor where the page table is located in memory.
+\end{definition}
+Because we must go to memory for the page table, every single memory access would take 2 trips to memory (one for the page table, the other for the data).
+To stop this, we use a \textbf{Translation Lookaside Buffer}(TLB) to cache the page table entries so we can still access them quickly.
+\subsubsection{Memory Access}
+Each virtual address is split into two parts: the virtual page number (VPN) and the page offset.
+\begin{center}
+    \begin{tabular}{|c|c|}
+        \hline
+        VPN & Page Offset\\
+        \hline
+    \end{tabular}
+\end{center}
+The VPN is further divided into the TLB tag and TLB index. We first check the TLB at the TLB index if
+the tags match. If they do, then the TLB will return the PPN. If not, we need to check the page table for
+the mapping between VPN and PPN. Once the PPN is retrieved, we concatenate the PPN with the page offset. This gives us
+a physical address which we can then use to check the cache and main memory.
+\begin{figure}[H]
+    \begin{tikzpicture}[node distance=3cm]
+        \node (processor) [box] {Processor};
+        \node (tlb) [box, right of=processor] {TLB};
+        \node (cache) [box, right of=tlb] {Cache};
+        \node (memory) [box, right of=cache, xshift=2cm] {Memory};
+        \node (pt) [box, below of=tlb, yshift=1cm] {Page Table};
+        \node (connection) [below of=pt, yshift=1cm] {};
+
+        \draw[arrow] (processor) -- node[anchor=south] {VA} (tlb);
+        \draw[arrow] (tlb) -- node[anchor=south] {PA} (cache);
+        \draw[arrow] (cache) -- node[anchor=south] {On Cache Miss} (memory);
+        \draw[arrow] (tlb.south) ++ (-0.5, 0) -- node[anchor=east] {VPN} ($(pt.north)-(0.5,0)$);
+        \draw[arrow] (pt.north) ++ (0.5, 0) -- node[anchor=west] {PPN} ($(tlb.south) + (0.5, 0)$);
+        \draw[arrow] (cache) |- (connection);
+        \draw[arrow] (connection) ++ (2, 0) -| (processor);
+        \draw[arrow] (memory) |- (connection);
+    \end{tikzpicture}
+\end{figure}
+\subsubsection{Virtual Memory and the Disk}
+Suppose that a program has acccess to a very large address space, but the machine only has a small amount of physical memory. In that case,
+not all pages in virtual memory can correspond to a page in physical memory. The solution to this is to save pages to disk when they are not being used (called swap space).
+\begin{definition}
+    A page fault is when a page needs to be accessed but it is in disk and not physical memory
+\end{definition}
+When a page fault occurs, there is no entry in the page table which corresponds to a VPN, so the OS will update the page table
+by loading the page from disk into memory. Since this takes a long time, frequently it will switch to a different process while the page is being loaded.
+When a system is constantly swapping pages from disk to memory, this is called thrashing.
+\subsubsection{Virtual Memory Performance Metrics}
+\begin{definition}
+    The TLB miss rate is the fraction of TLB accesses resulting in a TLB miss
+\end{definition}
+\begin{definition}
+    The Page Table Miss Rate is the fraction of page table accesses that result in a page fault
+\end{definition}
+\section{Parallelism}
+Parallelism is the concept of doing multiple things at the same time. This can be done in both hardware and software.
+We classify parallelism based on Flynn's taxonomy which breaks things down into how a program handles its data streams and how the program handles instruction streams.
+\begin{definition}
+    Single Instruction, Single Data (SISD) programs are normal programs where instructions are executed sequentially and there is a single source of data
+\end{definition}
+\begin{definition}
+    Single Instruction, Multiple Data (SIMD) programs are like SISD in that they take a single sequence of instructions, but they leverage special instruction which apply the same
+    operation to many pieces of data at a time (i.e vector operations)
+\end{definition}
+\begin{definition}
+    Multiple Instruction, Multiple Data (MIMD) programs run instructions simultaneously and like SIMD, they use instructions which operate on many data at a time
+\end{definition}
+The fourth part of the taxonomy is Multiple Instruction, Single Data (MISD), but it is not as commonly used.
+\subsection{Data Level Parallelism and SIMD}
+The basic idea of data level parallelism is to execute one operation on multiple data streams at a time.
+To do so, we use special registers like the XMM registers which are designed for floating point operations.
+These registers allow us to pack together data into a single register and perform an operation on the entire contents of the register.
+\subsection{Thread Level Parallelism}
+\subsubsection{Threads}
+\begin{definition}
+    A thread is a sequential flow of instructions that are performing some task
+\end{definition}
+Each thread has
+\begin{itemize}
+    \item A Dedicated Program Counter
+    \item Registers
+    \item Access to Shared Memory
+\end{itemize}
+Each core in a multiprocessor has multiple hardware threads which can execute instructions. The Operating System
+multiplexes software threads onto these hardware threads. All the threads which are not mapped to hardware threads are marked as waiting.
+The OS chooses which threads run by
+\begin{itemize}
+    \item[1.] Remove a blocked/finished thread by interrupting execution and saving the registers/PC
+    \item[2.] Multiplexing a new software thread onto the hardware thread by loading the registers and PC
+    \item[3.] Starting execution by jumping to the saved PC and running the processor 
+\end{itemize}
+\subsubsection{Synchronization}
+Thread-Level Parallelism introduces some complications, however, because multiple processors have to work together to make the program work.
+One issue which can arise synchronization. Suppose two threads need to update the same variable. We don't know which order the threads will access
+the variable in, so it is possible they could completely overwrite each other by mistake. To solve this proble, we use locks.
+\begin{definition}
+    A lock (or semaphore) is a variable which stops other threads from updating a variable until the thread holding the lock releases it.
+\end{definition}
+In RISC-V, atomic memory operations (AMO) were made to handle these synchronization issues in hardware. AMO operations perform an operation
+on an operand in memory and set the destination register to the original memory value. This allows for a read and write in a single instruction.
+Locks can be dangerous however. Sometimes, the system can reach a \textbf{deadlock} where no progress is made because all threads are waiting on each other
+in a circular fashion.
+\subsubsection{Cache Coherence}
+When there are multiple cores to a machine, they all have access to the same shared memory (DRAM). However, each core has its own set of caches. This means that it is possible
+for the cache of one core to out of date because a different core changed a shared variable. To make sure our caches are coherent
+\begin{itemize}
+    \item When a processor has a cache miss or write, other processors are notified
+    \item Writes by one processor are snooped by the other processors and they invalidate their caches
+\end{itemize}
+To help manage coherence, we add a couple more bits to the cache in addition to valid, dirty, LRU bits, etc.
+\begin{itemize}
+    \item Shared bit: Data is up to date. Other caches may have a copy
+    \item Modified: Data up to date but is dirty. No other cache has copy. Ok to write to Memory
+    \item Exclusive: Data is up to date, no cache has data. Ok to write to memory
+    \item Owner: Up to date data, other caches may have copy but in shared state. Changes need to be broadcasted. Exclusive access to all writes.
+\end{itemize}
+\subsubsection{OpenMP}
+OpenMP is a C extension which enables multi-level, shared memory parallelism. It utilizes compiler directives called pragmas to tell the compiler they can parallelize sections of code.
+OpenMP programs begin as a single process. When a parallel region is encountered, OpenMP forks into parallel threads. These threads are rejoined at the end of the parallel section.
+\begin{lstlisting}[language=C]
+    #pragma omp parallel for
+\end{lstlisting}
+Adding the parallel for pragma is placed above a for loop to parallelize it
+\begin{lstlisting}[language=C]
+    #pragma omp parallel
+\end{lstlisting}
+A regular parallel pragma marks a parallel section.
+In order to handle locks, OMP uses the critical pragma
+\begin{lstlisting}[language=C]
+    #pragma omp critical
+\end{lstlisting}
+\subsubsection{Amdahls Law}
+While parallization is great, Amdahl's law tells us that there are limits to how fast we can get with parallelization.
+In particular
+$$speedup = \frac{1}{s+\frac{1-s}{p}}$$
+where $S$ is the fraction of the program that is serial and $P$ is the factor by which the parallel part is sped up.
+In the limit, as $P$ grows infinitely large, we see that the maximum speedup we can get is $\frac{1}{s}$, therefore we
+will always be as slow as the serial part of the program.
+\section{Input/Output}
+Input/Output (I/O) is how humans interact with computers. IO devices send data to the CPU via the IO interface. There are two different models of IO.
+\begin{itemize}
+    \item Special IO instructions to direct the CPU
+    \item Memory Mapped IO: A portion of the address space is reserved for IO and the CPU uses normal lw, sw operations to access the data
+\end{itemize}
+In Memory Mapped IO, we have
+\begin{itemize}
+    \item A control register: Says its ok for the CPU to read/write the data register
+    \item Data Register: Contains the data from the IO device
+\end{itemize}
+During \textbf{Polling}, the processor continuously reads the control register until the data register is ready. After that, it reads the data.
+However, polling is a waste of processor resources, so for devices which are read from infrequently, we use \textbf{Interrupts} and \textbf{Exceptions}.
+\begin{definition}
+    An interrupt is an external event from the IO device which is asynchronous the current program, meaning it can be handled when the processor finds it convenient
+\end{definition}
+\begin{definition}
+    An Exception is an external event from the IO device which is synchronous to the current program, requiring it to be interrupted and handled precisely.
+\end{definition}
+The act of servicing an interrupt or a exception by jumping to new code is called a trap. The trap handler views the state of the program as everything before the last completed instruction,
+so instructions in the pipeline are considered incomplete. Once the exception is handled, the handler then restores this state by restoring user registers and jumping back to the interrupted instruction.
 \end{document}
