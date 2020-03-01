@@ -1,0 +1,155 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{cancel}
+\usepackage{tikz}
+\usepackage{hyperref}
+\usepackage{circuitikz}
+\usepackage{float}
+\usepackage{afterpage}
+\usepackage{pgfplots}
+\usepackage{textcomp}
+\usepackage{geometry}
+\usepackage{tabularx}
+\pagenumbering{gobble}
+
+
+\DeclareMathOperator*{\argmin}{argmin}
+
+\geometry{
+    a4paper,
+    total={170mm,257mm},
+    left=10mm,
+    top=10mm,
+    right=10mm,
+    bottom=10mm
+}
+\setlength{\extrarowheight}{5pt}
+
+\begin{document}
+\section*{DTFT}
+\begin{center}
+    \begin{tabular}{cc}
+        $x[n] = \frac{1}{2\pi}\int_{-\pi}^{\pi}{X(e^{j\omega})e^{j\omega n}d\omega}$ & $X(e^{j\omega}) = \sum_{n=-\infty}^{\infty}{x[n]e^{-j\omega n}}$
+    \end{tabular}
+\end{center}
+\subsection*{Symmetry Properties}
+\begin{center}
+    \begin{tabularx}{\textwidth}{XX}
+        \hline
+        $x[n]$ & $X(e^{j\omega})$\\
+        \hline
+        $x^*[n]$ & $X^*(e^{-j\omega})$\\
+        $x^*[-n]$ & $X^*(e^{j\omega})$\\
+        Conjugate Symmetric signal & Real Fourier Transform\\
+        Conjugate Antisymmetric signal & Imaginary Fourier\\
+        $x[n]=x_e[n]+x_o[n]$ & $Re\{X(e^{j\omega})\}+jIm\{X(e^{j\omega})\}$\\
+        \hline
+         & Conjugate Symmetric\\
+         & Real part is even\\
+         Real x[n] & Imaginary part is odd\\
+         & Magnitude is even\\
+         & Phase is odd\\
+    \end{tabularx}
+\end{center}
+\subsection*{Theorems}
+\begin{center}
+    \begin{tabularx}{\textwidth}{XX}
+        \hline
+        $x[n]$ & $X(e^{j\omega})$\\
+        \hline
+        $\alpha x[n]+\beta y[n]$ & $\alpha X(e^{j\omega}) + \beta Y(e^{j\omega})$\\
+        $x[n-n_d]$ & $e^{-j\omega n_d}X(e^{j\omega})$\\
+        $x[-n]$ & $X(e^{-j\omega})$\\
+        $nx[n]$ & $j\frac{dX(e^{j\omega})}{d\omega}$\\
+        $x[n] * y[n]$ & $X(e^{j\omega})Y(e^{j\omega})$\\
+        $x[n]y[n]$ & $X(e^{j\omega}) * Y(e^{j\omega})$\\
+        $\sum_{n=-\infty}^{\infty}{|x[n]|^2}=\frac{1}{2\pi}\int_{-\pi}^{\pi}{|X(e^{j\omega})|^2d\omega}$ & \\
+        $\sum_{n=-\infty}^{\infty}{x[n]y^*[n]}=\frac{1}{2\pi}\int_{-\pi}^{\pi}{X(e^{j\omega})Y^*(e^{j\omega})d\omega}$ &\\
+    \end{tabularx}
+\end{center}
+\subsection*{Transform Pairs}
+\begin{center}
+    \begin{tabularx}{\textwidth}{XX}
+        \hline
+        Signal & Fourier Transform\\
+        \hline
+        $\delta[n]$ & $1$\\
+        $\delta[n-n_0]$ & $e^{-j\omega n_0}$\\
+        $1$ & $\sum_{k=-\infty}^{\infty}{2\pi \delta(\omega+2\pi k)}$\\
+        $a^nu[n] (\alpha < 1)$ & $\frac{1}{1-\alpha e^{-j\omega}}$\\
+        $u[n]$ & $\frac{1}{1 - e^{-j\omega}}+\sum_{k=-\infty}^{\infty}{\pi \delta(\omega+2\pi k)}$\\
+        $(n+1)a^nu[n]$ & $\frac{1}{(1-\alpha e^{-j\omega})^2}$\\
+        $\frac{\sin \omega_c n}{\pi n}$ & $\left\{
+            \begin{array}{cc}
+                1 & |\omega|<\omega_c,\\
+                0 & \omega_c < |\omega| \le \pi 
+            \end{array}
+            \right\}$\\
+        $\left\{
+            \begin{array}{cc}
+                1 & |\omega|<\omega_c,\\
+                0 & \omega_c < |\omega| \le \pi 
+            \end{array}
+            \right\}$ & $\frac{sin(\omega(M+1)/2)}{sin[\omega]/2}e^{-j\omega M/2}$\\
+        $e^{j\omega_0 n}$ & $\sum_{k=-\infty}^{\infty}{2\pi \delta(\omega - \omega_0+2\pi k)}$\\
+        $cos(\omega_0 n+\phi)$ & $\sum_{k=-\infty}^{\infty}{\pi e^{j\phi}\delta(\omega - \omega_0+2\pi k)+\pi e^{-j\phi}\delta(\omega + \omega_0+2\pi k)}$
+    \end{tabularx}
+\end{center}
+\pagebreak
+\section*{Z - Transform}
+\subsection*{Theorems}
+\begin{center}
+    \begin{tabularx}{\textwidth}{XXX}
+        \hline
+        Sequence & Transform & ROC\\
+        \hline
+        $ax_1[n]+bx_2[n]$ & $aX_1(z)+bX_2(z)$ & $R_1 \bigcap R_2$\\
+        $x[n-n_0]$ & $z^{-n_0}X(z)$ & $R$\\
+        $z_0^nx[n]$ & $X(\frac{z}{z_0})$ & $|z_0|R$\\
+        $nx[n]$ & $-z\frac{dX(z)}{dz}$ & $R$\\
+        $x^*[n]$ & $X^*(z^*)$ & $R$\\
+        $Re\{x[n]\}$ & $\frac{1}{2}\left[X(z)+X^*(z^*)\right]$ & Contains $R$\\
+        $Im\{x[n]\}$ & $\frac{1}{2j}\left[X(z)-X^*(z^*)\right]$ & Contains $R$\\
+        $x^*[-n]$ & $X^*\left(\frac{1}{z^*}\right)$ & $\frac{1}{R}$\\
+        $x_1[n]*x_2[n]$ & $X_1(z)X_2(z)$ & $R_1 \bigcap R_2$
+    \end{tabularx}
+\end{center}
+\subsection*{Transforms}
+\begin{center}
+    \begin{tabularx}{\textwidth}{XXX}
+        \hline
+        Sequence & Transform & ROC\\
+        \hline
+        $\delta[n]$ & 1 & $\mathbb{C}$\\
+        $u[n]$ & $\frac{1}{1-z^{-1}}$ & $|z|>1$\\
+        $-u[-n-1]$ & $\frac{1}{1-z^{-1}}$ & $|z|<1$\\
+        $\delta[n-m]$ & $z^{-m}$ & $\mathbb{C}$ except 0 or $\infty$ \\
+        $a^nu[n]$ & $\frac{1}{1-az^{-1}}$ & $|z|>|a|$\\
+        $-a^nu[-n-1]$ & $\frac{1}{1-az^{-1}}$ & $|z|<|a|$\\
+        $na^nu[n]$ & $\frac{az^{-1}}{(1-az^{-1})^2}$ & $|z|>|a|$\\
+        $-na^nu[-n-1]$ & $\frac{az^{-1}}{(1-az^{-1})^2}$ & $|z|<|a|$\\
+        $r^ncos(\omega_0 n)u[n]$ & $\frac{1-rcos(\omega_0)z^{-1}}{1-2rcos(\omega_0)z^{-1}+r^2z^{-2}}$ & $|z|>r$\\
+        $r^nsin(\omega_0 n)u[n]$ & $\frac{rsin(\omega_0)z^{-1}}{1-2rcos(\omega_0)z^{-1}+r^2z^{-2}}$ & $|z|>r$\\
+        $\left\{\begin{array}{cc}
+            a^n & 0\le n\le N-1\\
+            0
+        \end{array}\right\}$ & $\frac{1-a^Nz^{-N}}{1-az^{-1}}$ & $|z|>0$
+    \end{tabularx}
+\end{center}
+\subsection*{ROC properties}
+\begin{itemize}
+    \item[1.] ROC is either $|z|\ge r$, $|z|\le r$, or $r_1 \le |z| \le r_2$
+    \item[2.] Fourier transform exists iff ROC includes unit circle
+    \item[3.] ROC contains no poles
+    \item[4.] If $x[n]$ is finite, ROC is entire plane
+    \item[5.] If $x[n]$ is right sided, ROC extends from outermost pole to $\infty$
+    \item[6.] If $x[n]$ is left sided, ROC extends from innermost pole to 0
+    \item[7.] If $x[n]$ is two sided, then ROC is an annulus
+    \item[8.] ROC is connected region\\
+    \textbf{For LTI Systems}
+    \item[9.] Stable $\implies$ Causal if and only if right-sided ROC
+    \item[10.] Causal $\implies$ Stable if and only if poles inside unit circle
+\end{itemize}
+\end{document}
