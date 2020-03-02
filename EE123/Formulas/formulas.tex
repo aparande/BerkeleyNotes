@@ -30,9 +30,9 @@
 \begin{document}
 \section*{DTFT}
 \begin{center}
-    \begin{tabular}{cc}
+    \begin{tabularx}{\textwidth - 1in}{XX}
         $x[n] = \frac{1}{2\pi}\int_{-\pi}^{\pi}{X(e^{j\omega})e^{j\omega n}d\omega}$ & $X(e^{j\omega}) = \sum_{n=-\infty}^{\infty}{x[n]e^{-j\omega n}}$
-    \end{tabular}
+    \end{tabularx}
 \end{center}
 \subsection*{Symmetry Properties}
 \begin{center}
@@ -99,6 +99,7 @@
 \end{center}
 \pagebreak
 \section*{Z - Transform}
+$$X(z) = \sum_{n=-\infty}^{\infty}{x[n]z^{-n}}$$
 \subsection*{Theorems}
 \begin{center}
     \begin{tabularx}{\textwidth}{XXX}
@@ -152,4 +153,68 @@
     \item[9.] Stable $\implies$ Causal if and only if right-sided ROC
     \item[10.] Causal $\implies$ Stable if and only if poles inside unit circle
 \end{itemize}
+\pagebreak
+\section*{Discrete Fourier Series}
+\begin{center}
+    \begin{tabularx}{\textwidth - 1in}{XX}
+        $\tilde{x}[n] = \frac{1}{N}\sum_k\tilde{X}[k]e^{j\frac{2\pi}{N}kn}$ & $\tilde{X}[n] = \sum_{n}{\tilde{x}[n]e^{-j\frac{2\pi}{n}kn}}$
+    \end{tabularx}
+\end{center}
+\subsection*{Properties}
+\begin{center}
+    \begin{tabularx}{\textwidth}{XX}
+        \hline
+        Periodic sequence $\tilde{x}[n]$ & Periodic coefficients $\tilde{X}[k]$\\
+        \hline
+        $a\tilde{x}_1[n] + b\tilde{x}_2[n]$ & $a\tilde{X}_1[k]+b\tilde{X}_2[k]$\\
+        $\tilde{X}[n]$ & $N\tilde{x}[-k]$\\
+        $\tilde{x}[n-m]$ & $e^{-j\frac{2\pi}{N}km}\tilde{X}[k]$\\
+        $e^{j\frac{2\pi}{N}mn}\tilde{x}[n]$ & $\tilde{X}[k-m]$\\
+        $\sum_{m=0}^{N-1}{\tilde{x_1}[m]\tilde{x}_2[n-m]}$ & $\tilde{X}_1[k]\tilde{X}_2[k]$\\
+        $\tilde{x}^*[n]$ & $\tilde{X}^*[-k]$\\
+        $\tilde{x}^*[-n]$ & $\tilde{X}^*[k]$\\
+        $Re\{\tilde{x}[n]\}$ & $\tilde{X}_e[k] = \frac{1}{2}\left(\tilde{X}[k]+\tilde{X}^*[-k]\right)$\\
+        $jIm\{\tilde{x}[n]\}$ & $\tilde{X}_o[k] = \frac{1}{2}\left(\tilde{X}[k]-\tilde{X}^*[-k]\right)$\\
+        $\tilde{x}_e[n] = \frac{1}{2}\left(\tilde{x}[n]+\tilde{x}^*[-n]\right)$ & $Re\{\tilde{X}[k]\}$\\
+        $\tilde{x}_o[n] = \frac{1}{2}\left(\tilde{x}[n]-\tilde{x}^*[-n]\right)$ & $jIm\{\tilde{X}[k]\}$\\
+        \hline
+        & Conjugate Symmetric\\
+        & Real Part Even\\
+        Real $\tilde{x}[n]$ & Imaginary Part Odd\\
+        & Magnitude is even\\
+        & Phase is odd
+    \end{tabularx}
+\end{center}
+\section*{Discrete Fourier Transform}
+\begin{center}
+    \begin{tabularx}{\textwidth - 1in}{XX}
+        $x[n] = \frac{1}{N}\sum_{k=0}^{N-1} X[k]e^{j\frac{2\pi}{N}kn}$ & $X[k] = \sum_{n=0}^{N-1}{x[n]e^{-j\frac{2\pi}{n}kn}}$
+    \end{tabularx}
+\end{center}
+\subsection*{Properties}
+\begin{center}
+    \begin{tabularx}{\textwidth}{XX}
+        \hline
+        Finite Length sequence $x[n]$ & N Point DFT $X[k]$\\
+        \hline
+        $ax_1[n] + bx_2[n]$ & $aX_1[k]+bX_2[k]$\\
+        $X[n]$ & $Nx[((-k))_N]$\\
+        $x[((n-m))_N]$ & $e^{-j\frac{2\pi}{N}km}X[k]$\\
+        $e^{j\frac{2\pi}{N}mn}x[n]$ & $X[((k-m))_N]$\\
+        $\sum_{m=0}^{N-1}{x_1[m]x_2[((n-m))_N]}$ & $X_1[k]X_2[k]$\\
+        $x^*[n]$ & $X^*[((-k]))_N$\\
+        $x^*[((-n))_N]$ & $X^*[k]$\\
+        $Re\{x[n]\}$ & $X_e[k] = \frac{1}{2}\left(X[k]+X^*[-k]\right)$\\
+        $jIm\{x[n]\}$ & $X_o[k] = \frac{1}{2}\left(X[k]-X^*[-k]\right)$\\
+        $x_e[n] = \frac{1}{2}\left(x[n]+x^*[((-n))_N]\right)$ & $Re\{X[k]\}$\\
+        $x_o[n] = \frac{1}{2}\left(x[n]-x^*[((-n))_N]\right)$ & $jIm\{X[k]\}$\\
+        \hline
+        & Conjugate Symmetric\\
+        & Real Part Even\\
+        Real $x[n]$ & Imaginary Part Odd\\
+        & Magnitude is even\\
+        & Phase is odd
+    \end{tabularx}
+\end{center}
+$$\sum_{n=0}^{N-1}|x[n]|^2 = \frac{1}{N}\sum_{k=0}^{N-1}|X[k]|^2$$
 \end{document}
