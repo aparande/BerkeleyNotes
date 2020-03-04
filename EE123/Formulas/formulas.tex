@@ -23,7 +23,7 @@
     left=10mm,
     top=10mm,
     right=10mm,
-    bottom=10mm
+    bottom=15mm
 }
 \setlength{\extrarowheight}{5pt}
 
@@ -42,8 +42,8 @@
         \hline
         $x^*[n]$ & $X^*(e^{-j\omega})$\\
         $x^*[-n]$ & $X^*(e^{j\omega})$\\
-        Conjugate Symmetric signal & Real Fourier Transform\\
-        Conjugate Antisymmetric signal & Imaginary Fourier\\
+        $x[-n]=x^{\star}[n]$ & $X(e^{j\omega})=X^\star(e^{j\omega})$ (Real)\\
+        $x[-n]=-x^{\star}[n]$ & $X^\star(e^{j\omega})=-X(e^{j\omega})$ (Imaginary)\\
         $x[n]=x_e[n]+x_o[n]$ & $Re\{X(e^{j\omega})\}+jIm\{X(e^{j\omega})\}$\\
         \hline
          & Conjugate Symmetric\\
@@ -64,9 +64,10 @@
         $x[-n]$ & $X(e^{-j\omega})$\\
         $nx[n]$ & $j\frac{dX(e^{j\omega})}{d\omega}$\\
         $x[n] * y[n]$ & $X(e^{j\omega})Y(e^{j\omega})$\\
-        $x[n]y[n]$ & $X(e^{j\omega}) * Y(e^{j\omega})$\\
+        $x[n]y[n]$ & $\frac{1}{2\pi}\int_{-\pi}^{\pi}X(e^{j\theta})Y(e^{j(\omega-\theta)})d\theta$\\
         $\sum_{n=-\infty}^{\infty}{|x[n]|^2}=\frac{1}{2\pi}\int_{-\pi}^{\pi}{|X(e^{j\omega})|^2d\omega}$ & \\
         $\sum_{n=-\infty}^{\infty}{x[n]y^*[n]}=\frac{1}{2\pi}\int_{-\pi}^{\pi}{X(e^{j\omega})Y^*(e^{j\omega})d\omega}$ &\\
+        Converges if $\sum_{n=-\infty}^{\infty}|x[n]| < \infty$
     \end{tabularx}
 \end{center}
 \subsection*{Transform Pairs}
@@ -89,8 +90,8 @@
             \right\}$\\
         $\left\{
             \begin{array}{cc}
-                1 & |\omega|<\omega_c,\\
-                0 & \omega_c < |\omega| \le \pi 
+                1 & 0\le n \le M,\\
+                0 & else 
             \end{array}
             \right\}$ & $\frac{sin(\omega(M+1)/2)}{sin[\omega]/2}e^{-j\omega M/2}$\\
         $e^{j\omega_0 n}$ & $\sum_{k=-\infty}^{\infty}{2\pi \delta(\omega - \omega_0+2\pi k)}$\\
@@ -148,10 +149,11 @@ $$X(z) = \sum_{n=-\infty}^{\infty}{x[n]z^{-n}}$$
     \item[5.] If $x[n]$ is right sided, ROC extends from outermost pole to $\infty$
     \item[6.] If $x[n]$ is left sided, ROC extends from innermost pole to 0
     \item[7.] If $x[n]$ is two sided, then ROC is an annulus
-    \item[8.] ROC is connected region\\
+    \item[8.] ROC is connected region
+    \item[9.] $\sum_{n=-\infty}^{\infty}|x[n]| \implies$ ROC includes unit circle \\
     \textbf{For LTI Systems}
-    \item[9.] Stable $\implies$ Causal if and only if right-sided ROC
-    \item[10.] Causal $\implies$ Stable if and only if poles inside unit circle
+    \item[10.] Stable $\implies$ Causal if and only if right-sided ROC
+    \item[11.] Causal $\implies$ Stable if and only if poles inside unit circle
 \end{itemize}
 \pagebreak
 \section*{Discrete Fourier Series}
@@ -216,5 +218,10 @@ $$X(z) = \sum_{n=-\infty}^{\infty}{x[n]z^{-n}}$$
         & Phase is odd
     \end{tabularx}
 \end{center}
-$$\sum_{n=0}^{N-1}|x[n]|^2 = \frac{1}{N}\sum_{k=0}^{N-1}|X[k]|^2$$
+\begin{center}
+    \begin{tabularx}{\textwidth - 1in}{XX}
+        $\sum_{n=0}^{N-1}|x[n]|^2 = \frac{1}{N}\sum_{k=0}^{N-1}|X[k]|^2$ & $x[n]=\frac{1}{N}DFT\{X^*[k]\}^*$
+    \end{tabularx}
+\end{center}
+
 \end{document}
