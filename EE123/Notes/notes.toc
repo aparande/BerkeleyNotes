@@ -1,0 +1,5 @@
+\contentsline {section}{\numberline {1}The DFT}{2}{section.1}
+\contentsline {subsection}{\numberline {1.1}Convolution and the DFT}{3}{subsection.1.1}
+\contentsline {subsubsection}{\numberline {1.1.1}Circular Convolution}{3}{subsubsection.1.1.1}
+\contentsline {subsubsection}{\numberline {1.1.2}Linear Convolution with the DFT}{3}{subsubsection.1.1.2}
+\contentsline {subsubsection}{\numberline {1.1.3}Block Convolutions}{4}{subsubsection.1.1.3}
