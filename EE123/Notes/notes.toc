@@ -3,3 +3,6 @@
 \contentsline {subsubsection}{\numberline {1.1.1}Circular Convolution}{3}{subsubsection.1.1.1}
 \contentsline {subsubsection}{\numberline {1.1.2}Linear Convolution with the DFT}{3}{subsubsection.1.1.2}
 \contentsline {subsubsection}{\numberline {1.1.3}Block Convolutions}{4}{subsubsection.1.1.3}
+\contentsline {subsection}{\numberline {1.2}FFT}{5}{subsection.1.2}
+\contentsline {subsubsection}{\numberline {1.2.1}Decimation in Time}{5}{subsubsection.1.2.1}
+\contentsline {subsubsection}{\numberline {1.2.2}Decimation in Frequency}{6}{subsubsection.1.2.2}

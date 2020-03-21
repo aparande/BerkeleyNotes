@@ -146,4 +146,45 @@ The other method of block convolution is the overlap-save method.
     \end{cases}
   \]
 \end{itemize}
+\subsection{FFT}
+The DFT gives us an easy way to do convolutions. Unfortunately, computing it is an $O(N^2)$ operation
+because we must sum together $N$ elements to compute $N$ different coefficients. Thankfully, there is a fast
+algorithm which can compute the DFT in $O(N\log N)$ time so we can compute convolutions quickly. The \textbf{Fast Fourier Transform}
+is the algorithm which enables us to compute the DFT efficiently by exploiting properties of the Nth roots of unity.
+$$W_N=e^{-j\frac{2\pi}{N}}$$
+The roots of unity have the following properties:
+\begin{align*}
+  \textbf{Conjugate Symmetry: }& W_N^{N-n} = W_N^{-kn} = (W_N^{kn})^\star\\
+  \textbf{Periodicity in N: }& W_{kn} = W_N^{k(n+N)} = W_N^{(k+N)n}\\
+  \textbf{Power: } & W_N^2 = W_\frac{N}{2}
+\end{align*}
+There are two approaches to the FFT: decimation in time, which splits $x[n]$ into smaller subsequences, and decimation in frequency
+which splits $X[n]$ into smaller subsequences.
+\subsubsection{Decimation in Time}
+The idea here is too break $x[n]$ into smaller subsequences. We assume that $N$ is a power of 2 for simplicity.
+\begin{align*}
+  X[k]=\sum_{n=0}^{N-1}x[n]W_N^{kn} = \sum_{\text{n even}}x[n]W_N^{kn}+\sum_{\text{n odd}}x[n]W_N^{kn}
+\end{align*}
+We let $n=2r$ and $n=2r+1$.
+\begin{align*}
+  X[k] &= \sum_{r=0}^{\frac{N}{2}-1}x[2r]W_N^{2rk}+\sum_{r=0}^{\frac{N}{2}-1}x[2r+1]W_N^{k(2r+1)}\\
+  &= \sum_{r=0}^{\frac{N}{2}-1}x[2r]W_{\frac{N}{2}}^{rk}+W_N^k\sum_{r=0}^{\frac{N}{2}-1}x[2r+1]W_{\frac{N}{2}}^{kr}\\
+\end{align*}
+These are just the DFTs of the even and odd elements of the signal!
+\begin{align*}
+  \therefore X[k] = G[k] + W_N^kH[k]
+\end{align*}
+Both $G$ and $H$ are $\frac{N}{2}$ periodic, and notice that
+$$W_N^{k+\frac{N}{2}}=e^{-j\frac{2\pi}{N}(k+\frac{N}{2})}= -W_N^k$$
+This means once we compute $G[k]$ and $H[k]$ we can compute $X[k]$ easily because
+$$X[k] = G[k]+W_N^kH[k]\qquad X\left[k+\frac{N}{2}\right]=G[k]-W_N^kH[k] \qquad \text{for }k\in\left[0, \frac{N}{2}\right)$$
+We can continue this relationship recursively downwards.
+Once we get too $N=2$, we can represet this as a simple butterfly operation.
+$$X[0] = x[0]+x[1] \qquad X[1] = X[0]-X[1]$$
+\subsubsection{Decimation in Frequency}
+The decimation in frequency approach is very similar to the decimation in time approach except instead we split the frequency components
+\begin{align*}
+  X[2r] &= \sum_{n=0}^{\frac{N}{2}-1}x[n]W_N^{2rn}+\sum_{n=0}^{\frac{N}{2}-1}x\left[n+\frac{N}{2}\right]W_N^{2r\left(n+\frac{N}{2}\right)}=W_{\frac{N}{2}}^{rn}\sum_{n=0}^{\frac{N}{2}-1}\left(x[n]+x\left[n+\frac{N}{2}\right]\right)\\
+  X[2r+1] &= W_{\frac{N}{2}}^{rn}\sum_{n=0}^{\frac{N}{2}-1}\left(x[n]-x\left[n+\frac{N}{2}\right]\right)
+\end{align*}
 \end{document}
