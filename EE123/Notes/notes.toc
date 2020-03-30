@@ -6,3 +6,9 @@
 \contentsline {subsection}{\numberline {1.2}FFT}{5}{subsection.1.2}
 \contentsline {subsubsection}{\numberline {1.2.1}Decimation in Time}{5}{subsubsection.1.2.1}
 \contentsline {subsubsection}{\numberline {1.2.2}Decimation in Frequency}{6}{subsubsection.1.2.2}
+\contentsline {section}{\numberline {2}Spectral Analysis}{6}{section.2}
+\contentsline {subsection}{\numberline {2.1}Short Time Fourier Transform (STFT)}{7}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Discrete STFT}{8}{subsection.2.2}
+\contentsline {subsection}{\numberline {2.3}Time-Frequency Uncertainty}{8}{subsection.2.3}
+\contentsline {subsection}{\numberline {2.4}Wavelets}{10}{subsection.2.4}
+\contentsline {subsubsection}{\numberline {2.4.1}Discrete Wavelet Transform}{10}{subsubsection.2.4.1}
