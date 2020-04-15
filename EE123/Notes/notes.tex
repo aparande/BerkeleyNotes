@@ -337,4 +337,254 @@ The time frequency tiling for the DWT looks something like this.
 Notice how each Wavelet coefficient is supported by a different amount of time and frequency.
 We can choose different mother and father wavelets to describe our signals. For example, the Haar wavelet
 does very well with piecewise constant signals.
+\section{Sampling}
+\subsection{Ideal Sampling}
+In order to work with continuous signals using a computer, we need to sample them. This means recording the value at particular points of time.
+During uniform sampling, we take samples at an even sampling period $T_s$ so $x[n]=x_c(nT)$. This is done by passing the signal through an Analog-To-Digital converter.
+From there we can do discrete time processing and reconstruct our signal by passing it through a Digital-to-Analog converter with reconstruction period $T_r$.
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[node distance=2.5cm,auto,>=latex']
+      \node [int, pin={[init]above:$T_s$}] (a) {ADC};
+      \node (b) [left of=a,node distance=2cm, coordinate] {x(t)};
+      \node [int] (c) [right of=a] {$H_d(e^{j\omega})$};
+      \node [int, pin={[init]above:$T_r$}] (d) [right of=c] {DAC};
+      \node [coordinate] (end) [right of=d, node distance=2cm]{};
+      \path[->] (b) edge node {$x(t)$} (a);
+      \path[->] (a) edge node {$x_d[n]$} (c);
+      \draw[->] (c) edge node {$y[n]$} (d) ;
+      \draw[->] (d) edge node {$y(t)$} (end) ;
+  \end{tikzpicture}    
+\end{figure}
+We mathematically model sampling as multiplication by an impulse train. Notice that if we were to take a signal $x(t)$ and multiply it by an impulse train, then we would get a series of impulses
+equal to $x(t)$ at the sampling points and $0$ everywhere else. We can call this signal $x_p(t)$.
+$$p(t) = \sum_{k=-\infty}^{\infty}{\delta(t-kT)}$$
+$$x_p(t) = x(t)p(t) = \sum_{k=-\infty}^{\infty}{x(t)\delta(t-kT)}$$
+In the Fourier Domain,
+\begin{align*}
+    X_p(j\Omega) &= \frac{1}{2\pi}X(j\Omega)*P(j\Omega)\\
+    P(j\Omega) &= \frac{2\pi}{T}\sum_{k=-\infty}^{\infty}{\delta(\Omega-k\Omega_s)}\\
+    \therefore X_p(j\Omega) &= \frac{1}{2\pi}\int_{-\infty}^{\infty}{X(j\theta)P(j(\Omega-\theta))d\theta} = \frac{1}{T}\sum_{k=-\infty}^{\infty}{X(j(\Omega-k\Omega_s)}
+\end{align*}
+What this tells us is that the Fourier Transform of our sampled signal is a series of copies of $X(j\Omega)$, each centered
+at $k\Omega_s$ where $\Omega_s = \frac{2\pi}{T}$. This is a good model because we can equivalently write the CTFT of the impulse train sampled signal as
+\begin{align*}
+  X_p(j\Omega) &= \int_{-\infty}^{\infty}\sum_{k=-\infty}^{\infty}{x(t)\delta(t-kT)} \sum_{k=-\infty}^{\infty}x(kT)e^{-jkT\Omega} 
+\end{align*}
+Notice that this is just the DTFT of $x[n]=x(nT)$ if we set $\omega = \Omega T$
+$$X(e^{j\omega}) = \sum_{n=-\infty}^{\infty}x(nT)e^{-j\omega n}=X_p(j\Omega)|_{\Omega=\frac{\omega}{T}}=\frac{1}{T}\sum_{k=-\infty}^{\infty}{X\left(\frac{\omega}{T}-k\frac{2\pi}{T_s}\right)}$$
+This means that the DTFT of our signal is just a bunch of shifted copies, and the frequency axis is scaled so $\Omega_s \rightarrow 2\pi$.
+\subsubsection{Nyquist Theorem}
+To analyze this further, we will stay in continuous time. Lets say that our original signal has the following Fourier Transform. Notice the signal is band-limited by $\Omega_M$.
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \draw[thick,<->] (-1.5, 0) -- (1.5,0);
+        \draw[thick,->] (0,0) -- (0,2);
+        \draw (1.5 cm,1pt) node[anchor=south] {$\Omega$};
+        \draw (1pt,1.5cm) node[anchor=west] {$X_p(j\Omega)$};
+        \foreach \x in {-1,1}
+            \draw (\x cm,1pt) -- (\x cm,-1pt) node[anchor=north] {$\x\Omega_m$};
+        \foreach \y in {1}
+            \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\y$};
+            \draw[scale=1,domain=0:1,smooth,variable=\x,blue] plot ({\x},{1-\x});
+            \draw[scale=1,domain=-1:0,smooth,variable=\x,blue] plot ({\x},{\x+1});
+    \end{tikzpicture}  
+\end{figure}
+There are two major cases: if $\Omega_s > 2\Omega_m$ and $\Omega_s < 2\Omega_m$.\\
+\textbf{Case One: }$\Omega_s > 2\Omega_m$
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \draw[thick,<->] (-5, 0) -- (5,0);
+        \draw[thick,->] (0,0) -- (0,2);
+        \draw (5 cm,1pt) node[anchor=south] {$\Omega$};
+        \draw (1pt,2cm) node[anchor=west] {$X_p(j\Omega)$};
+        \draw (3 cm,1pt) -- (3 cm,-1pt) node[anchor=north, font=\tiny] {$\Omega_s$};
+        \draw (-3 cm,1pt) -- (-3 cm,-1pt) node[anchor=north, font=\tiny] {$-\Omega_s$};
+        \draw (2 cm,1pt) -- (2 cm,-1pt) node[anchor=north, font=\tiny] {$(\Omega_s-\Omega_m)$};
+        \draw (4 cm,1pt) -- (4 cm,-1pt) node[anchor=north, font=\tiny] {$(\Omega_s+\Omega_m)$};
+        \draw (-2 cm,1pt) -- (-2 cm,-1pt) node[anchor=north, font=\tiny] {$(-\Omega_s+\Omega_m)$};
+        \draw (-4 cm,1pt) -- (-4 cm,-1pt) node[anchor=north, font=\tiny] {$(-\Omega_s-\Omega_m)$};
+        \foreach \x in {-1,1}
+            \draw (\x cm,1pt) -- (\x cm,-1pt) node[anchor=north, font=\tiny] {$\x\Omega_m$};
+        \foreach \y in {1}
+            \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\frac{\y}{T}$};
+            \draw[scale=1,domain=0:1,smooth,variable=\x,blue] plot ({\x},{1-\x});
+            \draw[scale=1,domain=-1:0,smooth,variable=\x,blue] plot ({\x},{\x+1});
+            \draw[scale=1,domain=3:4,smooth,variable=\x,red] plot ({\x},{4-\x});
+            \draw[scale=1,domain=2:3,smooth,variable=\x,red] plot ({\x},{\x-2});
+            \draw[scale=1,domain=-4:-3,smooth,variable=\x,red] plot ({\x},{4+\x});
+            \draw[scale=1,domain=-3:-2,smooth,variable=\x,red] plot ({\x},{-2-\x});
+    \end{tikzpicture}  
+\end{figure}
+When $\Omega_s > 2\Omega_M$, the shifted copies of the original $X(j\Omega)$ (shown in blue)
+do not overlap with each other or which the original copy. If we wanted to recover the original
+signal, we could simply apply a low pass filter to isolate the unshifted copy of $X(j\Omega)$ and
+then take the inverse Fourier Transform.\\
+\textbf{Case Two: }$\Omega_s < 2\Omega_m$
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \draw[thick,<->] (-5, 0) -- (5,0);
+        \draw[thick,->] (0,0) -- (0,2);
+        \draw (5 cm,1pt) node[anchor=south] {$\Omega$};
+        \draw (1pt,2cm) node[anchor=west] {$X_p(j\Omega)$};
+        \draw (1.5 cm,1pt) -- (1.5 cm,-1pt) node[anchor=north, font=\tiny] {$\Omega_s$};
+        \draw (-1.5 cm,1pt) -- (-1.5 cm,-1pt) node[anchor=north, font=\tiny] {$-\Omega_s$};
+        \foreach \y in {1}
+            \draw (1pt,\y cm) -- (-1pt,\y cm) node[anchor=east] {$\frac{\y}{T}$};
+            \draw[scale=1,domain=0:1,smooth,variable=\x,blue] plot ({\x},{1-\x});
+            \draw[scale=1,domain=-1:0,smooth,variable=\x,blue] plot ({\x},{\x+1});
+            \draw[scale=1,domain=1.5:2.5,smooth,variable=\x,red] plot ({\x},{2.5-\x});
+            \draw[scale=1,domain=0.5:1.5,smooth,variable=\x,red] plot ({\x},{\x-0.5});
+            \draw[scale=1,domain=-2.5:-1.5,smooth,variable=\x,red] plot ({\x},{2.5+\x});
+            \draw[scale=1,domain=-1.5:-0.5,smooth,variable=\x,red] plot ({\x},{-0.5-\x});
+    \end{tikzpicture}  
+\end{figure}
+Notice how in this case, the shifted copies overlap with the original $X(\omega)$. This means in our sampled signal, the higher frequency
+information is bleeding in with the lower frequency information. This phenomenon is known as aliasing. When aliasing occurs, we cannot simply
+apply a low pass filter to isolate the unshifted copy of $X(\omega)$.\\\\
+When $\Omega_s = 2\Omega_M$, then our ability to reconstruct the original signal depends on the shape of its Fourier Transform. As long as $X_p(jk\Omega_m)$
+are equal to $X(j\Omega_m)$ and $X(-j\Omega_m$), then we can apply an LPF because we can isolate the original $X(j\Omega)$ and take its inverse Fourier Transform.\\\\
+Remember that an ideal low pass filter is a square wave in the frequency domain and a sinc in the time domain. Thus if we allow
+\[
+    X_r(j\Omega) = X_p(j\Omega)\cdot \left\{
+            \begin{array}{cc}
+                T & |\Omega| < \frac{\Omega_s}{2}\\
+                0 & \text{ else }
+            \end{array}
+        \right\}
+\]
+then our reconstructed signal will be
+$$x_r(t) = x_p(t)*sinc\left(\frac{t}{T}\right) = \sum_{n=-\infty}^{\infty}{X(nT)sinc\left(\frac{t-nT}{T}\right)}$$
+This is why we call reconstructing a signal from its samples "sinc interpolation."
+This leads us to formulate the Nyquist Theorem.
+\begin{theorem}[Nyquist Theorem]
+    Suppose a continuous signal $x$ is bandlimited and we sample it at a rate of $\Omega_s > 2\Omega_m$, then the signal $x_r(t)$
+    reconstructed by sinc interpolation is exactly $x(t)$
+\end{theorem}
+\subsubsection{Discrete Time Processing of a Continuous Time Signal}
+As long as the DT system we apply is LTI, the overall CT system will be linear too, but it will not necessarily be time invariant
+because sampling inherently depends on the signal's timing.
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[node distance=2.5cm,auto,>=latex']
+      \node [int, pin={[init]above:$T_s$}] (a) {ADC};
+      \node (b) [left of=a,node distance=2cm, coordinate] {x(t)};
+      \node [int] (c) [right of=a] {$H_d(e^{j\omega})$};
+      \node [int, pin={[init]above:$T_r$}] (d) [right of=c] {DAC};
+      \node [coordinate] (end) [right of=d, node distance=2cm]{};
+      \path[->] (b) edge node {$x(t)$} (a);
+      \path[->] (a) edge node {$x_d[n]$} (c);
+      \draw[->] (c) edge node {$y_d[n]$} (d) ;
+      \draw[->] (d) edge node {$y(t)$} (end) ;
+  \end{tikzpicture}    
+\end{figure}
+If we want to find the overall CT transfer function ($\omega = \Omega T$)
+\begin{align*}
+    Y_d(e^{j\omega}) &= H_d(e^{j\omega})X_d(e^{j\omega}) = H_d(e^{j\omega})X_p\left(\frac{\omega}{T}\right)\\
+    Y_p(j\Omega) &= Y_d(e^{j\Omega T}) = H_d(e^{j\Omega T})X_p(j\Omega)\\
+    Y(j\Omega) &= \left\{
+        \begin{array}{cc}
+            T & |\Omega| < \frac{\Omega_s}{2}\\
+            0 & |\Omega| \ge \frac{\Omega_s}{2}
+        \end{array}
+        \right\} \cdot Y_p(j\Omega) = \left\{
+            \begin{array}{cc}
+                TH_d(e^{j\Omega T})X_p(j\Omega) & |\Omega| < \frac{\Omega_s}{2}\\
+                0 & |\Omega| \ge \frac{\Omega_s}{2}
+            \end{array}
+            \right\}
+\end{align*}
+Assuming that the Nyquist theorem holds,
+\begin{align*}
+    X_p(j\Omega) &= \frac{1}{T}X(j\Omega)\\
+    \therefore Y(j\Omega) &= \left\{
+        \begin{array}{cc}
+            H_d(e^{j\Omega T})X(j\omega) & |\Omega| < \frac{\Omega_s}{2}\\
+            0 & |\Omega| \ge \frac{\Omega_s}{2}
+        \end{array}
+    \right\}\\
+        \therefore H_{system} &= \left\{\begin{array}{cc}
+            H_d(e^{j\omega T}) & |\Omega| < \frac{\Omega_s}{2}\\
+            0 & |\Omega| \ge \frac{\Omega_s}{2}
+        \end{array}
+        \right\}
+\end{align*}
+This shows us that as long as the Nyquist theorem holds, we can process continuous signals
+with a disrete time LTI system and still have the result be LTI.
+\subsubsection{Continuous Time Processing of Discrete Time Signals}
+While not useful in practice, it can be useful to model a discrete time transfer function in terms of Continuous Time processing (e.g a half sample delay).
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[node distance=2.5cm,auto,>=latex']
+      \node [int, pin={[init]above:$T_r$}] (a) {DAC};
+      \node (b) [left of=a,node distance=2cm, coordinate] {x(t)};
+      \node [int] (c) [right of=a] {$H(j\Omega)$};
+      \node [int, pin={[init]above:$T_s$}] (d) [right of=c] {ADC};
+      \node [coordinate] (end) [right of=d, node distance=2cm]{};
+      \path[->] (b) edge node {$x_d[n]$} (a);
+      \path[->] (a) edge node {$x(t)$} (c);
+      \draw[->] (c) edge node {$y(n)$} (d) ;
+      \draw[->] (d) edge node {$y_d[n]$} (end) ;
+  \end{tikzpicture}    
+\end{figure}
+Similar to the analysis of DT processing of a CT signal, we can write the discrete transfer function in terms of the continuous function.
+Our continuous signal will be bandlimited after reconstruction.
+\[
+  X(j\Omega) = \begin{cases}
+    T X_d(e^{j\omega})|_{\omega=\Omega T} & |\Omega| \le \frac{\Omega_s}{2}\\
+    0
+  \end{cases}
+\]
+This means our reconstructed signal $Y(j\Omega)=H_(j\Omega)X(j\Omega)$ is also bandlimited, so we can say that
+$$Y_d(e^{j\Omega})=H(j\Omega)|_{\Omega=\frac{\omega}{T}}X(e^{j\omega})$$
+\subsubsection{Downsampling}
+When we downsample a signal by a factor of $M$, we create a new signal $y[n]=x[nM]$ by taking every $Mth$ sample. What this means conceptually is that we are reconstructing the continuous signal
+and then sampling it at a slower rate $MT$ where $T$ was the original sampling rate. If $x_c$ is the original continuous time signal and $x_d$ is the sampled signal, then the downsampled signal $y[n]$
+will be
+$$y[n]=x[nM]=x_c(nMT)\implies Y(e^{j\omega}) =\frac{1}{MT}\sum_{k=-\infty}^{\infty}X_c\left(\frac{\omega}{NT}-k\frac{2\pi}{NT}\right)$$
+If we re-index and let $k=Mp+m$ for $m\in [0, N-1],p\in \mathbb{Z}$
+$$Y(e^{j\omega})=\frac{1}{M}\sum_{m=0}^{M-1}X_d(e^{j\frac{\omega-2\pi m}{M}})$$
+What this means is to obtain the new DTFT, we need to scale the frequency axis so $\frac{\pi}{M}\rightarrow \pi$.
+To prevent aliasing when this happens, we include an LPF before the downsample step.
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[node distance=2.5cm,auto,>=latex']
+      \node [int, text width=2cm, align=center] (a) {LPF:\\$\omega_c=\frac{\pi}{M}$};
+      \node (b) [left of=a,node distance=2cm, coordinate] {x(t)};
+      \node [int] (c) [right of=a] {$\downarrow M$};
+      \node [coordinate] (end) [right of=c, node distance=3cm]{};
+      \path[->] (b) edge node {$x[n]$} (a);
+      \path[->] (a) edge node {} (c);
+      \draw[->] (c) edge node {$y[n]=x[nM]$} (end);
+  \end{tikzpicture}    
+\end{figure}
+\subsubsection{Upsampling}
+When we upsample a signal by a factor of L, we are interpolating between samples. Conceptually, this means we are
+reconstructing the original continuous time signal and resampling it at a faster rate than before.
+First we place zeros in between samples, effectively expanding our signal.
+\[
+  x_e[n] = \begin{cases}
+    x\left[\frac{n}{L}\right] & n=0, \pm L, \pm 2L,...\\
+    0
+  \end{cases}
+\]
+$$X_e(e^{j\omega})=\sum_{-\infty}^{\infty}x_e[n]e^{-j\omega n}=\sum_{m=-\infty}^{\infty}x[m]e^{-j\omega mL} = X\left(e^{j\omega L}\right)$$
+Then we interpolate by convolving with a sinc.
+$$y[n] = x_e[n]*sinc\left(\frac{n}{L}\right) = \sum_{n=-\infty}^{\infty}{x[k]sinc\left(\frac{n-kL}{L}\right)}$$
+In the frequency domain, this looks like compressing the frequency axis so $\pi \rightarrow \frac{\pi}{L}$ and then taking a low pass filter.
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[node distance=2.5cm,auto,>=latex']
+      \node [int] (a) {$\uparrow L$};
+      \node (b) [left of=a,node distance=2cm, coordinate] {x(t)};
+      \node [int, text width=2cm, align=center] (c) [right of=a] {LPF:\\$\omega_c=\frac{\pi}{L}$};
+      \node [coordinate] (end) [right of=c, node distance=3cm]{};
+      \path[->] (b) edge node {$x[n]$} (a);
+      \path[->] (a) edge node {} (c);
+      \draw[->] (c) edge node {$y[n]$} (end);
+  \end{tikzpicture}    
+\end{figure}
 \end{document}
