@@ -25,6 +25,8 @@
 \tikzstyle{input} = [coordinate]
 \tikzstyle{output} = [coordinate]
 \tikzstyle{pinstyle} = [pin edge={to-,thin,black}]
+\tikzstyle{filter} = [draw, fill=blue!20, rectangle, 
+minimum height=3em, minimum width=6em, align=center, text width=2cm]
 
 \DeclareMathOperator*{\argmin}{argmin}
 
@@ -580,11 +582,94 @@ In the frequency domain, this looks like compressing the frequency axis so $\pi 
   \begin{tikzpicture}[node distance=2.5cm,auto,>=latex']
       \node [int] (a) {$\uparrow L$};
       \node (b) [left of=a,node distance=2cm, coordinate] {x(t)};
-      \node [int, text width=2cm, align=center] (c) [right of=a] {LPF:\\$\omega_c=\frac{\pi}{L}$};
+      \node [int, text width=2cm, align=center] (c) [right of=a] {LPF:\\$\omega_c=\frac{\pi}{L}$\\Gain=$L$};
       \node [coordinate] (end) [right of=c, node distance=3cm]{};
       \path[->] (b) edge node {$x[n]$} (a);
       \path[->] (a) edge node {} (c);
       \draw[->] (c) edge node {$y[n]$} (end);
   \end{tikzpicture}    
 \end{figure}
+The gain of L is used to scale the spectrum so it is identical to if we had sampled the continuous signal at a rate of $\frac{T}{L}$.
+\subsection{Practical Sampling (ADC)}
+Unfortunately, ideal analog to digital conversion is not possible for a variety of reasons. The first is that not all signals are bandlimited (or there may be noise outside of the bandwidth).
+Moreover, computers only have finite precision, so we cannot represent the full range of values that a continuous signal might take on with a finite number of bits per sample. The solution to the first issue is to include a "anti-aliasing" filter before the sampler. 
+The solution to the second issue is to quantize.
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[node distance=2.5cm,auto,>=latex']
+      \node [filter] (a) {LPF:\\$\omega_c=\frac{\pi}{L}$};
+      \node (b) [left of=a,node distance=2cm, coordinate] {x(t)};
+      \node [int, pin={[init]below:$T_s$}] (c) [right of=a] {C/D};
+      \node [int] (d) [right of=c] {Quantizer};
+      \node [coordinate] (end) [right of=d, node distance=2cm]{};
+      \path[->] (b) edge node {$x_c(t)$} (a);
+      \path[->] (a) edge node {} (c);
+      \draw[->] (c) edge node {} (d) ;
+      \draw[->] (d) edge node {$x_d[n]$} (end) ;
+  \end{tikzpicture}    
+\end{figure}
+However, sharp analog filters are difficult to implement in practice. To deal with this,
+we could make the anti-aliasing filter wider, but this would add noise and interference. If we keep the cutoff frequency the same,
+then we could alter part of the signal because our filter is not ideal. A better solution is to do the processing in Discrete Time
+because we have more control. We also sample higher than the Nyquist Rate and then downsample it to the required rate.
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[node distance=2.5cm,auto,>=latex']
+      \node [filter] (a) {Analog LPF};
+      \node (b) [left of=a,node distance=2cm, coordinate] {x(t)};
+      \node [int, pin={[init]below:$\frac{T_s}{M}$}, node distance=2cm] (c) [right of=a] {C/D};
+      \node [filter, node distance=2cm] (d) [right of=c] {Digital  LPF\\$\omega_c=\frac{\pi}{M}$};
+      \node [int] (e) [right of=d, node distance=2cm] {$\downarrow M$};
+      \node [int] (f) [right of=e, node distance=2cm] {Quantizer};
+      \node [coordinate] (end) [right of=f, node distance=2cm]{};
+      \path[->] (b) edge node {$x_c(t)$} (a);
+      \path[->] (a) edge node {} (c);
+      \draw[->] (c) edge node {} (d) ;
+      \draw[->] (d) edge node {} (e) ;
+      \draw[->] (e) edge node {} (f) ;
+      \draw[->] (f) edge node {$x_d[n]$} (end) ;
+  \end{tikzpicture}    
+\end{figure}
+\subsubsection{Quantization}
+If we have a dynamic range of $X_m$ (i.e $2X_m$ is the length of the range of values we can represent), then
+our step between quantized values is $\Delta=\frac{X_m}{2^B}$, assuming we are representing our data as 2's complement 
+numbers with $B$ bits. We model the error caused by quantization as additive noise. Our quantized signal $\hat{x}[n]$ is decribed by
+$$\hat{x}[n] = x[n] + e[n] \qquad \frac{-\Delta}{2}\le e[n] \le \frac{\Delta}{2}$$
+We do this under the following assumptions:
+\begin{itemize}
+  \item $e[n]$ is produced by a stationary random process
+  \item $e[n]$ is not correlated with $x[n]$
+  \item $e[n]$ is white noise ($e[n]$ is not correlated with $e[m]$)
+  \item $e[n]\sim U\left[\frac{-\Delta}{2},\frac{\Delta}{2}\right]$ 
+\end{itemize}
+For rapidly changing signals with small $\Delta$, this assumptions hold, and they are useful in modeling quantization error.
+Since $\Delta = 2^{-B}X_m$
+$$\sigma^2_e=\frac{\Delta^2}{12}=\frac{2^{-2B}X_m^2}{12}$$
+This means our Signal to Noise Ratio for quantization is
+$$SNR_Q=10\log\left(\frac{\sigma_x^2}{\sigma_e^2}\right)=6.02B+10.8-20\log\left(\frac{X_m}{\sigma_s}\right)$$
+What this tells us is that every new bit we add gives us 6dB in improvement. It also tells us that we need to
+adapt the range of quantization to the RMS amplitude of the signal. This means there is a tradeoff between clipping and quantization noise.
+When we oversampling our signal, we can further limit the effects of quantization noise because this noise will be spread out over more frequencies
+and the LPF will eliminate noise outside the signal bandwidth. This makes $\frac{\sigma_e^2}{M}$ the new noise variance (if we oversample by $M$).
+Thus we can modify the $SNR_Q$ equation
+$$SNR_Q=6.02B+10.8-20\log\left(\frac{X_m}{\sigma_s}\right) + 10\log M$$
+This shows that doubling $M$ yields a 3dB improvement (equivalent to 0.5 more bits).
+\subsection{Practice Reconstruction (DAC)}
+In the ideal case, we reconstruct signals by converting them to impulses and then convolving with a sinc.
+However, impulses are require lots of power to generate, and sincs are infinitely long, so it is impractical to design an analog system to do this.
+Instead, we use an interpolation like Zero-Order-Hold to pulses and then filter with a reconstruction filter.
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}[node distance=2.5cm,auto,>=latex']
+      \node [filter] (a) {$H_0(j\Omega)$};
+      \node (b) [left of=a,coordinate] {x(t)};
+      \node [filter] (c) [right of=a] {$H_r(j\Omega)$};
+      \node [coordinate] (end) [right of=c, node distance=2cm]{};
+      \path[->] (b) edge node {$x[n]$} (a);
+      \path[->] (a) edge node {} (c);
+      \draw[->] (c) edge node {$x_r(t)$} (end);
+  \end{tikzpicture}    
+\end{figure}
+$$X_r(j\Omega) = H_r(j\Omega)\overbrace{Te^{-j\Omega\frac{T}{2}}sinc\left(\frac{\Omega}{\Omega_s}\right)}^{\text{Zero Order Hold}}\overbrace{\frac{1}{T}\sum_{k=-\infty}^{\infty}X(j(\Omega-k\Omega_s))}^{\text{Sampled Signal}}$$
+We design $H_r(j\Omega)$ such that $H_r(j\omega)H_0(j\omega)$ is approximately an LPF.
 \end{document}
