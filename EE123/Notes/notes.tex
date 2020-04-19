@@ -855,4 +855,132 @@ Instead, we use an interpolation like Zero-Order-Hold to pulses and then filter 
 \end{figure}
 $$X_r(j\Omega) = H_r(j\Omega)\overbrace{Te^{-j\Omega\frac{T}{2}}sinc\left(\frac{\Omega}{\Omega_s}\right)}^{\text{Zero Order Hold}}\overbrace{\frac{1}{T}\sum_{k=-\infty}^{\infty}X(j(\Omega-k\Omega_s))}^{\text{Sampled Signal}}$$
 We design $H_r(j\Omega)$ such that $H_r(j\omega)H_0(j\omega)$ is approximately an LPF.
+\section{Filtering}
+\subsection{Transform Analysis of LTI Systems}
+LTI filters are characterized by their impulse response. The two broad categories of LTI systems are those with finite impulse responses (FIR) and those with infinite impulse responses (IIR).
+LTI systems are frequently characterized by linear constant-coefficient difference equations which look as follows:
+$$\sum_{k=0}^{N}a_ky[n-k] = \sum_{k=0}^Mx[n-k]$$
+The system function $H(z)$ is the z-transform of the impulse response of the system. For LCCDE's, it is a ratio of polynomials in $z^{-1}$.
+$$H(z) = \frac{\sum_{k=0}^Mb_iz^{-i}}{\sum_{k=0}^Na_iz^{-i}} = \frac{b_0\prod_{k=1}^M(1-c_kz^{-1})}{a_0\prod_{k=1}^N(1-d_kz^{-1})}$$
+We call $c_k$ (the roots of the numerator) the \textbf{zeros} of the system and $d_k$ (the roots of the denominator) the \textbf{poles} of the system.
+The \textbf{Magnitude Response} $|H(e^{j\omega})|$ desribes how the system will scale a complex exponential.
+$$|H(e^{j\omega})| = \frac{|b_0|\prod_{k=1}^M|1-c_ke^{-j\omega}|}{|a_0|\prod_{k=1}^N|1-d_ke^{-j\omega}|}$$
+Likewise, the \textbf{Phase Response} $\arg[H(e^{j\omega})]$ describes how the system will shift the phase of a complex exponential.
+$$\arg[H(e^{j\omega})] = \arg[b_0]+\sum_{k=1}^{M}\arg[1-c_ke^{-j\omega}] - \arg[a_0] - \sum_{k=1}^{N}\arg[1-d_ke^{-j\omega}]$$
+The \textbf{Group Delay} of the system $grd[H(e^{j\omega})]$ tells us how much a complex exponential will be delayed.
+$$grd[H(e^{j\omega})] = -\frac{d}{d\omega}\arg[H(e^{j\omega})] = \sum_{k=1}^{M}grd[1-c_ke^{-j\omega}] - \sum_{k=1}^{N}grd[1-d_ke^{-j\omega}]$$
+We can systematically analyze these by drawing a vector from $e^{-j\omega}$ to each $d_k$ or $c_k$ and analyze each one individually.
+For example, if we look at one pole in the magnitude response
+$$|1-d_ke^{-j\omega}| = |e^{j\omega}-d_k| = |v_k|$$
+In general, the effects of poles and zeros on each of these quantities is described by the following table.
+\begin{center}
+  \begin{tabular}{|c|c|c|c|}
+    \hline
+    & \textbf{Magnitude Response} & \textbf{Phase Response} & \textbf{Group Delay}\\
+    \hline
+    \textbf{Poles} & Increase & Phase Lag & Increase\\
+    \hline
+    \textbf{Zeros} & Decrease & Phase Advance & Decrease\\
+    \hline
+  \end{tabular}
+\end{center}
+These effects are larger when $c_k$ or $d_k$ are close the unit circle (i.e $|c_k|, |d_k|\approx 1$).
+\subsection{All Pass Systems}
+All pass systems are those where $|H(e^{j\omega})| = k$ where $k$ is some constant gain. Their Z-transform has the real poles $d_k$ cancelled by real zeros, and complex poles $e_k$ cancelled by the conjugates $e_k^\star$.
+$$H(z) = k\prod_{k=1}^{M_r}\frac{z^{-1}-d_k}{1-d_kz^{-1}}\prod_{k=1}^{M_c}\frac{(z^{-1}-e_k^\star)(z^{-1}-e_k)}{(1-e_kz^{-1})(1-e_k^\star z^{-1})}$$
+If an All-Pass system is stable, then
+\begin{itemize}
+  \item $grd[H(e^{j\omega})] > 0 \implies $ Causal
+  \item $\arg[H(e^{j\omega})] \le 0 \implies $ Phase Lag
+\end{itemize}
+\subsection{Minimum Phase Systems}
+A stable and causal system $H(z)$ whose inverse $\frac{1}{H(z)}$ is also stable and causal is called a \textbf{Minimum Phase} System.
+What this means is that all poles are zeros must be inside the unit circle, and the region of convergence is right sided. Minimum phase systems are called minimum phase because
+of all $H(z)$ with the same magnitude response, a minimum phase system has the minimum phase and the minimum group delay.
+\begin{theorem}
+  Any stable and causual system can be decomposed into a minimum phase system and an all-pass system.
+  $$H(z) = H_{min}(z)H_{ap}(z)$$
+\end{theorem}
+This is useful because if a signal undergoes a distortion, we can at least undo the minimum phase part of it (since $H_{min}$ has a guaranteed inverse).
+\subsection{Generalized Linear Phase Systems}
+A linear phase system is one with constant group delay.
+$$H(e^{j\omega}) = A(e^{j\omega})e^{-j\alpha\omega} \implies grd[H(e^{j\omega})] = \alpha$$
+Note that $A(e^{j\omega})$ is a real function. We can generaize this further to get a generalized linear phase system.
+$$H(e^{j\omega}) = A(e^{j\omega})e^{-j\alpha\omega + \beta} \implies grd[H(e^{j\omega})] = \alpha$$
+If we limit ourselves to using FIR filters, then a GLP system must have either even or odd symmetry, meaning for some $M$
+$$h[n]=h[M-n] \text{ or } h[n] = -h[M-n]$$
+This restricts us to 4 different filter types.
+\begin{center}
+  \begin{tabular}{|c|c|c|c|c|}
+    \hline 
+    & \textbf{Symmetry} & \textbf{M} & \textbf{Filter Types} & \textbf{Notes}\\
+     \hline
+     \textbf{Type I} & Even & Even & All & \\
+     \hline
+     \textbf{Type II} & Even & Odd & Low Pass & $H(e^{j\pi})=0$\\
+     \hline
+     \textbf{Type III} & Odd & Even & Bandpass & $H(e^{j0})=H(e^{j\pi})=0$\\
+     \hline
+     \textbf{Type IV} & Odd & Odd & High & $H(e^{j0})=0$\\
+     \hline
+  \end{tabular}
+\end{center}
+Because of their symmetry, FIR systems are limited in where their zeros.
+$$\textbf{Type I, II: }H(z) = z^{-M}H(z^{-1}) \qquad \textbf{Type III, IV: } H(z) = -z^{-M}H(z^{-1})$$
+In other words, if $a = re^{j\theta}$ is a zero, then $\frac{1}{a^\star}$ is too.
+We can decompose GLP systems into a minimum phase, maximum phase, and unit circle system.
+\subsection{Filter Design}
+The idea of filter design is to take a desired frequency response and design a filter which has that frequency response.
+Some frequency responses can only be described by IIR systems which are impractical for real applications, so we make various tradeoffs
+when we design FIR filters to implement in our systems. We also like our filters to be causal because it makes them usable in real-time systems.
+
+A \textbf{Mth} order causal filter has $M+1$ coefficients. The time-bandwidth product describes how sinc-like a filter looks like.
+$$TBW = (M+1)\frac{\omega_c}{\pi}$$
+The TBW is also the number of zero-crossings in the impulse response (including the zeros crossings at the end of the filter).
+To generate a High Pass filter, we can design a Low-Pass filter and then modulate it
+$$h_{hp}[n] = (-1)^nh{lp}[n]$$
+We can do the same for a bandpass filter
+$$h_{bp}[n] = 2h_{lp}cos(\omega_0 n)$$
+\subsubsection{Windowing Method}
+One way to generate a filter which matches a desired frequency response is through windowing.
+\begin{itemize}
+  \item Choose a desired frequency response (often non-causal and IIR)
+  \item Window the Impulse Response
+  \item Module to shift the impulse response to make it casual
+\end{itemize}
+The length of the window impacts the transition width (how long it takes to transition). A longer window means a smaller width. The window type will impact
+the ripples in the frequency response. The choice of of window and its sidelobes impact these magnitudes.
+\subsubsection{Optimal Filter Design}
+With optimal filter design, we set up constraints to find a $H_d(e^{j\omega})$ which approximates $H(e^{j\omega})$ based on our optimization requirements.
+In general, we have some regions $W_c\subseteq [0, \pi]$ that we care about and other regions that we don't care about. We can first design a noncausal filter $\tilde{H(e^{j\omega})}$ and then shift it to make it causal.
+We do this by sampling and discretizing the frequency response to $\omega_k = k\frac{\pi}{p}$ where $-\pi \le \omega_1 \le ... \le \omega_p \le \pi$.
+We choose $P$ to be sufficiently big and make sure the $\omega_k \in \omega_c$ (the region we care about).
+In a least squares setup, we can solve
+\[
+  \argmin_{\tilde{h}}||A\tilde{h}-b||^2 \qquad A = \left[
+    \begin{array}{ccc}
+      e^{-j\omega_1(-N)} & ... & e^{-j\omega_1(N)}\\
+      \vdots & \ddots & \vdots\\
+      e^{-j\omega_p(-N)} & ... & e^{-j\omega_p(N)}
+    \end{array}
+    \right]\qquad
+    \vec{b} = \left[
+    \begin{array}{c}
+      H(e^{j\omega_1})\\
+      \vdots\\
+      H(e^{j\omega_p})
+    \end{array}
+    \right]
+\]
+Other possible optimizations are Weightest Least Squares or Chebyshev Design.
+$$\textbf{WLS: }\min\int_{-\pi}^{\pi}W(\omega)|H(e^{j\omega}) - H_d(e^{j\omega})|^2d\omega$$
+$$\textbf{Chebyshev: }\min_{w\in W_c} \max|H(e^{j\omega}-H_d(e^{j\omega})|$$
+Another optimization technique is the min-max ripple design where we try and control the deviations of the filter from the desired response.
+We can set up a linear program to do this for us. For example, if we were designing a low pass filter, we could write the LP
+\begin{align*}
+  \min \delta\\
+  1-\delta \le H_d(e^{j\omega_k})\le 1+\delta &\qquad 0\le \omega_k \le \omega_c\\
+  -\delta \le H_d(e^{j\omega_k})\le \delta &\qquad \omega_c\le \omega_k \le \pi\\
+  \delta > 0
+\end{align*}
 \end{document}

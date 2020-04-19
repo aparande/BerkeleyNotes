@@ -25,3 +25,11 @@
 \contentsline {subsection}{\numberline {3.3}Practical Sampling (ADC)}{19}{subsection.3.3}
 \contentsline {subsubsection}{\numberline {3.3.1}Quantization}{19}{subsubsection.3.3.1}
 \contentsline {subsection}{\numberline {3.4}Practice Reconstruction (DAC)}{20}{subsection.3.4}
+\contentsline {section}{\numberline {4}Filtering}{21}{section.4}
+\contentsline {subsection}{\numberline {4.1}Transform Analysis of LTI Systems}{21}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}All Pass Systems}{22}{subsection.4.2}
+\contentsline {subsection}{\numberline {4.3}Minimum Phase Systems}{22}{subsection.4.3}
+\contentsline {subsection}{\numberline {4.4}Generalized Linear Phase Systems}{23}{subsection.4.4}
+\contentsline {subsection}{\numberline {4.5}Filter Design}{23}{subsection.4.5}
+\contentsline {subsubsection}{\numberline {4.5.1}Windowing Method}{24}{subsubsection.4.5.1}
+\contentsline {subsubsection}{\numberline {4.5.2}Optimal Filter Design}{24}{subsubsection.4.5.2}
