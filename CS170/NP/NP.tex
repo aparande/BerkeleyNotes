@@ -1,0 +1,273 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{cancel}
+\usepackage{tikz}
+\usepackage{hyperref}
+\usepackage{circuitikz}
+\usepackage{float}
+\usepackage{afterpage}
+\usepackage{pgfplots}
+\usepackage{textcomp}
+\usepackage{geometry}
+\usepackage{tabularx}
+\pagenumbering{gobble}
+\DeclareMathOperator*{\argmin}{argmin}
+\geometry{
+    a4paper,
+    total={170mm,257mm},
+    left=10mm,
+    top=10mm,
+    right=10mm,
+    bottom=15mm
+}
+\setlength{\extrarowheight}{5pt}
+
+\newcolumntype{f}{>{\hsize=0.2\hsize}X}
+\newcolumntype{m}{>{\hsize=.6\hsize}X}
+
+\begin{document}
+\section*{Strategies}
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+\subsection*{Divide and Conquer}
+Solve $a$ subproblems of size $\frac{n}{b}$ and recombine them in time $O(n^d)$
+\[
+    T(n)\le aT\left(\frac{n}{b}\right)+O(n^d) \implies 
+    T(n) = \begin{cases}
+        O(n^d) & \text{if } a < b^d\\
+        O(n^d\log n)& \text{if } a = b^d\\
+        O(n^{\log_ba})& \text{if } a > b^d\\
+    \end{cases}
+\]
+\subsubsection*{How to Recognize}
+\begin{itemize}
+    \item Problem is easily broken into substantially smaller subproblems 
+\end{itemize}
+\subsubsection*{How to Prove}
+\begin{itemize}
+    \item Induction
+\end{itemize}
+\subsubsection*{Tips and Tricks}
+\begin{itemize}
+    \item It may be easier to solve a more general problem (instead of finding median, find kth smallest)
+\end{itemize}
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+\subsection*{Greedy Algorithms}
+Build a solution piece by piece by choosing whatever is optimal in the moment
+\subsubsection*{How to Prove}
+\begin{itemize}
+    \item Swapping Arguments
+\end{itemize}
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+\subsection*{Dynamic Programming}
+Identify a collection of subproblems and tackle them one by one, using smaller problems to solve larger ones.
+\subsubsection*{How to Recognize}
+\begin{center}
+    \begin{tabular}{c|c|c|c}
+        \hline
+        \textbf{Input} & \textbf{Subproblem} & \textbf{Function} & \textbf{Number of subproblems}\\
+        \hline
+        $x_1, x_2,...,x_n$ & $x_1,x_2,...,x_i$ & $F(i)$ & $O(n)$\\
+        \hline
+        $(x_1, x_2,...,x_n)\qquad (y_1,y_2,...,y_m)$ & $(x_1, x_2,...,x_i)\qquad (y_1,y_2,...,y_j)$ & $F(i, j)$ & $O(mn)$\\
+        \hline
+        $x_1, x_2,...,x_n$ & $x_i,x_{i+1},...,x_j$ & $F(i, j)$ & $O(n^2)$\\
+        \hline
+
+    \end{tabular}
+\end{center}
+\subsubsection*{How to Prove}
+\begin{itemize}
+    \item[1.] Define a base case
+    \item[2.] Define Recurrence Relation
+    \item[3.] Prove recurrence accurately solves the problem via induction.
+\end{itemize}
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+\subsection*{Approximation}
+Find an algorithm which can approximate a solution to an NP-Complete problem
+\subsubsection*{How to Prove}
+\begin{itemize}
+    \item Find a Greedy Algorithm which provides a lower bound on the optimal solution
+    \item Find a different structure which can provide a lower bound on optimal (e.g a matching for set cover, a MST for TSP) 
+\end{itemize}
+\pagebreak
+\section*{P vs NP}
+\subsection*{Definitions}
+\begin{itemize}
+    \item $A \rightarrow B$ means a subroutine solving B can be used to solve Q
+    \item \textbf{Search Problem: } A problem with an algorithm that checks if solution $S$ to instance $I$ is valid in polynomial time.
+    \item \textbf{NP: } The class of all search problems
+    \item \textbf{P: } The class of all search problems solvable in polynomial time
+    \item \textbf{NP Complete: } NP-Hard and all other search problems reduce to it
+    \item \textbf{NP Hard: } $\forall B \in NP, B\rightarrow A$
+\end{itemize}
+\subsection*{Properties}
+\begin{itemize}
+    \item $A \rightarrow B$ means $B$ is at least as hard as $A$
+    \item If $A$ is NP-Complete, then B is NP-Complete if it is NP-Hard and $A \rightarrow B$
+\end{itemize}
+\subsection*{NP-Complete Problems}
+\begin{center}
+    \begin{tabularx}{\textwidth}{ffm}
+        \hline
+        \textbf{Problem} & \textbf{Inputs} & \textbf{Objective}\\
+        \hline
+        Traveling Salesman & - $n$ vertices\newline - $\frac{n(n-1)}{2}$ distances\newline - Budget $b$ & Find a cycle which uses each vertex exactly once with cost $\le b$\\
+        Rudrata/Hamiltonian Cycle & Graph $G=(V, E)$ & Find a cycle which visits each vertex exactly once\\
+        Balanced Cut & - $n$ vertices\newline - Budget $b$ & Partition vertices into $T$ and $S$ such that $|S|, |T|>\frac{n}{3}$ with at most $b$ edges connecting $S$ and $T$\\
+        3D Matching & $n$ boys, girls, and pets & Find $n$ disjoint triples which follow edge preferences\\
+        Independent Set & - Graph $G=(V, E)$ \newline - Goal $g$ & Find $g$ vertices where no two have an edge between them\\
+        Vertex Cover & - Graph $G=(V, E)$ \newline - Budget $b$ & Find $b$ vertices which touch every edge\\
+        Set Cover & - Universe $E$\newline - $S_1,...,S_m\subseteq E$ \newline - Budget $b$ & Select $b$ subsets whose union is $E$\\
+        Clique & - Graph $G=(V, E)$ \newline - Goal $g$ & Find $g$ vertices with all possible edges between them\\
+        Longest Path & - Graph $G=(V, E)$ \newline - Goal $g$ \newline - Vertices $s, t$ & Find a path between $s$ and $t$ of weight $\geq g$\\
+        Knapsack & - Weights $w_1,...,w_n$ \newline - Values $v_1,...,v_n$ \newline - Capacity $W$\newline - Goal $g$ & Find a subset of weights with total weight $\leq W$ and total value at least $g$\\
+        Subset Sum & - Integers $s_1,...,s_n$ \newline - Goal S & Find a subset of integers which add up to $S$\\
+        k-Cluster & Points $x_1,...,x_n$ \newline distance metric $d(x, y)$ \newline integer $k$ & Find $k$ clusters of points which minimizes the diameter of the clusters $\max_j\max_{x_a, x_b\in C_j}d(x_a, x_b)$
+    \end{tabularx}
+\end{center}
+\newpage
+\section*{Graphs}
+\subsubsection*{Definitions}
+\begin{itemize}
+    \item \textbf{Tree Edge:} DFS traversed edge $\rightarrow$ [u, v, v, u]
+    \item \textbf{Forward Edge:} Connects a vertex with a descendent $\rightarrow$ [u, v, v, u]
+    \item \textbf{Cross Edge:} Connects unrelated vertices $\rightarrow$ [u, u, v, v]
+    \item \textbf{Back Edge:} Connects a vertex to an ancestor $\rightarrow$ [v, u, u, v]
+\end{itemize}
+\subsection*{Properties}
+\begin{itemize}
+    \item In a DAG, each edge leads to a lower post number
+    \item In a Dag, there is always at least one source and one sink
+    \item Two vertices are part of the same strongly connected component $\Leftrightarrow$ There is a cycle in the Graph $\Leftrightarrow$ There is a backedge in DFS
+    \item Every Directed Graph is a DAG of Strongly Connected Components
+    \item The highest post number vertex returns by DFS is in a source SCC
+    \item If $c$ and $c'$ are strongly connected components and there exists an edge fromo $c$ to $c'$, then the highest post in $c$ is higher than the highest post in $c'$
+    \item $(u,v)\in E \implies post(u) > post(v)$
+    \item When explore terminates, all reachable vertices are visited
+    \item Running Bellman Ford $|V|$ times can detect negative cycles
+    \item Deleting a cycle edge can never disconnect the graph
+    \item \textbf{Cut Property:} Let $e$ be the lightest edge across any partition of the graph. Then $e$ belongs to an MST
+    \item \textbf{Cycle Property of MSTs:} Let $C\subseteq G$ be a cycle and $e$ be the heaviest edge in $c$. Then $e$ cannot be part of any MST
+    \item \textbf{Dijkstra's Invariant: } Computed distance values are always either correct or overestimated
+\end{itemize}
+\subsection*{Algorithms}
+\begin{center}
+    \begin{tabularx}{\textwidth}{ffm}
+        \hline
+        \textbf{Algorithm} & \textbf{Runtime} & \textbf{Objective}\\
+        \hline
+        Depth First Search & $O(|V|+|E|)$ & What parts of the graph are reachable from a given vertex\\
+        Strongly Connected Components: & $O(|V|+|E|)$ & Finds the strongly connected component that each vertex belongs to\\
+        Topological Sort: & $O(|V|+|E|)$ & Returns vertices in a DAG in decreasing post order \\
+        Breadth First Search: & $O(|V|+|E|)$ & Process vertices according to distance from start vertex\\
+        Dijkstra's Algorithm: & $O((|V|+|E|)\log|V|)$ & Find shortest paths tree from start vertex. Only works with non-negative edges\\
+        Bellman Ford: & $O(|V||E|)$ & Finds shortest paths from s in a graph with no negative cycles\\
+        Kruskals Algorithm & $O(|E|\log|E|)$ & Finds an MST of the graph
+    \end{tabularx}
+\end{center}
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+\section*{Linear Programming}
+\begin{center}
+    \begin{tabularx}{\textwidth}{XX}
+        \centering
+        \textbf{Primal} & \textbf{Dual}\\
+        \centering
+        $\min \vec{c}^T\vec{x}$ & $\max \vec{b}^T\vec{y}$\\
+        \centering
+        $A\vec{x} \geq \vec{b}$ & $A^T\vec{y}\leq \vec{c}$\\
+        \centering
+        $\vec{x} \geq 0$ & $\vec{y} \geq 0$
+    \end{tabularx}
+\end{center}
+\subsection*{Theorems}
+\begin{itemize}
+    \item \textbf{Weak Duality: } Any feasible solution of the primal upper bounds any feasible solution to the dual
+    \item \textbf{Strong Duality: } The optimum of the primal is equal to the optimum of the dual
+\end{itemize}
+\subsection*{LP Conversions}
+\begin{itemize}
+    \item \textbf{Max to Min:} Multiply coefficients in objective by $-1$
+    \item \textbf{Inequality to Equality:} $\sum_{i=1}^na_ix_i\leq b \Leftrightarrow s + \sum_{i=1}^na_ix_i =  b, s \geq 0$
+    \item \textbf{Equality to Inequality} $ax = b \Leftrightarrow ax \leq b$ and $ax \geq b$
+    \item \textbf{Unrestricted Sign} Create $x^+, x^- \geq 0$ and replace $x$ with $(x^+-x^-)$
+\end{itemize}
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+\section*{Max Flow}
+Given a directed graph $G=(V, E)$ with edge capacities $c_e$, a source vertex $s$, and a sink vertex $t$, find the maximum flow from $s$ to $t$
+\subsection*{Definitions}
+\begin{itemize}
+    \item \textbf{Flow: } a numeric assignment to each edge such that $\forall e\in E, 0 \leq f_e \leq c_e$ and $\forall u\ne s, t, \sum f_{uw}=\sum f_{uw}$
+    \item \textbf{Flow Size: } Total flow leaving $s$ $\sum f_{su}$
+    \item \textbf{ST Cut: } A partition of the vertices with $S$ on one side and $T$ on the other.
+    \item \textbf{Residual Graph: } A graph whose edges have capacity \[\begin{cases}c_{uv}-f_{uv} & \text{ if } (u,v)\in E \text{ and } f_{uv} \leq c_{uv}\\
+        f_{vu} & \text{ if } f_{vu} \notin E \text{ and } f_{uv} > 0
+    \end{cases}\]
+    \item \textbf{Cut Capacity:} The total capacity of the edges leaving $S$ and entering $T$
+\end{itemize}
+\subsection*{Properties}
+\begin{itemize}
+    \item The size of the maximum flow equals the capacity of the smallest $s-t$ cut
+\end{itemize}
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+\section*{Multiplicative Weights}
+At time $t=1, 2, ....$, choose from $n$ choices to produce vector $x^{(t)}=(x_1^{(t)},x_2^{(t)},...,x_n^{(t)})$ such that $x_i^{(t)}\geq 0, \sum_{i=1}^nx_i^{(t)}=1$
+After choosing $x^{(t)}$, we see losses $l^{(t)}=(l_1^{(t)},l_2^{(t)},...,l_n^{(t)})$. Maintain weights $w^{(t)}=(w_1^{(t)},w_2^{(t)},...,w_n^{(t)})$ where $w_i^{(t)}=0$ and $w_i^{(t)}=w_i^{(t)}(1-\epsilon)^{l_i^{(t)}}$.
+Choose $x^{(t)}$ by letting $x_i^{(t)} = \frac{w_i^{(t)}}{\sum w_j^{(t)}}$
+\subsection*{Definitions}
+\begin{itemize}
+    \item \textbf{Player's Loss at t:} $\sum x_i^{(t)}l_i^{(t)}$
+    \item \textbf{Regret after T steps:} $R = \sum x_i^{(t)}l_i^{(t)} - \min_i \sum l_i^{(t)}$
+\end{itemize}
+\subsection*{Properties}
+\begin{itemize}
+    \item $R_T \leq \epsilon T + \frac{\ln n}{\epsilon}$, so if $T > 4 \ln n, \epsilon=\sqrt{\frac{\ln n }{T}}$, then $R_T \leq 2\sqrt{T \ln n}$
+    \item Strategies producing high losses in the pst will have small weight, Strategies with low losses in the passt will have high weights
+\end{itemize}
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+\section*{Computation Models}
+\subsection*{Comparison Model}
+How many comparisons does an algorithm perform?
+\subsection*{Circuit Complexity}
+$n$ bits of input are fed into a circuit of AND, OR, and NOT gates.
+\begin{itemize}
+    \item \textbf{Depth: } The longest path from an input to the output
+    \item \textbf{Size: } The number of wires in the circuit
+\end{itemize}
+Total number of circuits is $s = 2^{O(s\log s)}$
+\subsection*{Cell Probe}
+Memory $M$ using $S$ words of space. Each word is $w$ bits. Count the number of memory reads and writes
+\subsection*{Word RAM}
+Same idea as Cell Probe, but now any machine operation (+, -, etc) also adds to the cost
+\subsection*{Branching Program}
+Model a function $f:{0, 1}^n\rightarrow Y$. It is a DAG with one source and several sinks.
+Each sink corresponds to an output in Y. Each non-sink node is labeled $1...n$ and has a 0 edge and a 1 edge, so input $x\in{0,1}^n$ defines a path.
+$L$ is the length of the program, a.k.a the maximum number of edges from source to sink.
+\subsection*{Communication Complexity}
+The player Alice has $x\in X$ and player Bob has $y\in Y$. They want to compute $f(x, y)$. They communicate with each other, and the complexity is how many bits they send.
+
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+\section*{Math}
+\subsection*{Probability}
+\begin{itemize}
+    \item $\forall \lambda > 0, \mathbb{P}[Z > \lambda] < \frac{E[Z]}{\lambda}$
+    \item $\forall \lambda > 0, \mathbb{P}[|Z - \mathbb{E}[Z]| > \lambda] < \frac{Var[Z]}{\lambda^2}$
+    \item $\mathbb{P}[U_i X_i] \leq \sum \mathbb{P}[X_i]$
+\end{itemize}
+\subsection*{Polynomials}
+$A(x) = \sum_{i=0}^da_ix^i$ and $B(x)=\sum_{i=0}^db_ix^i$, then $C(x)=A(x)B(x) = \sum_{i=0}^{2d}c_ix^i$ such that $c_k=\sum_{i=0}^ka_ib_{k-i}$
+\[
+    A(x) = A_e(x^2)+xA_o(x^2) \Rightarrow \begin{cases}
+        A(x_i) = A_e(x_i^2)+x^iA_o(x_i^2)\\
+        A(-x_i) = A_e(x_i^2)-x^iA_o(x_i^2)
+    \end{cases}
+\]
+Let $\omega_n = e^{i\frac{2\pi}{n}}$, then $\omega_n^{\frac{n}{2}+j} = -\omega^j$ and $\omega_n^2 = \omega_{\frac{n}{2}}$
+\subsection*{Bounds}
+$$n! \approx \sqrt{\pi(2n+\frac{1}{3})} * n^n e^-n \implies \log(n!)=\Theta(n\log n)$$
+$$1 - x \leq e^{-x}$$
+$$(1-\epsilon)^z \leq 1-\epsilon z \text{ for } 0 \leq z\leq 1, 0\leq\epsilon\leq 1$$
+$$-z-z^2 \leq \ln 1-z \leq -z \qquad \forall 0 \leq z \leq \frac{1}{2}$$
+$$\sum_{t=1}^n{\frac{1}{t}} \leq \ln n$$
+\end{document}
