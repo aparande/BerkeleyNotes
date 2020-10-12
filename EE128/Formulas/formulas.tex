@@ -1,0 +1,33 @@
+\input{../../formula_header.tex}
+\begin{document}
+\section*{Unilateral Laplace Transform}
+$$X(s) = \int_{0^-}^\infty{x(t)e^{-st}dt}$$
+\subsection*{Theorems}
+\begin{center}
+    \begin{tabularx}{\textwidth}{XXX}
+        \hline
+	$x(t)$ & $X(s)$ & ROC\\
+        \hline
+	$x(t-t_0)$ & $e^{-st_0}X(s)$ & $R$\\
+	$e^{s_0t}x(t)$ & $X(s-s_0)$ & $R + Re(s_0)$\\
+	$x(at)$ & $\frac{1}{|a|}X\left( \frac{s}{a} \right)$ & $aR$\\
+	$x^*(t)$ & $X(s^*)^*$ & $R$\\
+      $(x_1*x_2)(t)$ & $X_1(s)X_2(s)$ & $R_1\bigcap R_2$\\
+      $-tx(t)$ & $\diff{X}{s}$ & $R$\\
+      $\diff[n]{x}{t}$ & $s^nX(s)-\sum_{i=0}^{n-1}s^{n-i-1}\diff[i]{x}{t}|_{t=0^-}$ & R
+    \end{tabularx}
+\end{center}
+\subsection*{Transforms}
+\begin{center}
+    \begin{tabularx}{\textwidth}{XXX}
+        \hline
+        Signal & Transform & ROC\\
+        \hline
+	$\delta(t-T)$ & $e^{-sT}$ & $\mathbb{C}$\\
+	$\frac{t^{n-1}}{(n-1)!}u(t)$ & $\frac{1}{s^n}$ & $Re(s)>0$\\
+	$\frac{t^{n-1}}{(n-1)!}e^{-at}u(t)$ & $\frac{1}{(s+a)^n}$ & $Re(s) > a$\\
+	$e^{-at}\cos(\omega_0t)u(t)$ & $\frac{s+a}{(s+a)^2+\omega_0^2}$ & $Re(s) > a$\\
+	$e^{-at}\sin(\omega_0t)u(t)$ & $\frac{\omega_0}{(s+a)^2+\omega_0}$ & $Re(s) > a$
+    \end{tabularx}
+\end{center}
+\end{document}
