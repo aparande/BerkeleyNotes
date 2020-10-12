@@ -407,7 +407,7 @@ This will work assuming that the directions of most variation are also the ones 
 A multi-variate Gaussian random variable is specified by its mean $\vec{\mu}_x$ and covariance matrix $\Sigma_x$. The covariance matrix specifies the covariance between each pair of elements in the random variable.
 \[\vec{X}\sim\mathcal{N}(\vec{\mu}_X, \Sigma_X) \qquad \expect{\vec{X}} = \mu_{X}\]
 \[\cov{\vec{X}} = \expect{(\vec{X}-\vec{\mu}_X)(\vec{X}-\vec{\mu}_X)^T}\]
-Each element of the covariance matrix is $\Sigma_X[i, j] = \cov{\vec{X}[i]\vec{X}[j]}$.
+Each element of the covariance matrix is $\Sigma_X[i, j] = \cov{\vec{X}[i], \vec{X}[j]}$.
 \begin{theorem}
   If we have a multivariate gaussian random variable which is jointly distributed (i.e, $\Sigma$ is not diagonal), then $\exists \vec{W}$ with identically and indepdently distributed elements such that $\vec{W}\sim\mathcal{N}(0, I)$ and $\exists A$ such that $\vec{X} = \vec{\mu}_X+A\vec{w}$.
   \label{thm:mvn}
