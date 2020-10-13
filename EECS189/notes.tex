@@ -301,12 +301,6 @@ Given training points $(x_i, y_i)$, then our prediction error becomes
   &= \sigma^2 + \expect{(w^*-\hat{w})^2}
 \end{align*}
 Clearly, no matter how well we recover the true parameter, we are still going to have at least $\sigma^2$ error because of the noise in the test distribution, and this error is irreducible and independent of the learning algorithm/model we use.
-\begin{enumerate}
-  \item \textbf{True Parameter Errors}
-  \item \textbf{External Contamination:} We learn features part of the pattern that don't actually belong to the true pattern.
-  \item \textbf{Approximation Error:} Mismatch between model and the true pattern. Suppose the true pattern is
-  \item \textbf{Irreducible Error:} Truly unpredictable error that we can do nothing about.
-\end{enumerate}
 \subsection{Hyper-Paramters}
 \begin{definition}
   A hyper-paramter is a tunable paramter of our model that is not being optimized by our learning algorithm.
@@ -386,7 +380,6 @@ The key realization to arrive at kernels is that we never actually need the feat
       K(\vec{x}_n, \vec{x_1}) &  K(\vec{x}_n, \vec{x_2}) &  \cdots & K(\vec{x}_n, \vec{x_n})
     \end{bmatrix}
   \]
-
 \end{definition}
 A valid kernel also implies that there is a set of $\Phi_i$ features. As it turns out, the number of features required to represent a kernel need not be finite! Below are two examples of popular similarity kernels.
 \begin{align*}
