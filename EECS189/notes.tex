@@ -81,7 +81,7 @@ It turns out that these two objectives are related. Starting with the prediction
 \end{align*}
 $\Sigma_\phi$ is the covariance of the test features. What this means is if $\Sigma_\phi=I$, then $\expect{\|w^*-\hat{w}\|^2}=\expect{\|\hat{y}-\tilde{y}\|}$
 In English, this means the features are orthonormal with respect to the test distribution. The implication of this is that the test distribution of our data actually matters during learning! 
-\section{Ridge Regression}
+\section{Linear Regression}
 \subsection{Ordinary Least Squares}
 One of the most basic algorithms in machine learning is ordinary least squares. We have a weight vector $\vec{w}$ that we want to learn, a data matrix $X$, and a target vector $\vec{y}$ that we want to predict. 
 The least squares solution is simply
@@ -102,10 +102,31 @@ Lets assume that $h(x_i) = x_i * w_i$. Since $Y_i\sim\mathcal{N}(\phi(x_i), \sig
 f_y(Y=y|X=x; w_i) &= \frac{1}{2\pi\sigma^2}e^{-\frac{(y-x_iw_i)^2}{2\sigma^2}}\\
 \argmax_{\vec{w}}\prod_{i=1}^nf_y(Y=y_i|X=x_i;\hat{w}) &= \argmax_{\vec{w}}\sum_{i=1}^{n}\ln(f_y(Y=y_i|X=x_i; w_i))\\
 &= \argmax_{\vec{w}}-\frac{1}{2}\sum_{i=1}^n(y_i-x_iw_i)^2\\
-&= \argmin_{\vec{w}}\sum_{i=1}^n\|\vec{y}-\vec{w}^T\vec{x}
+&= \argmin_{\vec{w}}\sum_{i=1}^n\|\vec{y}-\vec{w}^T\vec{x}\|
 \end{align*}
 This is the least squares optimization problem, so MLE with Gaussian noise is the same as least squares!
-\subsection{The Hack Perspective}
+\subsection{Weighted Least Squares}
+If we trust some training points more than others, then it might make sense to change our least squares optimization problem to give some training points more influence than other training points.
+\[
+  \argmin_{\vec{w}} \sum_{i=1}^{n}\omega_i(y_i - w_ix_i)^2
+\]
+This has a probabalistic interpretation where our noise is $\normal{N}{0}{\Sigma_N}, \Sigma_N\sim diag(\sigma_1^2, \sigma_2^2,\cdots, \sigma_n^2)$.
+If we change coordinates to make the noise \iid normal, then
+\begin{align*}
+  \Sigma_N^{-\frac{1}{2}}Y &= \Sigma_N^{-\frac{1}{2}}X\vec{w}+\tilde{N}\\
+  \therefore \hat{w} &= (X^T\Sigma_N^{-1}X)^{-1}X^T\Sigma_N^{-1}\vec{y}
+\end{align*}
+This corresponds to the optimization problem 
+\[
+  \argmin_{\vec{w}} \sum_{i=1}^{n}\frac{1}{\sigma_i^2}(y_i - \vec{x}_i^Tw_i)^2
+\]
+\subsection{Generalized Least Squares}
+We can generalize weighted least squares even further. To allow for noise that is dependent on itself (i.e a non-diagonal $\Sigma_N$, we can once again look to the probability perspective and apply a change of coordinates. Like before the noise $\normal{N}{0}{\Sigma_N}$. Like before, we can change coordinates to reduce the problem to least squares.
+\begin{align*}
+  \Sigma_N^{-\frac{1}{2}}Y &= \Sigma_N^{-\frac{1}{2}}X\vec{w}+\tilde{N}\\
+  \therefore \hat{w} &= (X^T\Sigma_N^{-1}X)^{-1}X^T\Sigma_N^{-1}\vec{y}
+\end{align*}
+\subsection{Ridge Regression}
 Since the OLS solution has the possibility of being unstable because of small singular values, one thing we could do is instead say
 $$\hat{w} = (X^TX + \lambda I)^{-1}X^T\vec{y}.$$
 Looking at the SVD of 
@@ -117,7 +138,7 @@ Looking at the SVD of
 \]
 The diagonal entries of the matrix $(\tilde{\Sigma}_r^2 + \lambda I)^{-1}$ are $\frac{1}{\sigma_j^2+\lambda}=\frac{1}{\sigma_j^2}\left(\frac{1}{1+\frac{1}{\sigma_j}^2}\right)$
 Notice that this acts like a high pass filter. What this means is that small $\sigma_j$ won't have as much as an effect because they are dominated by $\lambda$. The interpretation of this is that ridge regression is a soft way of expressing trust in the directions $v_j$ (eigenvector of $X^TX$). To choose $\lambda$, we want to choose it such that $\lambda<\sigma_i^2$ for the directions which are trustworthy and $\lambda>\sigma_i^2$ for the directions that we do not trust.
-\subsection{The Optimization Perspective}
+\subsubsection{The Optimization Perspective}
 To formalize our conception of ridge regression, we need to see if it solves some kind of optimization problem. It turns out that Ridge Regression is the solution to
 \[
   \hat{w} = \argmin_{\vec{w}} \|\vec{y} - X\vec{w}\|^2 + \lambda \|\vec{w}\|^2
@@ -131,7 +152,7 @@ To formalize our conception of ridge regression, we need to see if it solves som
     \label{proof:ridge-optimization}
   \end{align*}
 \end{proof}
-\subsection{The Fake Data Perspective}
+\subsubsection{The Fake Data Perspective}
 One different way we can interpret Ridge regression is that we add fake data points and take the OLS solution. Consider the following data matrix and target vector given the original data $X$ and target $\vec{y}$.
 \[
   \tilde{X} = \begin{bmatrix}
@@ -147,7 +168,7 @@ If we apply OLS, we see that
   (\tilde{X}^T\tilde{X})^{-1}\tilde{X}^T\tilde{y} = (X^TX+\lambda I)^{-1}X^T\vec{y}
 \]
 This is identical to the ridge solution.
-\subsection{The Fake Feature Perspective}
+\subsubsection{The Fake Feature Perspective}
 We can also achieve the same effect by adding fake features to each data point instead of adding fake data points. In other words, we have the following data matrix and weight vector.
 \[
   \hat{X} = \begin{bmatrix}
@@ -164,7 +185,7 @@ $$\min_{\vec{w}, \epsilon}\|\vec{w}\|^2+\|\epsilon\|^2 \text{ s.t} X\vec{w}+\alp
 We can see that $\epsilon=\frac{1}{\alpha}(\vec{y}-X\vec{w})$ which is a scaled version of the least squares residual. If we rescale the objective function, we get
 $$\argmin_{\vec{w}}\alpha^2\|\vec{w}\|^2+\|\vec{y}-X\vec{w}\|^2$$
 If we let $\alpha=\sqrt{\lambda}$, then we recover the ridge solution.
-\subsection{The Probability Perspective}
+\subsubsection{The Probability Perspective}
 Just like OLS, we can interpret Ridge Regression probabalistically. Recall the optimization problem for ridge regression is
 \[
   \hat{w} = \argmin_{\vec{w}} \|\vec{y} - X\vec{w}\|^2 + \lambda \|\vec{w}\|^2
@@ -177,6 +198,31 @@ Since we are penalizing the norm of the weights, this is equivalent to saying th
     &= \argmin_{\vec{w}} \|\vec{y}-X\vec{w}\|^2+\frac{1}{\beta^2}\|\vec{w}\|^2
 \end{align*}
 This is the optimization problem for ridge regression where $\lambda=\frac{1}{\beta^2}$. This has a very clean interpretation as well. If $\beta^2$ is large, $\lambda$ is small. In other words, if we believe the paramters have wide spread, then we don't want to regularize as much. If $\beta^2$ is small, then $\lambda$ is large, meaning if we believe our paramters are close to 0, we can safely regularize more.
+\subsection{Tikhonov Regression}
+In Ridge Regression, we assumed that our weights were independetly and identically distributed as $\normal{w_i}{0}{\sigma^2}$. We can generalize this further and consider a different prior for $\vec{w}$ where $\normal{\vec{w}}{\vec{\mu}_w}{\Sigma_w}$ (still assuming the noise $\normal{N}{0}{I}$).
+We can now transform this problem into a special case of Ridge Regression where $\lambda=1$.
+\begin{align*}
+  W &= \Sigma_w^{\frac{1}{2}}V+\mu_w & \normal{V}{0}{I}\\
+  \therefore Y - X\mu_x &= X\Sigma^{\frac{1}{2}}V+Z\\
+  \therefore \hat{v} &= (\Sigma_w^{\frac{1}{2}}X^TX\Sigma_w^{\frac{1}{2}} + I)^{-1}\Sigma_w^{\frac{1}{2}}X^T(\vec{y}-X\mu_w)
+\end{align*}
+Now to recover $\hat{w}$,
+\begin{align*}
+  \hat{w} &= \Sigma_w^{\frac{1}{2}}\hat{v}+\mu_x\\
+  &= \mu_x + (X^TX+\Sigma_w^{-1})^{-1}X^T(\vec{y}-X\mu_x)
+\end{align*}
+\subsection{Summary of Linear Regression}
+\begin{tabular}[h]{|c|c|c|}
+  \hline
+  \backslashbox{W}{N} & $\mathcal{N}(0, I)$ & $\mathcal{N}(0, \Sigma_N)$\\
+  \hline
+  No prior & $(X^TX)^{-1}X^T\vec{y}$ & $(X^T\Sigma_N^{-1}X)^{-1}X^T\Sigma_N^{-1}\vec{y}$\\
+  \hline
+  $\mathcal{N}(0, \frac{1}{\lambda I})$ & $(X^TX+\lambda I)X^T\vec{y}$ & $(X^T\Sigma_N^{-1}X + \lambda I)^{-1}X^T\Sigma_N^{-1}\vec{y}$\\
+  \hline
+  $\mathcal{N}(\mu_w, \Sigma_w)$ & $\mu_w+(X^TX+\Sigma_N^{-1})^{-1}X^T(\vec{y}-X\mu_w)$ & $\mu_w+(X^T\Sigma_N^{-1}X+\Sigma_w^{-1})^{-1}X^T\Sigma_Z^{-1}(y-X\mu_w)$\\
+  \hline
+\end{tabular}
 \section{Hyper-Paramters and Validation}
 \subsection{Sources of Error}
 In Machine Learning, there are 5 qualitative sources of error.
@@ -303,6 +349,7 @@ Notice that this method of validation is not very data efficient because it cuts
 \end{lstlisting}
 K-fold cross validation fits into the inner loop of \cref{code:validation}.
 
+
 \section{Kernels}
 \subsection{The Training Data Perspective}
 Suppose we have training data $X$ and outputs $\vec{y}$ as the data. We featurize the training data into a matrix $\Phi$ where each column of $\Phi$ is a different feature $\Phi_i(\vec{x_i})$. Then the estimated parameter $\hat{w}$ in ridge regression is a linear function in $\vec{y}$. At prediction time, we get a test point $\vec{x}$ and our prediction becomes
@@ -346,6 +393,13 @@ A valid kernel also implies that there is a set of $\Phi_i$ features. As it turn
   &\textbf{Polynomial Kernel (Degree p):} &\qquad K_p(\vec{x},\vec{z}) = (1+\vec{x}^T\vec{z})^p\\
   &\textbf{Radial Basis Function (RBF):} &\qquad K(\vec{x}, \vec{z}) = e^{\frac{-\norm{\vec{x}-\vec{z}}^2}{2\sigma^2}}
 \end{align*}
+Because Kernels are defined by inner products, they have several useful properties.
+\begin{enumerate}
+  \item $k(x, x) \geq 0$
+  \item If $k_a$ and $k_b$ are valid kernels, then so is $k = \alpha k_a + \beta k_b$ where $\alpha, \beta \geq 0$.
+  \item If $\Sigma$ is positive, semi-definite, then $k(\vec{x}_i, \vec{x}_j)=\phi(\vec{x}_i)^T\Sigma\phi(\vec{x}_j)$ is a valid kernel
+  \item $k(\vec{x}_i, \vec{x}_j) = f(\vec{x}_i)f(\vec{x_j})k_a(\vec{x}_i, \vec{x}_j)$
+\end{enumerate}
 \subsection{Influence Kernels}
 We can also engineer directly at the level of $\hat{f}(\vec{x})=\sum_{i=1}^ny_i\hat{h}_i(\vec{x})$ where $\hat{h}_i(\vec{x})=h(\vec{x}-\vec{x}_i)$.
 This function $\hat{h}$ is known as an influence kernel, and depending on the kernel function, it can be thought of as a nearest neighbors approach.
@@ -403,6 +457,32 @@ Observe two things:
 \end{enumerate}
 This will work assuming that the directions of most variation are also the ones which are most relevant to making good predictions.
 \appendix
+\section{Parameter Estimation}
+\subsection{Maximum Likelihood Estimation}
+Maximum Likelihood Estimation is a method of finding the parameter which maximizes the probability of seeing our data. Formally, given data points $(\vec{x}_i, y_i)$,
+\[
+  \theta_{MLE} = \argmax_{\theta} p(y_1,\cdots,y_n|\vec{x}_1,\cdots,\vec{x_n}, \theta)
+\]
+When we assume that $\normal{Y_i|\theta}{h_\theta(\vec{x}_i)}{\sigma^2}$, then
+\begin{align*}
+  \theta_{MLE} &= \argmax_{\theta}\prod_{i=1}^n\frac{1}{\sqrt{2\pi\sigma^2}}e^{-\frac{(y_i-h_\theta(\vec{x}_i))^2}{2\sigma^2}}\\
+  &= \argmax_\theta-\sum_{i=1}^n(y-h_\theta(\vec{x}_i))^2\\
+  &= \argmin_\theta \sum_{i=1}^n(y-h_\theta(\vec{x}_u))^2
+\end{align*}
+where $h_\theta$ is our proposed model that is parameterized by $\theta$ (i.e $\vec{x}_i^T\theta$ in the case of regression)
+\subsection{Maximum a Posteriori Estimation}
+Maximum a Posteriori Estimation is a method of finding the parameter for which the data maximizes the probability of the model. Formally, given data points $(\vec{x}_i, y_i)$,
+\[
+  \theta_{MAP} = \argmax_{\theta} p(\text{true model}= h_{\theta}|\vec{x}_1,\cdots, \vec{x}_n, y_1,\cdots, y_n)
+\]
+Using Bayes rule, this is equivalent to
+\[
+  \theta_{MAP} = p(y_1,\cdots,y_n|h_\theta) \cdot p(h_\theta)
+\]
+If we assume that $\normal{Y_i|\theta}{h_\theta(\vec{x}_i)}{\sigma^2}$, then
+\[
+  \theta_{MAP} = \argmax_\theta -\sum_{i=1}^n(y_i-h_\theta(\vec{x}))^2 + \log[p(\theta)]
+\]
 \section{Multi-variate Gaussians}
 A multi-variate Gaussian random variable is specified by its mean $\vec{\mu}_x$ and covariance matrix $\Sigma_x$. The covariance matrix specifies the covariance between each pair of elements in the random variable.
 \[\vec{X}\sim\mathcal{N}(\vec{\mu}_X, \Sigma_X) \qquad \expect{\vec{X}} = \mu_{X}\]
