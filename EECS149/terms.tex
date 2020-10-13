@@ -1,0 +1,82 @@
+\documentclass{article}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{cancel}
+\usepackage{tikz}
+\usepackage{hyperref}
+\usepackage{circuitikz}
+\usepackage{float}
+\usepackage{afterpage}
+\usepackage{pgfplots}
+\usepackage{textcomp}
+\usepackage{geometry}
+\usepackage{tabularx}
+\pgfplotsset{compat=1.16}
+
+\pagenumbering{gobble}
+\DeclareMathOperator*{\argmin}{argmin}
+\geometry{
+    a4paper,
+    total={170mm,257mm},
+    left=10mm,
+    top=10mm,
+    right=10mm,
+    bottom=15mm
+}
+\setlength{\extrarowheight}{5pt}
+
+\newcolumntype{f}{>{\hsize=0.2\hsize}X}
+\newcolumntype{m}{>{\hsize=.6\hsize}X}
+\newcommand{\defn}[1]{\textbf{#1:}}
+
+\begin{document}
+\section*{System Properties}
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+\begin{enumerate}
+  \item[]\textbf{Causal:} $x_1(t) = x_2(t) \ \forall t \leq \tau \implies S\{x_1(t)\} = S\{x_2(t)\} \ \forall t \leq \tau$ 
+  \item[]\textbf{Strictly Causal:} $x_1(t) = x_2(t) \ \forall t < \tau \implies S\{x_1(t)\} = S\{x_2(t)\} \ \forall t \leq \tau$ 
+  \item[]\textbf{Memoryless:} $S\{x(t)\} = f(x(t))$
+  \item[]\textbf{Linearity} $S\{\alpha x_1(t) + \beta x_2(t)\} = \alpha S\{x_1(t)\} + \beta S\{x_2(t)\}$
+  \item[]\textbf{Time Invariance:} $\forall \tau \in \mathbb{R},\ S\{x_1(t-\tau)\} = S\{x(t)\}(t-\tau)$
+  \item[]\textbf{Stability} $\exists A < \infty$ such that $|x(t)|\leq A \ \forall t \implies \exists B < \infty$ such that $|S\{x(t)\}|\leq B \ \forall t$
+\end{enumerate}
+\section*{Discrete Dynamics}
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+\begin{enumerate}
+  \item[] \textbf{Discrete Signal:} A signal $e$ is discrete if $\exists f:T\to \mathbb{N}$ which is order-preserving. In other words, we can count the number of times $e$ is present
+\end{enumerate}
+\section*{State Machines}
+\noindent\makebox[\linewidth]{\rule{\textwidth}{0.4pt}}
+\begin{enumerate}
+  \item [] \defn{States:} Finite set ($S$)
+  \item [] \defn{Inputs:} Finite set of inputs ($I$)
+  \item [] \defn{Outputs:} Finite set of outputs ($O$)
+  \item [] \defn{update:} $S \times I \to S \times O$
+    $$(s(n+1), y(n)) = update(s(n), x(n))$$
+    (If the machine is non-deterministic, then $update: S \times I \to 2^{S \times O}$)
+  \item [] \defn{Initial State} The beginning state of the state machine
+  \item [] \defn{Behavior} An assignment of a signal such that the output signals are the output produced for the given inputs
+  \item [] \defn{Observable Trace} $((x_0, y_0), (x_1, y_1), (x_2, y_2),\dots)$ where $x_i$ are inputs and $y_i$ are outputs
+  \item [] \defn{Execution Trace} $((x_0, s_0, y_0), (x_1, s_1, y_1),\dots)$ where $x_i$ are inputs, $s_0$ is the state the machine is leaving, and $y_i$ are outputs
+\end{enumerate}
+\subsection*{Components}
+\begin{enumerate}
+  \item [] \defn{Self-Transition} A transition starting and ending at the same state
+  \item [] \defn{Stuttering Transition} A transition where all inputs and outputs are absent and the machine does not change state
+  \item [] \defn{Default Transition} A transition enabled if no non-default transition is enabled and if the guard evaluates to true.
+  \item [] \defn{Set Action} Specifies assignment to a variable after the guard is evaluted and the output is produced.
+  \item [] \defn{State Space} All possible settings of modes + variables. $|States| = np^m$ where $n$ is the number of modes, and there are $m$ variables taking on $p$ values each.
+  \item [] \defn{Pre-emptive Transition} The guard of a pre-emptive transition is evaluted before the refinement, and if it is true, the refinement does not act
+  \item [] \defn{Reset Transition} The destination refinement of the transition is set to its initial state
+  \item [] \defn{History Transition} The destination refinement of the transition resumes in the state where it was last.
+\end{enumerate}
+\subsection*{Composition}
+\begin{enumerate}
+  \item[] \defn{Synchronous Composition} Two or more state machines react simultaneously.
+  \item[] \defn{Asynchronous Composition} When two or more state machines react independently of each other.
+  \item[] \defn{Side by Side Synchronous Composition} One react of the overall machine is the simultaneous react of the sub-machines
+  \item[] \defn{Side by Side Asynchronous Composition with Interleaving Semantics} A react of the overall state machine is the react of one of the sub-machines where the choise is non-deterministic.
+  \item[] \defn{Cascade Composition} When the output port of state machine $A$ feeds into the input of state machine $B$. The reactions are simultaneous and instantaneous but $A$ reacts first to produce the input to $B$ (if any).
+\end{enumerate}
+\end{document}
