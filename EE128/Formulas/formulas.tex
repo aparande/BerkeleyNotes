@@ -30,4 +30,52 @@ $$X(s) = \int_{0^-}^\infty{x(t)e^{-st}dt}$$
 	$e^{-at}\sin(\omega_0t)u(t)$ & $\frac{\omega_0}{(s+a)^2+\omega_0}$ & $Re(s) > a$
     \end{tabularx}
 \end{center}
+\clearpage
+\section*{Electro-Mechanical Equivalence}
+\subsection*{Equivalent Quantities}
+\begin{center}
+  \begin{tabularx}{\textwidth}{XXX}
+    \hline
+    Translational Mechanical System & Rotational Mechanical System & Electrical System \\
+    \hline
+    Force ($F$) & Torque & Voltage ($V$)\\
+    Mass ($M$) & Moment of Inertia ($J$) & Inductance ($L$)\\
+    Damping Coefficient ($B$) & Rotational Damping Coefficient ($B$) & Resistance ($R$)\\
+    Spring Constant ($K$) & Torsional Spring Constant ($K$) & Reciprocal of Capacitance $\left( \frac{1}{C} \right)$\\
+    Displacement ($x$) & Angular Displacement ($\theta$) & Charge ($Q$)\\
+    Velocity ($v$) & Angular Velocity ($\omega$) & Current ($I$)
+  \end{tabularx}
+\end{center}
+\subsection*{Equation Equivalence}
+\begin{center}
+  \begin{tabularx}{\textwidth}{XXX}
+    \hline
+    Translational Mechanical System & Rotational Mechanical System & Electrical System \\
+    \hline
+    $Ms^2X(s)$ & $Js^2\Theta(s)$ & $Ls^2Q(s)$\\
+    $BsX(s)$ & $Bs\Theta(s)$ & $RsQ(s)$\\
+    $KX(s)$ & $K\Theta(s)$ & $\frac{1}{C}Q(s)$\\
+  \end{tabularx}
+\end{center}
+\subsection*{Conversion Rules}
+\begin{enumerate}
+  \item The force at two ends of a damper (or spring) must be equal $\Leftrightarrow$ the voltage across the resistor (or capacitor) must be equal
+  \item Parallel in one domain $\implies$ Series in the other domain
+  \item $\sum F = 0$ at a massless node $\Leftrightarrow \sum V = 0$ at an electrical node
+\end{enumerate}
+\subsection*{Conversion Procedure}
+\subsubsection*{Electrical to Mechanical}
+\begin{enumerate}
+  \item Label all currents such that only one current flows through inductors
+  \item Write loop equations for each loop
+  \item Re-write equations using the analogous quantities. Each loop is replaced by a position
+  \item Draw mechanical system corresponding to equations
+\end{enumerate} 
+\subsubsection*{Mechanical to Electrical}
+\begin{enumerate}
+  \item Write force equations for each position
+  \item Re-write equations using analogous quantities. Each equation becomes a loop
+  \item Draw loops such that only one current flows through each inductor
+\end{enumerate}
+
 \end{document}
