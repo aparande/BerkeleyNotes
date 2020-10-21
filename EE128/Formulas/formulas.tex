@@ -52,9 +52,10 @@ $$X(s) = \int_{0^-}^\infty{x(t)e^{-st}dt}$$
     \hline
     Translational Mechanical System & Rotational Mechanical System & Electrical System \\
     \hline
-    $Ms^2X(s)$ & $Js^2\Theta(s)$ & $Ls^2Q(s)$\\
-    $BsX(s)$ & $Bs\Theta(s)$ & $RsQ(s)$\\
-    $KX(s)$ & $K\Theta(s)$ & $\frac{1}{C}Q(s)$\\
+    $Ms^2X(s)$ & $Js^2\Theta(s)$ & $LsI(s)$\\
+    $BsX(s)$ & $Bs\Theta(s)$ & $RI(s)$\\
+    $KX(s)$ & $K\Theta(s)$ & $\frac{1}{Cs}I(s)$\\
+    - & $\frac{T_2(s)}{T_1(s)}=\frac{\Theta_1(s)}{\Theta_2(s)}=\frac{N_2}{N_1}$ & $\frac{N_p}{N_s}=\frac{V_p(s)}{V_s(s)}=\frac{I_s(s)}{I_p(s)}$\\
   \end{tabularx}
 \end{center}
 \subsection*{Conversion Rules}
@@ -62,6 +63,7 @@ $$X(s) = \int_{0^-}^\infty{x(t)e^{-st}dt}$$
   \item The force at two ends of a damper (or spring) must be equal $\Leftrightarrow$ the voltage across the resistor (or capacitor) must be equal
   \item Parallel in one domain $\implies$ Series in the other domain
   \item $\sum F = 0$ at a massless node $\Leftrightarrow \sum V = 0$ at an electrical node
+  \item Rotational impedances are reflected through gear trains by multiplying by $\left( \frac{N^2_{dest}}{N^2_{source}} \right)$
 \end{enumerate}
 \subsection*{Conversion Procedure}
 \subsubsection*{Electrical to Mechanical}

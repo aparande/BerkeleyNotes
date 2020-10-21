@@ -1,0 +1,10 @@
+\contentsline {section}{\numberline {1}Introduction to Control}{2}{section.1}
+\contentsline {subsection}{\numberline {1.1}Types of Control}{3}{subsection.1.1}
+\contentsline {subsubsection}{\numberline {1.1.1}Constant Gain Control}{3}{subsubsection.1.1.1}
+\contentsline {subsubsection}{\numberline {1.1.2}Lead Control}{3}{subsubsection.1.1.2}
+\contentsline {subsubsection}{\numberline {1.1.3}Integral Control}{3}{subsubsection.1.1.3}
+\contentsline {subsection}{\numberline {1.2}Root Locus Analysis}{3}{subsection.1.2}
+\contentsline {subsection}{\numberline {1.3}Feedback Controller Design}{4}{subsection.1.3}
+\contentsline {subsubsection}{\numberline {1.3.1}Steady State Tracking Accuracy}{4}{subsubsection.1.3.1}
+\contentsline {subsubsection}{\numberline {1.3.2}Disturbance Rejection}{5}{subsubsection.1.3.2}
+\contentsline {subsubsection}{\numberline {1.3.3}Noise Insensitivity}{6}{subsubsection.1.3.3}
