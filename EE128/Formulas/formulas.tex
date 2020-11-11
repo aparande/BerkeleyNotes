@@ -80,4 +80,77 @@ $$X(s) = \int_{0^-}^\infty{x(t)e^{-st}dt}$$
   \item Draw loops such that only one current flows through each inductor
 \end{enumerate}
 
+\clearpage
+\section*{Second-Order System}
+\begin{center}
+  \[
+	H(s) = \frac{\omega_n^2}{s^2+2\zeta\omega_n+\omega_n^2}
+  \]
+Poles are at $s = -\zeta\omega_n + \omega_n\sqrt{\zeta^2-1}$.
+\end{center}
+\subsection*{Cases of Interest}
+\begin{enumerate}
+  \item[] \textbf{$\zeta = 0$}: $s=\pm \omega_nj$. The system is marginally stable.
+  \item[] \textbf{$0 < \zeta < 1$}: $s = -\zeta\omega_n\pm j\omega_n\sqrt{1-\zeta^2}$. The system is underdamped.
+  \item[] \textbf{$\zeta = 1$}: $s = -\omega_n$. The system is critically damped.
+  \item[] \textbf{$\zeta > 1$}: $s = -\zeta\omega_n \pm \omega_n\sqrt{\zeta^2-1}$. The system is overdamped
+\end{enumerate}
+\subsection*{Underdamped systems}
+\begin{enumerate}
+  \item[] \textbf{Time to Peak}: $T_p = \frac{\pi}{\omega_n\sqrt{1-\zeta^2}}$
+  \item[] \textbf{\% Overshoot}: $e^{\frac{-\zeta\pi}{\sqrt{1-\zeta^2}}}$
+  \item[] \textbf{Settling Time}: $T_s = \frac{4}{\zeta\omega_n}$
+\end{enumerate}
+\textbf{Rule of Thumb:} If two poles are at $s = -a\pm bj$, then if $Re\{c\} \leq 5\cdot Re\{a\}$, the system is approximately second order.
+\clearpage
+\section*{Design by Frequency Response}
+\textbf{Gain Margin:} The change in open loop gain that will make the closed loop system unstable.
+\[
+  \angle G(j\omega_{GM}) = (2k+1)\pi \implies G_m = \frac{1}{G(j\omega_{GM})}
+\]
+\textbf{Phase Margin:} The change in open loop phase to make the closed loop system unstable.
+\[
+  |G(j\omega_{PM})| = 1 \implies \phi_{m} = (2k+1)\pi + \angle G(j\omega_{PM})
+\]
+For a second-order system,
+\begin{align*}
+  \omega_{PM} &= \omega_n\sqrt{-2\zeta^2+\sqrt{1+4\zeta^4}}\\
+  \phi_M &= \tan^{-1}\frac{2\zeta}{\sqrt{-2\zeta^2+\sqrt{1+4\zeta^4}}}
+\end{align*}
+\subsection*{Lag Controller}
+\[
+  G_c(s) = \frac{s + \frac{1}{T}}{s + \frac{1}{\alpha T}}, \quad \alpha > 1
+\]
+\textbf{Purpose:} To reduce static error constant by increasing low frequency gain and to increase the phase margin of the system.
+\subsubsection*{Design Procedure}
+\begin{enumerate}
+  \item Set gain $K$ to the value that satisfies the SSE specification and plot the Bode diagram at that gain.
+  \item Find $\omega_{PM}$ such that $\phi_M$ is 5\textdegree  to 12\textdegree  larger than required.
+  \item Let the high frequency asymptote be $-20\log K_{PM}$\SI{}{\decibel} at $\omega_{PM}$ where $K_{PM} = |G(j\omega_{PM})|$.
+  \item Choose the upper break frequency to be $\frac{\omega_{PM}}{10}$
+  \item Set the low frequency asymptote to be \SI{0}{\decibel} and locate the lower break frequency.
+  \item Reset the system gain K to compensate for attenuation.
+\end{enumerate}
+\subsection*{Lead Controller}
+\[
+  G_c(s) = \frac{1}{\beta}\frac{s+\frac{1}{T}}{s+\frac{1}{\beta T}}, \quad \beta < 1
+\]
+\textbf{Purpose:} To change the phase margin and decrease percent overshoot and reduce rise/settling time.
+
+The lead controller has a peak phase $\phi_{max}$.
+\[
+  \omega_{max} = \frac{1}{T\sqrt{\beta}}\quad, \phi_{max} = \sin^{-1}\frac{1-\beta}{1+\beta}, \quad |G_c(j\omega_{max})| = \frac{1}{\sqrt{\beta}}
+\]
+\subsubsection*{Design Procedure}
+\begin{enumerate}
+  \item Set gain $K$ of the uncompensated system to a value satisfying SSE requirement.
+  \item Plot bode diagram for system with gain $K$ and determine $\phi_M$.
+  \item Find $\phi_{M}$ needed to meet requirements and evaluate additional phase contribution from compenstor.
+  \item Determine $\beta$.
+  \item Determine $|G_c(j\omega_{max})|$.
+  \item Determine $\omega_{PM}$ where $|G(j\omega)| = -20\log|G_c(j\omega_{max})|$
+  \item Find the break frequencies.
+  \item Reset the gain
+  \item Simulate and tweak.
+\end{enumerate}
 \end{document}
