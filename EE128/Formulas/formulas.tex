@@ -103,6 +103,75 @@ Poles are at $s = -\zeta\omega_n + \omega_n\sqrt{\zeta^2-1}$.
 \end{enumerate}
 \textbf{Rule of Thumb:} If two poles are at $s = -a\pm bj$, then if $Re\{c\} \leq 5\cdot Re\{a\}$, the system is approximately second order.
 \clearpage
+\clearpage
+\section*{Bode Diagrams}
+\subsection*{First-Order Zeros}
+\begin{figure}[!h]
+  \centering
+  \begin{subfigure}[b]{0.45\textwidth}	
+	\includegraphics[width=\textwidth]{Images/bode_lhp_zero}
+	\caption{LHP Zero}
+	\label{fig:bode-lhp-zero}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.45\textwidth}	
+	\includegraphics[width=\textwidth]{Images/bode_rhp_zero}
+	\caption{RHP Zero}
+	\label{fig:bode-rhp-zero}
+  \end{subfigure}
+\end{figure}
+\subsection*{First-Order Poles}
+\begin{figure}[!h]
+  \centering
+  \begin{subfigure}[b]{0.45\textwidth}	
+	\includegraphics[width=\textwidth]{Images/bode_lhp_pole}
+	\caption{LHP pole}
+	\label{fig:bode-lhp-pole}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.45\textwidth}	
+	\includegraphics[width=\textwidth]{Images/bode_rhp_pole}
+	\caption{RHP Pole}
+	\label{fig:bode-rhp-pole}
+  \end{subfigure}
+\end{figure}
+\subsection*{Pole/Zero at $\omega-0$}
+\begin{figure}[!h]
+  \centering
+  \begin{subfigure}[b]{0.45\textwidth}	
+	\includegraphics[width=\textwidth]{Images/bode_pole}
+	\caption{Pole at zero}
+	\label{fig:bode-pole}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.45\textwidth}	
+	\includegraphics[width=\textwidth]{Images/bode_zero}
+	\caption{Zero at zero}
+	\label{fig:bode-zero}
+  \end{subfigure}
+\end{figure}
+\subsection*{Second-Order behavior}
+\begin{figure}[!h]
+  \centering
+  \begin{subfigure}[b]{0.45\textwidth}	
+	\includegraphics[width=\textwidth]{Images/bode_2nd_order_denom}
+	\caption{Second-Order poles}
+	\label{fig:bode-2nd-order-pole}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.45\textwidth}	
+	\includegraphics[width=\textwidth]{Images/bode_2nd_order_num}
+	\caption{Second-Order zeros}
+	\label{fig:bode-2nd-order-zero}
+  \end{subfigure}
+\end{figure}
+\clearpage
+\section*{Nyquist Diagrams}
+In the standard negative feedback setup with plant $G$ and controller $H$,
+\begin{enumerate}
+  \item Poles of $1+GH$ are the poles of the open loop system.
+  \item Zeros of $1+GH$ are the poles of the closed loop system.
+\end{enumerate}
+Where $N$ is the number of CCW encirclements of $-1$, $P$ is the number of RHP poles of GH, and $Z$ is number of RHP zeros of $1 + GH$
+$$N = P - Z$$
+If $Z = 0$, then the system is stable.
+\clearpage
 \section*{Design by Frequency Response}
 \textbf{Gain Margin:} The change in open loop gain that will make the closed loop system unstable.
 \[
