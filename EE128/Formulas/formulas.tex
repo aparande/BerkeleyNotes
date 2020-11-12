@@ -102,7 +102,28 @@ Poles are at $s = -\zeta\omega_n + \omega_n\sqrt{\zeta^2-1}$.
   \item[] \textbf{Settling Time}: $T_s = \frac{4}{\zeta\omega_n}$
 \end{enumerate}
 \textbf{Rule of Thumb:} If two poles are at $s = -a\pm bj$, then if $Re\{c\} \leq 5\cdot Re\{a\}$, the system is approximately second order.
-\clearpage
+\section*{Steady-State Errors}
+\[
+  \lim_{t\to\infty}e(t) = \lim_{s\to 0}\frac{sR(s)}{1 + G(s)}
+\]
+\[
+  K_p = \lim_{s\to0}G(s) \quad K_v=\lim_{s\to 0}sG(s) \quad K_a = \lim_{s\to0}s^2G(s)
+\]
+The \textbf{type} of a system is how many poles at 0 the open loop system has.
+\begin{center}
+    \begin{tabularx}{\textwidth}{XXXcXcXc}
+        \toprule
+		& & \multicolumn{2}{c}{\textbf{Type 0}} & \multicolumn{2}{c}{\textbf{Type 1}} & \multicolumn{2}{c}{\textbf{Type 2}}\\
+		\cmidrule(lr){3-4}
+		\cmidrule(lr){5-6}
+		\cmidrule(lr){7-8}
+		\textbf{Input} & \textbf{SSE} & \textbf{Constant} & \textbf{Error} & \textbf{Constant} & \textbf{Error} & \textbf{Constant} & \textbf{Error}\\
+		\midrule
+		$u(t)$ & $\frac{1}{1+K_p}$ & $K_p=\text{Constant}$ & $\frac{1}{1+K_p}$ & $K_p = \infty$ & 0 & $K_p = \infty$ & $0$\\
+		$tu(t)$ & $\frac{1}{K_v}$ & $K_v = 0$ & $\infty$ & $K_v = \text{Constant}$ & $\frac{1}{K_v}$ & $K_v = \infty$ & $0$\\
+		$\frac{1}{2}t^2u(t)$ & $\frac{1}{K_a}$ & $K_a = 0$ & $\infty$ & $K_a = 0$ & $\infty$ & $K_a = \text{Constant}$ & $\frac{1}{K_a}$
+    \end{tabularx}
+\end{center}
 \clearpage
 \section*{Bode Diagrams}
 \subsection*{First-Order Zeros}
@@ -161,7 +182,6 @@ Poles are at $s = -\zeta\omega_n + \omega_n\sqrt{\zeta^2-1}$.
 	\label{fig:bode-2nd-order-zero}
   \end{subfigure}
 \end{figure}
-\clearpage
 \section*{Nyquist Diagrams}
 In the standard negative feedback setup with plant $G$ and controller $H$,
 \begin{enumerate}
