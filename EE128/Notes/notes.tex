@@ -1231,7 +1231,7 @@ If we look only at the output at times which are multiples of $kT$ (i.e what our
   &+ e^{A(k+1)\tau}\V{x}(0) + \int_{0}^{(k+1)T} e^{A((k+1)T-\tau)}B\V{u}(\tau) d\tau\\
   &= \int_{kT}^{(k+1)T} e^{A((k+1)T-\tau)}B\V{u}(\tau)d\tau = e^{A(k+1)T}B\V{u}(kT)\int_{kT}^{(k+1)T}e^{-A\tau}d\tau\\
   &= B\V{u}(kT)\int_0^{T}e^{A\lambda}d\lambda \qquad (\lambda = (k+1)T-\tau)\\
-  \therefore \V{x}((k+1)T) &= e^{At}\V{x}(kT) + u(kT)\int_{0}^{T}Be^{A\lambda}d\lambda.
+  \therefore \V{x}((k+1)T) &= e^{At}\V{x}(kT) + \V{u}(kT)\int_{0}^{T}Be^{A\lambda}d\lambda.
 \end{align*}
 Looking only at the samples, the discrete system is
 \begin{equation}
