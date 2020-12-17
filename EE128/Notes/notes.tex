@@ -1129,7 +1129,6 @@ Looking at the combined system,
   + \begin{bmatrix} B \\ \bs{0} \end{bmatrix}\V{r}
 \]
 Notice that the poles of this system are just the poles of the original system and the poles of the observer system, so we can choose $K$ and $L$ independently.
-% TODO: Observer Diagram
 \begin{figure}
     \centering 
     % The block diagram code is probably more verbose than necessary
@@ -1218,7 +1217,42 @@ In particular, we want to minimize the cost function
 \]
 where $R$ and $Q$ are positve-semi-definite matrices (typically diagonal) and determine how much we penalize the error and the control effort.
 \section{Digital Control Systems}
-% TODO: Diagram of Digital Control System
+\begin{figure}[H]
+    \centering 
+    \begin{tikzpicture}[auto, node distance=2cm,>=latex']
+	  % We start by placing the blocks
+	  \node [input, name=input] {};
+	  \node [block, right of=input] (adc) {ADC};
+	  \node [block, right of=adc, node distance=4cm] (cpu) {CPU};
+	  \node [block, right of=cpu, node distance=4cm] (dac) {DAC/PWM};
+	  \node [amp, right of=dac] (amp) {};
+	  \node [block, right of=amp] (plant) {Plant};
+	  \node [output, right of=plant] (output) {};
+
+	  \node [block, below of=plant] (sensor) {Sensor};
+	  \node [block, below of=dac] (adc2) {ADC};
+
+	  \node [input, above of=adc, node distance=1cm] (sample1) {};
+	  \node [input, above of=dac, node distance=1cm] (sample2) {};
+	  \node [input, below of=adc2, node distance=1cm] (sample3) {};
+
+	  % Once the nodes are placed, connecting them is easy. 
+	  \draw [draw,->] (input) -- node {$r(t)$} (adc);
+	  \draw [->] (adc) -- node {$r[k]$} (cpu);
+	  \draw [->] (cpu) -- node {$u[k]$} (dac);
+	  \draw [->] (dac) -- (amp);
+	  \draw [->] (amp) -- (plant);
+	  \draw [->] (plant) -- node [name=y] {$y(t)$} (output);
+	  \draw [->] (y) |- (sensor);
+	  \draw [->] (sensor) -- node {${y[k]}$} (adc2);
+	  \draw [->] (adc2) -| (cpu);
+	  \draw [->] (sample1) -- node[above of=sample1, node distance=0.5cm] {$T$} (adc);
+	  \draw [->] (sample2) -- node[above of=sample2, node distance=0.5cm] {$T$} (dac);
+	  \draw [->] (sample3) -- node[below of=sample3, node distance=0.5cm] {$T$} (adc2);
+    \end{tikzpicture}   
+    \caption{Digital Control System}
+    \label{fig:digital-control}
+\end{figure}
 When using a digital system to control a CT system, the inputs $u(t)$ must be held constant for a particular amount of time.
 This is equivalent to using a zero-order hold for sampling period $T$.
 At an multiple of the sampling period $kT$
