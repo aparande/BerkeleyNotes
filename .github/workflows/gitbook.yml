@@ -9,8 +9,6 @@ jobs:
       - uses: actions/checkout@v2
         with:
           path: main
-      - run: |
-          mkdir gitbook
       - uses: docker://pandoc/latex:2.11
         with:
           args: --to markdown --from latex --output=gitbook/ee128.md main/EE128/Notes/notes.tex
@@ -20,8 +18,9 @@ jobs:
           path: gitbook
       - run: |
           cd gitbook
+          git pull
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git add gitbook
-          git commit --amend --no-edit
+          git add .
+          git commit -m "Recompile Markdown from LaTeX source"
           git push
