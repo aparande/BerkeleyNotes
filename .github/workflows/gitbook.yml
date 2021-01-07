@@ -15,9 +15,10 @@ jobs:
           path: gitbook
       - run: |
           cd main/EE128/Notes
+          ls
       - uses: docker://pandoc/latex:2.11
         with:
-          args: --to markdown --from latex --output=../../../gitbook/ee128.md notes.tex
+          args: --standalone --to markdown --from latex --output=../../../gitbook/ee128.md notes.tex
       - run: |
           cd ../../../gitbook
           git pull
