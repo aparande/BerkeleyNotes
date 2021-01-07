@@ -12,3 +12,7 @@ jobs:
       - uses: docker://pandoc/latex:2.11
         with:
           args: --to markdown --from latex --output=gitbook/ee128.md EE128/Notes/notes.tex
+      - uses: actions/upload-artifact@v2
+        with:
+          name: markdown-conversion
+          path: gitbook/*.md
