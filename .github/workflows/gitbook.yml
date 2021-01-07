@@ -13,11 +13,13 @@ jobs:
         with:
           ref: gitbook
           path: gitbook
+      - run: |
+          cd ~/main/EE128/Notes
       - uses: docker://pandoc/latex:2.11
         with:
-          args: --to markdown --from latex --output=gitbook/ee128.md main/EE128/Notes/notes.tex
+          args: --to markdown --from latex --output=../../../gitbook/ee128.md notes.tex
       - run: |
-          cd gitbook
+          cd ~/gitbook
           git pull
           git config user.name github-actions
           git config user.email github-actions@github.com
