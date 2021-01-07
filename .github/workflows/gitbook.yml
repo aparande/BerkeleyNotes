@@ -9,13 +9,13 @@ jobs:
       - uses: actions/checkout@v2
         with:
           path: main
-      - uses: docker://pandoc/latex:2.11
-        with:
-          args: --to markdown --from latex --output=gitbook/ee128.md main/EE128/Notes/notes.tex
       - uses: actions/checkout@v2
         with:
           ref: gitbook
           path: gitbook
+      - uses: docker://pandoc/latex:2.11
+        with:
+          args: --to markdown --from latex --output=gitbook/ee128.md main/EE128/Notes/notes.tex
       - run: |
           cd gitbook
           git pull
