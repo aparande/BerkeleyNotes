@@ -1,0 +1,14 @@
+name: compile-gitbook
+on:
+  push:
+    branches: [gitbook-setup]
+jobs:
+  compile-pandoc:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          mkdir gitbook
+      - uses: docker://pandoc/latex:2.11
+        with:
+          args: --to markdown --from latex --output=gitbook/ee128.md EE128/Notes/notes.tex
