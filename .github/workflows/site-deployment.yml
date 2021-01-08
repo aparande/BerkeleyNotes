@@ -1,7 +1,7 @@
 name: website-integration
 on:
   push:
-    branches: [website-integation]
+    branches: [website-integration]
 jobs:
   compile-pandoc:
     runs-on: ubuntu-18.04
