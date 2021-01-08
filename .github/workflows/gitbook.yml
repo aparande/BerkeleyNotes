@@ -21,7 +21,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install pandocfilters
-          brew install imagemagick
+          apt install imagemagick
       - run: |
           mkdir -p gitbook/tikz-images
       - run: |
