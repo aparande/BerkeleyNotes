@@ -1,0 +1,19 @@
+---
+- filename: eecs16b-notes.pdf
+  path: 16B/Notes/guide.pdf
+- filename: ee120-notes.pdf
+  path: EE120/notes.pdf
+- filename: cs61c-notes.pdf
+  path: CS61C/notes.pdf
+- filename: ee128-notes.pdf
+  path: EE128/Notes/notes.pdf
+- filename: ee123-notes.pdf
+  path: EE123/Notes/notes.pdf
+- filename: discrete-formula-sheet.pdf
+  path: EE123/Formulas/formulas.pdf
+- filename: cs61b-datastructures.pdf
+  path: CS61B/Data Structures/datastructures.pdf
+- filename: cs61b-algorithms.pdf
+  path: CS61B/Algorithms/algorithms.pdf
+
+
