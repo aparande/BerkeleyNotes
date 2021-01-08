@@ -37,7 +37,7 @@ jobs:
         with:
           args: --standalone --to markdown --from json --output=gitbook/ee128.md main/filtered.json
       - run: |
-          mv main/tikz_images/* gitbook/tikz_images
+          mv main/tikz-images/* gitbook/tikz-images
       - run: |
           cd gitbook
           git pull
