@@ -30,6 +30,7 @@ jobs:
         with:
           args: --standalone --to json --from latex+raw_tex --output=main/tmp.json main/EE128/Notes/notes.tex
       - run: |
+          sudo sed -i 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/g' /etc/ImageMagick-6/policy.xml
           cd main
           chmod +x pandoc_filter.py
           cat tmp.json | ./pandoc_filter.py > filtered.json
