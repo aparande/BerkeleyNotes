@@ -5,6 +5,7 @@ on:
 jobs:
   run-integation:
     runs-on: ubuntu-18.04
+    environment: website-integration
     steps:
       - uses: actions/checkout@v2
         with:
@@ -14,6 +15,7 @@ jobs:
           repository: aparande/anmolparande.com
           ref: note-hosting
           path: website
+          token: ${{ secrets.PAT_GITHUB }}
       - uses: actions/setup-python@v2
         with:
           python-version: '3.8'
