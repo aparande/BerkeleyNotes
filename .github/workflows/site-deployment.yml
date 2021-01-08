@@ -3,7 +3,7 @@ on:
   push:
     branches: [website-integration]
 jobs:
-  compile-pandoc:
+  run-integation:
     runs-on: ubuntu-18.04
     steps:
       - uses: actions/checkout@v2
@@ -11,7 +11,7 @@ jobs:
           path: main
       - uses: actions/checkout@v2
         with:
-          repository: anmolparande.com
+          repository: aparande/anmolparande.com
           ref: note-hosting
           path: website
       - uses: actions/setup-python@v2
