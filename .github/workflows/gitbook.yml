@@ -21,14 +21,20 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install pandocfilters
-          sudo apt install imagemagick
       - run: |
           mkdir -p gitbook/tikz-images
-      - run: |
           sed -i -e 's/..\/..\/header.tex/main\/header.tex/g' main/**/Notes/notes.tex
       - uses: docker://pandoc/latex:2.11
         with:
-          args: --standalone --to markdown --from latex+raw_tex --filter main/pandoc_filter.py --output=gitbook/ee128.md main/EE128/Notes/notes.tex
+          args: --standalone --to json --from latex+raw_tex --output=main/tmp.json main/EE128/Notes/notes.tex
+      - run: |
+          cd main
+          chmod +x pandoc_filter.py
+          cat tmp.json | ./pandoc_filter.py > filtered.json
+          cd ../
+      - uses: docker://pandoc/latex:2.11
+        with:
+          args: --standalone --to markdown --from json --output=gitbook/ee128.md main/filtered.json
       - run: |
           mv tikz_images/* gitbook/tikz_images
       - run: |
