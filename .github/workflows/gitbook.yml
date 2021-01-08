@@ -19,7 +19,7 @@ jobs:
           sed -i -e 's/..\/..\/header.tex/main\/header.tex/g' main/**/Notes/notes.tex
       - uses: docker://pandoc/latex:2.11
         with:
-          args: --standalone --to markdown --from latex+raw_tex --filter pandoc_filter.py --output=gitbook/ee128.md main/EE128/Notes/notes.tex
+          args: --standalone --to markdown --from latex+raw_tex --filter main/pandoc_filter.py --output=gitbook/ee128.md main/EE128/Notes/notes.tex
       - run: |
           mv tikz_images/* gitbook/tikz_images
       - run: |
