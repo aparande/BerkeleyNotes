@@ -9,6 +9,7 @@ from tempfile import mkdtemp
 
 from pandocfilters import toJSONFilters
 from pandocfilters import Para, Image, get_filename4code, get_extension
+from pandocfilters import Math
 
 def tikz2image(tikz_src, filetype, outfile):
     tmpdir = mkdtemp()
@@ -51,5 +52,15 @@ def tikz(key, value, format, _):
                 sys.stderr.write('Created image ' + src + '\n')
             return Para([Image(['', [], []], [], [src, ""])])
 
+def inline_math(key, value, format, meta):
+    """
+    GitBooks doesn't recognize inline math delimeters $, so covert it to display math
+    """
+    if key == 'Math':
+        [mathType, value] = value
+        if mathType['t'] == "InlineMath":
+            mathType['t'] = "DisplayMath"
+            return Math(mathType, value)
+
 if __name__ == '__main__':
-    toJSONFilters([tikz])
+    toJSONFilters([tikz, inline_math])
