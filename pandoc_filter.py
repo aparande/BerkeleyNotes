@@ -14,8 +14,8 @@ from pandocfilters import Math
 def tikz2image(tikz_src, filetype, outfile):
     tmpdir = mkdtemp()
     olddir = os.getcwd()
-    shutil.copyfile("imports.tex", tmpdir+"/imports.tex")
-    header_file = "imports.tex"
+    shutil.copyfile("custom-tikz.tex", tmpdir+"/custom-tikz.tex")
+    header_file = "custom-tikz.tex"
     os.chdir(tmpdir)
 
     with open('tikz.tex', 'w') as f:

@@ -15,3 +15,95 @@
 
 \headsep        .25in
 
+\usepackage{graphicx}
+\usepackage{amsmath,amsfonts,amssymb,amscd,verbatim,graphicx,fancyhdr,tikz}
+\usepackage{mathtools} %for minus plus sign alignment in matrices and vectors, added 13 Feb 2017
+
+\usepackage{palatino}
+\usepackage{enumerate}
+\usepackage{multicol}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{float}
+\usepackage{esdiff} % Derivatives
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{bookmark}
+\usepackage{slashbox}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{siunitx}
+
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,      
+    urlcolor=blue,
+}
+
+\newcommand{\bblue}{\color[rgb]{0.2,0.2,0.7}}
+
+\usepackage{mcode}
+%Alternative: http://perso.telecom-bretagne.eu/gillesbertrand/tutorials/#sujet44
+%This latter one uses the xypackage
+%\usepackage{x}
+
+\newcommand\eqnnumber{\addtocounter{equation}{1}\tag{\theequation}} % Allows us to tag the last equation in an align
+
+\usepackage{accents}
+\newcommand*{\dt}[1]{%
+\accentset{\mbox{\large\bfseries .}}{#1}}
+\newcommand*{\ddt}[1]{%
+\accentset{\mbox{\large\bfseries .\hspace{-0.25ex}.}}{#1}}
+\newcommand{\B}[1]{\mathbf{#1}}
+\DeclareMathAlphabet{\V}{OML}{cmm}{b}{it}
+
+
+% To get decent pdf files:
+\usepackage{caption}
+\usepackage{subcaption}
+
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+\newcommand{\underscore}{\char`\_}
+\newcommand{\tildetext}{\char`\~}
+\newcommand{\defn}{\stackrel{\triangle}{=}}
+\newcommand{\deriv}[2]{\frac{d{#1}}{d{#2}}}
+\newcommand{\cas}{\text{cas }}
+
+\lstset{columns=fullflexible,
+    xleftmargin=0pt,
+    frame=single,
+    keepspaces=false,
+    tabsize=2,
+    breaklines=true,%
+    morekeywords={matlab2tikz},
+    keywordstyle=\color{blue},%
+    morekeywords=[2]{1}, keywordstyle=[2]{\color{black}},
+    identifierstyle=\color{black},%
+    showstringspaces=false,%without this there will be a symbol in the places where there is a space
+    numbers=left,%
+    numberstyle={\tiny \color{black}},% size of the numbers
+    numbersep=5pt, % this defines how far the numbers are from the text
+    emph=[1]{for,end,break},emphstyle=[1]\color{red}, %some words to emphasise
+    %emph=[2]{word1,word2}, emphstyle=[2]{style},
+}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{definition}{Definition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proof}{Proof}
+
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\prob}[1]{\mathbb{P}\left[#1\right]}
+\newcommand{\expect}[1]{\mathbb{E}\left[#1\right]}
+\newcommand{\var}[1]{Var\left(#1\right)}
+\newcommand{\cov}[1]{Cov\left(#1\right)}
+\newcommand{\normal}[3]{#1\sim\mathcal{N}\left(#2, #3\right)}
+\newcommand{\norm}[1]{\|#1\|}
+\newcommand{\vecnorm}[1]{\|\vec{#1}\|}
+\newcommand{\iid}{independently and identically distributed }
+\renewcommand{\arraystretch}{1.5}
