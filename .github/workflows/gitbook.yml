@@ -23,7 +23,7 @@ jobs:
           pip install pandocfilters
           sudo apt-get install texlive-latex-base texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra
       - run: |
-          mkdir -p gitbook/tikz-images
+          mkdir -p gitbook/.gitbook/assets
           sed -i -e 's/..\/..\/header.tex/main\/header.tex/g' main/**/Notes/notes.tex
           sed -i -e 's/compat=1.16/compat=1.15/g' main/custom-tikz.tex
       - uses: docker://pandoc/latex:2.11
@@ -40,7 +40,7 @@ jobs:
           args: --standalone --to markdown --from json --output=gitbook/ee128.md main/filtered.json
       - run: |
           ls main/tikz-images
-          cp -a main/tikz-images/. gitbook/tikz-images
+          cp -a main/tikz-images/. gitbook/.gitbook/assets
       - run: |
           cd gitbook
           git pull
