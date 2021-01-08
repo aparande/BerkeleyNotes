@@ -1,0 +1,33 @@
+name: website-integration
+on:
+  push:
+    branches: [website-integation]
+jobs:
+  compile-pandoc:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: main
+      - uses: actions/checkout@v2
+        with:
+          repository: anmolparande.com
+          ref: note-hosting
+          path: website
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+      - run: |
+          python -m pip install --upgrade pip
+          pip install PyYAML
+      - run: |
+          chmod +x main/website-copy.py
+          mkdir -p website/public/resources/berkeley
+          ./main/website-copy.py website/public/resources/berkeley
+          cd website
+          git pull
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add .
+          git commit -m "Upload latest Berkeley Notes"
+          git push
