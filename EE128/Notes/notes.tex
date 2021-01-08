@@ -1,4 +1,5 @@
 \input{../../header.tex}
+\input{../../imports.tex}
 \DeclareSIUnit\decade{decade}
 \begin{document}
 \title{EE128 Course Notes}
@@ -649,7 +650,7 @@ We can imagine the gain and phase margin like placing a ``virtual box'' before t
 	  \draw [->] (controller) -- node [name=middle] {} (plant);
 	  \draw [->] (plant) -- node [name=y] {$y(t)$} (output);
 
-	  \node [below of=middle] {} (loop);
+	  \node [below of=middle] (loop) {};
 	  \draw [-] (y) |- (loop);
 	  \draw [->] (loop) -- ++ (2, 0) -| node [pos=0.99] {$-$} (sum);
     \end{tikzpicture}   
@@ -912,7 +913,7 @@ One easy way to control the plant is to cascade a controller before the plant li
 	  \node [input, name=input] {};
 	  \node [sum, right of=input] (sum) {};
 	  \node [block, right of=sum, node distance=2cm] (controller) {$H(s)$};
-	  \node [block, right of=gain, node distance=4cm] (plant) {$G(s)$};
+	  \node [block, right of=controller, node distance=4cm] (plant) {$G(s)$};
 	  \node [output, right of=plant, node distance=3cm] (output) {};
 
 	  % Once the nodes are placed, connecting them is easy. 
@@ -921,7 +922,7 @@ One easy way to control the plant is to cascade a controller before the plant li
 	  \draw [->] (controller) -- node [name=middle] {} (plant);
 	  \draw [->] (plant) -- node [name=y] {$y(t)$} (output);
 
-	  \node [below of=middle] {} (loop);
+	  \node [below of=middle] (loop) {};
 	  \draw [-] (y) |- (loop);
 	  \draw [->] (loop) -- ++ (2, 0) -| node [pos=0.99] {$-$} (sum);
     \end{tikzpicture}   

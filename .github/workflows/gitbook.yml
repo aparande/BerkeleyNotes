@@ -14,10 +14,12 @@ jobs:
           ref: gitbook
           path: gitbook
       - run: |
+          mkdir -p gitbook/tikz-images
+      - run: |
           sed -i -e 's/..\/..\/header.tex/main\/header.tex/g' main/**/Notes/notes.tex
       - uses: docker://pandoc/latex:2.11
         with:
-          args: --standalone --to markdown --from latex --output=gitbook/ee128.md main/EE128/Notes/notes.tex
+          args: --standalone --to markdown --from latex+raw --filter pandoc_filter.py --output=gitbook/ee128.md main/EE128/Notes/notes.tex
       - run: |
           cd gitbook
           git pull
