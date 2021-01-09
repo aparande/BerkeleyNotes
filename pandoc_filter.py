@@ -42,7 +42,7 @@ def tikz2image(tikz_src, filetype, outfile):
     if filetype == 'pdf':
         shutil.copyfile(tmpdir + '/tikz.pdf', outfile + '.pdf')
     else:
-        call(["convert", tmpdir + '/tikz.pdf', "-strip", outfile + '.' + filetype])
+        call(["convert", tmpdir + '/tikz.pdf', "-density", "150", "-resize", "1500x1000", "-strip", outfile + '.' + filetype])
     shutil.rmtree(tmpdir)
 
 def convert_tikz(format, code):
@@ -120,8 +120,6 @@ def tex_envs(key, value, formt, _):
                 return convert_definition(code)
             elif re.match("\\\\begin{theorem}", code):
                 return convert_theorem(code)
-            elif re.match("\\\\centering", code):
-                return []
     elif key == "RawInline":
         [fmt, code] = value
         if fmt == "latex":
@@ -177,6 +175,12 @@ def references(key, value, formt, _):
                 if match.group(2) in thm_labels:
                     label_num = thm_labels.index(match.group(2))
                     return Str(f"theorem {label_num}")
+def cleanup(key, value, formt, _):
+    if key == "RawInline" or key =="RawBlock":
+        [fmt, code] = value
+        if fmt == "latex":
+            if re.match("\\\\cref", code) is None:
+                return []
 
 if __name__ == '__main__':
-    toJSONFilters([tex_envs, custom_math, references])
+    toJSONFilters([tex_envs, custom_math, references, cleanup])
