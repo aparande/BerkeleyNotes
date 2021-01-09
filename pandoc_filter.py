@@ -75,8 +75,9 @@ def convert_latex_block(code, header):
     output = output.replace("\\[", "\n$$")
     output = output.replace("\\]", "\n$$")
 
-
-    return [header, Para([Str(output)])]
+    hint_tag = Para([Str("{% hint style=\"info\" %}")])
+    end_hint_tag = Para([Str("{% endhint %}")])
+    return [hint_tag, header, Para([Str(output)]), end_hint_tag]
 
 def tex_envs(key, value, formt, _):
     if key == 'RawBlock':
