@@ -23,6 +23,7 @@ jobs:
           pip install pandocfilters
           sudo apt-get install texlive-latex-recommended texlive-science texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra
       - run: |
+          rm -rf gitbook/.gitbook/assets
           mkdir -p gitbook/.gitbook/assets
           sed -i -e 's/..\/..\/header.tex/main\/header.tex/g' main/**/Notes/notes.tex
       - uses: docker://pandoc/latex:2.11

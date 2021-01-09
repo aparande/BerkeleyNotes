@@ -21,6 +21,10 @@ eqn_labels = []
 defn_labels = []
 thm_labels = []
 
+unit_map = {
+    "degree": "˚", "per": "/", "decade": "dec"
+}
+
 def tikz2image(tikz_src, filetype, outfile):
     tmpdir = mkdtemp()
     olddir = os.getcwd()
@@ -135,6 +139,13 @@ def convert_math(code):
 
     bold_symbol_exp = re.compile("(\\\\bs\{)(.*?)(\})")
     code = bold_symbol_exp.sub(r"\\boldsymbol{\2}", code)
+
+    si_exp = re.compile("(\\\\SI)(\[.*?\])?\{(.*?)\}\{(.*?)\}")
+    for match in si_exp.finditer(code):
+        num = match.group(3)
+        unit = "".join(list(map(lambda x: unit_map.get(x, ''), match.group(4).split("\\"))))
+        (start, end) = match.span()
+        code = code[:start] + num +"\\text{" + unit + "}" + code[end:]
 
     code = re.sub("\\\\eqnnumber", " ", code)
 
