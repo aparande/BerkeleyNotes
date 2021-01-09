@@ -20,8 +20,8 @@ theorem_num = 0
 def tikz2image(tikz_src, filetype, outfile):
     tmpdir = mkdtemp()
     olddir = os.getcwd()
-    shutil.copyfile("custom-tikz.tex", tmpdir+"/custom-tikz.tex")
-    header_file = "custom-tikz.tex"
+    shutil.copyfile("gitbook-tikz.tex", tmpdir+"/gitbook-tikz.tex")
+    header_file = "gitbook-tikz.tex"
     os.chdir(tmpdir)
 
     with open('tikz.tex', 'w') as f:
@@ -81,6 +81,8 @@ def str_to_math(code):
         marker = end + 1
         block.append(Math({"t": "DisplayMath"}, math_value))
 
+    block.append(Str(code[marker:]))
+
     return Para(block)
 
 def convert_latex_block(code, header):
@@ -98,6 +100,8 @@ def tex_envs(key, value, formt, _):
         [fmt, code] = value
         if fmt == "latex":
             if re.match("\\\\begin{tikzpicture}", code):
+                return convert_tikz(formt, code)
+            elif re.match("\\\\begin{tabularx}", code):
                 return convert_tikz(formt, code)
             elif re.match("\\\\begin{definition}", code):
                 return convert_definition(code)
