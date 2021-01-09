@@ -67,17 +67,31 @@ def convert_theorem(code):
     header = Header(3, [f"theorem-{theorem_num}", [], []], [Str(f"Theorem {theorem_num}")])
     return convert_latex_block(code, header)
 
+def str_to_math(code):
+    code = code.replace("$", "$$")
+    code = code.replace("\\[", "\n$$")
+    code = code.replace("\\]", "$$\n")
+
+    block = []
+    marker = 0
+    for match in re.finditer("\$\$.*\$\$", code):
+        (start, end) = match.span()
+        block.append(Str(code[marker:start]))
+        math_value = code[start+2:end-2]
+        marker = end + 1
+        block.append(Math({"t": "DisplayMath"}, math_value))
+
+    return Para(block)
+
 def convert_latex_block(code, header):
     lines = code.split("\n")[1:-1] # Remove the \begin and \end
     output = "\n".join(lines)
-    
-    output = output.replace("$", "$$")
-    output = output.replace("\\[", "\n$$")
-    output = output.replace("\\]", "\n$$")
+
+    output = str_to_math(output)
 
     hint_tag = Para([Str("{% hint style=\"info\" %}")])
     end_hint_tag = Para([Str("{% endhint %}")])
-    return [hint_tag, header, Para([Str(output)]), end_hint_tag]
+    return [hint_tag, header, output, end_hint_tag]
 
 def tex_envs(key, value, formt, _):
     if key == 'RawBlock':
@@ -100,8 +114,6 @@ def convert_math(code):
     bold_symbol_exp = re.compile("(\\\\bs\{)(.*?)(\})")
     code = bold_symbol_exp.sub(r"\\boldsymbol{\2}", code)
     return code
-
-        
 
 def custom_math(key, value, format, meta):
     """
