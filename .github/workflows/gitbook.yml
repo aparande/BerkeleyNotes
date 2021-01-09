@@ -25,7 +25,6 @@ jobs:
       - run: |
           mkdir -p gitbook/.gitbook/assets
           sed -i -e 's/..\/..\/header.tex/main\/header.tex/g' main/**/Notes/notes.tex
-          sed -i -e 's/compat=1.16/compat=1.15/g' main/custom-tikz.tex
       - uses: docker://pandoc/latex:2.11
         with:
           args: --standalone --to json --from latex+raw_tex --output=main/tmp.json main/EE128/Notes/notes.tex
