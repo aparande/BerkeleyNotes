@@ -1,0 +1,82 @@
+\usepackage{graphicx}
+\usepackage{amsmath,amsfonts,amssymb,amscd,verbatim,graphicx,fancyhdr,tikz}
+\usepackage{mathtools} %for minus plus sign alignment in matrices and vectors, added 13 Feb 2017
+
+\usepackage{pgfplots}
+\usetikzlibrary{arrows,automata}
+\usetikzlibrary{positioning}
+\usetikzlibrary{shapes.geometric}
+
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=1.15}
+
+\usepackage{tikz} 
+\usetikzlibrary{arrows.meta}
+\usepackage{circuitikz}
+
+\usepackage{esdiff}
+\usepackage{siunitx}
+
+\usepackage{palatino}
+\usepackage{enumerate}
+\usepackage{multicol}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{float}
+\usepackage{esdiff} % Derivatives
+\usepackage{hyperref}
+\usepackage{cleveref}
+\usepackage{bookmark}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\newcolumntype{Y}{>{\centering\arraybackslash}X}
+
+
+\usepackage{accents}
+\newcommand*{\dt}[1]{%
+\accentset{\mbox{\large\bfseries .}}{#1}}
+\newcommand*{\ddt}[1]{%
+\accentset{\mbox{\large\bfseries .\hspace{-0.25ex}.}}{#1}}
+\newcommand{\B}[1]{\mathbf{#1}}
+\DeclareMathAlphabet{\V}{OML}{cmm}{b}{it}
+
+
+% To get decent pdf files:
+\usepackage{caption}
+\usepackage{subcaption}
+
+\newcommand{\bs}[1]{\boldsymbol{#1}}
+\newcommand{\underscore}{\char`\_}
+\newcommand{\tildetext}{\char`\~}
+\newcommand{\defn}{\stackrel{\triangle}{=}}
+\newcommand{\deriv}[2]{\frac{d{#1}}{d{#2}}}
+\newcommand{\cas}{\text{cas }}
+
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\newcommand{\prob}[1]{\mathbb{P}\left[#1\right]}
+\newcommand{\expect}[1]{\mathbb{E}\left[#1\right]}
+\newcommand{\var}[1]{Var\left(#1\right)}
+\newcommand{\cov}[1]{Cov\left(#1\right)}
+\newcommand{\normal}[3]{#1\sim\mathcal{N}\left(#2, #3\right)}
+\newcommand{\norm}[1]{\|#1\|}
+\newcommand{\vecnorm}[1]{\|\vec{#1}\|}
+\newcommand{\iid}{independently and identically distributed }
+\renewcommand{\arraystretch}{1.5}
+
+\DeclareSIUnit\decade{decade}
+
+\tikzstyle{circleblock} = [draw, fill=white, circle, node distance=0.5cm]
+\tikzstyle{block} = [draw, fill=white, rectangle, 
+    minimum height=3em, minimum width=6em]
+\tikzstyle{matrix} = [draw, fill=white, rectangle, 
+    minimum height=1em, minimum width=1em]
+\tikzstyle{sum} = [draw, fill=white, circle, node distance=1cm]
+\tikzstyle{amp} = [regular polygon, regular polygon sides=3, shape border rotate=-90, draw]
+\tikzstyle{input} = [coordinate]
+\tikzstyle{output} = [coordinate]
+\tikzstyle{pinstyle} = [pin edge={to-,thin,black}]
+\tikzstyle{int}=[draw, fill=blue!20, minimum size=2em]
+\tikzstyle{init} = [pin edge={to-,thin,black}]

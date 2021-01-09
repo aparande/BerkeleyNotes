@@ -107,13 +107,18 @@ def tex_envs(key, value, formt, _):
                 return convert_definition(code)
             elif re.match("\\\\begin{theorem}", code):
                 return convert_theorem(code)
+    elif key == "RawInline":
+        [fmt, code] = value
+        if fmt == "latex":
+            if re.match("\\\\textdegree", code):
+                return Str("˚")
 
 def convert_math(code):
     diff_exp = re.compile("(\\\\diff\[)(.*?)(\]\{)(.*?)(\}\{)(.*?)(\})")
     code = diff_exp.sub(r"\\frac{d^{\2}\4}{d\6^{\2}}", code)
 
     vector_bold_exp = re.compile("(\\\\V\{)(.*?)(\})")
-    code = vector_bold_exp.sub(r"\\bf{\2}", code)
+    code = vector_bold_exp.sub(r"\\mathbf{\2}", code)
 
     bold_symbol_exp = re.compile("(\\\\bs\{)(.*?)(\})")
     code = bold_symbol_exp.sub(r"\\boldsymbol{\2}", code)
