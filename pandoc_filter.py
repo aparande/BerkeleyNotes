@@ -90,15 +90,25 @@ def tex_envs(key, value, formt, _):
             elif re.match("\\\\begin{theorem}", code):
                 return convert_theorem(code)
 
-def inline_math(key, value, format, meta):
+def convert_math(code):
+    diff_exp = re.compile("(\\\\diff\[)(.*?)(\]\{)(.*?)(\}\{)(.*?)(\})")
+    code = diff_exp.sub(r"\\frac{d^{\2}\4}{d\6^{\2}}", code)
+    return code
+
+        
+
+def custom_math(key, value, format, meta):
     """
     GitBooks doesn't recognize inline math delimeters $, so covert it to display math
     """
     if key == 'Math':
         [mathType, value] = value
+        value = convert_math(value)
         if mathType['t'] == "InlineMath":
             mathType['t'] = "DisplayMath"
             return Math(mathType, value)
+        else:
+            return Math(mathType, value)
 
 if __name__ == '__main__':
-    toJSONFilters([tex_envs, inline_math])
+    toJSONFilters([tex_envs, custom_math])

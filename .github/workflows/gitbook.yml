@@ -26,6 +26,8 @@ jobs:
           mkdir -p gitbook/.gitbook/assets
           sed -i -e 's/..\/..\/header.tex/main\/header.tex/g' main/**/Notes/notes.tex
           sed -i -e 's/compat=1.16/compat=1.15/g' main/custom-tikz.tex
+          sed -i '' -e 's/\\V/\\bf/g' main/**/Notes/notes.tex
+          sed -i '' -e 's/\\bs/\\boldsymbol/g' main/**/Notes/notes.tex
       - uses: docker://pandoc/latex:2.11
         with:
           args: --standalone --to json --from latex+raw_tex --output=main/tmp.json main/EE128/Notes/notes.tex
@@ -39,7 +41,7 @@ jobs:
         with:
           args: --standalone --to markdown --from json --output=gitbook/ee128.md main/filtered.json
       - run: |
-          sed -i -e 's/\\\$\\\$/\$\$/g' gitbook/*.md
+          sed -i '' -e 's/\\\$\\\$/\$\$/g' gitbook/*.md
           cp -a main/tikz-images/. gitbook/.gitbook/assets
       - run: |
           cd gitbook
