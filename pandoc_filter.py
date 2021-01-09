@@ -17,6 +17,8 @@ definition_num = 0
 global theorem_num
 theorem_num = 0
 
+eqn_labels = []
+
 def tikz2image(tikz_src, filetype, outfile):
     tmpdir = mkdtemp()
     olddir = os.getcwd()
@@ -77,7 +79,7 @@ def str_to_math(code):
     for match in re.finditer("\$\$.*\$\$", code):
         (start, end) = match.span()
         block.append(Str(code[marker:start]))
-        math_value = code[start+2:end-2]
+        math_value = code[start+2:end-2].replace("\n", " ")
         marker = end + 1
         block.append(Math({"t": "DisplayMath"}, math_value))
 
@@ -122,7 +124,16 @@ def convert_math(code):
 
     bold_symbol_exp = re.compile("(\\\\bs\{)(.*?)(\})")
     code = bold_symbol_exp.sub(r"\\boldsymbol{\2}", code)
-    return code
+
+    code = re.sub("\\\\eqnnumber", " ", code)
+
+    label_exp = re.compile("(\\\\label\{eqn:)(.*?)(\})")
+    for match in label_exp.finditer(code):
+        sys.stderr.write(f"Found equation {match.group(2)}")
+        eqn_labels.append(match.group(2))
+        (start, end) = match.span()
+        code = code[:start] + f"\\qquad ({len(eqn_labels)})" + code[end:]
+    return code.replace("\n", " ")
 
 def custom_math(key, value, format, meta):
     """
@@ -137,5 +148,13 @@ def custom_math(key, value, format, meta):
         else:
             return Math(mathType, value)
 
+def references(key, value, formt, _):
+    if key == "RawInline":
+        [fmt, code] = value
+        if fmt == "latex":
+            if (match := re.match("(\\\\cref\{eqn:)(.*?)(\})", code)):
+                label_num = eqn_labels.index(match.group(2)) if match.group(2) in eqn_labels else -1
+                return Str(f"equation {label_num}")
+
 if __name__ == '__main__':
-    toJSONFilters([tex_envs, custom_math])
+    toJSONFilters([tex_envs, custom_math, references])
