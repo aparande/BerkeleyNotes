@@ -10,6 +10,10 @@
 \usetikzlibrary{arrows.meta}
 \usepackage{circuitikz}
 
+\usepackage{esdiff}
+\usepackage{siunitx}
+\DeclareSIUnit\decade{decade}
+
 \tikzstyle{circleblock} = [draw, fill=white, circle, node distance=0.5cm]
 \tikzstyle{block} = [draw, fill=white, rectangle, 
     minimum height=3em, minimum width=6em]
@@ -22,3 +26,5 @@
 \tikzstyle{pinstyle} = [pin edge={to-,thin,black}]
 \tikzstyle{int}=[draw, fill=blue!20, minimum size=2em]
 \tikzstyle{init} = [pin edge={to-,thin,black}]
+
+\DeclareMathAlphabet{\V}{OML}{cmm}{b}{it}
