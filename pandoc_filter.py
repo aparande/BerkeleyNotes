@@ -18,6 +18,8 @@ global theorem_num
 theorem_num = 0
 
 eqn_labels = []
+defn_labels = []
+thm_labels = []
 
 def tikz2image(tikz_src, filetype, outfile):
     tmpdir = mkdtemp()
@@ -58,15 +60,24 @@ def convert_tikz(format, code):
     return Para([Image(['', [], []], [], [f".gitbook/assets/{filename}.{filetype}", ""])])
 
 def convert_definition(code):
-    global definition_num
-    definition_num += 1
-    header = Header(3, [f"definition-{definition_num}", [], []], [Str(f"Definition {definition_num}")])
+    label_exp = re.compile("(\\\\label\{defn:)(.*?)(\})")
+    for match in label_exp.finditer(code):
+        sys.stderr.write(f"Found definition {match.group(2)}\n")
+        defn_labels.append(match.group(2))
+        (start, end) = match.span()
+        code = code[:start] + code[end:]
+
+    header = Header(3, [f"definition-{len(defn_labels)}", [], []], [Str(f"Definition {len(defn_labels)}")])
     return convert_latex_block(code, header)
 
 def convert_theorem(code):
-    global theorem_num
-    theorem_num += 1
-    header = Header(3, [f"theorem-{theorem_num}", [], []], [Str(f"Theorem {theorem_num}")])
+    label_exp = re.compile("(\\\\label\{thm:)(.*?)(\})")
+    for match in label_exp.finditer(code):
+        sys.stderr.write(f"Found theorem {match.group(2)}\n")
+        thm_labels.append(match.group(2))
+        (start, end) = match.span()
+        code = code[:start] + code[end:]
+    header = Header(3, [f"theorem-{len(thm_labels)}", [], []], [Str(f"Theorem {len(thm_labels)}")])
     return convert_latex_block(code, header)
 
 def str_to_math(code):
@@ -109,6 +120,8 @@ def tex_envs(key, value, formt, _):
                 return convert_definition(code)
             elif re.match("\\\\begin{theorem}", code):
                 return convert_theorem(code)
+            elif re.match("\\\\centering", code):
+                return []
     elif key == "RawInline":
         [fmt, code] = value
         if fmt == "latex":
@@ -129,7 +142,7 @@ def convert_math(code):
 
     label_exp = re.compile("(\\\\label\{eqn:)(.*?)(\})")
     for match in label_exp.finditer(code):
-        sys.stderr.write(f"Found equation {match.group(2)}")
+        sys.stderr.write(f"Found equation {match.group(2)}\n")
         eqn_labels.append(match.group(2))
         (start, end) = match.span()
         code = code[:start] + f"\\qquad ({len(eqn_labels)})" + code[end:]
@@ -153,8 +166,17 @@ def references(key, value, formt, _):
         [fmt, code] = value
         if fmt == "latex":
             if (match := re.match("(\\\\cref\{eqn:)(.*?)(\})", code)):
-                label_num = eqn_labels.index(match.group(2)) if match.group(2) in eqn_labels else -1
-                return Str(f"equation {label_num}")
+                if match.group(2) in eqn_labels:
+                    label_num = eqn_labels.index(match.group(2))
+                    return Str(f"equation {label_num}")
+            elif (match := re.match("(\\\\cref\{defn:)(.*?)(\})", code)):
+                if match.group(2) in defn_labels:
+                    label_num = defn_labels.index(match.group(2))
+                    return Str(f"definition {label_num}")
+            elif (match := re.match("(\\\\cref\{thm:)(.*?)(\})", code)):
+                if match.group(2) in thm_labels:
+                    label_num = thm_labels.index(match.group(2))
+                    return Str(f"theorem {label_num}")
 
 if __name__ == '__main__':
     toJSONFilters([tex_envs, custom_math, references])
