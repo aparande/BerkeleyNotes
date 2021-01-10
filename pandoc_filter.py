@@ -46,7 +46,7 @@ def tikz2image(tikz_src, filetype, outfile):
     if filetype == 'pdf':
         shutil.copyfile(tmpdir + '/tikz.pdf', outfile + '.pdf')
     else:
-        call(["convert", tmpdir + '/tikz.pdf', "-density", "300", "-resize", "1500x1000", "-strip", outfile + '.' + filetype])
+        call(["convert", tmpdir + '/tikz.pdf', "-density", "300", "-resize", "1000x500", "-strip", outfile + '.' + filetype])
     shutil.rmtree(tmpdir)
 
 def convert_tikz(format, code):
@@ -88,6 +88,8 @@ def str_to_math(code):
     code = code.replace("$", "$$")
     code = code.replace("\\[", "$$")
     code = code.replace("\\]", "$$")
+    code = code.replace("\\begin{equation}", "$$")
+    code = code.replace("\\end{equation}", "$$")
     code = code.replace("\n", "qq")
     
     block = []
