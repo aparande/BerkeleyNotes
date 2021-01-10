@@ -116,7 +116,7 @@ def convert_latex_block(code, header):
     end_hint_tag = Para([Str("{% endhint %}")])
     return [hint_tag, header, output, end_hint_tag]
 
-def tex_envs(key, value, formt, _):
+def tex_envs(key, value, formt, meta):
     """
     Filter to convert tex environments to markdown
     """
@@ -186,15 +186,15 @@ def references(key, value, formt, _):
         if fmt == "latex":
             if (match := re.match("(\\\\cref\{eqn:)(.*?)(\})", code)):
                 if match.group(2) in eqn_labels:
-                    label_num = eqn_labels.index(match.group(2))
+                    label_num = eqn_labels.index(match.group(2)) + 1
                     return Str(f"equation {label_num}")
             elif (match := re.match("(\\\\cref\{defn:)(.*?)(\})", code)):
                 if match.group(2) in defn_labels:
-                    label_num = defn_labels.index(match.group(2))
+                    label_num = defn_labels.index(match.group(2)) + 1
                     return Str(f"definition {label_num}")
             elif (match := re.match("(\\\\cref\{thm:)(.*?)(\})", code)):
                 if match.group(2) in thm_labels:
-                    label_num = thm_labels.index(match.group(2))
+                    label_num = thm_labels.index(match.group(2)) + 1
                     return Str(f"theorem {label_num}")
 def cleanup(key, value, formt, _):
     if key == "RawInline" or key =="RawBlock":
