@@ -46,7 +46,7 @@ def tikz2image(tikz_src, filetype, outfile):
     if filetype == 'pdf':
         shutil.copyfile(tmpdir + '/tikz.pdf', outfile + '.pdf')
     else:
-        call(["convert", tmpdir + '/tikz.pdf', "-density", "150", "-resize", "1500x1000", "-strip", outfile + '.' + filetype])
+        call(["convert", tmpdir + '/tikz.pdf', "-density", "300", "-resize", "1500x1000", "-strip", outfile + '.' + filetype])
     shutil.rmtree(tmpdir)
 
 def convert_tikz(format, code):
@@ -86,19 +86,21 @@ def convert_theorem(code):
 
 def str_to_math(code):
     code = code.replace("$", "$$")
-    code = code.replace("\\[", "\n$$")
-    code = code.replace("\\]", "$$\n")
-
+    code = code.replace("\\[", "$$")
+    code = code.replace("\\]", "$$")
+    code = code.replace("\n", "qq")
+    
     block = []
     marker = 0
-    for match in re.finditer("\$\$.*\$\$", code):
+    for match in re.finditer("\$\$?.*?\$\$", code):
         (start, end) = match.span()
-        block.append(Str(code[marker:start]))
-        math_value = code[start+2:end-2].replace("\n", " ")
-        marker = end + 1
+        block.append(Str(code[marker:start].replace("qq", "\n")))
+        math_value = code[start+2:end-2].replace("qq", " ")
+
+        marker = end
         block.append(Math({"t": "DisplayMath"}, math_value))
 
-    block.append(Str(code[marker:]))
+    block.append(Str(code[marker:].replace("qq", "\n")))
 
     return Para(block)
 
@@ -113,6 +115,9 @@ def convert_latex_block(code, header):
     return [hint_tag, header, output, end_hint_tag]
 
 def tex_envs(key, value, formt, _):
+    """
+    Filter to convert tex environments to markdown
+    """
     if key == 'RawBlock':
         [fmt, code] = value
         if fmt == "latex":
@@ -131,6 +136,9 @@ def tex_envs(key, value, formt, _):
                 return Str("˚")
 
 def convert_math(code):
+    """
+    Convert Custom Math Tex code into normal Tex
+    """
     diff_exp = re.compile("(\\\\diff\[)(.*?)(\]\{)(.*?)(\}\{)(.*?)(\})")
     code = diff_exp.sub(r"\\frac{d^{\2}\4}{d\6^{\2}}", code)
 
