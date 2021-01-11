@@ -41,8 +41,10 @@ jobs:
       - run: |
           mv main/create_book.py gitbook/create_book.py
           chmod +x gitbook/create_book.py
-          ./gitbook/create_book.py EE128.md
+          cd gitbook
+          ./create_book.py EE128.md
           sed -i -e 's/\\\$\\\$/\$\$/g' gitbook/**/*.md
+          cd ../
           cp -a main/tikz-images/. gitbook/.gitbook/assets
       - run: |
           cd gitbook
