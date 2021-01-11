@@ -13,7 +13,10 @@ def break_file(filepath):
     filename = os.path.basename(filepath).split(".")[0]
 
     new_dir = filename
-    shutil.rmtree(new_dir)
+    try:
+        shutil.rmtree(new_dir)
+    except:
+        pass
 
     os.mkdir(new_dir)
 
