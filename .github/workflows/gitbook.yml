@@ -24,11 +24,13 @@ jobs:
           sudo apt-get install texlive-latex-recommended texlive-science texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra
       - run: |
           rm -rf gitbook/.gitbook/assets
+          rm -rf gitbook/ee128
           mkdir -p gitbook/.gitbook/assets
+          mkdir -p gitbook/ee128
           sed -i -e 's/..\/..\/header.tex/main\/header.tex/g' main/**/Notes/notes.tex
       - uses: docker://pandoc/latex:2.11
         with:
-          args: --standalone --to json --from latex+raw_tex --output=main/tmp.json main/EE128/Notes/notes.tex
+          args: --to json --from latex+raw_tex --output=main/tmp.json main/EE128/Notes/notes.tex
       - run: |
           sudo sed -i 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/g' /etc/ImageMagick-6/policy.xml
           cd main
@@ -37,9 +39,10 @@ jobs:
           cd ../
       - uses: docker://pandoc/latex:2.11
         with:
-          args: --standalone --to markdown --from json --output=gitbook/ee128.md main/filtered.json
+          args: --standalone --to markdown --from json --output=main/ee128.md main/filtered.json
       - run: |
-          sed -i -e 's/\\\$\\\$/\$\$/g' gitbook/*.md
+          csplit --prefix='gitbook/ee128/ee128' --suffix-format='%03d.md' main/ee128.md /^#\\s/ "{*}"
+          sed -i -e 's/\\\$\\\$/\$\$/g' gitbook/**/*.md
           cp -a main/tikz-images/. gitbook/.gitbook/assets
       - run: |
           cd gitbook
