@@ -9,7 +9,7 @@ from tempfile import mkdtemp
 
 from pandocfilters import toJSONFilters
 from pandocfilters import Para, Image, get_filename4code, get_extension
-from pandocfilters import Math, Space, Str, Header
+from pandocfilters import Math, Space, Str, Header, RawInline
 
 eqn_labels = []
 defn_labels = []
@@ -80,9 +80,11 @@ def convert_figure(format, code):
     if label is not None:
         if label[0] == "fig":
             fig_labels.append(label[1])
+            sys.stderr.write(f"Found figure {label[1]}\n")
             caption = f"Figure {len(fig_labels)}: {caption}"
         elif label[0] == "table":
             table_labels.append(label[1])
+            sys.stderr.write(f"Found table {label[1]}\n")
             caption = f"Table {len(table_labels)}: {caption}"
 
     return Para([Image(['', [], []], [Str(caption)], [f".gitbook/assets/{filename}.{filetype}", ""])])
@@ -118,13 +120,19 @@ def str_to_math(code):
     
     block = []
     marker = 0
-    for match in re.finditer("\$\$?.*?\$\$", code):
+    for match in re.finditer("(\$\$?.*?\$\$)|(\\\\cref\{.*?\})", code):
         (start, end) = match.span()
-        block.append(Str(code[marker:start].replace("qq", "\n")))
-        math_value = code[start+2:end-2].replace("qq", " ")
+        if match.group(1) is not None:
+            block.append(Str(code[marker:start].replace("qq", "\n")))
+            math_value = code[start+2:end-2].replace("qq", " ")
 
-        marker = end
-        block.append(Math({"t": "DisplayMath"}, math_value))
+            marker = end
+            block.append(Math({"t": "DisplayMath"}, math_value))
+        elif match.group(2) is not None:
+            block.append(Str(code[marker:start]))
+            ref = code[start:end]
+            block.append(RawInline("latex", ref))
+            marker = end
 
     block.append(Str(code[marker:].replace("qq", "\n")))
 
@@ -202,30 +210,31 @@ def custom_math(key, value, format, meta):
         else:
             return Math(mathType, value)
 
+def label_to_text(label):
+    [ref_type, ref_val] = label.split(":")
+    if ref_type == "eqn":
+        label_num = eqn_labels.index(ref_val) + 1
+        return f"equation {label_num}"
+    if ref_type == "defn":
+        label_num = defn_labels.index(ref_val) + 1
+        return f"definition {label_num}"
+    if ref_type == "thm":
+        label_num = thm_labels.index(ref_val) + 1
+        return f"theorem {label_num}"
+    if ref_type == "fig":
+        label_num = fig_labels.index(ref_val) + 1
+        return f"figure {label_num}"
+    if ref_type == "table":
+        label_num = table_labels.index(ref_val) + 1
+        return f"table {label_num}"
+    return "(unknown reference)"
+
 def references(key, value, formt, _):
     if key == "RawInline":
         [fmt, code] = value
-        if fmt == "latex":
-            if (match := re.match("(\\\\cref\{eqn:)(.*?)(\})", code)):
-                if match.group(2) in eqn_labels:
-                    label_num = eqn_labels.index(match.group(2)) + 1
-                    return Str(f"equation {label_num}")
-            elif (match := re.match("(\\\\cref\{defn:)(.*?)(\})", code)):
-                if match.group(2) in defn_labels:
-                    label_num = defn_labels.index(match.group(2)) + 1
-                    return Str(f"definition {label_num}")
-            elif (match := re.match("(\\\\cref\{thm:)(.*?)(\})", code)):
-                if match.group(2) in thm_labels:
-                    label_num = thm_labels.index(match.group(2)) + 1
-                    return Str(f"theorem {label_num}")
-            elif (match := re.match("(\\\\cref\{fig:)(.*?)(\})", code)):
-                if match.group(2) in fig_labels:
-                    label_num = fig_labels.index(match.group(2)) + 1
-                    return Str(f"figure {label_num}")
-            elif (match := re.match("(\\\\cref\{table:)(.*?)(\})", code)):
-                if match.group(2) in table_labels:
-                    label_num = table_labels.index(match.group(2)) + 1
-                    return Str(f"table {label_num}")
+        if fmt == "latex" and (match := re.match("\\\\cref\{(.*?)\}", code)):
+            refs = match.group(1).split(",")
+            return Str(", ".join(map(label_to_text, refs)))
 
 def cleanup(key, value, formt, _):
     if key == "RawInline" or key =="RawBlock":
