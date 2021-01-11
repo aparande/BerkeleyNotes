@@ -7,9 +7,17 @@ import shutil
 
 
 def break_file(filepath):
+    print(f"Processing file {filepath}")
     with open(filepath, 'r') as f:
         contents = f.read()
 
+    lines = contents.split("\n")
+    print(f"Contents are {len(lines)}")
+    print(f"Testing some regexs")
+    print(str(re.findall("^#\s(.*?)($|\{)", contents, flags=re.M)))
+    print(str(re.findall("^#\s(.*?)($|\{)", contents, flags=re.MULTILINE)))
+    print(str(re.findall("^#\s(.*?)$", contents, flags=re.M)))
+    re.compile("^#\s(.*?)($|\{)", flags=re.M | re.DEBUG)
     filename = os.path.basename(filepath).split(".")[0]
 
     new_dir = filename
