@@ -11,15 +11,11 @@ from pandocfilters import toJSONFilters
 from pandocfilters import Para, Image, get_filename4code, get_extension
 from pandocfilters import Math, Space, Str, Header
 
-global definition_num
-definition_num = 0
-
-global theorem_num
-theorem_num = 0
-
 eqn_labels = []
 defn_labels = []
 thm_labels = []
+table_labels = []
+fig_labels = []
 
 unit_map = {
     "degree": "˚", "per": "/", "decade": "dec"
@@ -33,7 +29,7 @@ def tikz2image(tikz_src, filetype, outfile):
     os.chdir(tmpdir)
 
     with open('tikz.tex', 'w') as f:
-        f.write("\\documentclass{standalone}")
+        f.write("\\documentclass[]{standalone}")
         f.write("\n\\input{" + header_file + "}")
         f.write("""
                 \\begin{document}
@@ -46,14 +42,10 @@ def tikz2image(tikz_src, filetype, outfile):
     if filetype == 'pdf':
         shutil.copyfile(tmpdir + '/tikz.pdf', outfile + '.pdf')
     else:
-        call(["convert", tmpdir + '/tikz.pdf', "-density", "300", "-resize", "1000x500", "-strip", outfile + '.' + filetype])
+        call(["convert", tmpdir + '/tikz.pdf', "-density", "500", "-strip", outfile + '.' + filetype])
     shutil.rmtree(tmpdir)
 
-def convert_tikz(format, code):
-    """
-    Filter to convert tikz pictures into images.
-    Taken fom pandocfilters documentation: https://github.com/jgm/pandocfilters/blob/master/examples/tikz.py
-    """
+def convert_to_image(format, code):
     outfile = get_filename4code("tikz", code)
     filename = outfile.split("/")[1]
     filetype = get_extension(format, "png", html="png", latex="pdf")
@@ -61,7 +53,39 @@ def convert_tikz(format, code):
     if not os.path.isfile(src):
         tikz2image(code, filetype, outfile)
         sys.stderr.write('Created image ' + src + '\n')
-    return Para([Image(['', [], []], [], [f".gitbook/assets/{filename}.{filetype}", ""])])
+
+    return filename, filetype
+
+def convert_figure(format, code):
+    """
+    Filter to convert tikz pictures into images.
+    Taken fom pandocfilters documentation: https://github.com/jgm/pandocfilters/blob/master/examples/tikz.py
+    """
+    meta_regex = re.compile("(\\\\caption\{(.*?)\})|(\\\\label\{(.*?)\})")
+    figure_code = meta_regex.sub("", code)
+    figure_code = re.sub("\\\\centering", "", figure_code)
+    figure_code = re.sub("(\[H\])|(\[!h\])", "", figure_code)
+    figure_code = re.sub("(\\\\begin\{figure\})|(\\\\begin\{table\})", "\\\\begin{minipage}[c]{1.5\\\\linewidth}", figure_code)
+    figure_code = re.sub("(figure)|(table)", "minipage", figure_code)
+    figure_code = "\n".join(figure_code.split("\n")[1:-1])
+    filename, filetype = convert_to_image(format, figure_code)
+    
+    caption, label = "", None
+    for match in meta_regex.finditer(code):
+        if match.group(2) is not None:
+            caption = match.group(2)
+        elif match.group(4) is not None:
+            label = match.group(4).split(":")
+
+    if label is not None:
+        if label[0] == "fig":
+            fig_labels.append(label[1])
+            caption = f"Figure {len(fig_labels)}: {caption}"
+        elif label[0] == "table":
+            table_labels.append(label[1])
+            caption = f"Table {len(table_labels)}: {caption}"
+
+    return Para([Image(['', [], []], [Str(caption)], [f".gitbook/assets/{filename}.{filetype}", ""])])
 
 def convert_definition(code):
     label_exp = re.compile("(\\\\label\{defn:)(.*?)(\})")
@@ -123,10 +147,8 @@ def tex_envs(key, value, formt, meta):
     if key == 'RawBlock':
         [fmt, code] = value
         if fmt == "latex":
-            if re.match("\\\\begin{tikzpicture}", code):
-                return convert_tikz(formt, code)
-            elif re.match("\\\\begin{tabularx}", code):
-                return convert_tikz(formt, code)
+            if re.match("\\\\begin{gitbook-image}", code):
+                return convert_figure(formt, code)
             elif re.match("\\\\begin{definition}", code):
                 return convert_definition(code)
             elif re.match("\\\\begin{theorem}", code):
@@ -196,6 +218,15 @@ def references(key, value, formt, _):
                 if match.group(2) in thm_labels:
                     label_num = thm_labels.index(match.group(2)) + 1
                     return Str(f"theorem {label_num}")
+            elif (match := re.match("(\\\\cref\{fig:)(.*?)(\})", code)):
+                if match.group(2) in fig_labels:
+                    label_num = fig_labels.index(match.group(2)) + 1
+                    return Str(f"figure {label_num}")
+            elif (match := re.match("(\\\\cref\{table:)(.*?)(\})", code)):
+                if match.group(2) in table_labels:
+                    label_num = table_labels.index(match.group(2)) + 1
+                    return Str(f"table {label_num}")
+
 def cleanup(key, value, formt, _):
     if key == "RawInline" or key =="RawBlock":
         [fmt, code] = value

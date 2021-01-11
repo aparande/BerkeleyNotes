@@ -19,39 +19,42 @@ In general, there are two different types of control.
   Open-Loop control is where we pass a reference directly to the actuator to control the plant (see \cref{fig:open-loop}).
   \label{defn:open-loop}
 \end{definition}
-\begin{figure}[H]
-  \centering
-  \begin{tikzpicture}[auto, node distance=2cm,>=latex']
-    % We start by placing the blocks
-    \node [input, name=input] (input) {};
-	\node [amp, name=amp, right of=input, node distance=2cm] (amp) {$K$};
-    \node [block, name=actuator, right of=amp, node distance=4cm] (actuator) {Actuator};
-    \node [sum, right of=actuator, node distance=2cm] (sum1) {};
-    \node [block, name=plant, right of=sum1, node distance=2cm] (plant) {Plant};
-    \node [sum, right of=plant, node distance=2cm] (sum2) {};
-    \node [output, right of=sum2, node distance=1cm] (output) {};
+\begin{gitbook-image}
+  \begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[auto, node distance=2cm,>=latex']
+	  % We start by placing the blocks
+	  \node [input, name=input] (input) {};
+	  \node [amp, name=amp, right of=input, node distance=2cm] (amp) {$K$};
+	  \node [block, name=actuator, right of=amp, node distance=4cm] (actuator) {Actuator};
+	  \node [sum, right of=actuator, node distance=2cm] (sum1) {};
+	  \node [block, name=plant, right of=sum1, node distance=2cm] (plant) {Plant};
+	  \node [sum, right of=plant, node distance=2cm] (sum2) {};
+	  \node [output, right of=sum2, node distance=1cm] (output) {};
 
-    \node [input, name=dist1, below of=sum1, node distance=1cm] (disturbance1) {};
-    \node [input, name=dist2, below of=sum2, node distance=1cm] (disturbance2) {};
+	  \node [input, name=dist1, below of=sum1, node distance=1cm] (disturbance1) {};
+	  \node [input, name=dist2, below of=sum2, node distance=1cm] (disturbance2) {};
 
-    % Once the nodes are placed, connecting them is easy. 
-    \draw [->] (input) -- node {$r(t)$} (amp);
-    \draw [->] (amp) -- node {$u(t)$} (actuator);
-    \draw [->] (actuator) -- (sum1);
-    \draw [->] (sum1) -- (plant);
-    \draw [->] (plant) -- (sum2);
-    \draw [->] (sum2) -- node[right of=output, node distance=1cm] {output} (output);
-    \draw [->] (disturbance1) -- node[below of=disturbance1, node distance=0.5cm] {$d_1(t)$} (sum1);
-    \draw [->] (disturbance2) -- node[below of=disturbance2, node distance=0.5cm] {$d_2(t)$} (sum2);
-  \end{tikzpicture}
-  \caption{Open-Loop Control}
-  \label{fig:open-loop}
-\end{figure}
+	  % Once the nodes are placed, connecting them is easy. 
+	  \draw [->] (input) -- node {$r(t)$} (amp);
+	  \draw [->] (amp) -- node {$u(t)$} (actuator);
+	  \draw [->] (actuator) -- (sum1);
+	  \draw [->] (sum1) -- (plant);
+	  \draw [->] (plant) -- (sum2);
+	  \draw [->] (sum2) -- node[right of=output, node distance=1cm] {output} (output);
+	  \draw [->] (disturbance1) -- node[below of=disturbance1, node distance=0.5cm] {$d_1(t)$} (sum1);
+	  \draw [->] (disturbance2) -- node[below of=disturbance2, node distance=0.5cm] {$d_2(t)$} (sum2);
+	\end{tikzpicture}
+	\caption{Open-Loop Control}
+	\label{fig:open-loop}
+  \end{figure}
+\end{gitbook-image}
 Open-Loop control is generally difficult because the disturbances make it difficult to copy the reference exactly.
 \begin{definition}
   Closed loop control is using the output of our system and comparing it to the reference in order to generate the control signal (see \cref{fig:closed-loop}).
   \label{defn:closed-loop}
 \end{definition}
+\begin{gitbook-image}
 \begin{figure}[H]
     \centering 
     % The block diagram code is probably more verbose than necessary
@@ -89,6 +92,7 @@ Open-Loop control is generally difficult because the disturbances make it diffic
     \caption{Closed-Loop Control}
     \label{fig:closed-loop}
 \end{figure}
+\end{gitbook-image}
 Notice how the output signal is subtracted from a reference signal, and we use the difference (a.k.a the error) to determine what input we pass into the plant.
 \begin{definition}
   The control law $K(e)$ is a function of error applied by the controller to determine the inputs to the plant.
@@ -113,6 +117,7 @@ In other words, given an electrical system, we can convert it into a mechanical 
 Capacitors act like springs as energy storage, resistors act like dampers which dissipate energy, and inductors act like inertial masses which resist movement.
 These are clear from their force/voltage differential equations (in the Laplace domain) in \cref{table:electro-mechanical-equivalence}.
 Under these analogies, forces are like voltages, currents are like velocities, and charge is like position.
+\begin{gitbook-image}
 \begin{table}[!h]
   \centering
 	\begin{tabularx}{\textwidth}{YYYY}
@@ -128,6 +133,7 @@ Under these analogies, forces are like voltages, currents are like velocities, a
 	\caption{Electro-mechanical equations and their analogies.}
 	\label{table:electro-mechanical-equivalence}
 \end{table}
+\end{gitbook-image}
 \subsection{Linearization} %TODO: Look at linaerization resource linked on course site
 Because non-linear systems often have dynamics which are complicated to analyze, a standard trick to make them simpler is to linearize them.
 \begin{definition}
@@ -318,6 +324,7 @@ A theorem analogous to \cref{thm:controllability} exists for observability.
 \subsection{Time Delays}
 Sometimes systems have a time-delay in them. This is equivalent to placing a system before the plant with impulse response $\delta(t-T)$ since $x(t)*\delta(t-T) = x(t-T)$.
 In the Laplace domain, this is the same as the transfer function $e^{-sT}$ as shown in \cref{fig:time-delay}.
+\begin{gitbook-image}
 \begin{figure}[H]
     \centering 
     % The block diagram code is probably more verbose than necessary
@@ -342,6 +349,7 @@ In the Laplace domain, this is the same as the transfer function $e^{-sT}$ as sh
     \caption{System with time delay}
     \label{fig:time-delay}
 \end{figure}
+\end{gitbook-image}
 \section{System Performance}
 \begin{definition}
   The step response of a system is how a system $H(s)$ responds to a step input.
@@ -493,6 +501,7 @@ If instead $\lim_{t\to\infty}\V{x}(t) = \infty$, then the system is unstable.
 In all other cases, the system will be unstable.
 \subsection{Steady State Error}
 Consider the unity feedback loop depicted in \cref{fig:unity-feedback-loop} where we put a system $G(s)$ in unity feedback to control it.
+\begin{gitbook-image}
 \begin{figure}[H]
     \centering 
     % The block diagram code is probably more verbose than necessary
@@ -515,6 +524,7 @@ Consider the unity feedback loop depicted in \cref{fig:unity-feedback-loop} wher
     \caption{Unity Feedback Loop}
     \label{fig:unity-feedback-loop}
 \end{figure}
+\end{gitbook-image}
 We want to understand what its steady state error will be in response to different inputs.
 \begin{theorem}
   The final value theorem says that for a function whose unilateral laplace transform has all poles in the left half plane,
@@ -586,6 +596,7 @@ Looking at the error between the reference and the output in the 1D input case,
   \V{e}(t) = \V{r}(t) - \V{y}(t) = 1 - C\V{x}_{ss} = 1 + CA^{-1}B.
 \]
 \subsection{Margins}
+\begin{gitbook-image}
 \begin{figure}[H]
     \centering 
     % The block diagram code is probably more verbose than necessary
@@ -605,6 +616,7 @@ Looking at the error between the reference and the output in the 1D input case,
     \caption{Frequency Response}
     \label{fig:frequency-response}
 \end{figure}
+\end{gitbook-image}
 If we take a complex exponential and pass it into a causal LTI system with impulse response $g(t)$, then
 \[
   y(t) = e^{j\omega t} * g(t) = \int_{-\infty}^{\infty}g(\tau)e^{j\omega(t-\tau)}d\tau = e^{j\omega t} \int_{0}^{\infty}g(\tau)e^{-j\omega \tau}d\tau.
@@ -631,6 +643,7 @@ If $|G(j\omega)| \geq 1$, then this will feed back into the error term where it 
   \label{defn:phase-margin}
 \end{definition}
 We can imagine the gain and phase margin like placing a ``virtual box'' before the plant as shown in \cref{fig:margin-controller}.
+\begin{gitbook-image}
 \begin{figure}[H]
     \centering 
     % The block diagram code is probably more verbose than necessary
@@ -655,6 +668,7 @@ We can imagine the gain and phase margin like placing a ``virtual box'' before t
     \caption{The Gain and Phase Margin virtual system}
     \label{fig:margin-controller}
 \end{figure}
+\end{gitbook-image}
 The characteristic polynomial of the closed loop transfer function is
 \[
   1 + G_me^{-j\phi_m}G(s) = 0.
@@ -676,6 +690,7 @@ Notice that if there is a time delay of $T$ in the system, the phase margin will
 \]
 \section{Design Tools}
 \subsection{Root Locus}
+\begin{gitbook-image}
 \begin{figure}[H]
     \centering 
     % The block diagram code is probably more verbose than necessary
@@ -701,6 +716,7 @@ Notice that if there is a time delay of $T$ in the system, the phase margin will
     \caption{Feedback Controller}
     \label{fig:rl-feedback-controller}
 \end{figure}
+\end{gitbook-image}
 Suppose we choose to control the plant by scaling our error signal by $K$ and then put the controller on the feedback path like in \cref{fig:rl-feedback-controller}.
 It would be helpful for us to understand how the closed loop poles of the feedback system change as $K$ is varied over the range $[0, \infty)$.
 First, suppose
@@ -842,6 +858,7 @@ This means we can approximate bode plots using piece-wise linear segments using 
 \end{enumerate}
 One useful way to use bode plots is to approximate the gain and phase margin because they can easily be seen visually from the plots themselves.
 \subsection{Nyquist Criteria}
+\begin{gitbook-image}
 \begin{figure}[H]
     \centering 
     % The block diagram code is probably more verbose than necessary
@@ -864,6 +881,7 @@ One useful way to use bode plots is to approximate the gain and phase margin bec
     \caption{Feedback Controller}
     \label{fig:nyquist-feedback-controller}
 \end{figure}
+\end{gitbook-image}
 Consider the basic feedback system in \cref{fig:nyquist-feedback-controller} and suppose that
 \[
   G(s) = \frac{N_G}{D_G} \qquad H(s) = \frac{N_H}{D_H}.
@@ -903,6 +921,7 @@ The contour which is easiest to find the mapping for is the one which starts at 
 This is the easiest because while the contour is on the imaginary axis, the mapping is just the frequency response of the system, and we can use the Bode plot of the system in order to draw the contour because each point on the mapping is a complex vector, and the bode plot can give us both the magnitude and angle of that vector.
 \section{Cascade Compensation}
 One easy way to control the plant is to cascade a controller before the plant like in \cref{fig:cascade-comp}.
+\begin{gitbook-image}
 \begin{figure}[H]
     \centering 
     % The block diagram code is probably more verbose than necessary
@@ -927,6 +946,7 @@ One easy way to control the plant is to cascade a controller before the plant li
     \caption{Cascade Feedback Compensation}
     \label{fig:cascade-comp}
 \end{figure}
+\end{gitbook-image}
 We can design the controller H(s) to alter the behavior of our system.
 \subsection{Proportional Integral (PI) Control}
 \begin{definition}
@@ -973,6 +993,7 @@ A PID controller is used where we need to both eliminate steady-state error and 
 The purpose of a lag network is to reduce steady state error by increasing the gains at low frequency and maintaining the gain at higher frequencies. This keeps the phase margin the same.
 We can achieve this because of the frequency response of the lag network (shown by its bode plot in \cref{fig:lag-network}).
 
+\begin{gitbook-image}
 \begin{figure}
   \centering
   \begin{tikzpicture}
@@ -1005,6 +1026,7 @@ We can achieve this because of the frequency response of the lag network (shown 
   \caption{Lag Network}
   \label{fig:lag-network}
 \end{figure}
+\end{gitbook-image}
 We can place the pole and zero carefully to control how much the phase decreases by. The design procedure is as follows:
 \begin{enumerate}
   \item Set gain $K$ to the value that satisfies the SSE specification and plot the Bode diagram at that gain.
@@ -1038,6 +1060,7 @@ Its frequency response looks like in \cref{fig:lead-network}.
   \item Reset the gain.
   \item Simulate and tweak.
 \end{enumerate}
+\begin{gitbook-image}
 \begin{figure}
   \centering
   \begin{tikzpicture}
@@ -1070,6 +1093,7 @@ Its frequency response looks like in \cref{fig:lead-network}.
   \caption{Lead Network}
   \label{fig:lead-network}
 \end{figure}
+\end{gitbook-image}
 \section{State-Space Control} \label{sec:ss-control}
 The basic idea behind state space control is to use the state of the system in order to set the input. Namely, if we are given
 \[
@@ -1132,6 +1156,7 @@ Looking at the combined system,
   + \begin{bmatrix} B \\ \bs{0} \end{bmatrix}\V{r}.
 \]
 Notice that the poles of this system are just the poles of the original system and the poles of the observer system, so we can choose $K$ and $L$ independently.
+\begin{gitbook-image}
 \begin{figure}
     \centering 
     % The block diagram code is probably more verbose than necessary
@@ -1190,6 +1215,7 @@ Notice that the poles of this system are just the poles of the original system a
     \caption{State Observer System}
     \label{fig:observer}
 \end{figure}
+\end{gitbook-image}
 \subsection{Integrators in State Feedback}
 Suppose we wanted to get rid of the steady state error using state-space control. We would do this using an integrator over the error in the observed outputs.
 \[
@@ -1220,6 +1246,7 @@ In particular, we want to minimize the cost function
 \]
 where $R$ and $Q$ are positve-semi-definite matrices (typically diagonal) and determine how much we penalize the error and the control effort.
 \section{Digital Control Systems}
+\begin{gitbook-image}
 \begin{figure}[H]
     \centering 
     \begin{tikzpicture}[auto, node distance=2cm,>=latex']
@@ -1256,6 +1283,7 @@ where $R$ and $Q$ are positve-semi-definite matrices (typically diagonal) and de
     \caption{Digital Control System}
     \label{fig:digital-control}
 \end{figure}
+\end{gitbook-image}
 When using a digital system to control a CT system, the inputs $u(t)$ must be held constant for a particular amount of time.
 This is equivalent to using a zero-order hold for sampling period $T$.
 At an multiple of the sampling period $kT$
