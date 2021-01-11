@@ -4,7 +4,7 @@ on:
     branches: [gitbook-setup]
 jobs:
   compile-pandoc:
-    runs-on: ubuntu-18.04
+    runs-on: macos-10.15
     steps:
       - uses: actions/checkout@v2
         with:
@@ -19,8 +19,8 @@ jobs:
           python-version: '3.8'
       - name: Dependency Installation
         run: |
-          python -m pip install --upgrade pip
-          pip install pandocfilters
+          python3 -m pip install --upgrade pip
+          pip3 install pandocfilters
           sudo apt-get install texlive-latex-recommended texlive-science texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra
       - run: |
           rm -rf gitbook/.gitbook/assets
@@ -30,7 +30,6 @@ jobs:
         with:
           args: --to json --from latex+raw_tex --output=main/tmp.json main/EE128/Notes/notes.tex
       - run: |
-          sudo sed -i 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/g' /etc/ImageMagick-6/policy.xml
           cd main
           chmod +x pandoc_filter.py
           cat tmp.json | ./pandoc_filter.py > filtered.json
@@ -42,7 +41,7 @@ jobs:
           mv main/create_book.py gitbook/create_book.py
           chmod +x gitbook/create_book.py
           cd gitbook
-          ./create_book.py EE128.md
+          python3 create_book.py EE128.md
           cd ../
           sed -i -e 's/\\\$\\\$/\$\$/g' gitbook/**/*.md
           cp -a main/tikz-images/. gitbook/.gitbook/assets
