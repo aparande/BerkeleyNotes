@@ -37,11 +37,11 @@ jobs:
           cd ../
       - uses: docker://pandoc/latex:2.11
         with:
-          args: -to markdown --from json --output=gitbook/ee128.md main/filtered.json
+          args: --to markdown --from json --output=gitbook/EE128.md main/filtered.json
       - run: |
           mv main/create_book.py gitbook/create_book.py
           chmod +x gitbook/create_book.py
-          ./gitbook/create_book.py ee128.md
+          ./gitbook/create_book.py EE128.md
           sed -i -e 's/\\\$\\\$/\$\$/g' gitbook/**/*.md
           cp -a main/tikz-images/. gitbook/.gitbook/assets
       - run: |
