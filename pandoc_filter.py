@@ -9,7 +9,7 @@ from tempfile import mkdtemp
 
 from pandocfilters import toJSONFilters
 from pandocfilters import Para, Image, get_filename4code, get_extension
-from pandocfilters import Math, Space, Str, Header, RawInline
+from pandocfilters import Math, Space, Str, Header, RawInline, LineBreak
 
 eqn_labels = []
 defn_labels = []
@@ -111,7 +111,6 @@ def convert_theorem(code):
     return convert_latex_block(code, header)
 
 def str_to_math(code):
-    code = code.replace("$", "$$")
     code = code.replace("\\[", "$$")
     code = code.replace("\\]", "$$")
     code = code.replace("\\begin{equation}", "$$")
@@ -120,7 +119,7 @@ def str_to_math(code):
     
     block = []
     marker = 0
-    for match in re.finditer("(\$\$?.*?\$\$)|(\\\\cref\{.*?\})", code):
+    for match in re.finditer("(\$\$.*?\$\$)|(\\\\cref\{.*?\})|(\$.*?\$)", code):
         (start, end) = match.span()
         if match.group(1) is not None:
             block.append(Str(code[marker:start].replace("qq", "\n")))
@@ -133,6 +132,12 @@ def str_to_math(code):
             ref = code[start:end]
             block.append(RawInline("latex", ref))
             marker = end
+        elif match.group(3) is not None:
+            block.append(Str(code[marker:start].replace("qq", "\n")))
+            math_value = code[start+1:end-1].replace("qq", " ")
+
+            marker = end
+            block.append(Math({"t": "InlineMath"}, math_value))
 
     block.append(Str(code[marker:].replace("qq", "\n")))
 
@@ -208,7 +213,7 @@ def custom_math(key, value, format, meta):
             mathType['t'] = "DisplayMath"
             return Math(mathType, value)
         else:
-            return Math(mathType, value)
+            return [Str("\n\n"), Math(mathType, value), Str("\n\n")]
 
 def label_to_text(label):
     [ref_type, ref_val] = label.split(":")
