@@ -24,9 +24,7 @@ jobs:
           sudo apt-get install texlive-latex-recommended texlive-science texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra
       - run: |
           rm -rf gitbook/.gitbook/assets
-          rm -rf gitbook/ee128
           mkdir -p gitbook/.gitbook/assets
-          mkdir -p gitbook/ee128
           sed -i -e 's/..\/..\/header.tex/main\/header.tex/g' main/**/Notes/notes.tex
       - uses: docker://pandoc/latex:2.11
         with:
@@ -41,7 +39,7 @@ jobs:
         with:
           args: --standalone --to markdown --from json --output=main/ee128.md main/filtered.json
       - run: |
-          csplit --prefix='gitbook/ee128/ee128' --suffix-format='%03d.md' main/ee128.md /^#\\s/ "{*}"
+          csplit --prefix='gitbook/ee128' --suffix-format='-%03d.md' main/ee128.md /'^'#''s/ "{*}"
           sed -i -e 's/\\\$\\\$/\$\$/g' gitbook/**/*.md
           cp -a main/tikz-images/. gitbook/.gitbook/assets
       - run: |
