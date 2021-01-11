@@ -36,7 +36,7 @@ def break_file(filepath):
         header_map.append((new_file, titles[idx]))
 
 
-    new_file = f"{new_dir}/{filename}-{idx+1}.md"
+    new_file = f"{new_dir}/{filename}-{len(titles)-1}.md"
     with open(new_file, "w") as f:
         f.write(contents[marker:])
 
