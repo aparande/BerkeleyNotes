@@ -21,9 +21,9 @@ def break_file(filepath):
     os.mkdir(new_dir)
 
     marker = 0
-    titles = ["Introduction"]
+    titles = [filename]
     header_map = []
-    for idx, match in enumerate(re.finditer("^#\s(.*?)(\n|\{)", contents, flags=re.M)):
+    for idx, match in enumerate(re.finditer("^#\s(.*?)($|\{)", contents, flags=re.M)):
         [start, end] = match.span()
         header_title = match.group(1)
         titles.append(header_title)
@@ -54,6 +54,8 @@ if __name__ == '__main__':
         f.writelines(["# Table of contents\n", "* [Introduction](README.md)\n"])
         for input_file, header_map in maps:
             dirname = os.path.basename(input_file).split(".")[0]
-            f.writelines(map(lambda x: f"\t* [{x[1]}]({x[0]})\n", header_map))
+            f.write(f"* [{header_map[0][1]}]({header_map[0][0]})\n")
+            if len(header_map) > 1:
+                f.writelines(map(lambda x: f"\t* [{x[1]}]({x[0]})\n", header_map[1:]))
             os.remove(input_file)
 
