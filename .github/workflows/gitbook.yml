@@ -38,6 +38,10 @@ jobs:
       - uses: docker://pandoc/latex:2.11
         with:
           args: --to markdown --from json --output=gitbook/EE128.md main/filtered.json
+      - uses: actions/upload-artifact/@v2
+        with:
+          name: ee128
+          path: gitbook/EE128.md
       - run: |
           mv main/create_book.py gitbook/create_book.py
           chmod +x gitbook/create_book.py
