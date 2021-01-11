@@ -285,7 +285,7 @@ Then using \cref{eqn:ss-td-sol},
 \[
   -\V{x}_0 = \int_0^{t_f} e^{-A\tau}B\V{u}(\tau)d\tau.
 \]
-By the Cayley-Hamilton Theorem (\cref{appendix:cayley}),
+By the Cayley-Hamilton Theorem (see \cref{appendix:cayley}),
 \begin{align*}
   -\V{x}_0 = \sum_{j=0}^{n-1}A^jB\int_0^{t_f}\alpha_j(\tau)\V{u}(\tau)d\tau\\
   \therefore \begin{bmatrix} B & AB & A^2 B & \ldots & A^{n-1}B \end{bmatrix}
@@ -766,7 +766,7 @@ If we restrict ourselves to the real axis, then given a closed loop pole $s$, ea
 When $K$ is small, then the poles look like the open loop poles. As $K$ grows very large, then the poles look like the open loop zeros.
 \begin{theorem}
   The root locus begins at the open loop poles and ends at the open loop zeros
-  \label{eqn:rl-four}
+  \label{thm:rl-four}
 \end{theorem}
 If there are more poles ($n$) then zeros ($m$), then not all of the poles will end up at a zero in the limit. This means that $n-m$ poles must branch off to infinity.
 \[
@@ -781,7 +781,7 @@ If there are more poles ($n$) then zeros ($m$), then not all of the poles will e
   \[
 	\sigma = \frac{\sum_{i=1}^m p_i - \sum_{i=1}^n z_i}{n-m}.
   \]
-  \label{eqn:rl-five}
+  \label{thm:rl-five}
 \end{theorem}
 If there is a gap between real-axis segments, in order to end at an open loop zero, poles must sometimes break away from the real axis and then re-enter.
 \begin{theorem}

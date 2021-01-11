@@ -9,13 +9,14 @@ from tempfile import mkdtemp
 
 from pandocfilters import toJSONFilters
 from pandocfilters import Para, Image, get_filename4code, get_extension
-from pandocfilters import Math, Space, Str, Header, RawInline, LineBreak
+from pandocfilters import Math, Space, Str, Header, RawInline, LineBreak, stringify
 
 eqn_labels = []
 defn_labels = []
 thm_labels = []
 table_labels = []
 fig_labels = []
+section_labels = dict()
 
 unit_map = {
     "degree": "˚", "per": "/", "decade": "dec"
@@ -171,6 +172,9 @@ def tex_envs(key, value, formt, meta):
         if fmt == "latex":
             if re.match("\\\\textdegree", code):
                 return Str("˚")
+    elif key == "Header":
+        [level, [label, _, _], content] = value
+        section_labels[label] = stringify(content)
 
 def convert_math(code):
     """
@@ -195,12 +199,16 @@ def convert_math(code):
     code = re.sub("\\\\eqnnumber", " ", code)
 
     label_exp = re.compile("(\\\\label\{eqn:)(.*?)(\})")
+    out = ""
+    marker = 0
     for match in label_exp.finditer(code):
         sys.stderr.write(f"Found equation {match.group(2)}\n")
         eqn_labels.append(match.group(2))
         (start, end) = match.span()
-        code = code[:start] + f"\\qquad ({len(eqn_labels)})" + code[end:]
-    return code.replace("\n", " ")
+        out += code[marker:start] + f"\\qquad ({len(eqn_labels)})"
+        marker = end
+    out += code[marker:]
+    return out.replace("\n", " ")
 
 def custom_math(key, value, format, meta):
     """
@@ -232,7 +240,7 @@ def label_to_text(label):
     if ref_type == "table":
         label_num = table_labels.index(ref_val) + 1
         return f"table {label_num}"
-    return "(unknown reference)"
+    return section_labels.get(label, "(unknown reference)")
 
 def references(key, value, formt, _):
     if key == "RawInline":
