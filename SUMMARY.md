@@ -1,3 +1,11 @@
 # Table of contents
 * [Introduction](README.md)
 * [EE128](EE128/EE128-0.md)
+	* [Introduction to Control](EE128/EE128-1.md)
+	* [Modeling Systems](EE128/EE128-2.md)
+	* [System Performance](EE128/EE128-3.md)
+	* [Design Tools](EE128/EE128-4.md)
+	* [Cascade Compensation](EE128/EE128-5.md)
+	* [State-Space Control ](EE128/EE128-6.md)
+	* [Digital Control Systems](EE128/EE128-7.md)
+	* [Cayley-Hamilton ](EE128/EE128-8.md)
