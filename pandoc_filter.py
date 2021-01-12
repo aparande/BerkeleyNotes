@@ -88,7 +88,7 @@ def convert_figure(format, code):
             sys.stderr.write(f"Found table {label[1]}\n")
             caption = f"Table {len(table_labels)}: {caption}"
 
-    return Para([Image(['', [], []], [Str(caption)], [f".gitbook/assets/{filename}.{filetype}", ""])])
+    return Para([Image(['', [], []], [Str(caption)], [f"../.gitbook/assets/{filename}.{filetype}", ""])])
 
 def convert_definition(code):
     label_exp = re.compile("(\\\\label\{defn:)(.*?)(\})")
