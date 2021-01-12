@@ -1,7 +1,7 @@
 name: compile-gitbook
 on:
   push:
-    branches: [gitbook-setup]
+    branches: master
 jobs:
   compile-pandoc:
     runs-on: ubuntu-18.04
