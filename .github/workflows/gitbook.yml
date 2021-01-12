@@ -37,7 +37,7 @@ jobs:
           cd ../
       - uses: docker://pandoc/latex:2.11
         with:
-          args: --to markdown --from json --markdown-headings=atx --output=gitbook/EE128.md main/filtered.json
+          args: --to markdown --from json --atx-headers --output=gitbook/EE128.md main/filtered.json
       - uses: actions/upload-artifact/@v2
         with:
           name: ee128
