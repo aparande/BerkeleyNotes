@@ -28,7 +28,7 @@ jobs:
           sed -i -e 's/..\/..\/header.tex/main\/header.tex/g' main/**/Notes/notes.tex
       - uses: docker://pandoc/latex:2.11
         with:
-          args: --to json --from latex+raw_tex --output=main/tmp.json main/EE128/Notes/notes.tex
+          args: --to json --from latex+raw_tex --markdown-headings=atx --output=main/tmp.json main/EE128/Notes/notes.tex
       - run: |
           sudo sed -i 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/g' /etc/ImageMagick-6/policy.xml
           cd main
