@@ -1,20 +1,17 @@
-name: compile-gitbook
+name: test-gitbook
 on:
-  push:
+  pull_request:
     branches: master
+    types: [opened, edited, synchronize, reopened]
 jobs:
   compile-pandoc:
     runs-on: ubuntu-18.04
     steps:
-      - name: Checkout LaTeX
+      - name: Checkout Pull Request
         uses: actions/checkout@v2
         with:
           path: main
-      - name: Checkout gitbook
-        uses: actions/checkout@v2
-        with:
-          ref: gitbook
-          path: gitbook
+          ref: ${{ github.event.pull_request.head.sha }}
       - name: Python Setup
         uses: actions/setup-python@v2
         with:
@@ -26,15 +23,15 @@ jobs:
           sudo apt-get install texlive-latex-recommended texlive-science texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra
       - name: Setup Environment
         run: |
-          rm -rf gitbook/.gitbook/assets
-          mkdir -p gitbook/.gitbook/assets
+          mkdir output
+          mkdir -p output/.gitbook/assets
           sed -i -e 's/..\/..\/header.tex/main\/header.tex/g' main/**/Notes/notes.tex
           sudo sed -i 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/g' /etc/ImageMagick-6/policy.xml
       - name: Convert EE128 to JSON
         uses: docker://pandoc/latex:2.11
         with:
           args: --to json --from latex+raw_tex --output=main/tmp.json main/EE128/Notes/notes.tex
-      - name: Filter
+      - name: Filter 
         run: |
           cd main
           chmod +x pandoc_filter.py
@@ -43,24 +40,25 @@ jobs:
       - name: Convert EE128 to Markdown
         uses: docker://pandoc/latex:2.11
         with:
-          args: --to markdown --from json --atx-headers --output=gitbook/EE128.md main/filtered.json
+          args: --to markdown --from json --atx-headers --output=output/EE128.md main/filtered.json
       - name: Copy Images
         run: |
-          cp -a main/tikz-images/. gitbook/.gitbook/assets
+          cp -a main/tikz-images/. output/.gitbook/assets
+      - name: Save raw markdown
+        uses: actions/upload-artifact@v2
+        with:
+          name: pandoc-output
+          path: output
       - name: Compile Book
         run: |
-          mv main/create_book.py gitbook/create_book.py
-          chmod +x gitbook/create_book.py
-          cd gitbook
+          mv main/create_book.py output/create_book.py
+          chmod +x output/create_book.py
+          cd output
           python3 create_book.py EE128.md
           cd ../
-          sed -i -e 's/\\\$\\\$/\$\$/g' gitbook/**/*.md
-      - name: Publish Book
-        run: |
-          cd gitbook
-          git pull
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add .
-          git commit -m "Recompile Markdown from LaTeX source"
-          git push
+          sed -i -e 's/\\\$\\\$/\$\$/g' output/**/*.md
+      - name: Upload Book
+        uses: actions/upload-artifact@v2
+        with:
+          name: final-output
+          path: output
