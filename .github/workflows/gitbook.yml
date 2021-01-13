@@ -6,10 +6,12 @@ jobs:
   compile-pandoc:
     runs-on: ubuntu-18.04
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout LaTeX
+        uses: actions/checkout@v2
         with:
           path: main
-      - uses: actions/checkout@v2
+      - name: Checkout gitbook
+        uses: actions/checkout@v2
         with:
           ref: gitbook
           path: gitbook
@@ -22,35 +24,39 @@ jobs:
           python -m pip install --upgrade pip
           pip install pandocfilters
           sudo apt-get install texlive-latex-recommended texlive-science texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra
-      - run: |
+      - name: Setup Environment
+        run: |
           rm -rf gitbook/.gitbook/assets
           mkdir -p gitbook/.gitbook/assets
           sed -i -e 's/..\/..\/header.tex/main\/header.tex/g' main/**/Notes/notes.tex
-      - uses: docker://pandoc/latex:2.11
+          sudo sed -i 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/g' /etc/ImageMagick-6/policy.xml
+      - name: Convert EE128 to JSON
+        uses: docker://pandoc/latex:2.11
         with:
           args: --to json --from latex+raw_tex --output=main/tmp.json main/EE128/Notes/notes.tex
-      - run: |
-          sudo sed -i 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/g' /etc/ImageMagick-6/policy.xml
+      - name: Filter
+        run: |
           cd main
           chmod +x pandoc_filter.py
           cat tmp.json | ./pandoc_filter.py > filtered.json
           cd ../
-      - uses: docker://pandoc/latex:2.11
+      - name: Convert EE128 to Markdown
+        uses: docker://pandoc/latex:2.11
         with:
           args: --to markdown --from json --atx-headers --output=gitbook/EE128.md main/filtered.json
-      - uses: actions/upload-artifact/@v2
-        with:
-          name: ee128
-          path: gitbook/EE128.md
-      - run: |
+      - name: Copy Images
+        run: |
+          cp -a main/tikz-images/. gitbook/.gitbook/assets
+      - name: Compile Book
+        run: |
           mv main/create_book.py gitbook/create_book.py
           chmod +x gitbook/create_book.py
           cd gitbook
           python3 create_book.py EE128.md
           cd ../
           sed -i -e 's/\\\$\\\$/\$\$/g' gitbook/**/*.md
-          cp -a main/tikz-images/. gitbook/.gitbook/assets
-      - run: |
+      - name: Publish Book
+        run: |
           cd gitbook
           git pull
           git config user.name github-actions
