@@ -1,0 +1,63 @@
+name: test-gitbook
+on:
+  pull_request:
+    branches: master
+    types: [opened, edited, synchronize, reopened]
+jobs:
+  compile-pandoc:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          path: main
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Python Setup
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+      - name: Dependency Installation
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandocfilters
+          sudo apt-get install texlive-latex-recommended texlive-science texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra
+      - name: Setup Environment
+        run: |
+          mkdir output
+          mkdir -p output/.gitbook/assets
+          sed -i -e 's/..\/..\/header.tex/main\/header.tex/g' main/**/Notes/notes.tex
+          sudo sed -i 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/g' /etc/ImageMagick-6/policy.xml
+      - name: Convert EE128 to JSON
+        uses: docker://pandoc/latex:2.11
+        with:
+          args: --to json --from latex+raw_tex --output=main/tmp.json main/EE128/Notes/notes.tex
+      - name: Filter 
+        run: |
+          cd main
+          chmod +x pandoc_filter.py
+          cat tmp.json | ./pandoc_filter.py > filtered.json
+          cd ../
+      - name: Convert EE128 to Markdown
+        uses: docker://pandoc/latex:2.11
+        with:
+          args: --to markdown --from json --atx-headers --output=output/EE128.md main/filtered.json
+      - name: Copy Images
+        run: |
+          cp -a main/tikz-images/. output/.gitbook/assets
+      - name: Save raw markdown
+        uses: actions/upload-artifact@v2
+        with:
+          name: pandoc-output
+          path: output
+      - name: Compile Book
+        run: |
+          mv main/create_book.py output/create_book.py
+          chmod +x output/create_book.py
+          cd output
+          python3 create_book.py EE128.md
+          cd ../
+          sed -i -e 's/\\\$\\\$/\$\$/g' output/**/*.md
+      - name: Upload Book
+        uses: actions/upload-artifact@v2
+        with:
+          name: final-output
+          path: output
