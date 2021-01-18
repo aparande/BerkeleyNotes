@@ -140,7 +140,7 @@ def str_to_math(code):
             marker = end
             block.append(Math({"t": "InlineMath"}, math_value))
 
-    block.append(Str(code[marker:].replace("qq", "\n")))
+    block.append(Str(code[marker:].replace("qq", "\n").strip()))
 
     return Para(block)
 
@@ -188,6 +188,12 @@ def convert_math(code):
 
     bold_symbol_exp = re.compile("(\\\\bs\{)(.*?)(\})")
     code = bold_symbol_exp.sub(r"\\boldsymbol{\2}", code)
+
+    sinc_exp = re.compile("\\\\sinc")
+    code = sinc_exp.sub(r"\\text{sinc}", code)
+
+    argmin_exp = re.compile("\\\\argmin")
+    code = argmin_exp.sub(r"\\text{argmin}", code)
 
     si_exp = re.compile("(\\\\SI)(\[.*?\])?\{(.*?)\}\{(.*?)\}")
     for match in si_exp.finditer(code):
@@ -255,6 +261,9 @@ def cleanup(key, value, formt, _):
         if fmt == "latex":
             if re.match("\\\\cref", code) is None:
                 return []
+    elif key == "Div":
+        [attrs, elems] = value
+        return elems
 
 if __name__ == '__main__':
     toJSONFilters([tex_envs, custom_math, references, cleanup])

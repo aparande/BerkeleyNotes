@@ -40,7 +40,7 @@ jobs:
       - name: Convert EE128 to Markdown
         uses: docker://pandoc/latex:2.11
         with:
-          args: --to markdown --from json --atx-headers --output=output/EE128.md main/filtered.json
+          args: --to markdown+pipe_tables-simple_tables --from json --atx-headers --output=output/EE128.md main/filtered.json
       - name: Copy Images
         run: |
           cp -a main/tikz-images/. output/.gitbook/assets
