@@ -34,11 +34,11 @@ jobs:
       - name: Convert EE123 to JSON
         uses: docker://pandoc/latex:2.11
         with:
-          args: --to json --from latex+raw_tex --output=main/ee123.json main/EE128/Notes/notes.tex
+          args: --to json --from latex+raw_tex --output=main/ee123.json main/EE123/Notes/notes.tex
       - name: Convert EE120 to JSON
         uses: docker://pandoc/latex:2.11
         with:
-          args: --to json --from latex+raw_tex --output=main/ee120.json main/EE128/Notes/notes.tex
+          args: --to json --from latex+raw_tex --output=main/ee120.json main/EE120/Notes/notes.tex
       - name: Filter 
         run: |
           cd main
