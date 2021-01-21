@@ -92,24 +92,34 @@ def convert_figure(format, code):
 
 def convert_definition(code):
     label_exp = re.compile("(\\\\label\{defn:)(.*?)(\})")
+    found_match = False
     for match in label_exp.finditer(code):
+        found_match = True
         sys.stderr.write(f"Found definition {match.group(2)}\n")
         defn_labels.append(match.group(2))
         (start, end) = match.span()
         code = code[:start] + code[end:]
+
+    if not found_match:
+        defn_labels.append(f"{len(defn_labels)+1}")
 
     header = Header(3, [f"definition-{len(defn_labels)}", [], []], [Str(f"Definition {len(defn_labels)}")])
     return convert_latex_block(code, header)
 
 def convert_theorem(code):
     label_exp = re.compile("(\\\\label\{thm:)(.*?)(\})")
+    found_match = False
     for match in label_exp.finditer(code):
+        found_match = True
         sys.stderr.write(f"Found theorem {match.group(2)}\n")
         thm_labels.append(match.group(2))
         (start, end) = match.span()
         code = code[:start] + code[end:]
+    if not found_match:
+        thm_labels.append(f"{len(thm_labels)+1}")
     header = Header(3, [f"theorem-{len(thm_labels)}", [], []], [Str(f"Theorem {len(thm_labels)}")])
     return convert_latex_block(code, header)
+
 
 def str_to_math(code):
     code = code.replace("\\[", "$$")
