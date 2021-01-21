@@ -53,15 +53,15 @@ jobs:
       - name: Convert EE128 to Markdown
         uses: docker://pandoc/latex:2.11
         with:
-          args: --to markdown+pipe_tables-simple_tables --from json --atx-headers --output=output/EE128.md main/ee128-filtered.json
+          args: --to markdown+pipe_tables-simple_tables --from json --atx-headers --output=gitbook/EE128.md main/ee128-filtered.json
       - name: Convert EE123 to Markdown
         uses: docker://pandoc/latex:2.11
         with:
-          args: --to markdown+pipe_tables-simple_tables --from json --atx-headers --output=output/EE123.md main/ee123-filtered.json
+          args: --to markdown+pipe_tables-simple_tables --from json --atx-headers --output=gitbook/EE123.md main/ee123-filtered.json
       - name: Convert EE120 to Markdown
         uses: docker://pandoc/latex:2.11
         with:
-          args: --to markdown+pipe_tables-simple_tables --from json --atx-headers --output=output/EE120.md main/ee120-filtered.json
+          args: --to markdown+pipe_tables-simple_tables --from json --atx-headers --output=gitbook/EE120.md main/ee120-filtered.json
       - name: Copy Images
         run: |
           cp -a main/tikz-images/. gitbook/.gitbook/assets
