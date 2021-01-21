@@ -33,17 +33,35 @@ jobs:
       - name: Convert EE128 to JSON
         uses: docker://pandoc/latex:2.11
         with:
-          args: --to json --from latex+raw_tex --output=main/tmp.json main/EE128/Notes/notes.tex
+          args: --to json --from latex+raw_tex --output=main/ee128.json main/EE128/Notes/notes.tex
+      - name: Convert EE123 to JSON
+        uses: docker://pandoc/latex:2.11
+        with:
+          args: --to json --from latex+raw_tex --output=main/ee123.json main/EE123/Notes/notes.tex
+      - name: Convert EE120 to JSON
+        uses: docker://pandoc/latex:2.11
+        with:
+          args: --to json --from latex+raw_tex --output=main/ee120.json main/EE120/Notes/notes.tex
       - name: Filter
         run: |
           cd main
           chmod +x pandoc_filter.py
-          cat tmp.json | ./pandoc_filter.py > filtered.json
+          cat ee128.json | ./pandoc_filter.py > ee128-filtered.json
+          cat ee123.json | ./pandoc_filter.py > ee123-filtered.json
+          cat ee120.json | ./pandoc_filter.py > ee120-filtered.json
           cd ../
       - name: Convert EE128 to Markdown
         uses: docker://pandoc/latex:2.11
         with:
-          args: --to markdown --from json --atx-headers --output=gitbook/EE128.md main/filtered.json
+          args: --to markdown+pipe_tables-simple_tables --from json --atx-headers --output=output/EE128.md main/ee128-filtered.json
+      - name: Convert EE123 to Markdown
+        uses: docker://pandoc/latex:2.11
+        with:
+          args: --to markdown+pipe_tables-simple_tables --from json --atx-headers --output=output/EE123.md main/ee123-filtered.json
+      - name: Convert EE120 to Markdown
+        uses: docker://pandoc/latex:2.11
+        with:
+          args: --to markdown+pipe_tables-simple_tables --from json --atx-headers --output=output/EE120.md main/ee120-filtered.json
       - name: Copy Images
         run: |
           cp -a main/tikz-images/. gitbook/.gitbook/assets
@@ -52,7 +70,7 @@ jobs:
           mv main/create_book.py gitbook/create_book.py
           chmod +x gitbook/create_book.py
           cd gitbook
-          python3 create_book.py EE128.md
+          python3 create_book.py EE128.md EE123.md EE120.md
           cd ../
           sed -i -e 's/\\\$\\\$/\$\$/g' gitbook/**/*.md
       - name: Publish Book

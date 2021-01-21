@@ -92,24 +92,34 @@ def convert_figure(format, code):
 
 def convert_definition(code):
     label_exp = re.compile("(\\\\label\{defn:)(.*?)(\})")
+    found_match = False
     for match in label_exp.finditer(code):
+        found_match = True
         sys.stderr.write(f"Found definition {match.group(2)}\n")
         defn_labels.append(match.group(2))
         (start, end) = match.span()
         code = code[:start] + code[end:]
+
+    if not found_match:
+        defn_labels.append(f"{len(defn_labels)+1}")
 
     header = Header(3, [f"definition-{len(defn_labels)}", [], []], [Str(f"Definition {len(defn_labels)}")])
     return convert_latex_block(code, header)
 
 def convert_theorem(code):
     label_exp = re.compile("(\\\\label\{thm:)(.*?)(\})")
+    found_match = False
     for match in label_exp.finditer(code):
+        found_match = True
         sys.stderr.write(f"Found theorem {match.group(2)}\n")
         thm_labels.append(match.group(2))
         (start, end) = match.span()
         code = code[:start] + code[end:]
+    if not found_match:
+        thm_labels.append(f"{len(thm_labels)+1}")
     header = Header(3, [f"theorem-{len(thm_labels)}", [], []], [Str(f"Theorem {len(thm_labels)}")])
     return convert_latex_block(code, header)
+
 
 def str_to_math(code):
     code = code.replace("\\[", "$$")
@@ -140,7 +150,7 @@ def str_to_math(code):
             marker = end
             block.append(Math({"t": "InlineMath"}, math_value))
 
-    block.append(Str(code[marker:].replace("qq", "\n")))
+    block.append(Str(code[marker:].replace("qq", "\n").strip()))
 
     return Para(block)
 
@@ -188,6 +198,12 @@ def convert_math(code):
 
     bold_symbol_exp = re.compile("(\\\\bs\{)(.*?)(\})")
     code = bold_symbol_exp.sub(r"\\boldsymbol{\2}", code)
+
+    sinc_exp = re.compile("\\\\sinc")
+    code = sinc_exp.sub(r"\\text{sinc}", code)
+
+    argmin_exp = re.compile("\\\\argmin")
+    code = argmin_exp.sub(r"\\text{argmin}", code)
 
     si_exp = re.compile("(\\\\SI)(\[.*?\])?\{(.*?)\}\{(.*?)\}")
     for match in si_exp.finditer(code):
@@ -255,6 +271,9 @@ def cleanup(key, value, formt, _):
         if fmt == "latex":
             if re.match("\\\\cref", code) is None:
                 return []
+    elif key == "Div":
+        [attrs, elems] = value
+        return elems
 
 if __name__ == '__main__':
     toJSONFilters([tex_envs, custom_math, references, cleanup])
