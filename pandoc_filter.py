@@ -155,7 +155,7 @@ def str_to_math(code):
     return Para(block)
 
 def convert_latex_block(code, header):
-    lines = code.split("\n")[1:-1] # Remove the \begin and \end
+    lines = map(lambda x: x.strip(), code.split("\n")[1:-1]) # Remove the \begin and \end
     output = "\n".join(lines)
 
     output = str_to_math(output)
