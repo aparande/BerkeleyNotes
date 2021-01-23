@@ -1,0 +1,78 @@
+\input{../../header.tex}
+\begin{document}
+\title{EECS126 Course Notes}
+\author{Anmol Parande}
+\date{Spring 2021 - Professor Thomas Courtade}
+\maketitle
+\textbf{Disclaimer: }These notes reflect 126 when I took the course (Spring 2021). They may not accurately reflect current course content, so use at your own risk.
+If you find any typos, errors, etc, please raise an issue on the \href{https://github.com/parandea17/BerkeleyNotes}{GitHub repository}.
+\tableofcontents
+\newpage
+\section{Introduction to Probability}
+\begin{definition}
+  A probability space is a triple $(\Omega, \mathcal{F}, P)$ where $\Omega$ is a set of objects called the sample space, $\mathcal{F}$ is a family of subsets of $\Omega$ called events, and the probability measure $P:\mathcal{F}\rightarrow [0,1]$.
+  \label{defn:prob-space}
+\end{definition}
+One key assumption we make is that $\mathcal{F}$ is a $\sigma$-algebra containing $\Omega$, meaning that countably many complements, unions, and intersections of events in $\mathcal{F}$ are also events in $\mathcal{F}$.
+The probability measure $P$ must obey \textbf{Kolmogorov's Axioms}.
+\begin{enumerate}
+  \item $\forall A \in \mathcal{F},\ P(A) \geq 0$
+  \item $P(\Omega) = 1$
+  \item If $A_1, A_2, \cdots\in \mathcal{F}$ and $\forall i\ne j,\ A_i\bigcap A_j=\emptyset$, then $P\left(\bigcup_{i\geq 1}A_i\right) = \sum_{i\geq1}P(A_i)$
+\end{enumerate}
+We choose $\Omega$ and $\mathcal{F}$ to model problems in a way that makes our calculations easy.
+\begin{theorem}
+  \[
+	P(A^c) = 1 - P(A)
+  \]
+  \label{thm:complementarity}
+\end{theorem}
+\begin{theorem}[Inclusion-Exclusion Principle]
+  \[
+	P\left( \bigcup_{i=1}^{n}A_i \right) = \sum_{k=1}^{n}(-1)^{k+1}\left( \sum_{1\leq i_1<\cdots<i_k\leq n} P(A_{i_1}\cap \cdots \cap A_{i_k}) \right)
+  \]
+  \label{thm:inclusion-exclusion}
+\end{theorem}
+\begin{theorem}[Law of Total Probability]
+  If $A_1, A_2, \cdots$ partition $\Omega$ (i.e $A_i$ are disjoint and $\cup A_i = \Omega$), then for event $B$,
+  \[
+	P(B) = \sum_iP(B\cap A_i)
+  \]
+  \label{thm:total-prob}
+\end{theorem}
+\subsection{Conditional Probability}
+\begin{definition}
+  If $B$ is an event with $P(B)>0$, then the conditional probability of $A$ given $B$ is
+  \[
+	P(A|B) = \frac{P(A\cap B)}{P(B)}
+  \]
+  \label{defn:conditional-prob}
+\end{definition}
+Intuitively, conditional probabilty is the probability of event $A$ given that event $B$ has occurred.
+In terms of probability spaces, it is as if we have taken $(\Omega, \mathcal{F}, P)$ and now have a probabilty measure $P(\cdot|C)$ belonging to the space $(\Omega, \mathcal{F}, P(\cdot|C))$.
+\begin{theorem}[Bayes Theorem]
+  \[
+	P(A|B) = \frac{P(B|A)P(A)}{P(B)}
+  \]
+  \label{thm:bayes}
+\end{theorem}
+\subsection{Independence}
+\begin{definition}
+  Events $A$ and $B$ are independent if $P(A\cap B) = P(A)P(B)$
+  \label{defn:independence}
+\end{definition}
+If $P(B)>0$, then $A, B$ are independent if and only if $P(A|B) = P(A)$. In other words, knowing $B$ occurred gave no extra information about $A$.
+\begin{definition}
+  If $A,B,C$ with $P(C)>0$ satisfy $P(A\cap B|C) = P(A|C)P(B|C)$, then $A$ and $B$ are conditionally independent given $C$.
+  \label{defn:conditional-independence}
+\end{definition}
+Conditional independence is a special case of independence where $A$ and $B$ are not necessarily independent in the original probability space which has the measure $P$, but are independent in the new probability space conditioned on $C$ with the measure $P(\cdot|C)$.
+\section{Discrete Probability}
+\begin{definition}
+  A random variable is a function $X:\Omega\rightarrow\mathbb{R}$ with the property $\forall \alpha\in\mathbb{R},\ \{\omega\in\Omega:\ X(\omega) \leq \alpha\} \in \mathcal{F}$.
+  \label{defn:drv}
+\end{definition}
+The condition in \cref{defn:drv} is necessary to compute $P(X\leq \alpha),\ \forall \alpha\in\mathbb{R}$.
+In a sense, it binds the probability space to the random variable.
+\end{document}
+
