@@ -1,0 +1,132 @@
+\input{../../header.tex}
+\begin{document}
+\title{EECS127 Course Notes}
+\author{Anmol Parande}
+\date{Spring 2021 - Professor Laurent El Ghaoui}
+\maketitle
+\textbf{Disclaimer: }These notes reflect 127 when I took the course (Spring 2021). They may not accurately reflect current course content, so use at your own risk.
+If you find any typos, errors, etc, please raise an issue on the \href{https://github.com/parandea17/BerkeleyNotes}{GitHub repository}.
+\tableofcontents
+\newpage
+\section{Math Overview}
+\subsection{Vectors}
+\begin{definition}
+  An affine set is one of the form $\mathcal{A}=\{ \V{x}\in\mathcal{X}:\ \V{x}=\V{v}+\V{x_0},\ \V{v}\in\mathcal{V}\}$ where $\mathcal{V}$ is a subspace of a vector space $\mathcal{X}$ and $x_0$ is a given point.
+  \label{defn:affine-set}
+\end{definition}
+Notice that by \cref{defn:affine-set}, a subspace is simply an affine set containing the origin. Also notice that the dimension of an affine set $\mathcal{A}$ is the same as the dimension of $\mathcal{V}$.
+For a given vector space, we can define a function which maps that vector to a real number.
+\begin{definition}
+  A norm on the vector space $\mathcal{X}$ is a function $\|\cdot\|:\mathcal{X}\rightarrow\mathbb{R}$ which satisfies $\|\V{x}\|\geq 0$ with equality if and only if $\V{x}=\bs{0}$, $\|\V{x}+\V{y}\|\leq\|\V{x}\|+\|\V{y}\|$, and $\|\alpha \V{x}\| = |\alpha|\|\V{x}\|$ for any scalar $\alpha$.
+  \label{defn:norm}
+\end{definition}
+\begin{definition}
+  The $l_p$ norms are defined by
+  \[
+	\|\V{x}\|_p=\left( \sum_{k=1}^n|x_k|^p \right)^{\frac{1}{p}},\ 1\leq p\leq \infty
+  \]
+  \label{defn:lp-norm}
+\end{definition}
+Notice that for $p=2$, we recover the Euclidean norm, and in the limit as $p\to\infty$, $\norm{\V{x}}_{\infty} = \max_k|x_k|$.
+\begin{definition}
+  An inner product on real vector space is a function that maps $\V{x},\V{y} \in \mathcal{X}$ to a non-negative scalar, is distributive, is commutative, and $\langle \V{x}, \V{x}, \rangle = 0 \Leftrightarrow \V{x}=0$.
+  \label{defn:inner-product}
+\end{definition}
+Inner products induce a norm $\norm{\V{x}} = \sqrt{\langle \V{x}, \V{x} \rangle}$.
+In $\mathbb{R}^n$, the standard inner product is $\V{x}^T\V{y}$.
+The angle bewteen two vectors is given by
+\[
+  \cos\theta = \frac{\V{x}^T\V{y}}{\norm{\V{x}}_2\norm{\V{y}}_2}
+\]
+There are two other properties which use the standard inner product.
+\begin{theorem}[Cauchy-Schwarz Inequality]
+  \[
+	|\V{x}^T\V{y}| \leq \norm{\V{x}}_2\norm{\V{y}}_2
+  \]
+  \label{thm:cauchy}
+\end{theorem}
+\begin{theorem}[Holder Inequality]
+  \[
+	|\V{x}^T\V{y}| \leq \sum_{k=1}^n |x_ky_k| \leq \norm{\V{x}}_p\norm{\V{y}}_q,\ p, q\geq 1 \text{ s.t } p^{-1}+q^{-1}=1.
+  \]
+  \label{thm:holder}
+\end{theorem}
+Notice that \cref{thm:holder} generalizes \cref{thm:cauchy}.
+\subsubsection{Projection}
+The idea behind projection is to find the closest point in a set closest (with respect to particular norm) to a given point.
+\begin{definition}
+  Given a vector $\V{x}$ in inner product space $\mathcal{X}$ and a subset $S\subseteq\mathcal{X}$, the projection of $\V{x}$ onto $S$ is given by
+  \[
+	\Pi_S(\V{x}) = \argmin_{\V{y}\in S}\norm{\V{y}-\V{x}}
+  \]
+  where the norm is the one induced by the inner product.
+  \label{defn:projection}
+\end{definition}
+\begin{theorem}
+  There exists a unique vector $\V{x}^*\in S$ which solves
+  \[
+	\min_{\V{y}\in S} \norm{\V{y}-\V{x}}.
+  \]
+  \label{thm:projection}
+\end{theorem}
+It is necessary and sufficient for $\V{x}^*$ to be optimal that $(\V{x}-\V{x}^*)\perp S$.
+The same condition applies when projecting onto an affine set.
+\subsection{Functions}
+We consider functions to be of the form $f:\mathbb{R}^n\rightarrow\mathbb{R}$.
+By contrast, a map is of the form $f:\mathbb{R}^n\rightarrow\mathbb{R}^m$.
+The components of the map $f$ are the scalar valued functions $f_i$ that produce each component of a map.
+\begin{definition}
+  The graph of a function $f$ is the set of input-output pairs that $f$ can attain.
+  \[
+	\left\{ (x, f(x))\in \mathbb{R}^{n+1}:\ x\in\mathbb{R}^n \right\}
+  \]
+  \label{defn:graph}
+\end{definition}
+\begin{definition}
+  The epigraph of a function is the set of input-output pairs that $f$ can achieve and anything above.
+  \[
+	\left\{ (x,t) \in \mathbb{R}^{n+1}:\ \V{x}\in\mathbb{R}^{n+1},\ t\geq f(x) \right\}
+  \]
+  \label{defn:epigraph}
+\end{definition}
+\begin{definition}
+  The t-level set is the set of points that achieve exactly some value of $f$.
+  \[
+	\{ \V{x}\in\mathbb{R}^n:\ f(x)=t \}
+  \]
+  \label{defn:level-set}
+\end{definition}
+\begin{definition}
+  The t-sublevel set of $f$ is the set of points achieving at most a value $t$.
+  \[
+	\{ x\in\mathbb{R}^n:\ f(x)\leq t \}
+  \]
+  \label{defn:sublevel-set}
+\end{definition}
+\begin{theorem}
+  A function is linear if and only if it can be expressed as $f(\V{x}) = \V{a}^T\V{x}+b$ for some unique pair $(\V{a}, b)$.
+  \label{thm:linear-ip}
+\end{theorem}
+An affine function is linear when $b=0$. A hyperplane is simply a level set of a linear function.
+\begin{definition}
+  The half-spaces are the regions of space which a hyper-plane separates.
+  \[
+	H_{\_} = \{ x: \V{a}^T\V{x}\leq b \} \qquad H_{+} = \{ x: \V{a}^T\V{x} > b \}
+  \]
+  \label{defn:halfspace}
+\end{definition}
+\begin{definition}
+  The gradient of a function at a point $x$ where $f$ is differentiable is a column vector of first derviatives of $f$ with respsect to the components of $\V{x}$
+  \[
+	\nabla f(x) = \begin{bmatrix}
+	  \frac{\partial f}{\partial x_1}\\
+	  \vdots\\
+	  \frac{\partial f}{\partial x_n}
+	\end{bmatrix}
+  \]
+  \label{defn:gradient}
+\end{definition}
+The gradient is perpendicular to the level sets of $f$ and points from a point $\V{x}_0$ to higher values of the function.
+In other words, it is the direction of steepest increase.
+\end{document}
+
