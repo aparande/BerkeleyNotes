@@ -70,9 +70,221 @@ Conditional independence is a special case of independence where $A$ and $B$ are
 \section{Discrete Probability}
 \begin{definition}
   A random variable is a function $X:\Omega\rightarrow\mathbb{R}$ with the property $\forall \alpha\in\mathbb{R},\ \{\omega\in\Omega:\ X(\omega) \leq \alpha\} \in \mathcal{F}$.
+  \label{defn:rv}
+\end{definition}
+The condition in \cref{defn:rv} is necessary to compute $P(X\leq \alpha),\ \forall \alpha\in\mathbb{R}$.
+This requirement also let us compute $P(X\in B)$ for most sets by leveraging the fact that $\mathcal{F}$ is closed under complements, unions, and intersections.
+For example, we can also compute $P(X > \alpha)$ and $P(\alpha < X \leq \beta)$.
+In this sense, the property binds the probability space to the random variable.
+
+\cref{defn:rv} also implies that random variables satisfy particular algebraic properties.
+For example, if $X,Y$ are random variables, then so are $X+Y, XY, X^p, \lim_{n\to\infty}X_n$, etc.
+
+\begin{definition}
+  A discrete random variable is a random variable whose codomain is countable.
   \label{defn:drv}
 \end{definition}
-The condition in \cref{defn:drv} is necessary to compute $P(X\leq \alpha),\ \forall \alpha\in\mathbb{R}$.
-In a sense, it binds the probability space to the random variable.
+\begin{definition}
+  The probability mass function (or distribution) of a random variable $X$ is the frequency with which $X$ takes on different values.
+  \[
+	p_X:\mathcal{X} \rightarrow [0, 1] \text{ where } \mathcal{X} = \text{range}(X),\qquad p_X(x) = \pr{X=x}.
+  \]
+  \label{defn:pmf}
+\end{definition}
+Note that $\sum_{x\in\mathcal{X}}p_X(x) = 1$ since $\bigcap_{x\in\mathcal{X}}\{w: X(w) = x\} = \Omega$.
+\begin{definition}
+  If $X$ and $Y$ are random variables on a common probability space $(\Omega, \mathcal{F}, P)$, then the joint pmf describes the frequencies of joint outcomes.
+  \[
+	p_{XY}(x, y) = \pr{X=x, Y=y}
+  \]
+  \label{defn:joint-pmf}
+\end{definition}
+\begin{definition}
+  The marginal distribution of a joint PMF is the PMF is the distribution of a single random variable.
+  \[
+	p_X(x) = \sum_yp_{XY}(x, Y=y)
+  \]
+  \label{defn:marginal-pmf}
+\end{definition}
+Although random variables are defined based on a probability space, it is often most natural to model problems without explicitly specifying the probability space.
+This works so long as we specify the random variables and their distribution in a ``consistent'' way. 
+This is formalized by the so-called \href{https://en.wikipedia.org/wiki/Kolmogorov_extension_theorem}{Kolmogorov Extension Theorem} but can largely be ignored.
+\begin{definition}
+  Two random variables $X$ and $Y$ are independent if $p_{XY}(x, y) = p_X(x)p_Y(y)$.
+  \label{defn:rv-independence}
+\end{definition}
+Just like independent, we can extend the notion of conditional probability to random variables.
+\begin{definition}
+  For a discrete random variable, the conditional PMF is given by
+  \[
+	p_{X|Y}(x, y) = \frac{p_{XY}(x, y)}{p_Y(y)} = \frac{P(\{ X=x \} \cap \{ Y = y \} )}{P(\{ Y = y \})} = P(X=x | Y=y).
+  \]
+  \label{defn:conditional-drv}
+\end{definition}
+The interpretation is the same: given the value of random variable $Y$, what is the distribution of $X$.
+\subsection{Properties of Discrete Random Variables}
+\subsubsection{Expectation}
+\begin{definition}
+  The expectation of a discrete random variable describes the center of a distribution and is given by
+  \[
+	\expect{X}=\sum_{x\in\mathcal{X}}xp_X(x)
+  \]
+  provided the series exists.
+  \label{defn:drv-expectation}
+\end{definition}
+Expectation has several useful properties.
+If we want to compute the expectation of a function of a random variable, then we can use the law of the unconscious statisitician.
+\begin{theorem}[Law of the Unconscious Statistician]
+  \[
+	\expect{g(X)} = \sum_{x\in\mathcal{X}}g(x)p_X(x)
+  \]
+  \label{thm:unconscious-statistician}
+\end{theorem}
+Another useful property is its linearity.
+\[
+  \expect{aX+bY} = a\expect{X}+b\expect{Y},\ \forall a, b\in\mathbb{R}.
+\]
+For expectations where it is complicated to compute $p_X(x)$, we can use the tail-sum formula.
+\begin{theorem}[Tail Sum]
+  For a non-negative integer random variable,
+  \[
+	\expect{X} = \sum_{k=1}^{\infty}\pr{X\geq k}.
+  \]
+  \label{thm:tail-sum}
+\end{theorem}
+When two random variables are independent, expectation has some additional properties.
+\begin{theorem}
+  If $X$ and $Y$ are independent, then
+  \[
+	\expect{XY} = \expect{X}\expect{Y}.
+  \]
+  \label{thm:indep-expect}
+\end{theorem}
+\subsubsection{Variance}
+\begin{definition}
+  The variance of a discrete random variable $X$ describes its spread around the expectation and is given by
+  \[
+	\var{X} = \expect{(X-\expect{X})^2} = \expect{X^2}-\expect{X}^2.
+  \]
+  \label{defn:drv-variance}
+\end{definition}
+\begin{theorem}
+  When two random variables $X$ and $Y$ are independent, then 
+  \[
+	\var{X+Y} = \var{X} + \var{Y}.
+  \]
+  \label{defn:indep-var}
+\end{theorem}
+\subsubsection{Covariance and Correlation}
+\begin{definition}
+  The covariance of two random variables describes how much they depend on each other and is given by
+  \[
+	\cov{X, Y} = \expect{(X-\expect{X})(Y-\expect{Y})}.
+  \]
+  \label{defn:cov}
+\end{definition}
+If $\cov{X,Y} = 0$ then $X$ and $Y$ are uncorrelated.
+\begin{definition}
+  The correlation coefficient gives a single number which describes how random variables are correlated.
+  \[
+	\rho(X, Y) = \frac{\cov{X, Y}}{\sqrt{\var{X}}\sqrt{\var{Y}}}.
+  \]
+  \label{defn:correlation}
+\end{definition}
+Note that $-1\leq \rho \leq 1$.
+\subsection{Common Discrete Distributions}
+\begin{definition}
+  $X$ is uniformly distributed when each value of $X$ has equal probability.
+  \[
+	X\sim \text{Uniform}(\{ 1, 2, \cdots, n \}) \implies p_X(x)  = \begin{cases}
+	  \frac{1}{n} & x = 1, 2, \cdots, n,\\
+	  0 & \text{ else.}
+	\end{cases}
+  \]
+  \label{defn:drv-uniform}
+\end{definition}
+\begin{definition}
+  $X$ is a Bernoulli random variable if it is either $0$ or $1$ with $p_X(1) = p$.
+  \[
+	X\sim\text{Bernoulli}(p) \implies p_X(x) = \begin{cases}
+	  1 - p & x=0,\\
+	  p & x=1,\\
+	  0 & \text{ else.}
+	\end{cases}
+  \]
+  \[
+	\expect{X} = p \qquad \var{X} = (1-p)p
+  \]
+  \label{defn:bernoulli}
+\end{definition}
+Bernoulli random variables are good for modeling things like a coin flip where there is a probability of success.
+Bernoulli random variables are frequently used as indicator random variables $\mathbbm{1}_A$ where
+\[
+  \mathbbm{1}_A = \begin{cases}
+	1 & \text{if A occurs,}\\
+	0 & \text{ else.}
+  \end{cases}
+\]
+When paired with the linearity of expectation, this can be a powerful method of computing the expectation of something.
+\begin{definition}
+  $X$ is a Binomial random variable when
+  \[
+	X \sim \text{Binomial}(n, p) \implies p_X(x) = \begin{cases}
+	\binom{n}{x} p^x (1-p)^{n-x} & x=0, 1, \cdots, n\\
+	  0 & \text{ else.}
+	\end{cases}
+  \]
+  \[
+	\expect{X} = np \qquad \var{X} = np(1-p)
+  \]
+  \label{defn:binomial}
+\end{definition}
+A binomial random variable can be thought of as the number of successes in $n$ trials. 
+In other words, 
+\[
+  X \sim \text{Binomial}(n, p) \implies X = \sum_{i=1}^{n}X_i, \quad X_i \sim \text{Bernoulli}(p).
+\]
+By construction, if $X\sim\text{Binomial}(n, p)$ and $Y\sim\text{Binomial}(m, p)$ are independent, then $X+Y \sim \text{Binomial}(m+n, p)$.
+\begin{definition}
+  A Geometric random variable is distributed as
+  \[
+	X\sim\text{Geom}(p) \implies p_X(x) = \begin{cases}
+	  p(1-p)^{x-1} & x=1, 2, \cdots\\
+	  0 & \text{ else}.
+	\end{cases}
+  \]
+  \[
+	\expect{X} = \frac{1}{p} \qquad \var{X} = \frac{1-p}{p^2}
+  \]
+  \label{defn:geometric}
+\end{definition}
+Geometric random variables are useful for modeling the number of trials required before the first success.
+In other words,
+\[
+  X \sim \text{Geom}(p) \implies X = \min\{k \geq 1: X_k=1 \} \text{ where } X_i\sim \text{Bernoulli}(p).
+\]
+A useful property of geometric random variables is that they are memoryless:
+\[
+  \pr{X=K+M|X>k} = \pr{X=M}.
+\]
+\begin{definition}
+  A Poisson random variable is distributed as
+  \[
+	X\sim Poisson(\lambda) \implies p_X(x) = \begin{cases}
+	  \frac{\lambda^xe^{-\lambda}}{x!} & x=0, 1, \cdots \\
+	  0 & \text{ else.}
+	\end{cases}
+  \]
+  \[
+	\expect{X} = \lambda
+  \]
+  \label{defn:poisson}
+\end{definition}
+Poisson random variables are good for modeling the number of arrivals in a given interval.
+Suppose you take a given time interval and divide it into $n$ chunks where the probability of arrival in chunk $i$ is $X_i \sim \text{Bernoulli}(p_n)$.
+Then the total number of arrivals $X_n = \sum_{i=1}^{n}X_i$ is distributed as a Binomial random variable with expectation $np_n=\lambda$.
+As we increase $n$ to infinity but keep $\lambda$ fixed, we arrive at the poisson distribution.
+
+A useful fact about Poisson random variables is that if $X\sim\text{Poisson}(\lambda)$ and $Y\sim\text{Poisson}(\mu)$ are independent, then $X+Y \sim \text{Poisson}(\lambda + \mu)$.
 \end{document}
 
