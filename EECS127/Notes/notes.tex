@@ -128,5 +128,71 @@ An affine function is linear when $b=0$. A hyperplane is simply a level set of a
 \end{definition}
 The gradient is perpendicular to the level sets of $f$ and points from a point $\V{x}_0$ to higher values of the function.
 In other words, it is the direction of steepest increase.
+\subsection{Matrices}
+Matrices define a linear map between an input space and an output space. 
+Any linear map $f: \mathbb{R}^n \to \mathbb{R}^m$ can be represented by a matrix.
+\begin{theorem}[Fundamental Theorem of Linear Algebra]
+  For any matrix $A\in\mathbb{R}^{m\times n}$,
+  \[
+	\mathcal{N}(A) \oplus \mathcal{R}(A^T) = \mathbb{R}^n \qquad \mathcal{R}(A) \oplus \mathcal{N}(A^T) = \mathbb{R}^m.
+  \]
+  \label{thm:fundamental}
+\end{theorem}
+Similar to vectors, matrices can also have norms.
+\begin{definition}
+  A function $f: \mathbb{R}^{m\times n} \to \mathbb{R}$ is a matrix norm if 
+  \[
+	f(A) \geq 0 \quad f(A) = 0 \Leftrightarrow A = 0 \quad f(\alpha A) = |\alpha| f(A) \quad f(A+B) \leq f(A) + f(B)
+  \]
+  \label{defn:matrix-norm}
+\end{definition}
+\begin{definition}
+  The Froebenius norm is the $l_2$ norm applied to all elements of the matrix.
+  \[
+	\|A\|_F = \sqrt{\text{trace} AA^T} = \sqrt{\sum_{i=1}^m \sum_{j=1}^n |a_{ij}|^2}
+  \]
+  \label{defn:froebenius-norm}
+\end{definition}
+\begin{definition}
+  The operator norms is defined as
+  \[
+	\|A\|_p = \max_{\V{u}\ne0} \frac{\|A\V{u}\|_p}{\|u\|_p}
+  \]
+  \label{defn:operator-norm}
+\end{definition}
+The operator norms characterize the maximum input-output gain of the matrix $A$ measured relative to some $l_p$ norm.
+\subsubsection{QR Factorization}
+\begin{definition}
+  The QR factorization matrix are the orthogonal matrix Q and the upper triangular matrix R such that $A = QR$
+  \label{defn:qr-factorization}
+\end{definition}
+An easy way to find the QR factorization of a matrix is to apply Graham Schmidt to the columns of the matrix and express the result in matrix form.
+Suppose that our matrix $A$ is full rank (i.e its columns $\V{a}_i$ are linearly independent) and we have applied Graham-Schmidt to columns $\V{a}_{i+1}\cdots\V{a}_n$ to get orthogonal vectors $\V{q}_{i+1}\cdots\V{q}_{n}$.
+Continuing the procedure, the ith orthogonal vector $\V{q}_i$ is
+\[
+  \V{\tilde{q}}_i = \V{a}_i - \sum_{k=i+1}^{n} (\V{q}_k^T \V{a}_k)\V{q}_k \qquad \V{q}_i = \frac{\V{\tilde{q}}_i}{\|\V{\tilde{q}}_i\|_2}.
+\]
+If we re-arrange this, to solve for $\V{a}_i$, we see that
+\[
+  \V{a}_i = \|\V{\tilde{q}}_i\|_2 \V{q}_i + \sum_{k=i+1}^{n} (\V{q}_k^T \V{a}_k)\V{q}_k.
+\]
+Putting this in matrix form, we can see that
+\[
+  \begin{bmatrix}
+	\vrule & \vrule & & \vrule \\
+	\V{a}_1 & \V{a}_2 & \cdots & \V{a}_{n}\\
+	\vrule & \vrule & & \vrule 
+  \end{bmatrix} = \begin{bmatrix}
+	\vrule & \vrule & & \vrule \\
+	\V{q}_1 & \V{q}_2 & \cdots & \V{q}_{n}\\
+	\vrule & \vrule & & \vrule 
+  \end{bmatrix} \begin{bmatrix}
+	r_{11} & r_{12} & \cdots & r_{1n}\\
+	0 & r_{22} & \cdots & r_{2n}\\
+	\vdots & \ddots & \ddots & \vdots\\
+	0 & \cdots & 0 & r_{nn}
+  \end{bmatrix} \qquad r_{ij} = \V{a}_i^T\V{q_j}, r_{ii} = \|\V{\tilde{q}}_i\|_2.
+\]
+
 \end{document}
 
