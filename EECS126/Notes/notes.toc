@@ -1,9 +1,11 @@
 \contentsline {section}{\numberline {1}Introduction to Probability}{2}{section.1}
 \contentsline {subsection}{\numberline {1.1}Conditional Probability}{2}{subsection.1.1}
 \contentsline {subsection}{\numberline {1.2}Independence}{3}{subsection.1.2}
-\contentsline {section}{\numberline {2}Discrete Probability}{3}{section.2}
-\contentsline {subsection}{\numberline {2.1}Properties of Discrete Random Variables}{5}{subsection.2.1}
-\contentsline {subsubsection}{\numberline {2.1.1}Expectation}{5}{subsubsection.2.1.1}
-\contentsline {subsubsection}{\numberline {2.1.2}Variance}{6}{subsubsection.2.1.2}
-\contentsline {subsubsection}{\numberline {2.1.3}Covariance and Correlation}{6}{subsubsection.2.1.3}
-\contentsline {subsection}{\numberline {2.2}Common Discrete Distributions}{6}{subsection.2.2}
+\contentsline {section}{\numberline {2}Random Variables and their Distributions}{3}{section.2}
+\contentsline {subsection}{\numberline {2.1}Distributions}{4}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Properties of Distributions}{6}{subsection.2.2}
+\contentsline {subsubsection}{\numberline {2.2.1}Expectation}{6}{subsubsection.2.2.1}
+\contentsline {subsubsection}{\numberline {2.2.2}Variance}{7}{subsubsection.2.2.2}
+\contentsline {subsection}{\numberline {2.3}Common Distributions}{8}{subsection.2.3}
+\contentsline {subsubsection}{\numberline {2.3.1}Discrete Distributions}{8}{subsubsection.2.3.1}
+\contentsline {subsubsection}{\numberline {2.3.2}Continuous Distributions}{9}{subsubsection.2.3.2}

@@ -67,7 +67,7 @@ If $P(B)>0$, then $A, B$ are independent if and only if $P(A|B) = P(A)$. In othe
   \label{defn:conditional-independence}
 \end{definition}
 Conditional independence is a special case of independence where $A$ and $B$ are not necessarily independent in the original probability space which has the measure $P$, but are independent in the new probability space conditioned on $C$ with the measure $P(\cdot|C)$.
-\section{Discrete Probability}
+\section{Random Variables and their Distributions}
 \begin{definition}
   A random variable is a function $X:\Omega\rightarrow\mathbb{R}$ with the property $\forall \alpha\in\mathbb{R},\ \{\omega\in\Omega:\ X(\omega) \leq \alpha\} \in \mathcal{F}$.
   \label{defn:rv}
@@ -79,11 +79,19 @@ In this sense, the property binds the probability space to the random variable.
 
 \cref{defn:rv} also implies that random variables satisfy particular algebraic properties.
 For example, if $X,Y$ are random variables, then so are $X+Y, XY, X^p, \lim_{n\to\infty}X_n$, etc.
-
 \begin{definition}
   A discrete random variable is a random variable whose codomain is countable.
   \label{defn:drv}
 \end{definition}
+\begin{definition}
+  A continuous random variable is a random variable whose codomain is the real numbers.
+  \label{defn:crv}
+\end{definition}
+Although random variables are defined based on a probability space, it is often most natural to model problems without explicitly specifying the probability space.
+This works so long as we specify the random variables and their distribution in a ``consistent'' way. 
+This is formalized by the so-called \href{https://en.wikipedia.org/wiki/Kolmogorov_extension_theorem}{Kolmogorov Extension Theorem} but can largely be ignored.
+\subsection{Distributions}
+Roughly speaking, the distribution of a random variable gives an idea of the likelihood that a random variable takes a particular value or set of values.
 \begin{definition}
   The probability mass function (or distribution) of a random variable $X$ is the frequency with which $X$ takes on different values.
   \[
@@ -92,51 +100,81 @@ For example, if $X,Y$ are random variables, then so are $X+Y, XY, X^p, \lim_{n\t
   \label{defn:pmf}
 \end{definition}
 Note that $\sum_{x\in\mathcal{X}}p_X(x) = 1$ since $\bigcap_{x\in\mathcal{X}}\{w: X(w) = x\} = \Omega$.
+
+Continuous random variables are largely similar to discrete random variables.
+One key difference is that instead of being described by a probability ``mass'', they are instead described by a probability ``density''.
 \begin{definition}
-  If $X$ and $Y$ are random variables on a common probability space $(\Omega, \mathcal{F}, P)$, then the joint pmf describes the frequencies of joint outcomes.
+  The probability density function (distribution) of a continuous random variable describes the density by which a random variable takes a particular value.
   \[
-	p_{XY}(x, y) = \pr{X=x, Y=y}
+	f_X: \mathbb{R}\to [0, \infty) \text{ where } \int_{-\infty}^{\infty}f_X(x)dx = 1 \text{ and } \pr{X\in B} = \int_B f_X(x)dx
   \]
-  \label{defn:joint-pmf}
+  \label{defn:pdf}
+\end{definition}
+Observe that if a random variable $X$ is continuous, then the probability that it takes on a particular value is zero.
+\[
+  \pr{X=x} = \lim_{\delta\to0} \pr{x \leq X \leq x +\delta} = \lim_{\delta\to 0}\int_x^{x+\delta}f_X(u)du = \int_{x}^{x}f_X(u)du = 0
+\]
+\begin{definition}
+  The cumulative distribution function (CDF) gives us the probability of a random variable $X$ being less than or equal to a particular value.
+  \[
+	F_X:\mathbb{R} \to [0, 1],\quad F_X(x) = \pr{X \leq x}
+  \]
+  \label{defn:cdf}
+\end{definition}
+Note that by the Kolomogorov axioms, $F_X$ must satisfy three properties:
+\begin{enumerate}
+  \item $F_X$ is non-decreasing.
+  \item $\lim_{x\to0} F_X(x) = 0$ and $\lim_{x\to\infty} F_X(x) = 1$.
+  \item $F_X$ is right continuous.
+\end{enumerate}
+It turns out that if we have any function $F_X$ that satisfies these three properties, then it is the CDF of some random variable on some probability space.
+Note that $F_X(x)$ gives us an alternative way to define continuous random variables.
+If $F_X(x)$ is absolutely continuous, then it can be expressed as
+\[
+  F_X(x) = \int_{-\infty}^{x}f_X(x)dx
+\]
+for some non-negative function $f_X(x)$, and this is the PDF of a continuous random variable.
+
+Often, when modeling problems, there are multiple random variables that we want to keep track of.
+\begin{definition}
+  If $X$ and $Y$ are random variables on a common probability space $(\Omega, \mathcal{F}, P)$, then the joint distribution (denoted $p_XY(x, y)$ or $f_{XY}(x, y)$ describes the frequencies of joint outcomes.
+  \label{defn:joint-dist}
+\end{definition}
+Note that it is possible for $X$ to be continuous and $Y$ to be discrete (or vice versa).
+\begin{definition}
+  The marginal distribution of a joint distribution is the distribution of a single random variable.
+  \[
+	p_X(x) = \sum_yp_{XY}(x, Y=y), \qquad f_X(x) = \int_{-\infty}^{\infty}f_{XY}(x, y)dy
+  \]
+  \label{defn:marginal-dist}
 \end{definition}
 \begin{definition}
-  The marginal distribution of a joint PMF is the PMF is the distribution of a single random variable.
-  \[
-	p_X(x) = \sum_yp_{XY}(x, Y=y)
-  \]
-  \label{defn:marginal-pmf}
-\end{definition}
-Although random variables are defined based on a probability space, it is often most natural to model problems without explicitly specifying the probability space.
-This works so long as we specify the random variables and their distribution in a ``consistent'' way. 
-This is formalized by the so-called \href{https://en.wikipedia.org/wiki/Kolmogorov_extension_theorem}{Kolmogorov Extension Theorem} but can largely be ignored.
-\begin{definition}
-  Two random variables $X$ and $Y$ are independent if $p_{XY}(x, y) = p_X(x)p_Y(y)$.
+  Two random variables $X$ and $Y$ are independent if their joint distribution is the product of the marginal distributions.
   \label{defn:rv-independence}
 \end{definition}
-Just like independent, we can extend the notion of conditional probability to random variables.
+Just like independence, we can extend the notion of conditional probability to random variables.
 \begin{definition}
-  For a discrete random variable, the conditional PMF is given by
+  The conditional distribution of $X$ given $Y$ captures the frequencies of $X$ given we know the value of $Y$.
   \[
-	p_{X|Y}(x, y) = \frac{p_{XY}(x, y)}{p_Y(y)} = \frac{P(\{ X=x \} \cap \{ Y = y \} )}{P(\{ Y = y \})} = P(X=x | Y=y).
+	p_{X|Y}(x|y) = \frac{P_{XY}(x, y)}{p_Y(y)}, \qquad f_{X|Y}(x|y) = \frac{f_{XY}(x, y)}{f_Y(y)}
   \]
-  \label{defn:conditional-drv}
+  \label{defn:conditional-dist}
 \end{definition}
-The interpretation is the same: given the value of random variable $Y$, what is the distribution of $X$.
-\subsection{Properties of Discrete Random Variables}
+\subsection{Properties of Distributions}
 \subsubsection{Expectation}
 \begin{definition}
-  The expectation of a discrete random variable describes the center of a distribution and is given by
+  The expectation of a random variable describes the center of a distribution,
   \[
-	\expect{X}=\sum_{x\in\mathcal{X}}xp_X(x)
+	\expect{X}=\sum_{x\in\mathcal{X}}xp_X(x), \quad \expect{X} = \int_{-\infty}^{\infty}xf_X(x)dx
   \]
-  provided the series exists.
+  provided the sum or integral converges.
   \label{defn:drv-expectation}
 \end{definition}
 Expectation has several useful properties.
 If we want to compute the expectation of a function of a random variable, then we can use the law of the unconscious statisitician.
 \begin{theorem}[Law of the Unconscious Statistician]
   \[
-	\expect{g(X)} = \sum_{x\in\mathcal{X}}g(x)p_X(x)
+	\expect{g(X)} = \sum_{x\in\mathcal{X}}g(x)p_X(x), \quad \expect{g(X)} = \int_{-\infty}^{\infty}g(x)f_X(x)dx
   \]
   \label{thm:unconscious-statistician}
 \end{theorem}
@@ -144,7 +182,8 @@ Another useful property is its linearity.
 \[
   \expect{aX+bY} = a\expect{X}+b\expect{Y},\ \forall a, b\in\mathbb{R}.
 \]
-For expectations where it is complicated to compute $p_X(x)$, we can use the tail-sum formula.
+
+Sometimes it can be difficult to compute expectations directly. For disrete distributions, we can use the tail-sum formula.
 \begin{theorem}[Tail Sum]
   For a non-negative integer random variable,
   \[
@@ -160,6 +199,23 @@ When two random variables are independent, expectation has some additional prope
   \]
   \label{thm:indep-expect}
 \end{theorem}
+We can apply expectations to conditional distributions as well.
+\begin{definition}
+  The conditional expectation of a conditional distribution is given by
+  \[
+	\expect{X|Y=y} = \sum_{x\in\mathcal{X}}xp_{X|Y}(x|y), \quad \expect{X|Y=y} = \int_{-\infty}^{\infty}xf_{X|Y}(x, y)dx
+  \]
+  \label{defn:drv-conditional-expect}
+\end{definition}
+Notice that $\expect{X|Y}$ is a function of the random variable $Y$, meaning we can apply \cref{thm:unconscious-statistician}.
+\begin{theorem}[Tower Property]
+  For all functions $f$,
+  \[
+	\expect{f(Y)X} = \expect{f(Y)\expect{X|Y}}
+  \]
+  \label{thm:tower-property}
+\end{theorem}
+If we apply \cref{thm:tower-property} to the function $f(Y) = 1$, then we can see that $\expect{\expect{X|Y}} = \expect{X}$.
 \subsubsection{Variance}
 \begin{definition}
   The variance of a discrete random variable $X$ describes its spread around the expectation and is given by
@@ -175,7 +231,6 @@ When two random variables are independent, expectation has some additional prope
   \]
   \label{defn:indep-var}
 \end{theorem}
-\subsubsection{Covariance and Correlation}
 \begin{definition}
   The covariance of two random variables describes how much they depend on each other and is given by
   \[
@@ -192,7 +247,8 @@ If $\cov{X,Y} = 0$ then $X$ and $Y$ are uncorrelated.
   \label{defn:correlation}
 \end{definition}
 Note that $-1\leq \rho \leq 1$.
-\subsection{Common Discrete Distributions}
+\subsection{Common Distributions}
+\subsubsection{Discrete Distributions}
 \begin{definition}
   $X$ is uniformly distributed when each value of $X$ has equal probability.
   \[
@@ -286,5 +342,60 @@ Then the total number of arrivals $X_n = \sum_{i=1}^{n}X_i$ is distributed as a 
 As we increase $n$ to infinity but keep $\lambda$ fixed, we arrive at the poisson distribution.
 
 A useful fact about Poisson random variables is that if $X\sim\text{Poisson}(\lambda)$ and $Y\sim\text{Poisson}(\mu)$ are independent, then $X+Y \sim \text{Poisson}(\lambda + \mu)$.
+\subsubsection{Continuous Distributions}
+\begin{definition}
+  A continuous random variable is uniformly distributed when the pdf of $X$ is constant over a range.
+  \[
+	X \sim \text{Uniform}(a, b) \implies f_X(x) = \begin{cases}
+	  \frac{1}{b-a} & a \leq x \leq b,\\
+	  0 & \text{ else.}
+	\end{cases}
+  \]
+  \label{defn:crv-uniform}
+\end{definition}
+The CDF of a uniform distribution is given by
+\[
+  F_X(x) = \begin{cases}
+	0, &  x < a,\\
+	\frac{x-a}{b-a}, & x\in[a, b)\\
+	1, & x \geq b.
+  \end{cases}
+\]
+\begin{definition}
+  A continuous random variable is exponentially distributed when its pdf is given by
+  \[
+	X \sim \text{Exp}(\lambda) \implies f_X(x) = \begin{cases}
+	  \lambda e^{-\lambda x} & x \geq 0,\\
+	  0 & \text{ else.}
+	\end{cases}
+  \]
+  \label{defn:crv-exp}
+\end{definition}
+Exponential random variables are the only continuous random variable to have the memoryless property:
+\[
+  \pr{X > t+s | X > s} = \pr{X > t}, \quad t \geq 0.
+\]
+The CDF of the exponential distribution is given by
+\[
+  F_X(x) = \lambda \int_0^{x}e^{-\lambda u}du = 1 - e^{-\lambda x}
+\]
+\begin{definition}
+  $X$ is a Gaussian Random Variable with mean $\mu$ and variance $\sigma^2$ (denoted $X\sim \mathcal{N}(\mu, \sigma^2)$) if it has the PDF
+  \[
+	f_X(x) = \frac{1}{\sqrt{2\pi\sigma^2}}e^{\frac{-(x-\mu)^2}{2\sigma^2}}
+  \]
+  \label{defn:normal-rv}
+\end{definition}
+The standard normal is $X\sim\mathcal{N}(0, 1)$, and it has the CDF
+\[
+  \Phi(x) = \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{x}e^{\frac{-u^2}{2}} du
+\]
+There is no closed from for $\Phi(x)$.
+It turns out that every normal random variable can be transformed into the standard normal (i.e $\frac{X - \mu}{\sigma} \sim \mathcal{N}(0, 1)$).
+Some facts about Gaussian random variables are
+\begin{enumerate}
+  \item If $X\sim\mathcal{N}(\mu_x, \sigma_x^2),\ Y\sim\mathcal{N}(\mu_y, \sigma_y^2)$ are independent, then $X+Y \sim \mathcal{N}(\mu_x+\mu_y, \sigma_x^2 + \sigma_y^2)$.
+  \item If $X,Y$ are independent and $(X+Y), (X-Y)$ are independent, then both $X$ and $Y$ are Gaussian with the same variance.
+\end{enumerate}
 \end{document}
 
