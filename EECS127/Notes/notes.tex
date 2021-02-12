@@ -194,5 +194,48 @@ Putting this in matrix form, we can see that
   \end{bmatrix} \qquad r_{ij} = \V{a}_i^T\V{q_j}, r_{ii} = \|\V{\tilde{q}}_i\|_2.
 \]
 
+\subsubsection{Symmetric Matrices}
+In Linear Algebra, symmetrics matrices are nice because they have numerous useful properties.
+\begin{theorem}[Spectral Theorem]
+  Any symmetric matrix is orthogonally similar to a real diagonal matrix.
+  \[
+	A = A^T \implies A = U \Lambda U^T = \sum_i \lambda_i \V{u}_i\V{u}_i^T,\quad \|\V{u}\| = 1, \quad \V{u}_i^T\V{u}_j = 0 \ (i \ne j)
+  \]
+  \label{thm:spectral}
+\end{theorem}
+Let $\lambda_{min}(A)$ be the smallest eigenvalue of symmetric matrix $A$ and $\lambda_{max}(A)$ be the largest eigenvalue.
+\begin{definition}
+  The Rayleigh Quotient is \[
+	\frac{\V{x}^TA\V{x}}{\|\V{x}\|^2}
+  \] for $\V{x} \ne \bs{0}$ and it is always true that
+  \[
+	\lambda_{min}(A) = \frac{\V{x}^TA\V{x}}{\|\V{x}\|^2} \leq \lambda_{max}(A)
+  \]
+  \label{defn:rayleigh-quotient}
+\end{definition}
+Suppose we wanted to find how much a linear operation $A$ ``magnifies'' its input. We can characterize that by the largest eigenvalue of $A^T A$
+\begin{definition}
+  The spectral norm is the maximum gain of a matrix with respect to the spectral norm.
+  \[
+	\|A\|_2 = \max_{\V{x} \ne \bs{0}} = \frac{\|A\V{x}\|_2}{\|\V{x}\|_2} = \sqrt{\lambda_{max}(A^T A)}
+  \]
+  \label{defn:spectral-norm}
+\end{definition}
+Two special types of symmetric matrices are those with non-negative eigenvalues.
+\begin{definition}
+  A symmetric matrix is positive semi-definite if $\V{x}^TA\V{x} \geq 0 \implies \lambda_{min}(A) \geq 0$.
+  \label{defn:psd-matrix}
+\end{definition}
+\begin{definition}
+  A symmetric matrix is poitive definite if $\V{x}^TA\V{x} > 0 \implies \lambda_{min}(A) > 0$.
+  \label{defn:pd-matrix}
+\end{definition}
+These matrices are important because they often have very clear geometric structures.
+For example, an ellipsoid in multi-dimensional space can be defined as the set of points
+\[
+  \mathcal{E} = \{ x\in\mathbb{R}^m : \ \V{x}^T P^{-1} \V{x} \leq 1 \} 
+\]
+where $P$ is a positive definite matrix.
+The eigenvectors of $P$ give the principle axes of this ellipse, and $\sqrt{\lambda}$ are the semi-axis lengths.
 \end{document}
 
