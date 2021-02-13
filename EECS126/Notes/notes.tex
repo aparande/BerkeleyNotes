@@ -160,6 +160,21 @@ Just like independence, we can extend the notion of conditional probability to r
   \]
   \label{defn:conditional-dist}
 \end{definition}
+Often, we need to combine or transform several random variables.
+A derived distribution is the obtained by arithmetic of several random variables or applying a function to several (or many) random variables.
+Since the CDF of a distribution essentially defines that random variable, it can often be easiest to work backwards from the CDF to the PDF or PMF.
+In the special case where we want to find $Y=g(X)$ for a function $g$.
+\[
+  F_y(y) =\pr{Y \leq y} = \pr{g(x) \leq y} = \pr{X \in g^{-1}([-\infty, y])}, \quad g^{-1}(y) = \{ x: g(x) = y \}.
+\]
+Another special case of a derived distribution is when adding random variables together.
+\begin{theorem}
+  The resulting distribution of a sum of two independent random variables is the convolution of the distributions of the two random variables.
+  \[
+	p_{X+Y}(z) = \sum_{k=-\infty}^{\infty}p_X(k)p_Y(z-k), \quad f_{X+Y}(z) = \int_{-\infty}^{\infty}f_X(x)f_Y(z - x)dx
+  \]
+  \label{thm:convolution}
+\end{theorem}
 \subsection{Properties of Distributions}
 \subsubsection{Expectation}
 \begin{definition}
@@ -216,6 +231,40 @@ Notice that $\expect{X|Y}$ is a function of the random variable $Y$, meaning we 
   \label{thm:tower-property}
 \end{theorem}
 If we apply \cref{thm:tower-property} to the function $f(Y) = 1$, then we can see that $\expect{\expect{X|Y}} = \expect{X}$.
+
+Earlier, we saw that we find a derived distribution by transforming and combining random variables.
+Sometimes, we don't need to actually compute the distribution, but only some of its properties.
+\begin{definition}
+  The nth moment of a random variable is $\expect{X^n}$.
+  \label{defn:moment}
+\end{definition}
+It turns out that we can encode the moments of a distribution into the coefficients of a special power series.
+\begin{definition}
+  The moment generating function of a random variable $X$ is given by $M_X(t) = \expect{e^{tX}}$.
+  \label{defn:mgf}
+\end{definition}
+Notice that if we apply the power series expansion of $e^{tX}$, we see that \[
+  M_X(t) = \sum_{n=0}^{\infty}\frac{t!}{n!}\expect{X^n}.
+\]
+Thus the nth moment is encoded in the coefficients of the power series and we can retrieve them by taking a derivative:
+\[
+  \expect{X^n} = \diff[n]{}{t}M_X(t).
+\]
+Another interesting point to notice is that for a continuous random variable
+\[
+  M_X(t) = \int_{-\infty}^{\infty}f_X(x)e^{tx}dx
+\]
+is the Laplace transform of the distribution over the real line,
+and for a discrete random variable,
+\[
+  M_X(t) = \sum_{x=-\infty}^{\infty}p_X(x)e^{tx}
+\]
+is the Z-transform of the distribution evaluated along the curve at $e^{-t}$.
+\begin{theorem}
+  If the MGF of a function exists, then it uniquely determines the distribution.
+  \label{thm:mgf}
+\end{theorem}
+This provides another way to compute the distribution for a sum of random variables because we can just multiply their MGF.
 \subsubsection{Variance}
 \begin{definition}
   The variance of a discrete random variable $X$ describes its spread around the expectation and is given by
@@ -234,7 +283,7 @@ If we apply \cref{thm:tower-property} to the function $f(Y) = 1$, then we can se
 \begin{definition}
   The covariance of two random variables describes how much they depend on each other and is given by
   \[
-	\cov{X, Y} = \expect{(X-\expect{X})(Y-\expect{Y})}.
+	\cov{X, Y} = \expect{(X-\expect{X})(Y-\expect{Y})} = \expect{XY} - \expect{X}\expect{Y}.
   \]
   \label{defn:cov}
 \end{definition}
@@ -247,6 +296,22 @@ If $\cov{X,Y} = 0$ then $X$ and $Y$ are uncorrelated.
   \label{defn:correlation}
 \end{definition}
 Note that $-1\leq \rho \leq 1$.
+Just as expectation can change when we know additional information, so can variance.
+\begin{definition}
+  Conditional Variance is the variance of $X$ given the value of $Y$.
+  \[
+	\var{X|Y=y} = \expect{(X - \expect{X|Y=y})^2 | Y=y} = \expect{X^2|Y=y} - \expect{X|Y=y}^2
+  \]
+  \label{defn:conditional-var}
+\end{definition}
+Conditional variance is a random variable just as expectation is.
+\begin{theorem}[Law of Total Variance]
+  \[
+	\var{X} = \expect{\var{X|Y}} + \var{\expect{X|Y}}
+  \]
+  \label{thm:total-variance}
+\end{theorem}
+The second term in the law of total variance ($\var{\expect{X|Y}}$) can be interpreted as on average, how much uncertainty there is in $X$ given we know $Y$.
 \subsection{Common Distributions}
 \subsubsection{Discrete Distributions}
 \begin{definition}
@@ -397,5 +462,38 @@ Some facts about Gaussian random variables are
   \item If $X\sim\mathcal{N}(\mu_x, \sigma_x^2),\ Y\sim\mathcal{N}(\mu_y, \sigma_y^2)$ are independent, then $X+Y \sim \mathcal{N}(\mu_x+\mu_y, \sigma_x^2 + \sigma_y^2)$.
   \item If $X,Y$ are independent and $(X+Y), (X-Y)$ are independent, then both $X$ and $Y$ are Gaussian with the same variance.
 \end{enumerate}
+\section{Concentration Inequalities}
+In real life, for the most part, we can't compute probabilities in closed form.
+Instead, we either bound them, or we want to show that $P(A) \approx 0$ or $P(A) \approx 1$.
+\begin{theorem}[Markov's Inequality]
+  For a non-negative random variable $X$,
+  \[
+	\pr{X \geq t} \leq \frac{\expect{X}}{t}, \quad t \geq 0.
+  \]
+  \label{thm:markov}
+\end{theorem}
+\begin{theorem}[Chebyshev's Inequality]
+  If $X$ is a random variable, then
+  \[
+	\pr{|X - \expect{X}| \geq t} \leq \frac{\var{X}}{t^2}.
+  \]
+  \label{thm:chebyshev}
+\end{theorem}
+\begin{theorem}[Weak Law of Large Numbers]
+  Let $X_1, X_2, \cdots, X_n$ be independently and identically distributed according to $X$, and let $M_n = \frac{1}{n}\sum X_i$.
+  Then for $\epsilon > 0$, \[
+	\lim_{n\to\infty} \pr{|M_n - \expect{X}| > \epsilon} = 0.
+  \]
+  \label{thm:weak-law}
+\end{theorem}
+With these inequalities, we can formalize the intuition that we have which says probability is the frequency with which an even happens over many trials of an event.
+If $X_1, X_2, \cdots, X_n$ are independently and identically distributed according to $X$, then we can define the empirical frequency
+\[
+  F_n = \frac{\sum\mathbbm{1}_{X_i\in B}}{n} \implies \expect{F_n} = P(X \in B).
+\]
+By \cref{thm:weak-law}, \[
+  \lim_{n\to\infty}\pr{|F_n - P(X\in B)| > \epsilon} = 0,
+\]
+meaning over many trials, the empirical frequency is equal to the probility of the event, matching intuition.
 \end{document}
 

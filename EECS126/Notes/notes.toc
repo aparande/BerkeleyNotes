@@ -5,7 +5,8 @@
 \contentsline {subsection}{\numberline {2.1}Distributions}{4}{subsection.2.1}
 \contentsline {subsection}{\numberline {2.2}Properties of Distributions}{6}{subsection.2.2}
 \contentsline {subsubsection}{\numberline {2.2.1}Expectation}{6}{subsubsection.2.2.1}
-\contentsline {subsubsection}{\numberline {2.2.2}Variance}{7}{subsubsection.2.2.2}
-\contentsline {subsection}{\numberline {2.3}Common Distributions}{8}{subsection.2.3}
-\contentsline {subsubsection}{\numberline {2.3.1}Discrete Distributions}{8}{subsubsection.2.3.1}
-\contentsline {subsubsection}{\numberline {2.3.2}Continuous Distributions}{9}{subsubsection.2.3.2}
+\contentsline {subsubsection}{\numberline {2.2.2}Variance}{8}{subsubsection.2.2.2}
+\contentsline {subsection}{\numberline {2.3}Common Distributions}{9}{subsection.2.3}
+\contentsline {subsubsection}{\numberline {2.3.1}Discrete Distributions}{9}{subsubsection.2.3.1}
+\contentsline {subsubsection}{\numberline {2.3.2}Continuous Distributions}{11}{subsubsection.2.3.2}
+\contentsline {section}{\numberline {3}Concentration Inequalities}{12}{section.3}
