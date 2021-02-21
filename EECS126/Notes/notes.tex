@@ -479,6 +479,41 @@ Instead, we either bound them, or we want to show that $P(A) \approx 0$ or $P(A)
   \]
   \label{thm:chebyshev}
 \end{theorem}
+Intuitively, \cref{thm:chebyshev} gives gives a ``better'' bound than \cref{thm:markov} because it incorporates the variance of the random variable.
+Using this idea, we can define an even better bound that incorporates information from all moments of the random variable.
+\begin{definition}[Chernoff Bound]
+	For a random variable $X$ and $a\in\mathbb{R}$,\[
+		\pr{X \geq a} \leq \frac{\expect{e^{tX}}}{e^{ta}} = e^{-ta}M_x(t).
+	\]
+	\label{defn:chernoff}
+\end{definition}
+After computing the Chernoff bound for a general $t$, we can then optimize over it to compute the best bound possible.
+\section{Convergence}
+The idea of convergence brings the mathematical language of limits into probability.
+The fundamental question we want to answer is given random variables $X_1, X_2, \cdots$, what does it mean to compute
+\[
+	\lim_{n\to\infty}X_n.
+\]
+This question is not as straightforward as it seems because random variables are functions, and there are many ways to define the convergence of functions.
+\begin{definition}
+	A sequence of random variables converges almost surely to $X$ if \[
+		P\left(\lim_{n\to \infty}X_n = X\right) = 1
+	\]
+	\label{defn:almost-sure}
+\end{definition}
+One result of almost sure convergence deals with deviations around the mean of many samples.
+\begin{theorem}[Strong Law of Large Numbers]
+	If $X_1, X_2, \cdots, X_n$ are independently and identically distributed to $X$ where $\expect{X} < \infty$, then $\frac{1}{n}\sum_i X_i$ converges almost surely to $\expect{X}$.
+	\label{thm:strong-law}
+\end{theorem}
+The strong law tells us that for any observed realization, there is a point after which there are no deviations from the mean.
+\begin{definition}
+	A sequence of random variables converges in probability if \[
+		\forall \epsilon > 0, \quad \lim_{n\to\infty}P(|X_n - X| > \epsilon) = 0
+	\]
+	\label{defn:converge-prob}
+\end{definition}
+Convergence in probability can help us formalize the intuition that we have which says probability is the frequency with which an even happens over many trials of an event.
 \begin{theorem}[Weak Law of Large Numbers]
   Let $X_1, X_2, \cdots, X_n$ be independently and identically distributed according to $X$, and let $M_n = \frac{1}{n}\sum X_i$.
   Then for $\epsilon > 0$, \[
@@ -486,7 +521,8 @@ Instead, we either bound them, or we want to show that $P(A) \approx 0$ or $P(A)
   \]
   \label{thm:weak-law}
 \end{theorem}
-With these inequalities, we can formalize the intuition that we have which says probability is the frequency with which an even happens over many trials of an event.
+It tells us that the probability of a deviation of $\epsilon$ from the true mean will go to 0 in the limit, but we can still observe these deviations.
+Nevertheless, the weak law helps us formalize our intuition about probability.
 If $X_1, X_2, \cdots, X_n$ are independently and identically distributed according to $X$, then we can define the empirical frequency
 \[
   F_n = \frac{\sum\mathbbm{1}_{X_i\in B}}{n} \implies \expect{F_n} = P(X \in B).
@@ -495,5 +531,25 @@ By \cref{thm:weak-law}, \[
   \lim_{n\to\infty}\pr{|F_n - P(X\in B)| > \epsilon} = 0,
 \]
 meaning over many trials, the empirical frequency is equal to the probility of the event, matching intuition.
+\begin{definition}
+	A sequence of random variables converges in distribution if \[
+		\lim_{n\to\infty}F_{X_n}(x) = F_x(x).
+	\]
+	\label{defn:converge-dist}
+\end{definition}
+An example of convergence in distribution is the central limit theorem.
+\begin{theorem}[Central Limit Theorem]
+	If $X_1, X_2, \cdots$ are independently and identically distributed according to $X$ with $\var{X} = \sigma^2$ and $\expect{X} = \mu$, then
+	\[
+		\lim_{n\to\infty}P\left(\frac{\sum_{i=1}^nX_i - n\mu}{\sigma\sqrt{n}} \leq x\right) = \Phi(x)
+	\]
+	\label{thm:central-limit}
+\end{theorem}
+In other words, a sequence of random variables converges in distribution to a normal distribution with variance $\sigma^2$ and mean $\mu$.
+
+These notions of convergence are not identical, and they do not necessarily imply each other.
+It is true that almost sure convergence implies convergence in probability, and convergence in probability implies convergence in distribution, but the implication is only one way.
+
+
 \end{document}
 
