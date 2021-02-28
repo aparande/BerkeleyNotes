@@ -462,9 +462,10 @@ Some facts about Gaussian random variables are
   \item If $X\sim\mathcal{N}(\mu_x, \sigma_x^2),\ Y\sim\mathcal{N}(\mu_y, \sigma_y^2)$ are independent, then $X+Y \sim \mathcal{N}(\mu_x+\mu_y, \sigma_x^2 + \sigma_y^2)$.
   \item If $X,Y$ are independent and $(X+Y), (X-Y)$ are independent, then both $X$ and $Y$ are Gaussian with the same variance.
 \end{enumerate}
-\section{Concentration Inequalities}
+\section{Concentration}
 In real life, for the most part, we can't compute probabilities in closed form.
 Instead, we either bound them, or we want to show that $P(A) \approx 0$ or $P(A) \approx 1$.
+\subsection{Concentration Inequalities}
 \begin{theorem}[Markov's Inequality]
   For a non-negative random variable $X$,
   \[
@@ -488,7 +489,7 @@ Using this idea, we can define an even better bound that incorporates informatio
 	\label{defn:chernoff}
 \end{definition}
 After computing the Chernoff bound for a general $t$, we can then optimize over it to compute the best bound possible.
-\section{Convergence}
+\subsection{Convergence}
 The idea of convergence brings the mathematical language of limits into probability.
 The fundamental question we want to answer is given random variables $X_1, X_2, \cdots$, what does it mean to compute
 \[
@@ -549,7 +550,132 @@ In other words, a sequence of random variables converges in distribution to a no
 
 These notions of convergence are not identical, and they do not necessarily imply each other.
 It is true that almost sure convergence implies convergence in probability, and convergence in probability implies convergence in distribution, but the implication is only one way.
+\section{Information Theory}
+Information Theory is a field which addresses two questions
+\begin{enumerate}
+	\item \textbf{Source Coding:} How many bits do I need to losslessly represent an observation.
+	\item \textbf{Channel Coding:} How reliably and quickly can I communicate a message over a noisy channel.
+\end{enumerate}
+\subsection{Quantifying Information}
+Intuitively, for a PMF of a disrete random variable, the surprise associated with a particular realization is $-\log p_X(x)$ since less probable realizations are more surprising.
+With this intuition, we can try and quantify the ``expected surprise'' of a distribution.
+\begin{definition}
+	For a Discrete Random Variablle $X\sim p_X$, the Entropy of $X$ is given by \[
+		H(x) = \expect{-\log_2 p_X(x)} = -\sum_{x\in\mathcal{X}} p_X(x)\log_2p_X(x).
+	\]
+	\label{defn:entropy}
+\end{definition}
+Alternative interpretations of entropy are the average uncertainty and how random $X$ is.
+Just like probabilites, we can define both joint and conditional entropies.
+\begin{definition}
+	For Discrete Random Variables $X$ and $Y$, the joint entropy is given by \[
+		H(X,Y) = \expect{-\log_2p_{XY}(x, y)} = -\sum_{x,y\in\mathcal{X}\times\mathcal{Y}}p_{XY}(x, y)\log_2p_{XY}(x, y).
+	\]
+	\label{defn:joint-entropy}
+\end{definition}
+\begin{definition}
+	For Discrete Random Variable $X$ and $Y$, the conditional entropy is given by \[
+		H(Y|X) = \expect{-\log_2p_{Y|X}(y|x)} = -\sum_{x\in\mathcal{X}}p_X(x)H(Y|X=x).
+	\]
+	\label{defn:conditional-entropy}
+\end{definition}
+Conditional entropy has a natural interpretation which is that it tells us how surprised we are to see $Y=y$ given that we know $X=x$.
+If $X$ and $Y$ are independent, then $H(Y) = H(Y|X)$ because realizing $X$ gives no additional information about $Y$.
+\begin{theorem}[Chain Rule of Entropy]
+	\[
+		H(X, Y) = H(X) + H(X|Y).
+	\]
+	\label{thm:chain-entropy}
+\end{theorem}
+In addition to knowing how much our surprise changes for a random variable when we observe a different random variable, we can also quantify how much additional information observing a random variable gives us about another.
+\begin{definition}
+	For random variables $X$ and $Y$, the mutual information is given by \[
+		I(X;Y) = H(X) - H(X|Y) = H(Y) - H(Y|X).
+	\]
+	\label{defn:mutual-info}
+\end{definition}
+\subsection{Source Coding}
+Source coding deals with finding the minimal number of bits required to represent data.
+This is essentially the idea of lossless compression.
+In this case, our message is the sequence of realizations of independently and identically distributed random variables $\left(X_i\right)_{i=1}^n \sim p_X$.
+The probability of observing a particular sequence is then \[
+	P(x_1, x_2, \cdots, x_n) = \prod_{i=1}^np_X(x_i).
+\]
+\begin{theorem}[Asymptotic Equipartition Property]
+	If we have a sequence of independently and identically distributed random variables $\left(X_i\right)_{i=1}^n \sim p_X$, then $-\frac{1}{n}\log P(x_1, x_2, \cdots, x_n)$ converges to $H(X)$ in probability.
+	\label{thm:aep}
+\end{theorem}
+\cref{thm:aep} tells us that with overwhelming probability, we will observe a sequence that is assigned probability $2^{-nH(X)}$.
+Using this idea, we can define a subset of possible observed sequences that in the limit, our observed sequence must belong to with overwhelming probability.
+\begin{definition}
+	For a fixed $\epsilon > 0$, for each $n\geq 1$, the typical set is given by \[
+		A_\epsilon^{(n)} = \left\{ (x_1, x_2, \cdots, x_n) : P(x_1, x_2, \cdots, x_n) \geq 2^{-n(H(X)+\epsilon)} \right\}.
+	\]
+	\label{defn:typical-set}
+\end{definition}
+Two important properties of the typical set are that
+\begin{enumerate}
+	\item $\lim_{n\to\infty}P\left((x_1, x_2, \ldots, x_n) \in A_{\epsilon}^{(n)}\right) = 1$
+	\item $|A_{\epsilon}^{(n)}| \geq 2^{n(H(X)+\epsilon)}$
+\end{enumerate}
+The typical set gives us an easy way to do source coding.
+If I have $N$ total objects, then I only need $\log N$ bits to represent each object, so I can define a simple protocol which is
+\begin{enumerate}
+	\item If $(x_i)_{i=1}^{n} \in A^{(n)}_{\frac{\epsilon}{2}}$, then describe them using the $\log|A^{(n)}_{\frac{\epsilon}{2}}| \leq n\left(H(X)+\frac{\epsilon}{2}\right)$ bits
+	\item If $(x_i)_{i=1}^n \not \in A^{(n)}_{\frac{\epsilon}{2}}$, then describe them naiively with $n\log|\mathcal{X}|$ bits.
+\end{enumerate}
+This makes the average number of bits required to describe a message 
+\begin{align*}
+	\expect{\text{\# of Bits}} &\leq n(H(X)+\frac{\epsilon}{2})P((x_i)_{i=1}^n\in A_{\frac{\epsilon}{2}}^{(n)}) + n\log |\mathcal{X}|P((x_i)_{i=1}^n\in A_{\frac{\epsilon}{2}}^{(n)}) \\
+	&\leq n(H(X)+\frac{\epsilon}{2}) + n \frac{\epsilon}{2} \leq n(H(X)+\epsilon)
+\end{align*}
+This is the first half of a central result of source coding.
+\begin{theorem}[Source Coding Theorem]
+	If $(X_i)_{i=1}^n \sim p_X$ are a sequence of independently and identically distributed random varible, then for any $\epsilon > 0$ and $n$ sufficiently large, we can represent $(X_i)_{i=1}^n$ using fewer than $n(H(X) + \epsilon)$ bits. Conversely, we can not losslessly represent $(X_i)_{i=1}^n$ using fewer than $nH(X)$ bits.
+	\label{thm:source-coding}
+\end{theorem}
+This lends a new interpretation of the entropy $H(X)$: it is the average number of bits required to represent $X$.
+\subsection{Channel Coding}
+Whereas source coding deals with encoding information, channel coding deals with transmitting it over a noisy channel.
+In general, we have a message $M$, and encoder, a channel, and a decoder as in \cref{fig:channel-coding}.
+\begin{gitbook-image}
+  \begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[auto, node distance=2cm,>=latex']
+	  % We start by placing the blocks
+	  \node [input, name=input] (input) {};
+	  \node [block, name=encoder, right of=input, node distance=2cm] (encoder) {Encoder};
+	  \node [block, name=channel, right of=encoder, node distance=5cm] (channel) {Noisy Channel};
+	  \node [block, name=Decoder, right of=channel, node distance=5cm] (decoder) {Decoder};
+	  \node [output, right of=decoder, node distance=3cm] (output) {};
 
-
+	  % Once the nodes are placed, connecting them is easy. 
+	  \draw [->] (input) -- node {$M$} (encoder);
+		\draw [->] (encoder) -- node {$X^{(n)}(M)$} (channel);
+		\draw [->] (channel) -- node {$Y^{(n)}$} (decoder);
+		\draw [->] (decoder) -- node {$\hat{M}(Y^{(n)})$} (output);	
+	\end{tikzpicture}
+	\caption{Channel Coding}
+	\label{fig:channel-coding}
+  \end{figure}
+\end{gitbook-image}
+Each channel can be described by a conditional probability distribution $p_{Y|X}(y|x)$ for each time the channel is used.
+\begin{definition}
+	For a channel described by $p_{Y|X}$, the capacity is given by \[
+		C = \max_{p_X} I(X; Y).
+	\]
+	\label{defn:capacity}
+\end{definition}
+In words, the capacity describes the maximum mutual information between the channel input and output.
+\begin{definition}
+	Suppose we use the channel $n$ times to send a message that takes on average $H(m)$ bits to encode, then the rate of the channel is \[
+		R = \frac{H(M)}{n}
+	\]
+	\label{defn:rate}
+\end{definition}
+\begin{theorem}{Channel Coding Theorem}
+	For a channel decsribed by $p_{Y|X}$ and $\epsilon>0$ and $R < C$, for all $n$ sufficiently large, there exists a rate $R$ communication scheme that achieves a probability of error less than $\epsilon$. If $R > C$, then the probability of error converges to 1 for any communication scheme. 
+	\label{thm:channel-coding}
+\end{theorem}
 \end{document}
 

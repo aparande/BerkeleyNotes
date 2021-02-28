@@ -1,13 +1,18 @@
-\contentsline {section}{\numberline {1}Introduction to Probability}{2}{section.1}
-\contentsline {subsection}{\numberline {1.1}Conditional Probability}{2}{subsection.1.1}
-\contentsline {subsection}{\numberline {1.2}Independence}{3}{subsection.1.2}
-\contentsline {section}{\numberline {2}Random Variables and their Distributions}{3}{section.2}
-\contentsline {subsection}{\numberline {2.1}Distributions}{4}{subsection.2.1}
-\contentsline {subsection}{\numberline {2.2}Properties of Distributions}{6}{subsection.2.2}
-\contentsline {subsubsection}{\numberline {2.2.1}Expectation}{6}{subsubsection.2.2.1}
-\contentsline {subsubsection}{\numberline {2.2.2}Variance}{8}{subsubsection.2.2.2}
-\contentsline {subsection}{\numberline {2.3}Common Distributions}{9}{subsection.2.3}
-\contentsline {subsubsection}{\numberline {2.3.1}Discrete Distributions}{9}{subsubsection.2.3.1}
-\contentsline {subsubsection}{\numberline {2.3.2}Continuous Distributions}{11}{subsubsection.2.3.2}
-\contentsline {section}{\numberline {3}Concentration Inequalities}{12}{section.3}
-\contentsline {section}{\numberline {4}Convergence}{13}{section.4}
+\contentsline {section}{\numberline {1}Introduction to Probability}{3}{section.1}
+\contentsline {subsection}{\numberline {1.1}Conditional Probability}{3}{subsection.1.1}
+\contentsline {subsection}{\numberline {1.2}Independence}{4}{subsection.1.2}
+\contentsline {section}{\numberline {2}Random Variables and their Distributions}{4}{section.2}
+\contentsline {subsection}{\numberline {2.1}Distributions}{5}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Properties of Distributions}{7}{subsection.2.2}
+\contentsline {subsubsection}{\numberline {2.2.1}Expectation}{7}{subsubsection.2.2.1}
+\contentsline {subsubsection}{\numberline {2.2.2}Variance}{9}{subsubsection.2.2.2}
+\contentsline {subsection}{\numberline {2.3}Common Distributions}{10}{subsection.2.3}
+\contentsline {subsubsection}{\numberline {2.3.1}Discrete Distributions}{10}{subsubsection.2.3.1}
+\contentsline {subsubsection}{\numberline {2.3.2}Continuous Distributions}{12}{subsubsection.2.3.2}
+\contentsline {section}{\numberline {3}Concentration}{13}{section.3}
+\contentsline {subsection}{\numberline {3.1}Concentration Inequalities}{14}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Convergence}{14}{subsection.3.2}
+\contentsline {section}{\numberline {4}Information Theory}{16}{section.4}
+\contentsline {subsection}{\numberline {4.1}Quantifying Information}{16}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Source Coding}{17}{subsection.4.2}
+\contentsline {subsection}{\numberline {4.3}Channel Coding}{19}{subsection.4.3}
