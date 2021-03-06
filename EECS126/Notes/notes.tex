@@ -677,5 +677,119 @@ In words, the capacity describes the maximum mutual information between the chan
 	For a channel decsribed by $p_{Y|X}$ and $\epsilon>0$ and $R < C$, for all $n$ sufficiently large, there exists a rate $R$ communication scheme that achieves a probability of error less than $\epsilon$. If $R > C$, then the probability of error converges to 1 for any communication scheme. 
 	\label{thm:channel-coding}
 \end{theorem}
+\section{Markov Chains}
+\begin{definition}
+	A random/stochastic process is a sequence of random variables $(X_n)_{n\geq 0}$.
+	\label{defn:random-process}
+\end{definition}
+The random variables in a stochastic process do not have to be independently and identically distributed.
+In fact, if they are not, then we can get additional modeling power.
+\begin{definition}
+	$(X_n)_{n\geq 0}$ is a Markov Chain if each random variable $X_i$ takes values in a discrete set $S$ (the state space), and, \[
+		\forall n \geq 0,\ i,j\in S,\ \pr{X_{n+1}=j|X_n=i,\cdots,X_0=x_0} = \pr{X_{n+1}=i|X_n=j}
+	\]
+	\label{defn:markov-chain}
+\end{definition}
+In words, a Markov Chain is a sequence of random variables satisfying the Markov Property where probability of being in a state during the next time step only depends on the current state.
+\begin{definition}
+	A temporally homogenous Markov Chain is one where the transition probabilities $\pr{X_{n+1}=j|X_n=i} = p_{ij}$ for all $i,j\in S$ and $n\geq 0$.
+	\label{defn:temp-homo-markov-chain}
+\end{definition}
+Temporally Homogenous Markov Chains don't change their transition probabilities over time.
+Since the $p_{ij}$ are conditional probabilities, they must satisfy
+\begin{enumerate}
+	\item $\forall i,j\in S,\ p_{ij} \geq 0$
+	\item $\forall i\in S,\ \sum_{j\in S}p_{ij} = 1$
+\end{enumerate}
+\begin{definition}
+	The transition matrix of a Markov Chain is a matrix $P$ where the ijth entry $P_{ij} = p_{ij}$ for all $i,j\in S$.
+	\label{defn:transition-mat}
+\end{definition}
+The transition matrix encodes the one-step transition probabilities of the Markov Chain.
+\begin{theorem}[Chapman-Kolmogorov Equation]
+	The n-step transition probabilities (i.e starting in $i$ and ending in $j$ $n$ steps later) of the Markov Chain are given by $p_{ij}^{(n)} = P^n_{ij}$.
+	\label{thm:chapman-kolmogorov}
+\end{theorem}
+\subsection{Properties of Markov Chains}
+\begin{definition}
+	If $\exists n \geq 1$ such that $p_{ij}^{(n)} \ne 0$, then $j$ is accessible from $i$, and we write $i\rightarrow j$.
+	\label{defn:accesible}
+\end{definition}
+\begin{definition}
+	States $i$ and $j$ communicate with each other when $i\rightarrow j$ and $j\rightarrow i$. We write this as $i\leftrightarrow j$.
+	\label{defn:communicate}
+\end{definition}
+By convention, we say that $i\leftrightarrow i$.
+It turns out that $\leftrightarrow$ is an equivalence relation on the state space $S$.
+An equivalence relation means that 
+\begin{enumerate}
+	\item $\forall i\in S,\ i \leftrightarrow i$
+	\item $\forall i,j\in S,\ i\leftrightarrow j \Leftrightarrow j \leftrightarrow i$
+	\item $\forall i,j,k \in S, i\leftrightarrow k, k\leftrightarrow j \Rightarrow i \leftrightarrow j$
+\end{enumerate}
+This means that $\leftrightarrow$ partitions the state-space $S$ into equivalence classes (i.e classes of communicating states).
+\begin{definition}
+	A Markov Chain is irreducible if $S$ is the only class.
+	\label{defn:irreducible-markov}
+\end{definition}
+\subsubsection{Class Properties}
+A class property is a property where if one element of a class has the property, all elements of the class have the property.
+Markov Chains have several of these properties which allow us to classify states.
+\begin{definition}
+	A state $i\in S$ is recurrent if given that $X_0=i$, the process revisits state $i$ with probability 1.
+	\label{defn:markov-recurrence}
+\end{definition}
+\begin{definition}
+	A state is $i\in S$ is transient if it is not recurrent.
+	\label{defn:markov-transience}
+\end{definition}
+Recurrence means that we will visit a state infinitely often in the future if we start in that state, while transience means we will only visit the state finitely many times.
+We can further break recurrence down if we define $T_i = \min_{n\geq 1} n \text{ such that } X_n = i$ (the first time the chain enters state $i$).
+\begin{definition}
+	State $i$ is positive recurrent if it is recurrent and $\expect{T_i|X_0=i}$ is finite.
+	\label{defn:positive-recurrence}
+\end{definition}
+\begin{definition}
+	State $i$ is null recurrent if it is recurrent and $\expect{T_i|X_0=i}$ is infinite.
+	\label{defn:null-recurrence}
+\end{definition}
+Positive recurrence means we visit a recurrent state so frequently that we spend a positive fraction of time in that state.
+Null recurrencce means we visit a recurrent state so infrequently (but still infinitely many times) that we spend virtually no time in that state.
+\begin{theorem}
+	Every irreducible finite state Markov Chain is positive recurrent.
+	\label{thm:positive-recurrence}
+\end{theorem}
+\begin{definition}
+	For a state $i\in S$, we define the period of the state to be
+	\[
+		\text{period}(i) = \text{GCD}\{n\geq 1 : p_{ii}^{(n)} > 0 \}.
+	\]
+	\label{defn:period}
+\end{definition}
+If we start in state $i$, then revists to $i$ only occur at integer multiples of the period.
+\begin{definition}
+	An irreducible markov chain is aperiodic if any state has period 1.
+	\label{defn:aperiodic-mc}
+\end{definition}
+All of the above properties are class properties.
+\subsection{Long-Term Behavior of Markov Chains}
+Since the $p_{ij}$ completely characterize the Markov Chain, we can also describe what happens to the chain in the limit.
+\begin{definition}
+	A probability distribution $\pi$ over the states is a stationary distribution if $\pi = \pi P$
+	\label{defn:stationary-dist-mc}
+\end{definition}
+It is called a stationary distribution because the distribution over states is invariant with time.
+\begin{theorem}[Big Theorem for Markov Chains]
+	Let $(X_n)_{n\geq 0}$ be an irreducible Markov Chain. Then one of the following is true.
+
+	1. Either all states are transient, or all states are null recurrent, and no stationary distribution exists, and $\lim_{n\to\infty}p_{ij}^{(n)}$.
+	% TODO: Something weird is in this statement. See Piazza (https://piazza.com/class/kjow2zzmpvg3af?cid=274)
+	
+	2. All states are positive recurrent and the stationary distribution exists, is unique, and satisfies \[
+		\pi_j = \lim_{n\to\infty}\frac{1}{n}\sum_{k=0}^{n}P_{ij}^{(k)} = \frac{1}{\expect{T_j|X_0=j}}.
+		\]
+		If the Markov Chain is periodic, then $\lim_{n\to\infty}p_{ij}^{(n)} = \pi_j$
+	\label{thm:big-theorem}
+\end{theorem}
 \end{document}
 

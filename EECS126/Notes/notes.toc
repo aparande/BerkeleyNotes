@@ -16,3 +16,7 @@
 \contentsline {subsection}{\numberline {4.1}Quantifying Information}{16}{subsection.4.1}
 \contentsline {subsection}{\numberline {4.2}Source Coding}{17}{subsection.4.2}
 \contentsline {subsection}{\numberline {4.3}Channel Coding}{19}{subsection.4.3}
+\contentsline {section}{\numberline {5}Markov Chains}{19}{section.5}
+\contentsline {subsection}{\numberline {5.1}Properties of Markov Chains}{20}{subsection.5.1}
+\contentsline {subsubsection}{\numberline {5.1.1}Class Properties}{21}{subsubsection.5.1.1}
+\contentsline {subsection}{\numberline {5.2}Long-Term Behavior of Markov Chains}{22}{subsection.5.2}
