@@ -421,13 +421,13 @@ Conic programming is the set of optimization problems which deal with variables 
 In spaces 3-dimensions and higher, we can rotate these cones.
 \begin{definition}
 	A rotated second order cone in $\mathbb{R}^{n+2}$ is the set \[
-		\mathcal{K}_n^r = \{(\V{x}, y, z),\V{x}\in\mathbb{R}^n, y\in\mathbb{R}, z\in\mathbb{R}:\ \V{x}^T\V{x} \leq 2yz, y\geq 0, z \geq 0 \}.
+		\mathcal{K}_n^r = \{(\V{x}, y, z),\V{x}\in\mathbb{R}^n, y\in\mathbb{R}, z\in\mathbb{R}:\ \V{x}^T\V{x} \leq yz, y\geq 0, z \geq 0 \}.
 	\]
 	\label{defn:rot-soc}
 \end{definition}
-The rotated second-order cone can be interpreted as a rotation because the hyperbolic constraint $\|\V{x}\|_2^2\leq 2yz$ can be expressed equivalently as
+The rotated second-order cone can be interpreted as a rotation because the hyperbolic constraint $\|\V{x}\|_2^2\leq yz$ can be expressed equivalently as
 \[
-	\left\lVert\begin{bmatrix}\V{x} \\ \frac{1}{\sqrt{2}}(y - z)\end{bmatrix}\right\rVert_2 \leq \frac{1}{\sqrt{2}}(y+z).
+	\left\lVert\begin{bmatrix}2\V{x} \\ y - z\end{bmatrix}\right\rVert_2 \leq y+z.
 \]
 \begin{definition}
 	The standard Second Order Cone Constraint is \[
@@ -475,7 +475,7 @@ Its SOCP form looks like
 \end{align*}
 In the special case where $H$ is positive definite and we have no constraints, then
 \[
-	\frac{1}{2}\V{x}^TH\V{x} + \V{c}^T\V{x} + d = \frac{1}{2}(\V{x} - H^{-1}\V{c})^TH(\V{x} - H^{-1}\V{c}) + d - (H^{-1}\V{c})^TH(H^{-1}\V{c})
+	\frac{1}{2}\V{x}^TH\V{x} + \V{c}^T\V{x} + d = \frac{1}{2}(\V{x} + H^{-1}\V{c})^TH(\V{x} + H^{-1}\V{c}) + d - (H^{-1}\V{c})^TH(H^{-1}\V{c})
 \]
 Thus \[
 	\argmin_\V{x} \frac{1}{2}\V{x}^TH\V{x} + \V{c}^T\V{x} + d = -H^{-1}\V{c}
