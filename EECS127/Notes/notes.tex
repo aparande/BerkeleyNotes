@@ -8,26 +8,60 @@
 If you find any typos, errors, etc, please raise an issue on the \href{https://github.com/parandea17/BerkeleyNotes}{GitHub repository}.
 \tableofcontents
 \newpage
-\section{Math Overview}
-\subsection{Vectors}
+\section{Linear Algebra}
 \begin{definition}
   An affine set is one of the form $\mathcal{A}=\{ \V{x}\in\mathcal{X}:\ \V{x}=\V{v}+\V{x_0},\ \V{v}\in\mathcal{V}\}$ where $\mathcal{V}$ is a subspace of a vector space $\mathcal{X}$ and $x_0$ is a given point.
   \label{defn:affine-set}
 \end{definition}
 Notice that by \cref{defn:affine-set}, a subspace is simply an affine set containing the origin. Also notice that the dimension of an affine set $\mathcal{A}$ is the same as the dimension of $\mathcal{V}$.
-For a given vector space, we can define a function which maps that vector to a real number.
+\subsection{Norms}
 \begin{definition}
-  A norm on the vector space $\mathcal{X}$ is a function $\|\cdot\|:\mathcal{X}\rightarrow\mathbb{R}$ which satisfies $\|\V{x}\|\geq 0$ with equality if and only if $\V{x}=\bs{0}$, $\|\V{x}+\V{y}\|\leq\|\V{x}\|+\|\V{y}\|$, and $\|\alpha \V{x}\| = |\alpha|\|\V{x}\|$ for any scalar $\alpha$.
+  A norm on the vector space $\mathcal{X}$ is a function $\|\cdot\|:\mathcal{X}\rightarrow\mathbb{R}$ which satisfies:
+	1. $\|\V{x}\|\geq 0$ with equality if and only if $\V{x}=\bs{0}$
+
+	2. $\|\V{x}+\V{y}\|\leq\|\V{x}\|+\|\V{y}\|$
+
+	3. $\|\alpha \V{x}\| = |\alpha|\|\V{x}\|$ for any scalar $\alpha$.
   \label{defn:norm}
 \end{definition}
 \begin{definition}
   The $l_p$ norms are defined by
   \[
-	\|\V{x}\|_p=\left( \sum_{k=1}^n|x_k|^p \right)^{\frac{1}{p}},\ 1\leq p\leq \infty
+		\|\V{x}\|_p=\left( \sum_{k=1}^n|x_k|^p \right)^{\frac{1}{p}},\ 1\leq p\leq \infty
   \]
   \label{defn:lp-norm}
 \end{definition}
-Notice that for $p=2$, we recover the Euclidean norm, and in the limit as $p\to\infty$, $\norm{\V{x}}_{\infty} = \max_k|x_k|$.
+In the limit as $p\to\infty$, \[
+	\norm{\V{x}}_{\infty} = \max_k|x_k|.
+\]
+Similar to vectors, matrices can also have norms.
+\begin{definition}
+  A function $f: \mathbb{R}^{m\times n} \to \mathbb{R}$ is a matrix norm if 
+  \[
+		f(A) \geq 0 \quad f(A) = 0 \Leftrightarrow A = 0 \quad f(\alpha A) = |\alpha| f(A) \quad f(A+B) \leq f(A) + f(B)
+  \]
+  \label{defn:matrix-norm}
+\end{definition}
+\begin{definition}
+  The Froebenius norm is the $l_2$ norm applied to all elements of the matrix.
+  \[
+	\|A\|_F = \sqrt{\text{trace} AA^T} = \sqrt{\sum_{i=1}^m \sum_{j=1}^n |a_{ij}|^2}
+  \]
+  \label{defn:froebenius-norm}
+\end{definition}
+One useful way to characterize matrices is by measuring their ``gain'' relative to some $l_p$ norm.
+\begin{definition}
+  The operator norms is defined as
+  \[
+	\|A\|_p = \max_{\V{u}\ne0} \frac{\|A\V{u}\|_p}{\|u\|_p}
+  \]
+  \label{defn:operator-norm}
+\end{definition}
+When $p=2$, the norm is called the spectral norm because it relates to the largest eigenvalue of $A^TA$.
+\[
+	\|A\|_2 = \sqrt{\lambda_{max}(A^TA)}
+\]
+\subsection{Inner Products}
 \begin{definition}
   An inner product on real vector space is a function that maps $\V{x},\V{y} \in \mathcal{X}$ to a non-negative scalar, is distributive, is commutative, and $\langle \V{x}, \V{x}, \rangle = 0 \Leftrightarrow \V{x}=0$.
   \label{defn:inner-product}
@@ -36,41 +70,16 @@ Inner products induce a norm $\norm{\V{x}} = \sqrt{\langle \V{x}, \V{x} \rangle}
 In $\mathbb{R}^n$, the standard inner product is $\V{x}^T\V{y}$.
 The angle bewteen two vectors is given by
 \[
-  \cos\theta = \frac{\V{x}^T\V{y}}{\norm{\V{x}}_2\norm{\V{y}}_2}
+	\cos\theta = \frac{\V{x}^T\V{y}}{\norm{\V{x}}_2\norm{\V{y}}_2}.
 \]
-There are two other properties which use the standard inner product.
-\begin{theorem}[Cauchy-Schwarz Inequality]
-  \[
-	|\V{x}^T\V{y}| \leq \norm{\V{x}}_2\norm{\V{y}}_2
-  \]
-  \label{thm:cauchy}
-\end{theorem}
+In general, we can bound the absolute value of the standard inner product between two vectors.
 \begin{theorem}[Holder Inequality]
   \[
 	|\V{x}^T\V{y}| \leq \sum_{k=1}^n |x_ky_k| \leq \norm{\V{x}}_p\norm{\V{y}}_q,\ p, q\geq 1 \text{ s.t } p^{-1}+q^{-1}=1.
   \]
   \label{thm:holder}
 \end{theorem}
-Notice that \cref{thm:holder} generalizes \cref{thm:cauchy}.
-\subsubsection{Projection}
-The idea behind projection is to find the closest point in a set closest (with respect to particular norm) to a given point.
-\begin{definition}
-  Given a vector $\V{x}$ in inner product space $\mathcal{X}$ and a subset $S\subseteq\mathcal{X}$, the projection of $\V{x}$ onto $S$ is given by
-  \[
-	\Pi_S(\V{x}) = \argmin_{\V{y}\in S}\norm{\V{y}-\V{x}}
-  \]
-  where the norm is the one induced by the inner product.
-  \label{defn:projection}
-\end{definition}
-\begin{theorem}
-  There exists a unique vector $\V{x}^*\in S$ which solves
-  \[
-	\min_{\V{y}\in S} \norm{\V{y}-\V{x}}.
-  \]
-  \label{thm:projection}
-\end{theorem}
-It is necessary and sufficient for $\V{x}^*$ to be optimal that $(\V{x}-\V{x}^*)\perp S$.
-The same condition applies when projecting onto an affine set.
+Notice that for $p=q = 2$, \cref{thm:holder} turns into the Cauchy-Schwartz Inequality ($|\V{x}^T\V{y}| \leq \|\V{x}\|_2\|\V{y}\|_2$).
 \subsection{Functions}
 We consider functions to be of the form $f:\mathbb{R}^n\rightarrow\mathbb{R}$.
 By contrast, a map is of the form $f:\mathbb{R}^n\rightarrow\mathbb{R}^m$.
@@ -103,11 +112,6 @@ The components of the map $f$ are the scalar valued functions $f_i$ that produce
   \]
   \label{defn:sublevel-set}
 \end{definition}
-\begin{theorem}
-  A function is linear if and only if it can be expressed as $f(\V{x}) = \V{a}^T\V{x}+b$ for some unique pair $(\V{a}, b)$.
-  \label{thm:linear-ip}
-\end{theorem}
-An affine function is linear when $b=0$. A hyperplane is simply a level set of a linear function.
 \begin{definition}
   The half-spaces are the regions of space which a hyper-plane separates.
   \[
@@ -116,7 +120,35 @@ An affine function is linear when $b=0$. A hyperplane is simply a level set of a
   \label{defn:halfspace}
 \end{definition}
 \begin{definition}
-  The gradient of a function at a point $x$ where $f$ is differentiable is a column vector of first derviatives of $f$ with respsect to the components of $\V{x}$
+	A polyhedron is the intersection of $m$ half-spaces given by $\V{a}_i^T\V{x}\leq b_i$ for $i\in[1,m]$.
+	\label{defn:polyhedron}
+\end{definition}
+When a polyhedron is bounded, it is called a polytope.
+\subsubsection{Types of Functions}
+\begin{theorem}
+  A function is linear if and only if it can be expressed as $f(\V{x}) = \V{a}^T\V{x}+b$ for some unique pair $(\V{a}, b)$.
+  \label{thm:linear-ip}
+\end{theorem}
+An affine function is linear when $b=0$. A hyperplane is simply a level set of a linear function.
+\begin{theorem}
+	Any quadratic function can be written as the sum of a quadratic term involving a symmetric matrix and an affine term:
+	\[
+		q(x) = \frac{1}{2}\V{x}^TH\V{x}+\V{c}^T\V{x} + d.
+	\]
+	\label{thm:quadratic}
+\end{theorem}
+Another special class of functions are polyhedral functions.
+\begin{definition}
+	A function $f:\mathbb{R}^n\to\mathbb{R}$ is polyhedral if its epigraph is a polyhedron.
+	\[
+		\text{epi } f = \left\{(x,t) \in \mathbb{R}^{n+1} :\ C \begin{bmatrix}\V{x} \\ t \end{bmatrix} \leq d \right\}
+	\]
+	\label{defn:polyhedral-function}
+\end{definition}
+\subsubsection{Vector Calculus}
+We can also do calculus with vector functions.
+\begin{definition}
+  The gradient of a function at a point $x$ where $f$ is differentiable is a column vector of first derivatives of $f$ with respsect to the components of $\V{x}$
   \[
 	\nabla f(x) = \begin{bmatrix}
 	  \frac{\partial f}{\partial x_1}\\
@@ -128,6 +160,16 @@ An affine function is linear when $b=0$. A hyperplane is simply a level set of a
 \end{definition}
 The gradient is perpendicular to the level sets of $f$ and points from a point $\V{x}_0$ to higher values of the function.
 In other words, it is the direction of steepest increase.
+It is akin to the derivative of a 1D function.
+\begin{definition}
+	The Hessian of a function $f$ at point $x$ is a matrix of second derivatives.
+	\[
+		H_{ij} = \frac{\partial^2 f}{\partial x_i \partial x_j}
+	\]
+	\label{defn:hessian}
+\end{definition}
+The Hessian is akin to the second derivative in a 1D function.
+Note that the Hessian is a symmetric matrix.
 \subsection{Matrices}
 Matrices define a linear map between an input space and an output space. 
 Any linear map $f: \mathbb{R}^n \to \mathbb{R}^m$ can be represented by a matrix.
@@ -138,30 +180,44 @@ Any linear map $f: \mathbb{R}^n \to \mathbb{R}^m$ can be represented by a matrix
   \]
   \label{thm:fundamental}
 \end{theorem}
-Similar to vectors, matrices can also have norms.
-\begin{definition}
-  A function $f: \mathbb{R}^{m\times n} \to \mathbb{R}$ is a matrix norm if 
+\subsubsection{Symmetric Matrices}
+Recall that a symmetric matrix is one where $A = A^T$.
+\begin{theorem}[Spectral Theorem]
+  Any symmetric matrix is orthogonally similar to a real diagonal matrix.
   \[
-	f(A) \geq 0 \quad f(A) = 0 \Leftrightarrow A = 0 \quad f(\alpha A) = |\alpha| f(A) \quad f(A+B) \leq f(A) + f(B)
+	A = A^T \implies A = U \Lambda U^T = \sum_i \lambda_i \V{u}_i\V{u}_i^T,\quad \|\V{u}\| = 1, \quad \V{u}_i^T\V{u}_j = 0 \ (i \ne j)
   \]
-  \label{defn:matrix-norm}
+  \label{thm:spectral}
+\end{theorem}
+Let $\lambda_{min}(A)$ be the smallest eigenvalue of symmetric matrix $A$ and $\lambda_{max}(A)$ be the largest eigenvalue.
+\begin{definition}
+	The Rayleigh Quotient for $\V{x} \ne \bs{0}$ is $\frac{\V{x}^TA\V{x}}{\|\V{x}\|^2}.$
+  \label{defn:rayleigh-quotient}
+\end{definition}
+\begin{theorem}
+	For any $\V{x} \ne \bs{0}$,
+  \[
+		\lambda_{min}(A) \leq \frac{\V{x}^TA\V{x}}{\|\V{x}\|^2} \leq \lambda_{max}(A).
+  \]
+\end{theorem}
+Two special types of symmetric matrices are those with non-negative eigenvalues.
+\begin{definition}
+  A symmetric matrix is positive semi-definite if $\V{x}^TA\V{x} \geq 0 \implies \lambda_{min}(A) \geq 0$.
+  \label{defn:psd-matrix}
 \end{definition}
 \begin{definition}
-  The Froebenius norm is the $l_2$ norm applied to all elements of the matrix.
-  \[
-	\|A\|_F = \sqrt{\text{trace} AA^T} = \sqrt{\sum_{i=1}^m \sum_{j=1}^n |a_{ij}|^2}
-  \]
-  \label{defn:froebenius-norm}
+  A symmetric matrix is poitive definite if $\V{x}^TA\V{x} > 0 \implies \lambda_{min}(A) > 0$.
+  \label{defn:pd-matrix}
 \end{definition}
-\begin{definition}
-  The operator norms is defined as
-  \[
-	\|A\|_p = \max_{\V{u}\ne0} \frac{\|A\V{u}\|_p}{\|u\|_p}
-  \]
-  \label{defn:operator-norm}
-\end{definition}
-The operator norms characterize the maximum input-output gain of the matrix $A$ measured relative to some $l_p$ norm.
+These matrices are important because they often have very clear geometric structures.
+For example, an ellipsoid in multi-dimensional space can be defined as the set of points
+\[
+  \mathcal{E} = \{ x\in\mathbb{R}^m : \ \V{x}^T P^{-1} \V{x} \leq 1 \} 
+\]
+where $P$ is a positive definite matrix.
+The eigenvectors of $P$ give the principle axes of this ellipse, and $\sqrt{\lambda}$ are the semi-axis lengths.
 \subsubsection{QR Factorization}
+Similar to how spectral theorem allows us to decompose symmetric matrices, QR factorization is another matrix decomposition technique that works for any general matrix.
 \begin{definition}
   The QR factorization matrix are the orthogonal matrix Q and the upper triangular matrix R such that $A = QR$
   \label{defn:qr-factorization}
@@ -194,48 +250,250 @@ Putting this in matrix form, we can see that
   \end{bmatrix} \qquad r_{ij} = \V{a}_i^T\V{q_j}, r_{ii} = \|\V{\tilde{q}}_i\|_2.
 \]
 
-\subsubsection{Symmetric Matrices}
-In Linear Algebra, symmetrics matrices are nice because they have numerous useful properties.
-\begin{theorem}[Spectral Theorem]
-  Any symmetric matrix is orthogonally similar to a real diagonal matrix.
-  \[
-	A = A^T \implies A = U \Lambda U^T = \sum_i \lambda_i \V{u}_i\V{u}_i^T,\quad \|\V{u}\| = 1, \quad \V{u}_i^T\V{u}_j = 0 \ (i \ne j)
-  \]
-  \label{thm:spectral}
-\end{theorem}
-Let $\lambda_{min}(A)$ be the smallest eigenvalue of symmetric matrix $A$ and $\lambda_{max}(A)$ be the largest eigenvalue.
+\subsubsection{Singular Value Decomposition}
 \begin{definition}
-  The Rayleigh Quotient is \[
-	\frac{\V{x}^TA\V{x}}{\|\V{x}\|^2}
-  \] for $\V{x} \ne \bs{0}$ and it is always true that
-  \[
-	\lambda_{min}(A) = \frac{\V{x}^TA\V{x}}{\|\V{x}\|^2} \leq \lambda_{max}(A)
-  \]
-  \label{defn:rayleigh-quotient}
+	A matrix $A\in\mathbb{R}^{m\times n}$ is a dyad if it can be written as $\V{p}\V{q}^T$.
+	\label{defn:dyad}
 \end{definition}
-Suppose we wanted to find how much a linear operation $A$ ``magnifies'' its input. We can characterize that by the largest eigenvalue of $A^T A$
+A dyad is a rank-one matrix.
+It turns out that all matrices can be decomposed into a sum of dyads.
 \begin{definition}
-  The spectral norm is the maximum gain of a matrix with respect to the spectral norm.
-  \[
-	\|A\|_2 = \max_{\V{x} \ne \bs{0}} = \frac{\|A\V{x}\|_2}{\|\V{x}\|_2} = \sqrt{\lambda_{max}(A^T A)}
-  \]
-  \label{defn:spectral-norm}
+	The Singular Value Decomposition of a matrix $A$ is \[
+		A = \sum_{i=1}^{r} \sigma_i \V{u}_i\V{v}_i^T
+	\]
+	where $\sigma_i$ are the singular values of $A$ and $\V{u}_i$ and $\V{v}_i$ are the left and right singular vectors.
+	\label{defn:svd}
 \end{definition}
-Two special types of symmetric matrices are those with non-negative eigenvalues.
-\begin{definition}
-  A symmetric matrix is positive semi-definite if $\V{x}^TA\V{x} \geq 0 \implies \lambda_{min}(A) \geq 0$.
-  \label{defn:psd-matrix}
-\end{definition}
-\begin{definition}
-  A symmetric matrix is poitive definite if $\V{x}^TA\V{x} > 0 \implies \lambda_{min}(A) > 0$.
-  \label{defn:pd-matrix}
-\end{definition}
-These matrices are important because they often have very clear geometric structures.
-For example, an ellipsoid in multi-dimensional space can be defined as the set of points
-\[
-  \mathcal{E} = \{ x\in\mathbb{R}^m : \ \V{x}^T P^{-1} \V{x} \leq 1 \} 
+Th singular values are ordered such that $\sigma_1 >= \sigma_2 >= \cdots$.
+The left singular values are the eigenvectors of $AA^T$ and the right singular values are the eigenvectors of $A^TA$.
+The singular values are $\sqrt{\lambda}_i$ where $\lambda_i$ are the eigenvalues of $A^TA$.
+Since $AA^T$ and $A^TA$ are symmetric, $\V{u}_i$ and $\V{v}_i$ are orthogonal.
+The number of non-zero singular values is equal to the rank of the matrix.
+We can write the SVD in matrix form as \[
+	A = \left[U_r\quad U_{n-r}\right]\text{diag}(\sigma_1,\cdots,\sigma_r,0,\cdots,0)\begin{bmatrix}V^T_r\\V^T_{n-r}\end{bmatrix}
 \]
-where $P$ is a positive definite matrix.
-The eigenvectors of $P$ give the principle axes of this ellipse, and $\sqrt{\lambda}$ are the semi-axis lengths.
+Writing the SVD tells us that 
+\begin{enumerate}
+	\item $V_{n-r}$ forms a basis for $\mathcal{N}(A)$
+	\item $U_{r}$ form a basis for $\mathcal{R}(A)$
+\end{enumerate}
+The Frobenius norm and spectral norm are tightly related to the SVD.
+\[
+	\|A\|_F = \sum_{i}\sigma_i^2
+\]
+\[
+	\|A\|_2^2 = \sigma_1^2
+\]
+\section{Fundamentals of Optimization}
+\begin{definition}
+	The standard form of optimization is \[
+		p^\star = \min_\V{x} f_0(\V{x}) \text{ such that } f_i(\V{x}) \leq 0
+	\]
+	\label{defn:optimization}
+\end{definition}
+\begin{itemize}
+	\item The vector $\V{x}\in\mathbb{R}^n$ is known as the \textbf{decision variable}.
+	\item The function $f_0:\mathbb{R}^n\to\mathbb{R}$ is the \textbf{objective}.
+	\item The functions $f_i:\mathbb{R}^n\to\mathbb{R}$ is the \textbf{constraints}.
+	\item $p^\star$ is the \textbf{optimal value}, and the $\V{x}^\star$ which achieves the optimal value is called the \textbf{optimizer}.
+\end{itemize}
+\begin{definition}
+	The feasible set of an  optimization problem is \[
+		\mathcal{X} = \{\V{x}\in\mathbb{R}^n:\ f_i(\V{x}) \leq 0 \}
+	\]
+	\label{defn:feasible-set}
+\end{definition}
+\begin{definition}
+	A point $\V{x}$ is $\epsilon$-suboptimal if it is feasible and satisfies \[
+		p^\star \leq f_0(\V{x}) \leq p^\star + \epsilon
+	\]
+	\label{defn:suboptimal}
+\end{definition}
+Sometimes, optimizations in a particular formulation do not admit themselves to be solved easily.
+In many cases, we can introduce additional ``slack'' variable and constraints to massage the problem into a form which is easier to analyze.
+For example, if $f_0$ is a polyhedral function, then $\min_\V{x} f_0(x)$ is equivalent to the problem
+\[
+	\min_{\V{x}, t} t \quad : \quad f_0(x) \leq t,
+\]
+and the epigraphic constraint $f_0(x) \leq t$ can be further massaged into linear constraints since a polyhedron is the intersection of half-spaces.
+This works because by minimizing $t$, we are also minimizing how large $f_0(x)$ can get since $f_0(x) \leq t$, so at optimum, $f_0(x) = t$.
+\subsection{Robust Optimization}
+For a ``nominal'' problem \[
+	\min_\V{x} f_0(\V{x}) \quad : \quad \forall i\in[1,m],\ f_i(\V{x}) \leq 0,
+\]
+uncertainty can enter in the data used to create the $f_0$ and $f_i$.
+It can also enter during decision time where the $\V{x}^\star$ which solves the optimization cannot be implemented exactly.
+These uncertainties can create unstable solutions or degraded performance.
+To make our optimization more robust to uncertainty, we add a new variable $\V{u}\in\mathcal{U}$.
+\begin{definition}
+	For a nominal optimization problem $\min_\V{x} f_0(\V{x})$ subject to $f_i(\V{x}) \leq 0$ for $i\in[1,m]$, the robust counterpart is \[
+		\min_\V{x} \max_{\V{u}\in\mathcal{U}} f_0(\V{x}, \V{u}) \quad : \quad \forall i\in[1,m],\ f_i(\V{x}, \V{u}) \leq 0
+	\]
+	\label{defn:robust-counterpart}
+\end{definition}
+\section{Linear Algebraic Optimization}
+Many optimization problems can be solved using the machinery of Linear Algebra.
+These problems do not have inequality constraints or non-euclidean norms in the objective function.
+\subsection{Projection}
+The idea behind projection is to find the closest point in a set closest (with respect to particular norm) to a given point.
+\begin{definition}
+  Given a vector $\V{x}$ in inner product space $\mathcal{X}$ and a subspace $S\subseteq\mathcal{X}$, the projection of $\V{x}$ onto $S$ is given by
+  \[
+	\Pi_S(\V{x}) = \argmin_{\V{y}\in S}\norm{\V{y}-\V{x}}
+  \]
+  where the norm is the one induced by the inner product.
+  \label{defn:projection}
+\end{definition}
+\begin{theorem}
+  There exists a unique vector $\V{x}^*\in S$ which solves
+  \[
+	\min_{\V{y}\in S} \norm{\V{y}-\V{x}}.
+  \]
+  \label{thm:projection}
+\end{theorem} It is necessary and sufficient for $\V{x}^*$ to be optimal that $(\V{x}-\V{x}^*)\perp S$.
+The same condition applies when projecting onto an affine set.
+\subsubsection{Matrix Pseudo-inverses}
+\begin{definition}
+	A pseudoinverse is a matrix $A^{\dagger}$ that satisfies:
+	\[
+		A A^\dagger A = A \quad A^\dagger A A^\dagger = A^\dagger \quad (AA^\dagger)^T = A A^\dagger \quad (A^\dagger A)^T = A^\dagger A
+	\]
+	\label{defn:pseduoinverse}
+\end{definition}
+There are several special cases of pseudoinverses.
+\begin{enumerate}
+	\item $A^\dagger = V_r \text{diag}\left(\frac{1}{\sigma_1},\cdots,\frac{1}{\sigma_r}\right)U_r^T$ is the Moore-Penrose Pseudo-inverse.
+	\item When $A$ and non-singular, $A^\dagger = A^{-1}$.
+	\item When $A$ is full column rank, $A^\dagger = (A^TA)^{-1}A^T$.
+	\item When $A$ is full row rank, $A^{\dagger} = A^T(AA^T)^{-1}$
+\end{enumerate}
+The pseudo-inverses are useful because they can easily compute the projection of a vector onto a related subspace of $A$.
+\begin{enumerate}
+	\item $\argmin_{z\in\mathcal{R}(A)}\|\V{z}-\V{y}\|_2 = AA^\dagger \V{y}$
+	\item $\argmin_{z\in\mathcal{R}(A)^\perp}\|\V{z}-\V{y}\|_2 = (I - AA^\dagger)\V{y}$
+	\item $\argmin_{z\in\mathcal{N}(A)}\|\V{z}-\V{y}\|_2 = (I - A^\dagger A)\V{y}$
+	\item $\argmin_{z\in\mathcal{N}(A)^\perp}\|\V{z}-\V{y}\|_2 = A^\dagger A\V{y}$
+\end{enumerate}
+\subsection{Explained Variance}
+The Low Rank Approximation problem is to approximate a matrix $A$ with a rank $k$ matrix
+\[
+	\min_{A_k} \|A - A_k\|_F^2 \text{ such that rank}(A_k) = k.
+\]
+The solution to the low rank approximation problem is simply the first $k$ terms of the SVD:
+\[
+	A_K^\star = \sum_{i=1}^k \sigma_i\V{u}_i\V{v}^T_i.
+\]
+This is because the singular values give us a notion of how much of the Frobenius Norm (Total Variance) each dyad explains.
+\[
+	\eta = \frac{\|A_k\|_F^2}{\|A\|_F^2} = \frac{\sum_i^k \sigma_i^2}{\sum_i^r \sigma_i^2}
+\]
+\subsubsection{PCA}
+Suppose we had a matrix containing $m$ data points in $\mathbb{R}^n$ (each data point is a column), and without loss of generality, assume this data is centered around 0 (i.e $\sum_i \V{x}_i = 0$).
+The variance of this data along a particular direction $\V{z}$ is given by $\V{z}^TXX^T\V{z}$.
+Principle Component Analysis is finding the directions $\V{z}$ such that the variance is maximized.
+\[
+	\max_{z\in\mathbb{R}^n} \V{z}^TXX^T\V{z} \text{ such that } \|\V{z}\|_2 = 1
+\]
+The left singular vector corresponding to the largest singular value of the $XX^T$ matrix is the optimizer of this problem, and the variance along this direction is $\sigma_1^2$.
+If we wanted to find subsequent directions of maximal variance, they are just the left singular vectors corresponding to the largest singular values.
+\subsection{Removing Constraints}
+Following from the Fundmental Theorem of Linear Algebra, if $A\V{x}=\V{y}$ has a solution, then the set of solutions can be expressed as
+\[
+	S = \{\bar{\V{x}} + N\V{z}\}
+\]
+where $A\bar{\V{x}}=\V{y}$ and $N$ is a basis for $\mathcal{N}(A)$.
+This means if we have a constrained optimization problem
+\[
+	\min_\V{x} f_0(\V{x}) \ : \ A\V{x} = \V{b},
+\]
+we can write an equivalent unconstrained problem \[
+	\min_\V{z} f_0(\V{x}_0 + N\V{z})
+\]
+where $A\V{x}_0 = \V{b}$
+\section{Conic Programming}
+Conic programming is the set of optimization problems which deal with variables constrained to a second-order cone.
+\begin{definition}
+	A n-dimensional second-order cone is the set \[
+		\mathcal{K}_n = \{(\V{x}, t),\ \V{x}\in\mathbb{R}^n,\ t\in\mathbb{R}:\ \|\V{x}\|_2 \leq t\}
+	\]
+	\label{defn:soc}
+\end{definition}
+In spaces 3-dimensions and higher, we can rotate these cones.
+\begin{definition}
+	A rotated second order cone in $\mathbb{R}^{n+2}$ is the set \[
+		\mathcal{K}_n^r = \{(\V{x}, y, z),\V{x}\in\mathbb{R}^n, y\in\mathbb{R}, z\in\mathbb{R}:\ \V{x}^T\V{x} \leq 2yz, y\geq 0, z \geq 0 \}.
+	\]
+	\label{defn:rot-soc}
+\end{definition}
+The rotated second-order cone can be interpreted as a rotation because the hyperbolic constraint $\|\V{x}\|_2^2\leq 2yz$ can be expressed equivalently as
+\[
+	\left\lVert\begin{bmatrix}\V{x} \\ \frac{1}{\sqrt{2}}(y - z)\end{bmatrix}\right\rVert_2 \leq \frac{1}{\sqrt{2}}(y+z).
+\]
+\begin{definition}
+	The standard Second Order Cone Constraint is \[
+		\|A\V{x}+\V{b}\|_2 \leq \V{c}^T\V{x} +d.
+	\]
+	\label{defn:soc-const}
+\end{definition}
+A SOC constraint will confine $\V{x}$ to a second order cone since if we let $\V{y} = A\V{x}+\V{b} \in \mathbb{R}^m$ and $t = \V{c}^T\V{x}+d$, then $(\V{y}, t)\in\mathcal{K}_m$.
+\begin{definition}
+	A second-order cone program in standard inequality form is given by
+	\[
+		\min \V{c}^T\V{x} \text{ such that } \|A_i\V{x}+\V{b}_i\|_2 \leq \V{c}_i^T\V{x}+d_i.
+	\]
+	\label{defn:soc-program}
+\end{definition}
+\subsection{Quadratic Programming}
+A special case of SOCPs are Quadratic Programs.
+These programs have constraints and an objective function which can be expressed as a quadratic function.
+In SOCP form, they look like
+\begin{align*}
+	\min_{\V{x}, t} &\quad \V{a}_0^T\V{x} + t\\
+	\text{s.t: } & \left\lVert \begin{bmatrix}2Q_0^{\frac{1}{2}}\V{x}\\ t-1 \end{bmatrix}\right\rVert_2 \leq t+1\\
+	& \left\lVert \begin{bmatrix}2Q_i^{\frac{1}{2}}\V{x}\\ b_i-\V{a}_i^T\V{x}-1 \end{bmatrix}\right\rVert_2 \leq b_i - \V{a}_i\V{x} + 1
+\end{align*}
+\begin{definition}
+	The standard form of a quadratic constrained quadratic program is
+	\[
+		\min_\V{x} \V{x}^TQ_0\V{x} + \V{a}_0^T\V{x} \quad : \quad \forall i\in[1,m],\ \V{x}^TQ_i\V{x} + \V{a}_i^T\V{x} \leq b_i
+	\]
+	\label{defn:qcqp}
+\end{definition}
+To be a quadratic program, the matrix $H$ must be positive semi-definite.
+If the $Q_i=0$ in the constraints, then we get a normal quadratic program.
+\begin{definition}
+	The standard form of a quadratic program is given by \[
+		\min_\V{x}\frac{1}{2}\V{x}^TH\V{x} + \V{c}^T\V{x} \quad : \quad \forall i\in[1,m],\ \V{a}_i^T\V{x} \leq b_i
+	\]
+	\label{defn:quadratic-program}
+\end{definition}
+Its SOCP form looks like
+\begin{align*}
+	\min_{\V{x}, y} &\quad \V{c}^T\V{x} + y\\
+	\text{s.t: } &\left\lVert \begin{bmatrix}2H^{\frac{1}{2}}\V{x} \\ y - 1 \end{bmatrix}\right\rVert_2 \leq y + 1,\\
+	& \V{a}_i\V{x} \leq b_i
+\end{align*}
+In the special case where $H$ is positive definite and we have no constraints, then
+\[
+	\frac{1}{2}\V{x}^TH\V{x} + \V{c}^T\V{x} + d = \frac{1}{2}(\V{x} - H^{-1}\V{c})^TH(\V{x} - H^{-1}\V{c}) + d - (H^{-1}\V{c})^TH(H^{-1}\V{c})
+\]
+Thus \[
+	\argmin_\V{x} \frac{1}{2}\V{x}^TH\V{x} + \V{c}^T\V{x} + d = -H^{-1}\V{c}
+\]
+\subsection{Linear Programming}
+If the matrix in the objective function of a quadratic program is 0 (and there are no quadratic constraints), then the resulting objective and constraints are affine functions.
+This is a linear program.
+\begin{definition}
+	The inequality form of a linear program is given by \[
+		\min_\V{x} \V{c}^T\V{x} + d \quad : \quad \forall i\in[1,m],\ \V{a}_i^T\V{x} \leq b_i
+	\]
+	\label{defn:lp}
+\end{definition}
+Since linear program is a special case of a quadratic program, it can also be expressed as an SOCP.
+\begin{align*}
+	\min_\V{x} &\quad \V{c}^T\V{x}\\
+	\text{s.t } &\quad \forall i\in[1,m],\ \|0\V{x} + 0\|_2 \leq b_i - \V{a}_i^T\V{x}
+\end{align*}
+Because of the constraints, the feasible set of a linear program is a polyhedron.
 \end{document}
 

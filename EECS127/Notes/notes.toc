@@ -1,7 +1,21 @@
-\contentsline {section}{\numberline {1}Math Overview}{2}{section.1}
-\contentsline {subsection}{\numberline {1.1}Vectors}{2}{subsection.1.1}
-\contentsline {subsubsection}{\numberline {1.1.1}Projection}{3}{subsubsection.1.1.1}
-\contentsline {subsection}{\numberline {1.2}Functions}{3}{subsection.1.2}
-\contentsline {subsection}{\numberline {1.3}Matrices}{4}{subsection.1.3}
-\contentsline {subsubsection}{\numberline {1.3.1}QR Factorization}{5}{subsubsection.1.3.1}
-\contentsline {subsubsection}{\numberline {1.3.2}Symmetric Matrices}{6}{subsubsection.1.3.2}
+\contentsline {section}{\numberline {1}Linear Algebra}{3}{section.1}
+\contentsline {subsection}{\numberline {1.1}Norms}{3}{subsection.1.1}
+\contentsline {subsection}{\numberline {1.2}Inner Products}{4}{subsection.1.2}
+\contentsline {subsection}{\numberline {1.3}Functions}{4}{subsection.1.3}
+\contentsline {subsubsection}{\numberline {1.3.1}Types of Functions}{5}{subsubsection.1.3.1}
+\contentsline {subsubsection}{\numberline {1.3.2}Vector Calculus}{6}{subsubsection.1.3.2}
+\contentsline {subsection}{\numberline {1.4}Matrices}{6}{subsection.1.4}
+\contentsline {subsubsection}{\numberline {1.4.1}Symmetric Matrices}{7}{subsubsection.1.4.1}
+\contentsline {subsubsection}{\numberline {1.4.2}QR Factorization}{7}{subsubsection.1.4.2}
+\contentsline {subsubsection}{\numberline {1.4.3}Singular Value Decomposition}{8}{subsubsection.1.4.3}
+\contentsline {section}{\numberline {2}Fundamentals of Optimization}{9}{section.2}
+\contentsline {subsection}{\numberline {2.1}Robust Optimization}{10}{subsection.2.1}
+\contentsline {section}{\numberline {3}Linear Algebraic Optimization}{10}{section.3}
+\contentsline {subsection}{\numberline {3.1}Projection}{10}{subsection.3.1}
+\contentsline {subsubsection}{\numberline {3.1.1}Matrix Pseudo-inverses}{11}{subsubsection.3.1.1}
+\contentsline {subsection}{\numberline {3.2}Explained Variance}{11}{subsection.3.2}
+\contentsline {subsubsection}{\numberline {3.2.1}PCA}{12}{subsubsection.3.2.1}
+\contentsline {subsection}{\numberline {3.3}Removing Constraints}{12}{subsection.3.3}
+\contentsline {section}{\numberline {4}Conic Programming}{12}{section.4}
+\contentsline {subsection}{\numberline {4.1}Quadratic Programming}{13}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Linear Programming}{14}{subsection.4.2}
