@@ -677,13 +677,14 @@ In words, the capacity describes the maximum mutual information between the chan
 	For a channel decsribed by $p_{Y|X}$ and $\epsilon>0$ and $R < C$, for all $n$ sufficiently large, there exists a rate $R$ communication scheme that achieves a probability of error less than $\epsilon$. If $R > C$, then the probability of error converges to 1 for any communication scheme. 
 	\label{thm:channel-coding}
 \end{theorem}
-\section{Markov Chains}
+\section{Random Processes}
 \begin{definition}
 	A random/stochastic process is a sequence of random variables $(X_n)_{n\geq 0}$.
 	\label{defn:random-process}
 \end{definition}
 The random variables in a stochastic process do not have to be independently and identically distributed.
 In fact, if they are not, then we can get additional modeling power.
+\subsection{Discrete Time Markov Chains}
 \begin{definition}
 	$(X_n)_{n\geq 0}$ is a Markov Chain if each random variable $X_i$ takes values in a discrete set $S$ (the state space), and, \[
 		\forall n \geq 0,\ i,j\in S,\ \pr{X_{n+1}=j|X_n=i,\cdots,X_0=x_0} = \pr{X_{n+1}=i|X_n=j}
@@ -710,7 +711,21 @@ The transition matrix encodes the one-step transition probabilities of the Marko
 	The n-step transition probabilities (i.e starting in $i$ and ending in $j$ $n$ steps later) of the Markov Chain are given by $p_{ij}^{(n)} = P^n_{ij}$.
 	\label{thm:chapman-kolmogorov}
 \end{theorem}
-\subsection{Properties of Markov Chains}
+One useful thing we can comptue with Markov Chain is when the chain first enters a particular state.
+\begin{definition}
+	For a $A \subset S$, the hitting time of $A$ is given by \[
+		T_A = \min_n \{ n\geq 0: X_n\in A\}
+	\]
+	\label{defn:hitting-time}
+\end{definition}
+Computing the expected hitting time is an example of a broader type of Markov Chain Analysis called \textbf{First Step Analysis}.
+In First Step Analysis, we set up a system of equations that relies on the Markov property to generate a system of equations that only look at the first transition in the chain.
+For expected hitting time, these look like
+\begin{enumerate}
+	\item For $i\not\in A$, $\expect{T_A|X_0 = i} = 1 + \sum_j P_{ij} \expect{T_A|X_0 = j}$
+	\item For $i\in A$, $\expect{T_A|X_0 = i} = 0$
+\end{enumerate}
+\subsubsection{Properties of Markov Chains}
 \begin{definition}
 	If $\exists n \geq 1$ such that $p_{ij}^{(n)} \ne 0$, then $j$ is accessible from $i$, and we write $i\rightarrow j$.
 	\label{defn:accesible}
@@ -732,6 +747,17 @@ This means that $\leftrightarrow$ partitions the state-space $S$ into equivalenc
 	A Markov Chain is irreducible if $S$ is the only class.
 	\label{defn:irreducible-markov}
 \end{definition}
+\begin{definition}
+	An irreducible Markov Chain is reversible if and only if there exists a probability vector $\pi$ that satisfies the \textbf{Detailed Balance Equations}: \[
+		\forall i,j \in S,\ \pi_j P_{ij} = \pi_i P_{ji}
+	\]
+	\label{defn:reversible-markov}
+\end{definition}
+Markov Chains which satisfy the detailed balance equations are called reversible because if $X_0\sim \pi$, then the random vectors $(X_0, X_1, \cdots, X_n)$ and $(X_n, X_{n-1}, \cdots, X_0)$ are equal in distribution.
+\begin{theorem}
+	If the graph of a Markov Chain (transform the state transition diagram by making edges undirected, removing self-loops, and removing multiple edges) is a tree, then the Markov Chain is reversible.
+	\label{thm:tree-markov}
+\end{theorem}
 \subsubsection{Class Properties}
 A class property is a property where if one element of a class has the property, all elements of the class have the property.
 Markov Chains have several of these properties which allow us to classify states.
@@ -744,7 +770,7 @@ Markov Chains have several of these properties which allow us to classify states
 	\label{defn:markov-transience}
 \end{definition}
 Recurrence means that we will visit a state infinitely often in the future if we start in that state, while transience means we will only visit the state finitely many times.
-We can further break recurrence down if we define $T_i = \min_{n\geq 1} n \text{ such that } X_n = i$ (the first time the chain enters state $i$).
+We can further break recurrence down if we modify the definition of hitting time to be $T_i = \min_n \{ n \geq 1 : X_n=i \}$ (the first time the chain enters state $i$).
 \begin{definition}
 	State $i$ is positive recurrent if it is recurrent and $\expect{T_i|X_0=i}$ is finite.
 	\label{defn:positive-recurrence}
@@ -772,13 +798,22 @@ If we start in state $i$, then revists to $i$ only occur at integer multiples of
 	\label{defn:aperiodic-mc}
 \end{definition}
 All of the above properties are class properties.
-\subsection{Long-Term Behavior of Markov Chains}
+\subsubsection{Long-Term Behavior of Markov Chains}
 Since the $p_{ij}$ completely characterize the Markov Chain, we can also describe what happens to the chain in the limit.
 \begin{definition}
 	A probability distribution $\pi$ over the states is a stationary distribution if $\pi = \pi P$
 	\label{defn:stationary-dist-mc}
 \end{definition}
 It is called a stationary distribution because the distribution over states is invariant with time.
+The relationship $\pi = \pi P$ can be expanded for the jth element to show that any stationary distribution must satisfy the \textbf{Global Balance Equations}:
+\[
+	\pi_j = \sum_i p_{ij}\pi_i.
+\]
+Note that if a distribution $\pi$ satisfies the detailed balance equations from \cref{defn:reversible-markov}, then $\pi$ also satisfies \cref{defn:stationary-dist-mc}.
+
+Both the global balance equations and detailed balance equations can be conceptualized as statements of flow.
+If each $\pi_j$ indicates how much mass is placed on state $j$, then the global balance equations tell us the mass leaving the node (going to each neighbor $i$ in proportion to $p_{ij}$) is equal to the mass entering the node (which must sum to $\pi_j$ since it is a stationary distribution.
+Rather than looking at the flow of the whole chain, the detailed balance equations look at the flow between two states. The mass $i$ gives to $j$ is equal to the mass $j$ gives to $i$.
 \begin{theorem}[Big Theorem for Markov Chains]
 	Let $(X_n)_{n\geq 0}$ be an irreducible Markov Chain. Then one of the following is true.
 
@@ -791,5 +826,51 @@ It is called a stationary distribution because the distribution over states is i
 		If the Markov Chain is periodic, then $\lim_{n\to\infty}p_{ij}^{(n)} = \pi_j$
 	\label{thm:big-theorem}
 \end{theorem}
+One consequence of \cref{thm:big-theorem} is that it means the stationary distribution $\pi$ of a reversible Markov Chain is unique.
+This makes solving the detailed balance equations a good technique of solving for the stationary distribution.
+\subsection{Poisson Processes}
+\begin{definition}
+	A counting process $(N_t)_{t\geq 0}$ is a non-decreasing, continuous time, integer valued random process which has right continuous sample paths.
+	\label{defn:counting-process}
+\end{definition}
+There are two important metrics which describe counting processes.
+\begin{definition}
+	The ith arrival time $T_i$ is given by \[
+		T_i = \min_t \{ t \geq 0: \ N_t \geq i \}
+	\]
+	\label{defn:arrival-time}
+\end{definition}
+\begin{definition}
+	The ith inter-arrival time $S_i$ is given by \[
+		S_i = T_i - T_{i-1}, i > 0
+	\]
+	\label{defn:inter-arrival-time}
+\end{definition}
+\begin{definition}
+	A rate $\lambda$ Poisson Process is a counting process with independently and identically distributed inter-arrival times $S_i \sim \text{Exp}(\lambda)$.
+	\label{defn:poisson-process}
+\end{definition}
+The name Poisson comes from the distribution of each varible in the process.
+\begin{theorem}
+	If $(N_t)_{t\geq 0}$ is a rate $\lambda$ Poisson Process, then for each $t\geq 0$, $N_t\sim \text{Poisson}(\lambda t)$
+	\label{thm:poisson-process}
+\end{theorem}
+Since the inter-arrival times are memoryless and i.i.d, Poisson Processes have many useful properties.
+\begin{theorem}
+	If $(N_t)_{t\geq 0}$ is a rate $\lambda$ Poisson Process, then $(N_{t+s} - N_s)_{t\geq0}$ is also a rate $\lambda$ Poisson Process for all $s \geq 0$ and is independent of the original process.
+	\label{thm:indep-poisson-process}
+\end{theorem}
+\begin{theorem}
+	For $t_0 < t_1 <\ldots< t_k$, then the increments of a rate $\lambda$ Poisson Process $(N_{t_1} - N_{t_0}), (N_{t_2} - N_{t_1}),\ldots,(N_{t_k} - N_{t_{k-1}})$ are independent and $N_{t_i} - N_{t_{i-1}} \sim \text{Poisson}(\lambda(t_i - t_{i-1}))$
+	\label{thm:indep-increments}
+\end{theorem}
+Poisson Processes are the only counting processes with these particular properties.
+
+It turns out that Poisson Processes can be connected with the Order Statistics of Uniform Random Variables.
+\begin{theorem}[Conditional Distribution of Arrivals]
+	Conditioned on $N_t = n$, the random vector $T_1, T_2, \cdots, T_n$ has the same distribution as the order statistics of $n$ random variables $U\sim \text{Uniform}(0, t)$.
+	\label{thm:conditional-dist-of-arrivals}
+\end{theorem}
+What \cref{thm:conditional-dist-of-arrivals} says is that given $n$ arrivals up to time $t$ occur, the distribution of arrival times is equivalent to taking $n$ i.i.d uniform random variables and sorting them.
 \end{document}
 
