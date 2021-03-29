@@ -828,7 +828,80 @@ Rather than looking at the flow of the whole chain, the detailed balance equatio
 \end{theorem}
 One consequence of \cref{thm:big-theorem} is that it means the stationary distribution $\pi$ of a reversible Markov Chain is unique.
 This makes solving the detailed balance equations a good technique of solving for the stationary distribution.
-\subsection{Poisson Processes}
+\subsection{Continuous Time Markov Chains}
+\begin{definition}
+	A process $(X_t)_{t\geq 0}$ taking values in a countable state space $S$ is a temporally homogenous continuous time markov chain if it satisfies the Markov Property
+	\[
+		\pr{X_{t+\tau}=j|X_t=i,X_s=i_s, 0 \leq s \leq t} = \pr{X_{t+\tau}=j|X_t=i} = \pr{X_\tau = j | X_0 = i}
+	\]
+	\label{defn:ctmc}
+\end{definition}
+To characterize how a CTMC functions, we need to define some additional quantities.
+\begin{enumerate}
+	\item $q_i$ is the transition rate of state $i$
+	\item $p_{ij}$ is the transition probability bewteen states $i$ and $j$
+\end{enumerate}
+Every time a CTMC enters a state $i$, it will hold in that state for $\text{Exp}(q_i)$ time before transitioning to the next state $j$ with probability $p_{ij}$.
+\begin{definition}
+	The jump chain is a DTMC which describes the transition probabilities between states in the CTMC
+	\label{defn:jump-chain}
+\end{definition}
+Note that the jump chain cannot have self-loops ($p_{ii}=0$) because otherwise the amount of time spent in state $i$ would not be exponentially distributed.
+An alternative interpretation of a CTMC is
+\begin{enumerate}[1.]
+	\item Define jump rates $q_{ij} = q_i p_{ij}$
+	\item On entering state $i$, jump to $j^\star = \argmin_j T_j$ where $T_j \sim \text{Exp}(q_{ij})$ for all $j\neq i$ and are independent from each other.
+\end{enumerate}
+Essentially, every time we enter a state, we set an alarm clock for all other states, and then jump to the state whose alarm clock goes off first.
+This equivalent interpretation allows us to summarize a CTMC using the rate matrix.
+\[
+	Q_{ij} = \begin{cases}
+		-q_i & \text{ if } i=j\\
+		q_{ij} & \text{ if } i \neq j
+	\end{cases}
+\]
+Following from the first interprentation, all entries of $Q$ are non-negative, and the rows must sum to 0.
+One useful quantity which we can define is how long it takes to come back to a particular state.
+\begin{definition}
+	The time to first re-entry of state $j$ is \[
+		T_j = \min \{t \geq 0: X_t=j \text{ and } X_s \neq j \text{ for some } s < t\}
+	\]
+	\label{defn:ctmc-reentry}
+\end{definition}
+\subsubsection{Class Properties}
+Just like in DTMCs, we can classify states in the CTMC.
+\begin{definition}
+	States $i$ and $j$ communicate with eachc other if $i$ and $j$ communicate in the jump chain.
+	\label{defn:ctmc-communicate}
+\end{definition}
+\begin{definition}
+	State $j$ is transient if given $X_0=j$, the process enters $j$ finitely many times with probability 1. Otherwise, it is recurrent.
+	\label{defn:ctmc-recurrent}
+\end{definition}
+\begin{definition}
+	A state $j$ is positive recurrent if its time to first re-entry is finite, and null recurrent otherwise.
+	\label{defn:ctmc-recurrence}
+\end{definition}
+\subsubsection{Long Term Behavior of CTMCs}
+CTMCs also have stationary distributions.
+\begin{definition}
+	A probability vector $\pi$ is a stationary ditribution for a CTMC with rate matrix $Q$ if \[
+		\pi Q = 0 \Leftrightarrow \pi_jq_j = \sum_{i\neq j}\pi_iq_{ij}.
+	\]
+	\label{defn:ctmc-stationary}
+\end{definition}
+To describe how a CTMC behaves over time, first define $p_{ij}^{(t)} = \pr{X_t=j|X_0=i}$ and $m_j = \expect{T_j|X_0=j}$.
+\begin{theorem}[Big Theorem for CTMCs]
+	For an irreducible CTMC, exactly one of the following is true.
+
+	1. All states are transient or null recurrent, no stationary distribution exists, and $\lim_{t\to\infty}p_{ij}^{(t)} = 0$
+	
+	2. All states are positive recurrent, a unique stationary distribution exists, and the stationary distribution satisfies \[
+		\pi_j = \frac{1}{m_jq_j} = \lim_{t\to\infty}p_{ij}^{(t)}
+	\]
+	\label{thm:ctmc-big}
+\end{theorem}
+\subsubsection{Poisson Processes}
 \begin{definition}
 	A counting process $(N_t)_{t\geq 0}$ is a non-decreasing, continuous time, integer valued random process which has right continuous sample paths.
 	\label{defn:counting-process}
@@ -855,6 +928,7 @@ The name Poisson comes from the distribution of each varible in the process.
 	If $(N_t)_{t\geq 0}$ is a rate $\lambda$ Poisson Process, then for each $t\geq 0$, $N_t\sim \text{Poisson}(\lambda t)$
 	\label{thm:poisson-process}
 \end{theorem}
+A Poisson Process is a special case of a CTMC where the transition rates $q_i = \lambda$ and the transition probabilties $p_{ij}$ are 1 if $j=i+1$ and 0 otherwise.
 Since the inter-arrival times are memoryless and i.i.d, Poisson Processes have many useful properties.
 \begin{theorem}
 	If $(N_t)_{t\geq 0}$ is a rate $\lambda$ Poisson Process, then $(N_{t+s} - N_s)_{t\geq0}$ is also a rate $\lambda$ Poisson Process for all $s \geq 0$ and is independent of the original process.
@@ -872,5 +946,15 @@ It turns out that Poisson Processes can be connected with the Order Statistics o
 	\label{thm:conditional-dist-of-arrivals}
 \end{theorem}
 What \cref{thm:conditional-dist-of-arrivals} says is that given $n$ arrivals up to time $t$ occur, the distribution of arrival times is equivalent to taking $n$ i.i.d uniform random variables and sorting them.
+
+Two other useful properties of Poisson Processes involve combining and separating them.
+\begin{theorem}[Poisson Merging]
+	If $N_{1,t}$ and $N_{2,t}$ are independent Poisson Processes with rates $\lambda_1$ and $\lambda_2$, then $N_{1, t} + N_{2,t}$ is a Poisson Process with rate $\lambda_1+\lambda_2$.
+	\label{thm:poisson-merging}
+\end{theorem}
+\begin{theorem}[Poisson Splitting]
+	Let $p(x)$ be a probability distribution and $N_t$ be a rate $\lambda$ Poisson process. If each arrival is marked with the label $i$ independently with probability $p(x=i)$, then $N_{i,t}$, the process counting the number of arrivals labeled $i$ is an independent Poisson Process with rate $\lambda p_i$.
+	\label{thm:poisson-splitting}
+\end{theorem}
 \end{document}
 

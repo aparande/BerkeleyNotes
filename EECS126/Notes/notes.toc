@@ -21,4 +21,7 @@
 \contentsline {subsubsection}{\numberline {5.1.1}Properties of Markov Chains}{21}{subsubsection.5.1.1}
 \contentsline {subsubsection}{\numberline {5.1.2}Class Properties}{21}{subsubsection.5.1.2}
 \contentsline {subsubsection}{\numberline {5.1.3}Long-Term Behavior of Markov Chains}{22}{subsubsection.5.1.3}
-\contentsline {subsection}{\numberline {5.2}Poisson Processes}{23}{subsection.5.2}
+\contentsline {subsection}{\numberline {5.2}Continuous Time Markov Chains}{23}{subsection.5.2}
+\contentsline {subsubsection}{\numberline {5.2.1}Class Properties}{24}{subsubsection.5.2.1}
+\contentsline {subsubsection}{\numberline {5.2.2}Long Term Behavior of CTMCs}{25}{subsubsection.5.2.2}
+\contentsline {subsubsection}{\numberline {5.2.3}Poisson Processes}{25}{subsubsection.5.2.3}
