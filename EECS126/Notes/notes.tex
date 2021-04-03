@@ -868,6 +868,14 @@ One useful quantity which we can define is how long it takes to come back to a p
 	\]
 	\label{defn:ctmc-reentry}
 \end{definition}
+Since a CTMC is essentially a DTMC where we hold in each state for an exponential amount of time, we can apply First Step Analysis in essentially the same way that we do for DTMCs.
+In fact, hitting probabilities will look exactly the same since we can just use the jump chain to comute the transition probabilities.
+The only differences will arise when we consider the time dependent quantities.
+For hitting times (how long it takes to enter a state from $A\subseteq S$),
+\begin{enumerate}
+	\item If $i\in A, \expect{T_A|X_0=i} = 0$
+	\item If $i \not \in A, \expect{T_A|X_0=i} = \frac{1}{q_i} + \sum_{j\in S} p_{ij}\expect{T_A|X_0=j}$
+\end{enumerate}
 \subsubsection{Class Properties}
 Just like in DTMCs, we can classify states in the CTMC.
 \begin{definition}
@@ -901,6 +909,36 @@ To describe how a CTMC behaves over time, first define $p_{ij}^{(t)} = \pr{X_t=j
 	\]
 	\label{thm:ctmc-big}
 \end{theorem}
+\subsubsection{Uniformization}
+Let $P^{(t)}$ denote the matrix of transition probabiltiies at time $t>0$.
+By the Markov property, we know that $P^{(s+t)} = P^{(s)}P^{(t)}$.
+For $h \approx 0, P^{(h)} \approx I + hQ + o(h)$. This approximation allows us to compute the derivative of $P^{(t)}$.
+\begin{theorem}[Forward Kolmogorov Equation]
+	\[
+		\frac{\partial}{\partial t}P^{(t)} = \lim_{h\to 0}\frac{P^{(t+h)} - P^{(t)}}{h} = P^{(t)}Q
+	\]
+	\label{thm:forward-kolmogorov}
+\end{theorem}
+\cref{thm:forward-kolmogorov} tells us that the transition probabilties $P^{(t)} = e^{tQ}$ for all $t \geq 0$.
+This is why Q is sometimes called the generator matrix: it generates the transition probabilities.
+However, matrix exponentials are difficult to compute. Instead, we can turn to \textbf{Uniformization}, which allows us to estimate $P^{(t)}$ by simulating it through a DTMC.
+\begin{definition}
+	Given a CTMC where $\exists M$ such that $q_{i} \leq M$ for all $i,j\in S$.
+	Fix a $\gamma \geq M$, and the uniformized chain will be a DTMC with transition probabilities $p_{ij} = \frac{q_{ij}}{\gamma}$ and $p_{ii} = 1 - \frac{q_i}{\gamma}$.
+	 \[
+		P_u = I + \frac{1}{\gamma}Q.
+	\]
+	\label{defn:uniformization}
+\end{definition}
+It turns out that \[
+	P_u^n = \left( I + \frac{1}{\gamma}Q \right)^n \approx e^{\frac{n}{\gamma}Q}
+\]
+when $\frac{1}{\gamma}$ is small.
+This means that we can approximate the transition probabilties of the CTMC using the uniformized chain.
+Observe that uniformization also helps in finding the stationary distribution since the stationary distribution of the uniformized chain is identical to the original chain.
+\[
+	\pi P_u = \pi + \frac{1}{\gamma}\pi Q = \pi \Leftrightarrow \pi Q = 0.
+\]
 \subsubsection{Poisson Processes}
 \begin{definition}
 	A counting process $(N_t)_{t\geq 0}$ is a non-decreasing, continuous time, integer valued random process which has right continuous sample paths.
@@ -956,5 +994,62 @@ Two other useful properties of Poisson Processes involve combining and separatin
 	Let $p(x)$ be a probability distribution and $N_t$ be a rate $\lambda$ Poisson process. If each arrival is marked with the label $i$ independently with probability $p(x=i)$, then $N_{i,t}$, the process counting the number of arrivals labeled $i$ is an independent Poisson Process with rate $\lambda p_i$.
 	\label{thm:poisson-splitting}
 \end{theorem}
+\section{Random Graphs}
+A random graph is one which is generated through some amount of randomness.
+\begin{definition}
+	An Erdos-Renyi random graph $G(n, p)$ is an undirected graph on $n \geq 1$ vertices where each edge exists independently with probability $p$.
+	\label{defn:erdos-renyi}
+\end{definition}
+With random graphs, we often ask what happens to particular properties as $n\to\infty$ and $p$ scales with some relationship to $n$.
+In particular, we want that property to hold with high probability (i.e, as $n\to\infty$, the probabilty that $G(n,p)$ has the property approaches 1).
+\begin{theorem}
+	Every monotone graph property (adding more edges doesn't delete the property) has a sharp threshold $t_n$ where if $p	\gg t_n$, then $G(n, p)$ has $p$ with high probability and does not have $p$ with high probability if $t_n \ll G(n,p)$.
+	\label{thm:graph-sharp-threshold}
+\end{theorem}
+One example of a threshold is the connectivity threshold.
+\begin{theorem}[Erdos-Renyi Connectivity Theorem]
+	Fix $\lambda > 0$ and let $P_n = \lambda \frac{\log n}{n}$. If $\lambda > 1$, then $P(G(n,p)\text{ is connected})$ with probability approaching 1, and if $\lambda < 1$, then $P(G(n,p)\text{ is disconnected})$ with probability approaching 1
+	\label{thm:erdos-renyi}
+\end{theorem}
+\section{Statistical Inference}
+Suppose we have a variable $X$ (may or may not be a random variable) that represents the state of nature.
+We observe a variable $Y$ which is obtained by some model of the world $P_{Y|X}$.
+\begin{gitbook-image}
+  \begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[auto, node distance=2cm,>=latex']
+	  % We start by placing the blocks
+	  \node [input, name=input] (input) {};
+		\node [block, name=model, right of=input, node distance=3cm] (model) {Model ($P_{Y|X}$)};
+	  \node [output, right of=model, node distance=3cm] (output) {};
+
+	  % Once the nodes are placed, connecting them is easy. 
+	  \draw [->] (input) -- node {$X$} (model);
+	  \draw [->] (model) -- node {$Y$} (output);
+	\end{tikzpicture}
+	\caption{Inference Setup}
+	\label{fig:inference-setup}
+  \end{figure}
+\end{gitbook-image}
+Suppose we know that $X\sim \pi$ where $\pi$ is a probability distribution.
+If we observe $Y=y$, then the \textit{a posteriori} estimate of $X$ is given by Bayes Rule
+\[
+	\pr{X=x | Y=y} = \frac{P_{Y|X}(y|x)\pi(x)}{\sum_{\tilde{x}}P_{Y|X}(y|\tilde{x})\pi(\tilde{x})} \propto P_{Y|X}(y|x)\pi(x).
+\]
+Since the estimate is only dependent on the model and the prior, we don't actually need to compute the probabilities to figure out the most likely $X$.
+\begin{definition}
+	The Maximum A Posteriori (MAP) estimate is given by \[
+		\hat{X}_{MAP}(y) = \argmax_x P_{Y|X}(y|x)\pi(x)
+	\]
+	\label{defn:map}
+\end{definition}
+If we have no prior information on $X$, then we can assume $\pi$ is uniform, reducing \cref{defn:map} to only optimize over the model.
+\begin{definition}
+	The Maximum Likelihood (ML) estimate is given by 
+	\[
+		\hat{X}_{ML}(y) = \argmax_x P_{Y|X}(y|x)
+	\]
+	\label{defn:mle}
+\end{definition}
 \end{document}
 
