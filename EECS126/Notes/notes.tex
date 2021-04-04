@@ -550,6 +550,12 @@ In other words, a sequence of random variables converges in distribution to a no
 
 These notions of convergence are not identical, and they do not necessarily imply each other.
 It is true that almost sure convergence implies convergence in probability, and convergence in probability implies convergence in distribution, but the implication is only one way.
+
+Once we know how a random variable converges, we can then also find how functions of that random variable converge.
+\begin{theorem}[Continuous Mapping Theorem]
+	If $f$ is a continuous function, then if $X_n$ converges to $X$, then $f(X_n)$ converges to $f(X)$. The convergence can be almost surely, in probability, or in distribution.
+	\label{thm:continuous-mapping}
+\end{theorem}
 \section{Information Theory}
 Information Theory is a field which addresses two questions
 \begin{enumerate}
@@ -560,7 +566,7 @@ Information Theory is a field which addresses two questions
 Intuitively, for a PMF of a disrete random variable, the surprise associated with a particular realization is $-\log p_X(x)$ since less probable realizations are more surprising.
 With this intuition, we can try and quantify the ``expected surprise'' of a distribution.
 \begin{definition}
-	For a Discrete Random Variablle $X\sim p_X$, the Entropy of $X$ is given by \[
+	For a Discrete Random Variable $X\sim p_X$, the Entropy of $X$ is given by \[
 		H(x) = \expect{-\log_2 p_X(x)} = -\sum_{x\in\mathcal{X}} p_X(x)\log_2p_X(x).
 	\]
 	\label{defn:entropy}
@@ -575,7 +581,7 @@ Just like probabilites, we can define both joint and conditional entropies.
 \end{definition}
 \begin{definition}
 	For Discrete Random Variable $X$ and $Y$, the conditional entropy is given by \[
-		H(Y|X) = \expect{-\log_2p_{Y|X}(y|x)} = -\sum_{x\in\mathcal{X}}p_X(x)H(Y|X=x).
+		H(Y|X) = \expect{-\log_2p_{Y|X}(y|x)} = \sum_{x\in\mathcal{X}}p_X(x)H(Y|X=x).
 	\]
 	\label{defn:conditional-entropy}
 \end{definition}
@@ -616,7 +622,7 @@ Using this idea, we can define a subset of possible observed sequences that in t
 Two important properties of the typical set are that
 \begin{enumerate}
 	\item $\lim_{n\to\infty}P\left((x_1, x_2, \ldots, x_n) \in A_{\epsilon}^{(n)}\right) = 1$
-	\item $|A_{\epsilon}^{(n)}| \geq 2^{n(H(X)+\epsilon)}$
+	\item $|A_{\epsilon}^{(n)}| \leq 2^{n(H(X)+\epsilon)}$
 \end{enumerate}
 The typical set gives us an easy way to do source coding.
 If I have $N$ total objects, then I only need $\log N$ bits to represent each object, so I can define a simple protocol which is
@@ -626,12 +632,12 @@ If I have $N$ total objects, then I only need $\log N$ bits to represent each ob
 \end{enumerate}
 This makes the average number of bits required to describe a message 
 \begin{align*}
-	\expect{\text{\# of Bits}} &\leq n(H(X)+\frac{\epsilon}{2})P((x_i)_{i=1}^n\in A_{\frac{\epsilon}{2}}^{(n)}) + n\log |\mathcal{X}|P((x_i)_{i=1}^n\in A_{\frac{\epsilon}{2}}^{(n)}) \\
+	\expect{\text{\# of Bits}} &\leq n\left(H(X)+\frac{\epsilon}{2}\right)P\left((x_i)_{i=1}^n\in A_{\frac{\epsilon}{2}}^{(n)}\right) + n\log |\mathcal{X}|P\left((x_i)_{i=1}^n\in A_{\frac{\epsilon}{2}}^{(n)}\right) \\
 	&\leq n(H(X)+\frac{\epsilon}{2}) + n \frac{\epsilon}{2} \leq n(H(X)+\epsilon)
 \end{align*}
 This is the first half of a central result of source coding.
 \begin{theorem}[Source Coding Theorem]
-	If $(X_i)_{i=1}^n \sim p_X$ are a sequence of independently and identically distributed random varible, then for any $\epsilon > 0$ and $n$ sufficiently large, we can represent $(X_i)_{i=1}^n$ using fewer than $n(H(X) + \epsilon)$ bits. Conversely, we can not losslessly represent $(X_i)_{i=1}^n$ using fewer than $nH(X)$ bits.
+	If $(X_i)_{i=1}^n \sim p_X$ are a sequence of independently and identically distributed random varibles, then for any $\epsilon > 0$ and $n$ sufficiently large, we can represent $(X_i)_{i=1}^n$ using fewer than $n(H(X) + \epsilon)$ bits. Conversely, we can not losslessly represent $(X_i)_{i=1}^n$ using fewer than $nH(X)$ bits.
 	\label{thm:source-coding}
 \end{theorem}
 This lends a new interpretation of the entropy $H(X)$: it is the average number of bits required to represent $X$.
@@ -684,6 +690,13 @@ In words, the capacity describes the maximum mutual information between the chan
 \end{definition}
 The random variables in a stochastic process do not have to be independently and identically distributed.
 In fact, if they are not, then we can get additional modeling power.
+\begin{definition}
+	A random procecs $(X_n)_{n\in\mathbb{N}}$ is stationary if for all $k, n > 0$ and all events $A_1,\cdots,A_n$, then \[
+		\pr{X_1\in A_1,\cdots,X_n\in A_n} = \pr{X_{k+1}\in A_1,\cdots,A_{k+n}\in A_n}
+	\]
+	\label{defn:stationarity}
+\end{definition}
+Stationarity is often a good assumption that can simplify systems which have been running for a long period of time.
 \subsection{Discrete Time Markov Chains}
 \begin{definition}
 	$(X_n)_{n\geq 0}$ is a Markov Chain if each random variable $X_i$ takes values in a discrete set $S$ (the state space), and, \[
@@ -770,6 +783,12 @@ Markov Chains have several of these properties which allow us to classify states
 	\label{defn:markov-transience}
 \end{definition}
 Recurrence means that we will visit a state infinitely often in the future if we start in that state, while transience means we will only visit the state finitely many times.
+Recurrence and transience can be easily identified from the transition diagram.
+\begin{enumerate}
+	\item Any finite communicating class which has no edges leaving the class is recurrent
+	\item If a state has an edge leading outside its communicating class, then it is transient
+	\item If a state is recurrent, then any state it can reach is recurrent
+\end{enumerate}
 We can further break recurrence down if we modify the definition of hitting time to be $T_i = \min_n \{ n \geq 1 : X_n=i \}$ (the first time the chain enters state $i$).
 \begin{definition}
 	State $i$ is positive recurrent if it is recurrent and $\expect{T_i|X_0=i}$ is finite.
@@ -805,6 +824,7 @@ Since the $p_{ij}$ completely characterize the Markov Chain, we can also describ
 	\label{defn:stationary-dist-mc}
 \end{definition}
 It is called a stationary distribution because the distribution over states is invariant with time.
+A Markov Chain is only at stationarity if and only if it has been started from the stationary distribution.
 The relationship $\pi = \pi P$ can be expanded for the jth element to show that any stationary distribution must satisfy the \textbf{Global Balance Equations}:
 \[
 	\pi_j = \sum_i p_{ij}\pi_i.
@@ -814,11 +834,15 @@ Note that if a distribution $\pi$ satisfies the detailed balance equations from 
 Both the global balance equations and detailed balance equations can be conceptualized as statements of flow.
 If each $\pi_j$ indicates how much mass is placed on state $j$, then the global balance equations tell us the mass leaving the node (going to each neighbor $i$ in proportion to $p_{ij}$) is equal to the mass entering the node (which must sum to $\pi_j$ since it is a stationary distribution.
 Rather than looking at the flow of the whole chain, the detailed balance equations look at the flow between two states. The mass $i$ gives to $j$ is equal to the mass $j$ gives to $i$.
+\begin{theorem}
+	If an irreducible Markov Chain is at stationarity, then the flow-in equals flow-out relationship holds for any cut of the Markov Chain where a cut is a partition of the chain into two disjoint subsets.
+	\label{thm:flow-stationarity}
+\end{theorem}
+\cref{thm:flow-stationarity} is one useful result can help solve for stationary distributions.
 \begin{theorem}[Big Theorem for Markov Chains]
 	Let $(X_n)_{n\geq 0}$ be an irreducible Markov Chain. Then one of the following is true.
 
 	1. Either all states are transient, or all states are null recurrent, and no stationary distribution exists, and $\lim_{n\to\infty}p_{ij}^{(n)} = 0$.
-	% TODO: Something weird is in this statement. See Piazza (https://piazza.com/class/kjow2zzmpvg3af?cid=274)
 	
 	2. All states are positive recurrent and the stationary distribution exists, is unique, and satisfies \[
 		\pi_j = \lim_{n\to\infty}\frac{1}{n}\sum_{k=0}^{n}P_{ij}^{(k)} = \frac{1}{\expect{T_j|X_0=j}}.
@@ -898,6 +922,13 @@ CTMCs also have stationary distributions.
 	\]
 	\label{defn:ctmc-stationary}
 \end{definition}
+The stationary distribution of the CTMC is also related to the jump chain, but we need to normalize for the hold times.
+\begin{theorem}
+	If $\pi$ is a stationary distribution for a CTMC, then the stationary distribution of the jump chain is given by \[
+		\tilde{\pi}_i = \frac{\pi_i q_i}{\sum_j \pi_j q_j} 
+	\]
+	\label{thm:ctmc-jump-stationary}
+\end{theorem}
 To describe how a CTMC behaves over time, first define $p_{ij}^{(t)} = \pr{X_t=j|X_0=i}$ and $m_j = \expect{T_j|X_0=j}$.
 \begin{theorem}[Big Theorem for CTMCs]
 	For an irreducible CTMC, exactly one of the following is true.
