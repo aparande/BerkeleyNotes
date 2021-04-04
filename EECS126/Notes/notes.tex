@@ -615,7 +615,7 @@ The probability of observing a particular sequence is then \[
 Using this idea, we can define a subset of possible observed sequences that in the limit, our observed sequence must belong to with overwhelming probability.
 \begin{definition}
 	For a fixed $\epsilon > 0$, for each $n\geq 1$, the typical set is given by \[
-		A_\epsilon^{(n)} = \left\{ (x_1, x_2, \cdots, x_n) : P(x_1, x_2, \cdots, x_n) \geq 2^{-n(H(X)+\epsilon)} \right\}.
+		A_\epsilon^{(n)} = \left\{ (x_1, x_2, \cdots, x_n) : 2^{-n(H(X)+\epsilon)}\leq P(x_1, x_2, \cdots, x_n) \leq 2^{-n(H(X)-\epsilon)} \right\}.
 	\]
 	\label{defn:typical-set}
 \end{definition}
@@ -847,11 +847,16 @@ Rather than looking at the flow of the whole chain, the detailed balance equatio
 	2. All states are positive recurrent and the stationary distribution exists, is unique, and satisfies \[
 		\pi_j = \lim_{n\to\infty}\frac{1}{n}\sum_{k=0}^{n}P_{ij}^{(k)} = \frac{1}{\expect{T_j|X_0=j}}.
 		\]
-		If the Markov Chain is periodic, then $\lim_{n\to\infty}p_{ij}^{(n)} = \pi_j$
+		If the Markov Chain is aperiodic, then $\lim_{n\to\infty}p_{ij}^{(n)} = \pi_j$
 	\label{thm:big-theorem}
 \end{theorem}
 One consequence of \cref{thm:big-theorem} is that it means the stationary distribution $\pi$ of a reversible Markov Chain is unique.
 This makes solving the detailed balance equations a good technique of solving for the stationary distribution.
+If a stationary distribution exists, then we can also say when the chain will converge to the stationary distribution.
+\begin{theorem}[Convergence Theorem]
+	If a chain is irreducible, positive, recurrent, and aperiodic with stationary distribution $\pi$, then the distribution at time $n$ $\pi_n \to \pi$
+	\label{thm:mc-convergence}
+\end{theorem}
 \subsection{Continuous Time Markov Chains}
 \begin{definition}
 	A process $(X_t)_{t\geq 0}$ taking values in a countable state space $S$ is a temporally homogenous continuous time markov chain if it satisfies the Markov Property
