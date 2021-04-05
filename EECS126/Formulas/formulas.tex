@@ -38,6 +38,7 @@
 	Uniform & $\frac{1}{b-a}$ & $\frac{x-a}{b-a}$\\
 	Exponential & $\lambda e^{-\lambda x}$ & $1 - e^{-\lambda x}$\\
 	Normal & $\frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x-\mu)^2}{2\sigma^2}}$ & $\Phi(x)$\\
+	Erlang & $\frac{\lambda^k x^{k-1} e^{-\lambda x}}{(k-1)!}$ & $1 - \sum_{n=0}^{k-1}\frac{1}{n!}e^{-\lambda x}(\lambda x)^n$\\
   \end{tabularx}
 \end{center}
 
@@ -49,13 +50,18 @@
 	\midrule
 	Uniform & $\frac{a+b}{2}$ & $\frac{(b-a)^2}{12}$ & $\frac{e^{tb}-e^{ta}}{t(b-a)}$\\
 	Exponential & $\frac{1}{\lambda}$ & $\frac{1}{\lambda^2}$ & $\frac{\lambda}{\lambda - t}$\\
-	Normal & $\mu$ & $\sigma^2$ & $e^{\mu t + \frac{\sigma^2t^2}{2}}$
+	Normal & $\mu$ & $\sigma^2$ & $e^{\mu t + \frac{\sigma^2t^2}{2}}$\\
+	Erlang & $\frac{k}{\lambda}$ & $\frac{k}{\lambda^2}$ & $\left(1 - \frac{t}{\lambda}\right)^{-k}$\\
   \end{tabularx}
 \end{center}
 \subsection*{Derived Distributions}
 \begin{enumerate}
   \item If $X_1, X_2, \dots, X_N \sim \text{Exp}(\lambda_i)$ are independent, then $\min X_i \sim \text{Exp}(\sum \lambda_i)$.
-  \item If $X_1, X_2, \dots, X_N \sim \text{Exp}(\lambda_i)$ are independent, ten $P(X_i = \min X_k) = \frac{\lambda_i}{\sum \lambda_k}$.
-  \item If the number of packets arriving at a switch is $X\sim\text{Poisson}(\lambda)$ and are routed to $A$ with probability $p$ and $B$ with probability $1-p$, then the number of packets routed to $A$ and the number of packets routed to $B$ are $X_A\sim\text{Poisson}(p\lambda)$ and $X_B\sim\text{Poisson}((1-p)\lambda)$.
+  \item If $X_1, X_2, \dots, X_N \sim \text{Exp}(\lambda_i)$ are independent, then $P(X_i = \min X_k) = \frac{\lambda_i}{\sum \lambda_k}$.
+\end{enumerate}
+\subsection*{Assorted Facts}
+\begin{enumerate}
+	\item If $X$ is a random variable, then $P(X=0) \leq \frac{\var{X}}{\expect{X}^2}$
+	\item If $(N_t)_{t\geq0}$ is a Poisson Proccess with rate $\lambda$, then the time from the most recent arrival to the current ``random'' time is $t_0 - T_i \sim \text{Exp}(\lambda)$
 \end{enumerate}
 \end{document}

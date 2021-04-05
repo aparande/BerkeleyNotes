@@ -93,7 +93,7 @@ This is formalized by the so-called \href{https://en.wikipedia.org/wiki/Kolmogor
 \subsection{Distributions}
 Roughly speaking, the distribution of a random variable gives an idea of the likelihood that a random variable takes a particular value or set of values.
 \begin{definition}
-  The probability mass function (or distribution) of a random variable $X$ is the frequency with which $X$ takes on different values.
+  The probability mass function (or distribution) of a discrete random variable $X$ is the frequency with which $X$ takes on different values.
   \[
 	p_X:\mathcal{X} \rightarrow [0, 1] \text{ where } \mathcal{X} = \text{range}(X),\qquad p_X(x) = \pr{X=x}.
   \]
@@ -137,7 +137,7 @@ for some non-negative function $f_X(x)$, and this is the PDF of a continuous ran
 
 Often, when modeling problems, there are multiple random variables that we want to keep track of.
 \begin{definition}
-  If $X$ and $Y$ are random variables on a common probability space $(\Omega, \mathcal{F}, P)$, then the joint distribution (denoted $p_XY(x, y)$ or $f_{XY}(x, y)$ describes the frequencies of joint outcomes.
+	If $X$ and $Y$ are random variables on a common probability space $(\Omega, \mathcal{F}, P)$, then the joint distribution (denoted $p_{XY}(x, y)$ or $f_{XY}(x, y)$ describes the frequencies of joint outcomes.
   \label{defn:joint-dist}
 \end{definition}
 Note that it is possible for $X$ to be continuous and $Y$ to be discrete (or vice versa).
@@ -679,7 +679,7 @@ In words, the capacity describes the maximum mutual information between the chan
 	\]
 	\label{defn:rate}
 \end{definition}
-\begin{theorem}{Channel Coding Theorem}
+\begin{theorem}[Channel Coding Theorem]
 	For a channel decsribed by $p_{Y|X}$ and $\epsilon>0$ and $R < C$, for all $n$ sufficiently large, there exists a rate $R$ communication scheme that achieves a probability of error less than $\epsilon$. If $R > C$, then the probability of error converges to 1 for any communication scheme. 
 	\label{thm:channel-coding}
 \end{theorem}
@@ -691,7 +691,7 @@ In words, the capacity describes the maximum mutual information between the chan
 The random variables in a stochastic process do not have to be independently and identically distributed.
 In fact, if they are not, then we can get additional modeling power.
 \begin{definition}
-	A random procecs $(X_n)_{n\in\mathbb{N}}$ is stationary if for all $k, n > 0$ and all events $A_1,\cdots,A_n$, then \[
+	A random process $(X_n)_{n\in\mathbb{N}}$ is stationary if for all $k, n > 0$ and all events $A_1,\cdots,A_n$, then \[
 		\pr{X_1\in A_1,\cdots,X_n\in A_n} = \pr{X_{k+1}\in A_1,\cdots,A_{k+n}\in A_n}
 	\]
 	\label{defn:stationarity}
@@ -735,7 +735,7 @@ Computing the expected hitting time is an example of a broader type of Markov Ch
 In First Step Analysis, we set up a system of equations that relies on the Markov property to generate a system of equations that only look at the first transition in the chain.
 For expected hitting time, these look like
 \begin{enumerate}
-	\item For $i\not\in A$, $\expect{T_A|X_0 = i} = 1 + \sum_j P_{ij} \expect{T_A|X_0 = j}$
+	\item For $i\not\in A$, $\expect{T_A|X_0 = i} = 1 + \sum_j p_{ij} \expect{T_A|X_0 = j}$
 	\item For $i\in A$, $\expect{T_A|X_0 = i} = 0$
 \end{enumerate}
 \subsubsection{Properties of Markov Chains}
@@ -762,7 +762,7 @@ This means that $\leftrightarrow$ partitions the state-space $S$ into equivalenc
 \end{definition}
 \begin{definition}
 	An irreducible Markov Chain is reversible if and only if there exists a probability vector $\pi$ that satisfies the \textbf{Detailed Balance Equations}: \[
-		\forall i,j \in S,\ \pi_j P_{ij} = \pi_i P_{ji}
+		\forall i,j \in S,\ \pi_j p_{ij} = \pi_i p_{ji}
 	\]
 	\label{defn:reversible-markov}
 \end{definition}
