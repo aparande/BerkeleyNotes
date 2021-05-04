@@ -199,6 +199,21 @@ def convert_math(code):
     bold_symbol_exp = re.compile("(\\\\bs\{)(.*?)(\})")
     code = bold_symbol_exp.sub(r"\\boldsymbol{\2}", code)
 
+    pr_exp = re.compile("(\\\\pr\{)(.*?)(\})")
+    code = pr_exp.sub(r"\\text{Pr}\left\\{\2\right\\}", code)
+    
+    expectation_exp = re.compile("(\\\\expect\{)(.*?)(\})")
+    code = expectation_exp.sub(r"\\mathbb{E}\\left[\2\\right]", code)
+
+    variance_exp = re.compile("(\\\\var\{)(.*?)(\})")
+    code = variance_exp.sub(r"\\text{Var}\\left(\2\\right)", code)
+
+    covariance_exp = re.compile("(\\\\cov\{)(.*?)(\})")
+    code = covariance_exp.sub(r"\\text{Cov}\\left(\2\\right)", code)
+    
+    llse_exp = re.compile("(\\\\llse\{)(.*?)(\})(\{)(.*?(\})")
+    code = llse_exp.sub(r"\\mathbb{L}\\left[\2|\5\\right]", code)
+
     sinc_exp = re.compile("\\\\sinc")
     code = sinc_exp.sub(r"\\text{sinc}", code)
 
