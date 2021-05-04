@@ -214,24 +214,6 @@ When two random variables are independent, expectation has some additional prope
   \]
   \label{thm:indep-expect}
 \end{theorem}
-We can apply expectations to conditional distributions as well.
-\begin{definition}
-  The conditional expectation of a conditional distribution is given by
-  \[
-	\expect{X|Y=y} = \sum_{x\in\mathcal{X}}xp_{X|Y}(x|y), \quad \expect{X|Y=y} = \int_{-\infty}^{\infty}xf_{X|Y}(x, y)dx
-  \]
-  \label{defn:drv-conditional-expect}
-\end{definition}
-Notice that $\expect{X|Y}$ is a function of the random variable $Y$, meaning we can apply \cref{thm:unconscious-statistician}.
-\begin{theorem}[Tower Property]
-  For all functions $f$,
-  \[
-	\expect{f(Y)X} = \expect{f(Y)\expect{X|Y}}
-  \]
-  \label{thm:tower-property}
-\end{theorem}
-If we apply \cref{thm:tower-property} to the function $f(Y) = 1$, then we can see that $\expect{\expect{X|Y}} = \expect{X}$.
-
 Earlier, we saw that we find a derived distribution by transforming and combining random variables.
 Sometimes, we don't need to actually compute the distribution, but only some of its properties.
 \begin{definition}
@@ -296,24 +278,7 @@ If $\cov{X,Y} = 0$ then $X$ and $Y$ are uncorrelated.
   \label{defn:correlation}
 \end{definition}
 Note that $-1\leq \rho \leq 1$.
-Just as expectation can change when we know additional information, so can variance.
-\begin{definition}
-  Conditional Variance is the variance of $X$ given the value of $Y$.
-  \[
-	\var{X|Y=y} = \expect{(X - \expect{X|Y=y})^2 | Y=y} = \expect{X^2|Y=y} - \expect{X|Y=y}^2
-  \]
-  \label{defn:conditional-var}
-\end{definition}
-Conditional variance is a random variable just as expectation is.
-\begin{theorem}[Law of Total Variance]
-  \[
-	\var{X} = \expect{\var{X|Y}} + \var{\expect{X|Y}}
-  \]
-  \label{thm:total-variance}
-\end{theorem}
-The second term in the law of total variance ($\var{\expect{X|Y}}$) can be interpreted as on average, how much uncertainty there is in $X$ given we know $Y$.
-\subsection{Common Distributions}
-\subsubsection{Discrete Distributions}
+\subsection{Common Discrete Distributions}
 \begin{definition}
   $X$ is uniformly distributed when each value of $X$ has equal probability.
   \[
@@ -407,7 +372,7 @@ Then the total number of arrivals $X_n = \sum_{i=1}^{n}X_i$ is distributed as a 
 As we increase $n$ to infinity but keep $\lambda$ fixed, we arrive at the poisson distribution.
 
 A useful fact about Poisson random variables is that if $X\sim\text{Poisson}(\lambda)$ and $Y\sim\text{Poisson}(\mu)$ are independent, then $X+Y \sim \text{Poisson}(\lambda + \mu)$.
-\subsubsection{Continuous Distributions}
+\subsection{Common Continuous Distributions}
 \begin{definition}
   A continuous random variable is uniformly distributed when the pdf of $X$ is constant over a range.
   \[
@@ -462,6 +427,121 @@ Some facts about Gaussian random variables are
   \item If $X\sim\mathcal{N}(\mu_x, \sigma_x^2),\ Y\sim\mathcal{N}(\mu_y, \sigma_y^2)$ are independent, then $X+Y \sim \mathcal{N}(\mu_x+\mu_y, \sigma_x^2 + \sigma_y^2)$.
   \item If $X,Y$ are independent and $(X+Y), (X-Y)$ are independent, then both $X$ and $Y$ are Gaussian with the same variance.
 \end{enumerate}
+\subsubsection{Jointly Gaussian Random Variables}
+Jointly Gaussian Random Varables, also known as Gaussian Vectors, can be defined in a variety of ways.
+\begin{definition}
+	A Gaussian Random Vector $\bs{X} = \begin{bmatrix} X_1 & \cdots & X_n \end{bmatrix}^T$ with density on $\mathbb{R}^n$, $\cov{\bs{X}}=\Sigma, \expect{X}=\bs{\mu}$ is defined by the pdf
+	\[
+		f_{\bs{X}}(\bs{x}) = \frac{1}{\sqrt{(2\pi)^n\text{det}(\Sigma)}}e^{-\frac{1}{2}(\bs{x}-\bs{\mu})^T\Sigma^{-1}(\bs{x}-\bs{\mu})}
+	\]
+	\label{defn:joint-gaussian-1}
+\end{definition}
+\begin{definition}
+		A joint gaussian random variable is an affine transformation of independent and identically distributed standard normals.
+		\[
+			\bs{X} = \bs{\mu}+A\bs{W}
+		\] where $A=\Sigma^{1/2}$ is a full-rank matrix and $\bs{W}$ is a vector of i.i.d standard normals.
+	\label{defn:joint-gaussian-2}
+\end{definition}
+\begin{definition}
+	A random variable is jointly gaussian if all 1D projections are Gaussian
+	\[
+		\bs{a}^T\bs{X} \sim \mathcal{N}(\bs{a}^T\bs{\mu}, \bs{a}^T\Sigma\bs{a})
+	\]
+	\label{defn:joint-gaussian-3}
+\end{definition}
+In addition to their many definitions, jointly gaussian random variables also have interesting properties.
+\begin{theorem}
+	If $\bs{X}$ and $\bs{Y}$ are jointly gaussian random variables, then \[
+		X = \mu_{\bs{X}}+\Sigma_{\bs{XY}}(\bs{Y} - \bs{\mu_Y}) + \bs{V} \text{ where } V \sim \mathcal{N}(0, \Sigma_X-\Sigma_{\bs{XY}}\Sigma_Y^{-1}\Sigma{\bs{YX}}
+	\]
+	\label{thm:gaussian-decomp}
+\end{theorem}
+\cref{thm:gaussian-decomp} tells us that each entry in Gaussian Vector can be thought of as a ``noisy'' version of the others.
+\subsection{Hilbert Spaces of Random Variables}
+One way to understand random variables is through linear algebra by thinking of them as vectors in a vector space.
+\begin{definition}
+	An real inner product space $V$ is composed of a vector space $V$ over a real scalar field equipped with an inner product $\langle \cdot,\cdot \rangle$ that satisfies $\forall u,v,w\in V$, $a, b\in\mathbb{R}$,
+
+	1. $\langle u, v \rangle = \langle v, u \rangle$
+
+	2. $\langle au + bv, w \rangle = a \langle u,w \rangle + b \langle v,w \rangle$
+
+	3. $\langle u,u \rangle \geq 0$ and $<u,u> = 0 \Leftrightarrow u = 0$
+	\label{defn:inner-product-space}
+\end{definition}
+Inner products spaces are equipped with the norm $\|v\| = \sqrt{\langle v, v \rangle }$.
+\begin{definition}
+	A Hilbert Space is a real inner product space that is complete with respect to its norm.
+	\label{defn:hilbert-space}
+\end{definition}
+Loosely, completeness means that we can take limits of without exiting the space.
+It turns out that random variables satisfy the definition of a Hilbert Space.
+\begin{theorem}
+	Let $(\Omega, \mathcal{F}, P)$ be a probability space. The collection of random variables $X$ with $\expect{X^2} < \infty$ on this probability space form a Hilbert Space with respect to the inner product $\langle X, Y \rangle = \expect{XY}$.
+	\label{thm:rv-hilbert-space}
+\end{theorem}
+Hilbert spaces are important because they provide a notion of geometry that is compatible with our intuition as well as the geometry of $\mathbb{R}^n$ (which is a Hilbert Space).
+One geometric idea is that of orthogonality.
+Two vectors are orthogonal if $\langle X, Y\rangle = 0$.
+Two random variables will be orthogonal if they are zero-mean and uncorrelated.
+Using orthogonality, we can also define projections.
+\begin{theorem}[Hilbert Projection Theorem]
+	Let $\mathcal{H}$ be a Hilbert Space and $\mathcal{U} \subseteq \mathcal{H}$ be a closed subspace. For each vector $v\in\mathcal{H}$, $\argmin \|u-v\|$ has a unique solution (there is a unique closest point $u\in\mathcal{U}$ to $v$).
+	If $u$ is the closest point to $v$, then $\forall u\in\mathcal{U},\ \langle u-v, u'\rangle$.
+	\label{thm:hilbert-projection}
+\end{theorem}
+\cref{thm:hilbert-projection} is what gives rise to important properties like the Pythogorean Theorem for any Hilbert Space.
+\[
+	\|u\|^2 + \|u-v\|^2 = \|v\| \text{ where } u=\argmin\|u-v\|.
+\]
+Suppose we had to random variables $X$ and $Y$. What happens if we try and project one onto the other?
+\begin{definition}
+	The conditional expectation of $X$ given $Y$ is the bounded continuous function of $Y$ such that $X - \expect{X|Y}$ is orthogonal to all other bounded continuous functions $\phi(Y)$.
+	\[
+		\forall \phi,\ \expect{(X-\expect{X|Y})\phi(Y)} = 0.
+	\]
+	\label{defn:conditional-expect-hilbert}
+\end{definition}
+Thus, the conditional expectation is the function of $Y$ that is closest to $X$. It's interpretation is that the expectation of $X$ can change after observing some other random variable $Y$.
+To find $\expect{X|Y}$, we can use the conditional distribution of $X$ and $Y$.
+\begin{theorem}
+  The conditional expectation of a conditional distribution is given by
+  \[
+		\expect{X|Y=y} = \sum_{x\in\mathcal{X}}xp_{X|Y}(x|y), \quad \expect{X|Y=y} = \int_{-\infty}^{\infty}xf_{X|Y}(x, y)dx
+  \]
+  \label{defn:drv-conditional-expect}
+\end{theorem}
+Notice that $\expect{X|Y}$ is a function of the random variable $Y$, meaning we can apply \cref{thm:unconscious-statistician}.
+\begin{theorem}[Tower Property]
+  For all functions $f$,
+  \[
+	\expect{f(Y)X} = \expect{f(Y)\expect{X|Y}}
+  \]
+  \label{thm:tower-property}
+\end{theorem}
+Alternatively, we could apply lineary of expectation to \cref{defn:conditional-expect-hilbert} to arrive at the same result.
+If we apply \cref{thm:tower-property} to the function $f(Y) = 1$, then we can see that $\expect{\expect{X|Y}} = \expect{X}$.
+% TODO: Connect this to Hilbert
+
+Just as expectation can change when we know additional information, so can variance.
+\begin{definition}
+  Conditional Variance is the variance of $X$ given the value of $Y$.
+  \[
+	\var{X|Y=y} = \expect{(X - \expect{X|Y=y})^2 | Y=y} = \expect{X^2|Y=y} - \expect{X|Y=y}^2
+  \]
+  \label{defn:conditional-var}
+\end{definition}
+Conditional variance is a random variable just as expectation is.
+
+\begin{theorem}[Law of Total Variance]
+  \[
+	\var{X} = \expect{\var{X|Y}} + \var{\expect{X|Y}}
+  \]
+  \label{thm:total-variance}
+\end{theorem}
+The second term in the law of total variance ($\var{\expect{X|Y}}$) can be interpreted as on average, how much uncertainty there is in $X$ given we know $Y$.
+
 \section{Concentration}
 In real life, for the most part, we can't compute probabilities in closed form.
 Instead, we either bound them, or we want to show that $P(A) \approx 0$ or $P(A) \approx 1$.
@@ -1087,5 +1167,207 @@ If we have no prior information on $X$, then we can assume $\pi$ is uniform, red
 	\]
 	\label{defn:mle}
 \end{definition}
+\subsection{Binary Hypothesis Testing}
+\begin{definition}
+	A Binary Hypothesis Test is a type of statistical inference where the unknown variable $X\in\{ 0, 1 \}$.
+	\label{defn:binary-test}
+\end{definition}
+Since there are only two possible values of $X$ in a binary test, there are two ``hypotheses'' that we have, and we want to accept the more likely one.
+\begin{definition}
+	The Null Hypothesis $H_0$ says that $Y\sim P_{Y|X=0}$
+	\label{defn:null-hypothesis}
+\end{definition}
+\begin{definition}
+	The Alternate Hypothesis $H_1$ says that $Y\sim P_{Y|X=1}$
+	\label{defn:alternate-hypothesis}
+\end{definition}
+With two possible hypotheses, there are two kinds of errors we can make.
+\begin{definition}
+	A Type I error (false positive) is when we incorrectly reject the null hypothesis. The Type I error probability is then
+	\[
+		\pr{\hat{X}(Y) = 1 | X = 0}
+	\]
+	\label{defn:type-1-error}
+\end{definition}
+\begin{definition}
+	A Type II error (false negative) is when we incorrectly accept the null hypothesis. The Type II error probability is then
+	\[
+		\pr{\hat{X}(Y) = 0 | X = 1}
+	\]
+	\label{defn:type-2-error}
+\end{definition}
+Our goal is to create a decision rule $\hat{X}: \mathcal{Y} \to \{0, 1\}$ that we can use to predict $X$.
+Based on what the decision rule is used for, there will be requirements on how large the probability of Type I and Type II errors can be.
+We can formulate the search for a hypothesis test as an optimization.
+For some $\beta \in [0, 1]$, we want to find
+\begin{equation}
+	\hat{X}_\beta(Y) = \argmin \pr{\hat{X}(Y)=0 | X=1} \quad : \quad \pr{\hat{X}(Y)=1|X=0} \leq \beta.
+	\label{eqn:hypothesis-optim}
+\end{equation}
+Intuitively, our test should depend on $p_{Y|X}(y|1)$ and $p_{Y|X}(y|0)$ since these quantities give us how likely we are to get our observations if we knew the ground truth.
+We can define a ratio that formally compares these two quantities.
+\begin{definition}
+	The likelihood ratio is given by \[
+		L(y) = \frac{p_{Y|X}(y|1)}{p_{Y|X}(y|0)}
+	\]
+	\label{defn:likelhood-ratio}
+\end{definition}
+Notice that we can write MLE as a threshold on the likelihood ratio since if $L(y) \geq 1$, then we say $X=1$, and vice versa.
+However, there is no particular reason that $1$ must always be the number at which we threshold our likelihood ratio, and so we can generalize this idea to form different forms of tests.
+\begin{definition}
+	For some threshold $c$ and randomization probability $\gamma$, a threshold test is of the form
+	\[
+		\hat{X}(y) = \begin{cases}
+			1 & \text{ if } L(y) > c\\
+			0 & \text{ if } L(y) < c\\
+			\text{ Bernoulli}(\gamma) & \text { if } L(y) = c.
+		\end{cases}
+	\]
+	\label{defn:threshold-test}
+\end{definition}
+MAP fits into the framework of a threshold test since we can write
+\[
+	\hat{X}_{MAP} = \begin{cases}
+		1 & \text{ if } L(y) \geq \frac{\pi_0}{\pi_1}\\
+		0 & \text{ if } L(y) < \frac{\pi_0}{\pi_1}
+	\end{cases}
+\]
+It turns out that threshold tests are optimal with respect to solving \cref{eqn:hypothesis-optim}.
+\begin{theorem}[Neyman Pearson Lemma]
+	Given $\beta\in[0, 1]$, the optimal decision rule to \[
+		\hat{X}_\beta(Y) = \argmin \pr{\hat{X}(Y)=0 | X=1} \quad : \quad \pr{\hat{X}(Y)=1|X=0} \leq \beta
+	\]
+	is a threshold test.
+	\label{thm:neyman-pearson}
+\end{theorem}
+%% TODO: Add Proof of Neyman Pearson
+When $L(y)$ is monotonically increasing or decreasing, we can make the decision rule even simpler since it can be turned into a threshold on $y$.
+For example, if $L(y)$ is monotonically inreasing, then an optimal decision rule might be
+\[
+	\hat{X}(y) = \begin{cases}
+		1 & \text{ if } y > c\\
+		0 & \text{ if } y < c\\
+		\text{Bernoulli}(\gamma) & \text{ if } y = c.
+	\end{cases}
+\]
+
+\section{Estimation}
+Whereas hypothesis testing is about discriminating between two or more hypotheses, estimation is about guessing the numerical value of or ground truth of a random variable.
+\begin{gitbook-image}
+  \begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[auto, node distance=2cm,>=latex']
+	  % We start by placing the blocks
+	  \node [input, name=input] (input) {};
+		\node [block, name=model, right of=input, node distance=3cm, align=center] (model) {Model\\($p_{Y|X}$)};
+		\node [block, name=estim, right of=model, node distance=4cm, align=center] (estim) {Estimation\\Procedure};
+	  \node [output, right of=estim, node distance=3cm] (output) {};
+
+	  % Once the nodes are placed, connecting them is easy. 
+	  \draw [->] (input) -- node {$X$} (model);
+	  \draw [->] (model) -- node {$Y$} (estim);
+		\draw [->] (estim) -- node {$\hat{X}(Y)$} (output);
+	\end{tikzpicture}
+	\caption{Estimation Setup}
+	\label{fig:estimation-setup}
+  \end{figure}
+\end{gitbook-image}
+In order to measure the quality of our estimation, we need a metric to measure error.
+One commonly used error is the mean squared error \[
+	\expect{(X - \hat{X}(Y))^2}.
+\]
+\begin{theorem}
+	The minimum mean square estimate (MMSE) of a random variable $X$ is given by the conditional expectation.
+	\[
+		\hat{X}(Y) = \expect{X|Y} = \argmin_{\hat{X}} \expect{(X - \hat{X}(Y))^2}.
+	\]
+	\label{thm:mmse}
+\end{theorem}
+This essentially follows from the definition of conditional expectation since it is orthogonal to all other functions of $Y$, and so by the Hilbert Projection Theorem, it must be the projection of $X$ onto the space of all functions of $Y$.
+There are two problems with using MMSE all the time.
+\begin{enumerate}
+	\item We often don't know $p_{Y|X}$ explicitly and only have a good model for it.
+	\item Even if we knew the model $p_{Y|X}$, conditional expectations are difficult to compute.
+\end{enumerate}
+\subsection{Linear Estimation}
+Since finding the MMSE is difficult, we can restrict ourselves to funtions of a particular type.
+\begin{definition}
+	The Linear Least Squares Estimator (LLSE) $\llse{\bs{X}}{\bs{Y}}$ is the projection of a vector of random variables $\bs{X}$ onto the subspace of linear functions of observations $Y_i,\ \mathcal{U} = \left\{ \bs{a} + B\bs{Y} \right\}$ where $\bs{Y}$ is a vector of observations.
+	\label{defn:llse}
+\end{definition}
+By the orthogonality principle,
+\begin{enumerate}
+	\item $\expect{(\bs{X} - \llse{\bs{X}}{\bs{Y}})1} = 0 \implies \expect{\llse{\bs{X}}{\bs{Y}}} = \expect{\bs{X}}$
+	\item $\expect{(\bs{X} - \llse{\bs{X}}{\bs{Y}})Y_i} = 0$
+\end{enumerate}
+From here, we can derive a closed form expression for the LLSE.
+Let $\bs{\mu_{Y}} = \expect{\bs{Y}}, \bs{\mu_{X}} = \expect{\bs{X}}, \Sigma_{\bs{Y}} = \expect{(\bs{Y}-\bs{\mu_Y})(\bs{Y}-\bs{\mu_Y})^T}, \Sigma_{\bs{XY}} = \expect{(\bs{X}-\bs{\mu_X})(\bs{Y}-\bs{\mu_Y})^T}$.
+By substituting $\llse{\bs{X}}{\bs{Y}} = \bs{a}+B\bs{Y}$ into the equations we found from the orthogonality principle,
+\begin{align*}
+	\bs{a}+B\bs{\mu_Y} &= \bs{\mu_X} \\
+	a(\bs{\mu_Y})_i + B \expect{\bs{Y}Y_i} = \expect{\bs{X}Y_i} &\implies \bs{a}(\bs{\mu_{Y}})_i + B(\Sigma_{\bs{Y}})_i + B(\bs{\mu_{Y}})_i\bs{\mu_Y} = (\Sigma_{\bs{XY}})_i + (\bs{\mu_{Y}})_i\bs{\mu_x}\\
+	&\implies \bs{a}\bs{\mu_Y}^T + B\Sigma_{\bs{Y}}+B\bs{\mu_Y\mu_Y}^T = \Sigma_{\bs{XY}}+\bs{\mu_X\mu_Y}^T
+\end{align*}
+Solving this system yields
+\[
+	B = \Sigma_{\bs{XY}}\Sigma_{\bs{Y}}^{-1} \qquad \bs{a} = \bs{\mu_X} - \Sigma_{\bs{XY}}\Sigma_{\bs{Y}}^{-1}\bs{\mu_Y}.
+\]
+\begin{theorem}
+	The Linear Least Squares Estimator for vector of random variables $\bs{X}$ given a vector of random variables $\bs{Y}$ is \[
+		\llse{\bs{X}}{\bs{Y}} = \bs{\mu_X} + \Sigma_{\bs{XY}}\Sigma_{\bs{Y}}^{-1}(\bs{Y}-\bs{\mu_Y})
+	\]
+	\label{thm:llse-vector}
+\end{theorem}
+If $X$ and $Y$ are both a single random variable, this reduces to
+\[
+	\llse{X}{Y} = \mu_X + \frac{\cov{X, Y}}{\var{Y}}(Y - \mu_Y)
+\]
+Since LLSE is essentially projection onto a Linear Subspace, if we have an orthogonal basis for the subspace, then we can do the projection onto the subspace one component at a time.
+The Gram-Schmidt Process turns vectors $Y_1,\cdots,Y_n$ into an orthonormal set $\tilde{Y}_1, \cdots, \tilde{Y}_n$.
+If we define $Y^{(n)}=(Y_1, \cdots, Y_n)$,
+\begin{enumerate}
+	\item $\tilde{Y}_1 = \frac{Y_1}{\|Y_1\|}$
+	\item $\tilde{Y}_{i+1} = Y_{i+1} - \sum_{k=1}^{i}\langle Y_{i+1}, \tilde{Y}_k \rangle \tilde{Y}_k = Y_{i+1} - \llse{Y_{i+1}}{Y^{(i)}}$
+\end{enumerate}
+\begin{definition}
+	The linear innovation sequence of random variables $Y_1,\cdots,Y_n$ is the orthogonal set $\tilde{Y_1}, \cdots, \tilde{Y_n}$ produced by Gram Schmidt
+	\label{defn:innovation}
+\end{definition}
+Since $\tilde{Y}_{n}$ is orthogonal to $\llse{Y_n}{\tilde{Y}^{(n-1)}}$, they belong to different parts of the subspace formed by $Y_1,\cdots,Y_n$.
+\begin{theorem}
+	\[
+		\llse{X}{Y^{(n)}} = \llse{X}{\tilde{Y}_n} + \llse{X}{\tilde{Y}^{(n-1)}}
+	\]
+	\label{thm:orthogonal-llse}
+\end{theorem}
+Note that in general, the LLSE is not the same as the MMSE.
+However, if $X$ and $Y$ are Jointly Gaussian, then the LLSE does, in fact, equal the MMSE.
+\subsection{Kalman Filtering}
+\begin{definition}
+	A system evolves according to a state space model if the state $\bs{X}_n$ at time $n$ and observations $\bs{Y}_n$ at time $n$ are related by
+	\[
+		\forall n\geq 0,\ \bs{X}_{n+1} = A\bs{X}_n + \bs{V}_n \qquad \forall n\geq 1,\ \bs{Y}_n=C\bs{X}_n+\bs{W}_n
+	\]
+	where $V_n$ and $W_n$ are noise terms.
+	\label{defn:state-space}
+\end{definition}
+State space models are flexible and describe a variety of processes.
+Suppose we want to linearly estimate $\bs{X}_n$ from the $\bs{Y}_n$ we have seen so far.
+\begin{theorem}
+	The linear estimate $\hat{\bs{X}}_{n|n} = \llse{\bs{X}_n}{\bs{Y}_1,\cdots,\bs{Y}_n}$ can be computed recursively via the Kalman Filter.
+	
+	1. $\hat{\bs{X}}_{0|0} = 0, \Sigma_{0|0} = \cov{\bs{X}_0}$.
+
+	2. For $n\geq 1$, update
+	\[
+		\hat{\bs{X}}_{n|n} = A\hat{\bs{X}}_{n-1|n-1} + K_n\tilde{\bs{Y}}_n \qquad \tilde{\bs{Y}}_n = Y_n - C\hat{\bs{X}}_{n|n-1} \qquad \Sigma_{n|n-1} = A\Sigma_{n-1|n-1}A^T+\Sigma_{\bs{V}}
+	\]
+	\[
+		K_n = \Sigma_{n|n-1}C^T(C\Sigma_{n|n-1}C^T+\Sigma_{\bs{W}})^{-1} \qquad \Sigma_{n|n}=(I - K_nC)\Sigma_{n|n-1}
+	\]
+	\label{thm:kalman-filter}
+\end{theorem}
+Kalman filtering is a simple algorithm which lets us do online, optimal estimation.
+Variants of it can do things such as prediction or smoothing.
 \end{document}
 
