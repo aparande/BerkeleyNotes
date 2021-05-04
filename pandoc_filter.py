@@ -200,7 +200,7 @@ def convert_math(code):
     code = bold_symbol_exp.sub(r"\\boldsymbol{\2}", code)
 
     pr_exp = re.compile("(\\\\pr\{)(.*?)(\})")
-    code = pr_exp.sub(r"\\text{Pr}\left\\{\2\right\\}", code)
+    code = pr_exp.sub(r"\\text{Pr}\\left\\{\2\right\\}", code)
     
     expectation_exp = re.compile("(\\\\expect\{)(.*?)(\})")
     code = expectation_exp.sub(r"\\mathbb{E}\\left[\2\\right]", code)
