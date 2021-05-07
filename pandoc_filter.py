@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+import regex
 import re
 import shutil
 import sys
@@ -115,9 +116,20 @@ def convert_theorem(code):
         thm_labels.append(match.group(2))
         (start, end) = match.span()
         code = code[:start] + code[end:]
+
     if not found_match:
         thm_labels.append(f"{len(thm_labels)+1}")
-    header = Header(3, [f"theorem-{len(thm_labels)}", [], []], [Str(f"Theorem {len(thm_labels)}")])
+
+    title_exp = re.compile("(\\\\begin{theorem}\[)(.*?)(\])")
+    match = re.search(title_exp, code)
+    if match is not None:
+      sys.stderr.write(f"Theorem has title {match.group(2)}\n")
+      title = match.group(2)
+      code = re.sub(title_exp, "\n", code)
+      header = Header(3, [f"theorem-{len(thm_labels)}", [], []], [Str(f"Theorem {len(thm_labels)} ({title})")])
+    else:
+      header = Header(3, [f"theorem-{len(thm_labels)}", [], []], [Str(f"Theorem {len(thm_labels)}")])
+
     return convert_latex_block(code, header)
 
 
@@ -126,15 +138,14 @@ def str_to_math(code):
     code = code.replace("\\]", "$$")
     code = code.replace("\\begin{equation}", "$$")
     code = code.replace("\\end{equation}", "$$")
-    code = code.replace("\n", "qq")
-    
+    code = code.replace("\n", "asdf")
     block = []
     marker = 0
     for match in re.finditer("(\$\$.*?\$\$)|(\\\\cref\{.*?\})|(\$.*?\$)", code):
         (start, end) = match.span()
         if match.group(1) is not None:
-            block.append(Str(code[marker:start].replace("qq", "\n")))
-            math_value = code[start+2:end-2].replace("qq", " ")
+            block.append(Str(code[marker:start].replace("asdf", "\n")))
+            math_value = code[start+2:end-2].replace("asdf", " ")
 
             marker = end
             block.append(Math({"t": "DisplayMath"}, math_value))
@@ -144,13 +155,13 @@ def str_to_math(code):
             block.append(RawInline("latex", ref))
             marker = end
         elif match.group(3) is not None:
-            block.append(Str(code[marker:start].replace("qq", "\n")))
-            math_value = code[start+1:end-1].replace("qq", " ")
+            block.append(Str(code[marker:start].replace("asdf", "\n")))
+            math_value = code[start+1:end-1].replace("asdf", " ")
 
             marker = end
             block.append(Math({"t": "InlineMath"}, math_value))
 
-    block.append(Str(code[marker:].replace("qq", "\n").strip()))
+    block.append(Str(code[marker:].replace("asdf", "\n").strip()))
 
     return Para(block)
 
@@ -186,6 +197,27 @@ def tex_envs(key, value, formt, meta):
         [level, [label, _, _], content] = value
         section_labels[label] = stringify(content)
 
+def convert_custom_tex(code, level=0):
+  out = ""
+  marker = 0
+  braces_exp = regex.compile("\{([^}{]*+(?:(?R)[^}{]*)*+)\}")
+  
+  for match in braces_exp.finditer(code):
+    (start, end) = match.span()
+    if start - 3 >= marker and code[start - 3: start] == "\\pr":
+      out += code[marker:start-3] + "\\text{Pr}\\left\{" + convert_custom_tex(match.group(1), level+1) + "\\right\} " 
+    elif start - 7 >= marker and code[start - 7: start] == "\\expect":
+      out += code[marker:start-7] + "\\mathbb{E}\\left[" + convert_custom_tex(match.group(1), level+1) + "\\right] " 
+    elif start - 4 >= marker and code[start - 4: start] == "\\var":
+      out += code[marker:start-4] + "\\text{Var}\\left(" + convert_custom_tex(match.group(1), level+1) + "\\right) " 
+    elif start - 4 >= marker and code[start - 4: start] == "\\cov":
+      out += code[marker:start-4] + "\\text{Cov}\\left(" + convert_custom_tex(match.group(1), level+1) + "\\right) " 
+    else:
+      out += code[marker:start+1] + convert_custom_tex(code[start + 1:end-1]) + code[end-1]
+    marker = end
+  out += code[marker:]
+  return out
+
 def convert_math(code):
     """
     Convert Custom Math Tex code into normal Tex
@@ -197,28 +229,24 @@ def convert_math(code):
     code = vector_bold_exp.sub(r"\\mathbf{\2}", code)
 
     bold_symbol_exp = re.compile("(\\\\bs\{)(.*?)(\})")
-    code = bold_symbol_exp.sub(r"\\boldsymbol{\2}", code)
-
-    pr_exp = re.compile("(\\\\pr\{)(.*?)(\})")
-    code = pr_exp.sub(r"\\text{Pr}\\left\\{\2\right\\}", code)
+    code = bold_symbol_exp.sub(r"\\boldsymbol{\2}", code)  
     
-    expectation_exp = re.compile("(\\\\expect\{)(.*?)(\})")
-    code = expectation_exp.sub(r"\\mathbb{E}\\left[\2\\right]", code)
+    bbm_symbol_exp = re.compile("(\\\\mathbbm\{)(.*?)(\})")
+    code = bbm_symbol_exp.sub(r"\\mathbb{\2}", code)  
 
-    variance_exp = re.compile("(\\\\var\{)(.*?)(\})")
-    code = variance_exp.sub(r"\\text{Var}\\left(\2\\right)", code)
-
-    covariance_exp = re.compile("(\\\\cov\{)(.*?)(\})")
-    code = covariance_exp.sub(r"\\text{Cov}\\left(\2\\right)", code)
+    code = convert_custom_tex(code)
     
-    llse_exp = re.compile("(\\\\llse\{)(.*?)(\})(\{)(.*?(\})")
-    code = llse_exp.sub(r"\\mathbb{L}\\left[\2|\5\\right]", code)
+    llse_exp = regex.compile("\\\\llse\{((?>[^{}]+|\{(?1)\})*)\}\{((?>[^{}]+|\{(?1)\})*)\}")
+    code = llse_exp.sub(r"\\mathbb{L}\\left[\1|\2\\right]", code)
 
     sinc_exp = re.compile("\\\\sinc")
     code = sinc_exp.sub(r"\\text{sinc}", code)
 
     argmin_exp = re.compile("\\\\argmin")
     code = argmin_exp.sub(r"\\text{argmin}", code)
+    
+    argmax_exp = re.compile("\\\\argmax")
+    code = argmax_exp.sub(r"\\text{argmax}", code)
 
     si_exp = re.compile("(\\\\SI)(\[.*?\])?\{(.*?)\}\{(.*?)\}")
     for match in si_exp.finditer(code):
