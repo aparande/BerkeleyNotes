@@ -28,6 +28,7 @@ jobs:
           mkdir -p output/.gitbook/assets
           sed -i -e 's/..\/..\/header.tex/main\/header.tex/g' main/**/Notes/notes.tex
           sudo sed -i 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/g' /etc/ImageMagick-6/policy.xml
+      # Conversion Steps. Output a JSON file to the main folder
       - name: Convert EECS126 to JSON
         uses: docker://pandoc/latex:2.11
         with:
@@ -44,6 +45,7 @@ jobs:
         uses: docker://pandoc/latex:2.11
         with:
           args: --to json --from latex+raw_tex --output=main/ee120.json main/EE120/Notes/notes.tex
+      # Filter Steps. Output a JSON file to the main folder
       - name: Filter 
         run: |
           cd main
@@ -53,6 +55,7 @@ jobs:
           cat ee120.json | ./pandoc_filter.py > ee120-filtered.json
           cat eecs126.json | ./pandoc_filter.py > eecs126-filtered.json
           cd ../
+      # Markdown conversion steps. Output a MD file to the output directory
       - name: Convert EECS126 to Markdown
         uses: docker://pandoc/latex:2.11
         with:
