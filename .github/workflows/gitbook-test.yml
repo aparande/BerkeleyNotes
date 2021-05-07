@@ -25,7 +25,7 @@ jobs:
       - name: Setup Environment
         run: |
           mkdir output
-          mkdir -p output/gitbook/assets
+          mkdir -p output/.gitbook/assets
           sed -i -e 's/..\/..\/header.tex/main\/header.tex/g' main/**/Notes/notes.tex
           sudo sed -i 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/g' /etc/ImageMagick-6/policy.xml
       # Conversion Steps. Output a JSON file to the main folder
