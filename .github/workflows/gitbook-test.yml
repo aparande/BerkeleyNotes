@@ -56,7 +56,7 @@ jobs:
       - name: Convert EECS126 to Markdown
         uses: docker://pandoc/latex:2.11
         with:
-          args: --to markdown+pipe_tables-simple_tables --from json --atx-headers --output=gitbook/EECS126.md main/eecs126-filtered.json
+          args: --to markdown+pipe_tables-simple_tables --from json --atx-headers --output=output/EECS126.md main/eecs126-filtered.json
       - name: Convert EE128 to Markdown
         uses: docker://pandoc/latex:2.11
         with:
