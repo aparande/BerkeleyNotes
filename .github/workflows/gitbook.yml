@@ -23,6 +23,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install pandocfilters
+          pip install regex
           sudo apt-get install texlive-latex-recommended texlive-science texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra
       - name: Setup Environment
         run: |
@@ -30,6 +31,10 @@ jobs:
           mkdir -p gitbook/.gitbook/assets
           sed -i -e 's/..\/..\/header.tex/main\/header.tex/g' main/**/Notes/notes.tex
           sudo sed -i 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/g' /etc/ImageMagick-6/policy.xml
+      - name: Convert EECS126 to JSON
+        uses: docker://pandoc/latex:2.11
+        with:
+          args: --to json --from latex+raw_tex --output=main/eecs126.json main/EECS126/Notes/notes.tex
       - name: Convert EE128 to JSON
         uses: docker://pandoc/latex:2.11
         with:
@@ -49,7 +54,12 @@ jobs:
           cat ee128.json | ./pandoc_filter.py > ee128-filtered.json
           cat ee123.json | ./pandoc_filter.py > ee123-filtered.json
           cat ee120.json | ./pandoc_filter.py > ee120-filtered.json
+          cat eecs126.json | ./pandoc_filter.py > eecs126-filtered.json
           cd ../
+      - name: Convert EECS126 to Markdown
+        uses: docker://pandoc/latex:2.11
+        with:
+          args: --to markdown+pipe_tables-simple_tables --from json --atx-headers --output=gitbook/EECS126.md main/eecs126-filtered.json
       - name: Convert EE128 to Markdown
         uses: docker://pandoc/latex:2.11
         with:
@@ -70,7 +80,7 @@ jobs:
           mv main/create_book.py gitbook/create_book.py
           chmod +x gitbook/create_book.py
           cd gitbook
-          python3 create_book.py EE128.md EE123.md EE120.md
+          python3 create_book.py EE120.md EE123.md EECS126.md EE128.md 
           cd ../
           sed -i -e 's/\\\$\\\$/\$\$/g' gitbook/**/*.md
       - name: Publish Book

@@ -1,0 +1,1374 @@
+\input{../../header.tex}
+\begin{document}
+\title{EECS126 Course Notes}
+\author{Anmol Parande}
+\date{Spring 2021 - Professor Thomas Courtade}
+\maketitle
+\textbf{Disclaimer: }These notes reflect 126 when I took the course (Spring 2021). They may not accurately reflect current course content, so use at your own risk.
+If you find any typos, errors, etc, please raise an issue on the \href{https://github.com/parandea17/BerkeleyNotes}{GitHub repository}.
+\tableofcontents
+\newpage
+\section{Introduction to Probability}
+\begin{definition}
+  A probability space is a triple $(\Omega, \mathcal{F}, P)$ where $\Omega$ is a set of objects called the sample space, $\mathcal{F}$ is a family of subsets of $\Omega$ called events, and the probability measure $P:\mathcal{F}\rightarrow [0,1]$.
+  \label{defn:prob-space}
+\end{definition}
+One key assumption we make is that $\mathcal{F}$ is a $\sigma$-algebra containing $\Omega$, meaning that countably many complements, unions, and intersections of events in $\mathcal{F}$ are also events in $\mathcal{F}$.
+The probability measure $P$ must obey \textbf{Kolmogorov's Axioms}.
+\begin{enumerate}
+  \item $\forall A \in \mathcal{F},\ P(A) \geq 0$
+  \item $P(\Omega) = 1$
+  \item If $A_1, A_2, \cdots\in \mathcal{F}$ and $\forall i\ne j,\ A_i\bigcap A_j=\emptyset$, then $P\left(\bigcup_{i\geq 1}A_i\right) = \sum_{i\geq1}P(A_i)$
+\end{enumerate}
+We choose $\Omega$ and $\mathcal{F}$ to model problems in a way that makes our calculations easy.
+\begin{theorem}
+  \[
+	P(A^c) = 1 - P(A)
+  \]
+  \label{thm:complementarity}
+\end{theorem}
+\begin{theorem}[Inclusion-Exclusion Principle]
+  
+	\[
+	P\left( \bigcup_{i=1}^{n}A_i \right) = \sum_{k=1}^{n}(-1)^{k+1}\left( \sum_{1\leq i_1<\cdots<i_k\leq n} P(A_{i_1}\cap \cdots \cap A_{i_k}) \right)
+  \]
+  \label{thm:inclusion-exclusion}
+\end{theorem}
+\begin{theorem}[Law of Total Probability]
+  If $A_1, A_2, \cdots$ partition $\Omega$ (i.e $A_i$ are disjoint and $\cup A_i = \Omega$), then for event $B$,
+  \[
+	P(B) = \sum_iP(B\cap A_i)
+  \]
+  \label{thm:total-prob}
+\end{theorem}
+\subsection{Conditional Probability}
+\begin{definition}
+  If $B$ is an event with $P(B)>0$, then the conditional probability of $A$ given $B$ is
+  \[
+	P(A|B) = \frac{P(A\cap B)}{P(B)}
+  \]
+  \label{defn:conditional-prob}
+\end{definition}
+Intuitively, conditional probabilty is the probability of event $A$ given that event $B$ has occurred.
+In terms of probability spaces, it is as if we have taken $(\Omega, \mathcal{F}, P)$ and now have a probabilty measure $P(\cdot|C)$ belonging to the space $(\Omega, \mathcal{F}, P(\cdot|C))$.
+\begin{theorem}[Bayes Theorem]
+  \[
+	P(A|B) = \frac{P(B|A)P(A)}{P(B)}
+  \]
+  \label{thm:bayes}
+\end{theorem}
+\subsection{Independence}
+\begin{definition}
+  Events $A$ and $B$ are independent if $P(A\cap B) = P(A)P(B)$
+  \label{defn:independence}
+\end{definition}
+If $P(B)>0$, then $A, B$ are independent if and only if $P(A|B) = P(A)$. In other words, knowing $B$ occurred gave no extra information about $A$.
+\begin{definition}
+  If $A,B,C$ with $P(C)>0$ satisfy $P(A\cap B|C) = P(A|C)P(B|C)$, then $A$ and $B$ are conditionally independent given $C$.
+  \label{defn:conditional-independence}
+\end{definition}
+Conditional independence is a special case of independence where $A$ and $B$ are not necessarily independent in the original probability space which has the measure $P$, but are independent in the new probability space conditioned on $C$ with the measure $P(\cdot|C)$.
+\section{Random Variables and their Distributions}
+\begin{definition}
+  A random variable is a function $X:\Omega\rightarrow\mathbb{R}$ with the property $\forall \alpha\in\mathbb{R},\ \{\omega\in\Omega:\ X(\omega) \leq \alpha\} \in \mathcal{F}$.
+  \label{defn:rv}
+\end{definition}
+The condition in \cref{defn:rv} is necessary to compute $P(X\leq \alpha),\ \forall \alpha\in\mathbb{R}$.
+This requirement also let us compute $P(X\in B)$ for most sets by leveraging the fact that $\mathcal{F}$ is closed under complements, unions, and intersections.
+For example, we can also compute $P(X > \alpha)$ and $P(\alpha < X \leq \beta)$.
+In this sense, the property binds the probability space to the random variable.
+
+\cref{defn:rv} also implies that random variables satisfy particular algebraic properties.
+For example, if $X,Y$ are random variables, then so are $X+Y, XY, X^p, \lim_{n\to\infty}X_n$, etc.
+\begin{definition}
+  A discrete random variable is a random variable whose codomain is countable.
+  \label{defn:drv}
+\end{definition}
+\begin{definition}
+  A continuous random variable is a random variable whose codomain is the real numbers.
+  \label{defn:crv}
+\end{definition}
+Although random variables are defined based on a probability space, it is often most natural to model problems without explicitly specifying the probability space.
+This works so long as we specify the random variables and their distribution in a ``consistent'' way. 
+This is formalized by the so-called \href{https://en.wikipedia.org/wiki/Kolmogorov_extension_theorem}{Kolmogorov Extension Theorem} but can largely be ignored.
+\subsection{Distributions}
+Roughly speaking, the distribution of a random variable gives an idea of the likelihood that a random variable takes a particular value or set of values.
+\begin{definition}
+  The probability mass function (or distribution) of a discrete random variable $X$ is the frequency with which $X$ takes on different values.
+  \[
+	p_X:\mathcal{X} \rightarrow [0, 1] \text{ where } \mathcal{X} = \text{range}(X),\qquad p_X(x) = \pr{X=x}.
+  \]
+  \label{defn:pmf}
+\end{definition}
+Note that $\sum_{x\in\mathcal{X}}p_X(x) = 1$ since $\bigcap_{x\in\mathcal{X}}\{w: X(w) = x\} = \Omega$.
+
+Continuous random variables are largely similar to discrete random variables.
+One key difference is that instead of being described by a probability ``mass'', they are instead described by a probability ``density''.
+\begin{definition}
+  The probability density function (distribution) of a continuous random variable describes the density by which a random variable takes a particular value.
+  \[
+	f_X: \mathbb{R}\to [0, \infty) \text{ where } \int_{-\infty}^{\infty}f_X(x)dx = 1 \text{ and } \pr{X\in B} = \int_B f_X(x)dx
+  \]
+  \label{defn:pdf}
+\end{definition}
+Observe that if a random variable $X$ is continuous, then the probability that it takes on a particular value is zero.
+\[
+  \pr{X=x} = \lim_{\delta\to0} \pr{x \leq X \leq x +\delta} = \lim_{\delta\to 0}\int_x^{x+\delta}f_X(u)du = \int_{x}^{x}f_X(u)du = 0
+\]
+\begin{definition}
+  The cumulative distribution function (CDF) gives us the probability of a random variable $X$ being less than or equal to a particular value.
+  \[
+	F_X:\mathbb{R} \to [0, 1],\quad F_X(x) = \pr{X \leq x}
+  \]
+  \label{defn:cdf}
+\end{definition}
+Note that by the Kolomogorov axioms, $F_X$ must satisfy three properties:
+\begin{enumerate}
+  \item $F_X$ is non-decreasing.
+  \item $\lim_{x\to0} F_X(x) = 0$ and $\lim_{x\to\infty} F_X(x) = 1$.
+  \item $F_X$ is right continuous.
+\end{enumerate}
+It turns out that if we have any function $F_X$ that satisfies these three properties, then it is the CDF of some random variable on some probability space.
+Note that $F_X(x)$ gives us an alternative way to define continuous random variables.
+If $F_X(x)$ is absolutely continuous, then it can be expressed as
+\[
+  F_X(x) = \int_{-\infty}^{x}f_X(x)dx
+\]
+for some non-negative function $f_X(x)$, and this is the PDF of a continuous random variable.
+
+Often, when modeling problems, there are multiple random variables that we want to keep track of.
+\begin{definition}
+	If $X$ and $Y$ are random variables on a common probability space $(\Omega, \mathcal{F}, P)$, then the joint distribution (denoted $p_{XY}(x, y)$ or $f_{XY}(x, y)$ describes the frequencies of joint outcomes.
+  \label{defn:joint-dist}
+\end{definition}
+Note that it is possible for $X$ to be continuous and $Y$ to be discrete (or vice versa).
+\begin{definition}
+  The marginal distribution of a joint distribution is the distribution of a single random variable.
+  \[
+	p_X(x) = \sum_yp_{XY}(x, Y=y), \qquad f_X(x) = \int_{-\infty}^{\infty}f_{XY}(x, y)dy
+  \]
+  \label{defn:marginal-dist}
+\end{definition}
+\begin{definition}
+  Two random variables $X$ and $Y$ are independent if their joint distribution is the product of the marginal distributions.
+  \label{defn:rv-independence}
+\end{definition}
+Just like independence, we can extend the notion of conditional probability to random variables.
+\begin{definition}
+  The conditional distribution of $X$ given $Y$ captures the frequencies of $X$ given we know the value of $Y$.
+  \[
+	p_{X|Y}(x|y) = \frac{P_{XY}(x, y)}{p_Y(y)}, \qquad f_{X|Y}(x|y) = \frac{f_{XY}(x, y)}{f_Y(y)}
+  \]
+  \label{defn:conditional-dist}
+\end{definition}
+Often, we need to combine or transform several random variables.
+A derived distribution is the obtained by arithmetic of several random variables or applying a function to several (or many) random variables.
+Since the CDF of a distribution essentially defines that random variable, it can often be easiest to work backwards from the CDF to the PDF or PMF.
+In the special case where we want to find $Y=g(X)$ for a function $g$.
+\[
+  F_y(y) =\pr{Y \leq y} = \pr{g(x) \leq y} = \pr{X \in g^{-1}([-\infty, y])}, \quad g^{-1}(y) = \{ x: g(x) = y \}.
+\]
+Another special case of a derived distribution is when adding random variables together.
+\begin{theorem}
+  The resulting distribution of a sum of two independent random variables is the convolution of the distributions of the two random variables.
+  \[
+	p_{X+Y}(z) = \sum_{k=-\infty}^{\infty}p_X(k)p_Y(z-k), \quad f_{X+Y}(z) = \int_{-\infty}^{\infty}f_X(x)f_Y(z - x)dx
+  \]
+  \label{thm:convolution}
+\end{theorem}
+\subsection{Properties of Distributions}
+\subsubsection{Expectation}
+\begin{definition}
+  The expectation of a random variable describes the center of a distribution,
+  \[
+	\expect{X}=\sum_{x\in\mathcal{X}}xp_X(x), \quad \expect{X} = \int_{-\infty}^{\infty}xf_X(x)dx
+  \]
+  provided the sum or integral converges.
+  \label{defn:drv-expectation}
+\end{definition}
+Expectation has several useful properties.
+If we want to compute the expectation of a function of a random variable, then we can use the law of the unconscious statisitician.
+\begin{theorem}[Law of the Unconscious Statistician]
+  \[
+	\expect{g(X)} = \sum_{x\in\mathcal{X}}g(x)p_X(x), \quad \expect{g(X)} = \int_{-\infty}^{\infty}g(x)f_X(x)dx
+  \]
+  \label{thm:unconscious-statistician}
+\end{theorem}
+Another useful property is its linearity.
+\[
+  \expect{aX+bY} = a\expect{X}+b\expect{Y},\ \forall a, b\in\mathbb{R}.
+\]
+
+Sometimes it can be difficult to compute expectations directly. For disrete distributions, we can use the tail-sum formula.
+\begin{theorem}[Tail Sum]
+  For a non-negative integer random variable,
+  \[
+	\expect{X} = \sum_{k=1}^{\infty}\pr{X\geq k}.
+  \]
+  \label{thm:tail-sum}
+\end{theorem}
+When two random variables are independent, expectation has some additional properties.
+\begin{theorem}
+  If $X$ and $Y$ are independent, then
+  \[
+	\expect{XY} = \expect{X}\expect{Y}.
+  \]
+  \label{thm:indep-expect}
+\end{theorem}
+Earlier, we saw that we find a derived distribution by transforming and combining random variables.
+Sometimes, we don't need to actually compute the distribution, but only some of its properties.
+\begin{definition}
+  The nth moment of a random variable is $\expect{X^n}$.
+  \label{defn:moment}
+\end{definition}
+It turns out that we can encode the moments of a distribution into the coefficients of a special power series.
+\begin{definition}
+  The moment generating function of a random variable $X$ is given by $M_X(t) = \expect{e^{tX}}$.
+  \label{defn:mgf}
+\end{definition}
+Notice that if we apply the power series expansion of $e^{tX}$, we see that \[
+  M_X(t) = \sum_{n=0}^{\infty}\frac{t!}{n!}\expect{X^n}.
+\]
+Thus the nth moment is encoded in the coefficients of the power series and we can retrieve them by taking a derivative:
+\[
+  \expect{X^n} = \diff[n]{}{t}M_X(t).
+\]
+Another interesting point to notice is that for a continuous random variable
+\[
+  M_X(t) = \int_{-\infty}^{\infty}f_X(x)e^{tx}dx
+\]
+is the Laplace transform of the distribution over the real line,
+and for a discrete random variable,
+\[
+  M_X(t) = \sum_{x=-\infty}^{\infty}p_X(x)e^{tx}
+\]
+is the Z-transform of the distribution evaluated along the curve at $e^{-t}$.
+\begin{theorem}
+  If the MGF of a function exists, then it uniquely determines the distribution.
+  \label{thm:mgf}
+\end{theorem}
+This provides another way to compute the distribution for a sum of random variables because we can just multiply their MGF.
+\subsubsection{Variance}
+\begin{definition}
+  The variance of a discrete random variable $X$ describes its spread around the expectation and is given by
+  \[
+	\var{X} = \expect{(X-\expect{X})^2} = \expect{X^2}-\expect{X}^2.
+  \]
+  \label{defn:drv-variance}
+\end{definition}
+\begin{theorem}
+  When two random variables $X$ and $Y$ are independent, then 
+  \[
+	\var{X+Y} = \var{X} + \var{Y}.
+  \]
+  \label{defn:indep-var}
+\end{theorem}
+\begin{definition}
+  The covariance of two random variables describes how much they depend on each other and is given by
+  \[
+	\cov{X, Y} = \expect{(X-\expect{X})(Y-\expect{Y})} = \expect{XY} - \expect{X}\expect{Y}.
+  \]
+  \label{defn:cov}
+\end{definition}
+If $\cov{X,Y} = 0$ then $X$ and $Y$ are uncorrelated.
+\begin{definition}
+  The correlation coefficient gives a single number which describes how random variables are correlated.
+  \[
+	\rho(X, Y) = \frac{\cov{X, Y}}{\sqrt{\var{X}}\sqrt{\var{Y}}}.
+  \]
+  \label{defn:correlation}
+\end{definition}
+Note that $-1\leq \rho \leq 1$.
+\subsection{Common Discrete Distributions}
+\begin{definition}
+  $X$ is uniformly distributed when each value of $X$ has equal probability.
+  \[
+	X\sim \text{Uniform}(\{ 1, 2, \cdots, n \}) \implies p_X(x)  = \begin{cases}
+	  \frac{1}{n} & x = 1, 2, \cdots, n,\\
+	  0 & \text{ else.}
+	\end{cases}
+  \]
+  \label{defn:drv-uniform}
+\end{definition}
+\begin{definition}
+  $X$ is a Bernoulli random variable if it is either $0$ or $1$ with $p_X(1) = p$.
+  \[
+	X\sim\text{Bernoulli}(p) \implies p_X(x) = \begin{cases}
+	  1 - p & x=0,\\
+	  p & x=1,\\
+	  0 & \text{ else.}
+	\end{cases}
+  \]
+  \[
+	\expect{X} = p \qquad \var{X} = (1-p)p
+  \]
+  \label{defn:bernoulli}
+\end{definition}
+Bernoulli random variables are good for modeling things like a coin flip where there is a probability of success.
+Bernoulli random variables are frequently used as indicator random variables $\mathbbm{1}_A$ where
+\[
+  \mathbbm{1}_A = \begin{cases}
+	1 & \text{if A occurs,}\\
+	0 & \text{ else.}
+  \end{cases}
+\]
+When paired with the linearity of expectation, this can be a powerful method of computing the expectation of something.
+\begin{definition}
+  $X$ is a Binomial random variable when
+  \[
+	X \sim \text{Binomial}(n, p) \implies p_X(x) = \begin{cases}
+	\binom{n}{x} p^x (1-p)^{n-x} & x=0, 1, \cdots, n\\
+	  0 & \text{ else.}
+	\end{cases}
+  \]
+  \[
+	\expect{X} = np \qquad \var{X} = np(1-p)
+  \]
+  \label{defn:binomial}
+\end{definition}
+A binomial random variable can be thought of as the number of successes in $n$ trials. 
+In other words, 
+\[
+  X \sim \text{Binomial}(n, p) \implies X = \sum_{i=1}^{n}X_i, \quad X_i \sim \text{Bernoulli}(p).
+\]
+By construction, if $X\sim\text{Binomial}(n, p)$ and $Y\sim\text{Binomial}(m, p)$ are independent, then $X+Y \sim \text{Binomial}(m+n, p)$.
+\begin{definition}
+  A Geometric random variable is distributed as
+  \[
+	X\sim\text{Geom}(p) \implies p_X(x) = \begin{cases}
+	  p(1-p)^{x-1} & x=1, 2, \cdots\\
+	  0 & \text{ else}.
+	\end{cases}
+  \]
+  \[
+	\expect{X} = \frac{1}{p} \qquad \var{X} = \frac{1-p}{p^2}
+  \]
+  \label{defn:geometric}
+\end{definition}
+Geometric random variables are useful for modeling the number of trials required before the first success.
+In other words,
+\[
+  X \sim \text{Geom}(p) \implies X = \min\{k \geq 1: X_k=1 \} \text{ where } X_i\sim \text{Bernoulli}(p).
+\]
+A useful property of geometric random variables is that they are memoryless:
+\[
+  \pr{X=K+M|X>k} = \pr{X=M}.
+\]
+\begin{definition}
+  A Poisson random variable is distributed as
+  \[
+	X\sim Poisson(\lambda) \implies p_X(x) = \begin{cases}
+	  \frac{\lambda^xe^{-\lambda}}{x!} & x=0, 1, \cdots \\
+	  0 & \text{ else.}
+	\end{cases}
+  \]
+  \[
+	\expect{X} = \lambda
+  \]
+  \label{defn:poisson}
+\end{definition}
+Poisson random variables are good for modeling the number of arrivals in a given interval.
+Suppose you take a given time interval and divide it into $n$ chunks where the probability of arrival in chunk $i$ is $X_i \sim \text{Bernoulli}(p_n)$.
+Then the total number of arrivals $X_n = \sum_{i=1}^{n}X_i$ is distributed as a Binomial random variable with expectation $np_n=\lambda$.
+As we increase $n$ to infinity but keep $\lambda$ fixed, we arrive at the poisson distribution.
+
+A useful fact about Poisson random variables is that if $X\sim\text{Poisson}(\lambda)$ and $Y\sim\text{Poisson}(\mu)$ are independent, then $X+Y \sim \text{Poisson}(\lambda + \mu)$.
+\subsection{Common Continuous Distributions}
+\begin{definition}
+  A continuous random variable is uniformly distributed when the pdf of $X$ is constant over a range.
+  \[
+	X \sim \text{Uniform}(a, b) \implies f_X(x) = \begin{cases}
+	  \frac{1}{b-a} & a \leq x \leq b,\\
+	  0 & \text{ else.}
+	\end{cases}
+  \]
+  \label{defn:crv-uniform}
+\end{definition}
+The CDF of a uniform distribution is given by
+\[
+  F_X(x) = \begin{cases}
+	0, &  x < a,\\
+	\frac{x-a}{b-a}, & x\in[a, b)\\
+	1, & x \geq b.
+  \end{cases}
+\]
+\begin{definition}
+  A continuous random variable is exponentially distributed when its pdf is given by
+  \[
+	X \sim \text{Exp}(\lambda) \implies f_X(x) = \begin{cases}
+	  \lambda e^{-\lambda x} & x \geq 0,\\
+	  0 & \text{ else.}
+	\end{cases}
+  \]
+  \label{defn:crv-exp}
+\end{definition}
+Exponential random variables are the only continuous random variable to have the memoryless property:
+\[
+  \pr{X > t+s | X > s} = \pr{X > t}, \quad t \geq 0.
+\]
+The CDF of the exponential distribution is given by
+\[
+  F_X(x) = \lambda \int_0^{x}e^{-\lambda u}du = 1 - e^{-\lambda x}
+\]
+\begin{definition}
+  $X$ is a Gaussian Random Variable with mean $\mu$ and variance $\sigma^2$ (denoted $X\sim \mathcal{N}(\mu, \sigma^2)$) if it has the PDF
+  \[
+	f_X(x) = \frac{1}{\sqrt{2\pi\sigma^2}}e^{\frac{-(x-\mu)^2}{2\sigma^2}}
+  \]
+  \label{defn:normal-rv}
+\end{definition}
+The standard normal is $X\sim\mathcal{N}(0, 1)$, and it has the CDF
+\[
+  \Phi(x) = \frac{1}{\sqrt{2\pi}}\int_{-\infty}^{x}e^{\frac{-u^2}{2}} du
+\]
+There is no closed from for $\Phi(x)$.
+It turns out that every normal random variable can be transformed into the standard normal (i.e $\frac{X - \mu}{\sigma} \sim \mathcal{N}(0, 1)$).
+Some facts about Gaussian random variables are
+\begin{enumerate}
+  \item If $X\sim\mathcal{N}(\mu_x, \sigma_x^2),\ Y\sim\mathcal{N}(\mu_y, \sigma_y^2)$ are independent, then $X+Y \sim \mathcal{N}(\mu_x+\mu_y, \sigma_x^2 + \sigma_y^2)$.
+  \item If $X,Y$ are independent and $(X+Y), (X-Y)$ are independent, then both $X$ and $Y$ are Gaussian with the same variance.
+\end{enumerate}
+\subsubsection{Jointly Gaussian Random Variables}
+Jointly Gaussian Random Varables, also known as Gaussian Vectors, can be defined in a variety of ways.
+\begin{definition}
+	A Gaussian Random Vector $\bs{X} = \begin{bmatrix} X_1 & \cdots & X_n \end{bmatrix}^T$ with density on $\mathbb{R}^n$, $\cov{\bs{X}}=\Sigma, \expect{X}=\bs{\mu}$ is defined by the pdf
+	\[
+		f_{\bs{X}}(\bs{x}) = \frac{1}{\sqrt{(2\pi)^n\text{det}(\Sigma)}}e^{-\frac{1}{2}(\bs{x}-\bs{\mu})^T\Sigma^{-1}(\bs{x}-\bs{\mu})}
+	\]
+	\label{defn:joint-gaussian-1}
+\end{definition}
+\begin{definition}
+		A joint gaussian random variable is an affine transformation of independent and identically distributed standard normals.
+		\[
+			\bs{X} = \bs{\mu}+A\bs{W}
+		\] where $A=\Sigma^{1/2}$ is a full-rank matrix and $\bs{W}$ is a vector of i.i.d standard normals.
+	\label{defn:joint-gaussian-2}
+\end{definition}
+\begin{definition}
+	A random variable is jointly gaussian if all 1D projections are Gaussian
+	\[
+		\bs{a}^T\bs{X} \sim \mathcal{N}(\bs{a}^T\bs{\mu}, \bs{a}^T\Sigma\bs{a})
+	\]
+	\label{defn:joint-gaussian-3}
+\end{definition}
+In addition to their many definitions, jointly gaussian random variables also have interesting properties.
+\begin{theorem}
+	If $\bs{X}$ and $\bs{Y}$ are jointly gaussian random variables, then \[
+		X = \mu_{\bs{X}}+\Sigma_{\bs{XY}}(\bs{Y} - \bs{\mu_Y}) + \bs{V} \text{ where } V \sim \mathcal{N}(0, \Sigma_X-\Sigma_{\bs{XY}}\Sigma_Y^{-1}\Sigma{\bs{YX}}
+	\]
+	\label{thm:gaussian-decomp}
+\end{theorem}
+\cref{thm:gaussian-decomp} tells us that each entry in Gaussian Vector can be thought of as a ``noisy'' version of the others.
+\subsection{Hilbert Spaces of Random Variables}
+One way to understand random variables is through linear algebra by thinking of them as vectors in a vector space.
+\begin{definition}
+	An real inner product space $V$ is composed of a vector space $V$ over a real scalar field equipped with an inner product $\langle \cdot,\cdot \rangle$ that satisfies $\forall u,v,w\in V$, $a, b\in\mathbb{R}$,
+
+	1. $\langle u, v \rangle = \langle v, u \rangle$
+
+	2. $\langle au + bv, w \rangle = a \langle u,w \rangle + b \langle v,w \rangle$
+
+	3. $\langle u,u \rangle \geq 0$ and $<u,u> = 0 \Leftrightarrow u = 0$
+	\label{defn:inner-product-space}
+\end{definition}
+Inner products spaces are equipped with the norm $\|v\| = \sqrt{\langle v, v \rangle }$.
+\begin{definition}
+	A Hilbert Space is a real inner product space that is complete with respect to its norm.
+	\label{defn:hilbert-space}
+\end{definition}
+Loosely, completeness means that we can take limits of without exiting the space.
+It turns out that random variables satisfy the definition of a Hilbert Space.
+\begin{theorem}
+	Let $(\Omega, \mathcal{F}, P)$ be a probability space. The collection of random variables $X$ with $\expect{X^2} < \infty$ on this probability space form a Hilbert Space with respect to the inner product $\langle X, Y \rangle = \expect{XY}$.
+	\label{thm:rv-hilbert-space}
+\end{theorem}
+Hilbert spaces are important because they provide a notion of geometry that is compatible with our intuition as well as the geometry of $\mathbb{R}^n$ (which is a Hilbert Space).
+One geometric idea is that of orthogonality.
+Two vectors are orthogonal if $\langle X, Y\rangle = 0$.
+Two random variables will be orthogonal if they are zero-mean and uncorrelated.
+Using orthogonality, we can also define projections.
+\begin{theorem}[Hilbert Projection Theorem]
+	Let $\mathcal{H}$ be a Hilbert Space and $\mathcal{U} \subseteq \mathcal{H}$ be a closed subspace. For each vector $v\in\mathcal{H}$, $\argmin \|u-v\|$ has a unique solution (there is a unique closest point $u\in\mathcal{U}$ to $v$).
+	If $u$ is the closest point to $v$, then $\forall u\in\mathcal{U},\ \langle u-v, u'\rangle$.
+	\label{thm:hilbert-projection}
+\end{theorem}
+\cref{thm:hilbert-projection} is what gives rise to important properties like the Pythogorean Theorem for any Hilbert Space.
+\[
+	\|u\|^2 + \|u-v\|^2 = \|v\| \text{ where } u=\argmin\|u-v\|.
+\]
+Suppose we had to random variables $X$ and $Y$. What happens if we try and project one onto the other?
+\begin{definition}
+	The conditional expectation of $X$ given $Y$ is the bounded continuous function of $Y$ such that $X - \expect{X|Y}$ is orthogonal to all other bounded continuous functions $\phi(Y)$.
+	\[
+		\forall \phi,\ \expect{(X-\expect{X|Y})\phi(Y)} = 0.
+	\]
+	\label{defn:conditional-expect-hilbert}
+\end{definition}
+Thus, the conditional expectation is the function of $Y$ that is closest to $X$. It's interpretation is that the expectation of $X$ can change after observing some other random variable $Y$.
+To find $\expect{X|Y}$, we can use the conditional distribution of $X$ and $Y$.
+\begin{theorem}
+  The conditional expectation of a conditional distribution is given by
+  \[
+		\expect{X|Y=y} = \sum_{x\in\mathcal{X}}xp_{X|Y}(x|y), \quad \expect{X|Y=y} = \int_{-\infty}^{\infty}xf_{X|Y}(x, y)dx
+  \]
+  \label{defn:drv-conditional-expect}
+\end{theorem}
+Notice that $\expect{X|Y}$ is a function of the random variable $Y$, meaning we can apply \cref{thm:unconscious-statistician}.
+\begin{theorem}[Tower Property]
+  For all functions $f$,
+  \[
+	\expect{f(Y)X} = \expect{f(Y)\expect{X|Y}}
+  \]
+  \label{thm:tower-property}
+\end{theorem}
+Alternatively, we could apply lineary of expectation to \cref{defn:conditional-expect-hilbert} to arrive at the same result.
+If we apply \cref{thm:tower-property} to the function $f(Y) = 1$, then we can see that $\expect{\expect{X|Y}} = \expect{X}$.
+% TODO: Connect this to Hilbert
+
+Just as expectation can change when we know additional information, so can variance.
+\begin{definition}
+  Conditional Variance is the variance of $X$ given the value of $Y$.
+  \[
+	\var{X|Y=y} = \expect{(X - \expect{X|Y=y})^2 | Y=y} = \expect{X^2|Y=y} - \expect{X|Y=y}^2
+  \]
+  \label{defn:conditional-var}
+\end{definition}
+Conditional variance is a random variable just as expectation is.
+
+\begin{theorem}[Law of Total Variance]
+  \[
+	\var{X} = \expect{\var{X|Y}} + \var{\expect{X|Y}}
+  \]
+  \label{thm:total-variance}
+\end{theorem}
+The second term in the law of total variance ($\var{\expect{X|Y}}$) can be interpreted as on average, how much uncertainty there is in $X$ given we know $Y$.
+
+\section{Concentration}
+In real life, for the most part, we can't compute probabilities in closed form.
+Instead, we either bound them, or we want to show that $P(A) \approx 0$ or $P(A) \approx 1$.
+\subsection{Concentration Inequalities}
+\begin{theorem}[Markov's Inequality]
+  For a non-negative random variable $X$,
+  \[
+	\pr{X \geq t} \leq \frac{\expect{X}}{t}, \quad t \geq 0.
+  \]
+  \label{thm:markov}
+\end{theorem}
+\begin{theorem}[Chebyshev's Inequality]
+  If $X$ is a random variable, then
+  \[
+	\pr{|X - \expect{X}| \geq t} \leq \frac{\var{X}}{t^2}.
+  \]
+  \label{thm:chebyshev}
+\end{theorem}
+Intuitively, \cref{thm:chebyshev} gives gives a ``better'' bound than \cref{thm:markov} because it incorporates the variance of the random variable.
+Using this idea, we can define an even better bound that incorporates information from all moments of the random variable.
+\begin{definition}[Chernoff Bound]
+	For a random variable $X$ and $a\in\mathbb{R}$,\[
+		\pr{X \geq a} \leq \frac{\expect{e^{tX}}}{e^{ta}} = e^{-ta}M_x(t).
+	\]
+	\label{defn:chernoff}
+\end{definition}
+After computing the Chernoff bound for a general $t$, we can then optimize over it to compute the best bound possible.
+\subsection{Convergence}
+The idea of convergence brings the mathematical language of limits into probability.
+The fundamental question we want to answer is given random variables $X_1, X_2, \cdots$, what does it mean to compute
+\[
+	\lim_{n\to\infty}X_n.
+\]
+This question is not as straightforward as it seems because random variables are functions, and there are many ways to define the convergence of functions.
+\begin{definition}
+	A sequence of random variables converges almost surely to $X$ if \[
+		P\left(\lim_{n\to \infty}X_n = X\right) = 1
+	\]
+	\label{defn:almost-sure}
+\end{definition}
+One result of almost sure convergence deals with deviations around the mean of many samples.
+\begin{theorem}[Strong Law of Large Numbers]
+	If $X_1, X_2, \cdots, X_n$ are independently and identically distributed to $X$ where $\expect{X} < \infty$, then $\frac{1}{n}\sum_i X_i$ converges almost surely to $\expect{X}$.
+	\label{thm:strong-law}
+\end{theorem}
+The strong law tells us that for any observed realization, there is a point after which there are no deviations from the mean.
+\begin{definition}
+	A sequence of random variables converges in probability if \[
+		\forall \epsilon > 0, \quad \lim_{n\to\infty}P(|X_n - X| > \epsilon) = 0
+	\]
+	\label{defn:converge-prob}
+\end{definition}
+Convergence in probability can help us formalize the intuition that we have which says probability is the frequency with which an even happens over many trials of an event.
+\begin{theorem}[Weak Law of Large Numbers]
+  Let $X_1, X_2, \cdots, X_n$ be independently and identically distributed according to $X$, and let $M_n = \frac{1}{n}\sum X_i$.
+  Then for $\epsilon > 0$, \[
+	\lim_{n\to\infty} \pr{|M_n - \expect{X}| > \epsilon} = 0.
+  \]
+  \label{thm:weak-law}
+\end{theorem}
+It tells us that the probability of a deviation of $\epsilon$ from the true mean will go to 0 in the limit, but we can still observe these deviations.
+Nevertheless, the weak law helps us formalize our intuition about probability.
+If $X_1, X_2, \cdots, X_n$ are independently and identically distributed according to $X$, then we can define the empirical frequency
+\[
+  F_n = \frac{\sum\mathbbm{1}_{X_i\in B}}{n} \implies \expect{F_n} = P(X \in B).
+\]
+By \cref{thm:weak-law}, \[
+  \lim_{n\to\infty}\pr{|F_n - P(X\in B)| > \epsilon} = 0,
+\]
+meaning over many trials, the empirical frequency is equal to the probility of the event, matching intuition.
+\begin{definition}
+	A sequence of random variables converges in distribution if \[
+		\lim_{n\to\infty}F_{X_n}(x) = F_x(x).
+	\]
+	\label{defn:converge-dist}
+\end{definition}
+An example of convergence in distribution is the central limit theorem.
+\begin{theorem}[Central Limit Theorem]
+	If $X_1, X_2, \cdots$ are independently and identically distributed according to $X$ with $\var{X} = \sigma^2$ and $\expect{X} = \mu$, then
+	\[
+		\lim_{n\to\infty}P\left(\frac{\sum_{i=1}^nX_i - n\mu}{\sigma\sqrt{n}} \leq x\right) = \Phi(x)
+	\]
+	\label{thm:central-limit}
+\end{theorem}
+In other words, a sequence of random variables converges in distribution to a normal distribution with variance $\sigma^2$ and mean $\mu$.
+
+These notions of convergence are not identical, and they do not necessarily imply each other.
+It is true that almost sure convergence implies convergence in probability, and convergence in probability implies convergence in distribution, but the implication is only one way.
+
+Once we know how a random variable converges, we can then also find how functions of that random variable converge.
+\begin{theorem}[Continuous Mapping Theorem]
+	If $f$ is a continuous function, then if $X_n$ converges to $X$, then $f(X_n)$ converges to $f(X)$. The convergence can be almost surely, in probability, or in distribution.
+	\label{thm:continuous-mapping}
+\end{theorem}
+\section{Information Theory}
+Information Theory is a field which addresses two questions
+\begin{enumerate}
+	\item \textbf{Source Coding:} How many bits do I need to losslessly represent an observation.
+	\item \textbf{Channel Coding:} How reliably and quickly can I communicate a message over a noisy channel.
+\end{enumerate}
+\subsection{Quantifying Information}
+Intuitively, for a PMF of a disrete random variable, the surprise associated with a particular realization is $-\log p_X(x)$ since less probable realizations are more surprising.
+With this intuition, we can try and quantify the ``expected surprise'' of a distribution.
+\begin{definition}
+	For a Discrete Random Variable $X\sim p_X$, the Entropy of $X$ is given by \[
+		H(x) = \expect{-\log_2 p_X(x)} = -\sum_{x\in\mathcal{X}} p_X(x)\log_2p_X(x).
+	\]
+	\label{defn:entropy}
+\end{definition}
+Alternative interpretations of entropy are the average uncertainty and how random $X$ is.
+Just like probabilites, we can define both joint and conditional entropies.
+\begin{definition}
+	For Discrete Random Variables $X$ and $Y$, the joint entropy is given by \[
+		H(X,Y) = \expect{-\log_2p_{XY}(x, y)} = -\sum_{x,y\in\mathcal{X}\times\mathcal{Y}}p_{XY}(x, y)\log_2p_{XY}(x, y).
+	\]
+	\label{defn:joint-entropy}
+\end{definition}
+\begin{definition}
+	For Discrete Random Variable $X$ and $Y$, the conditional entropy is given by \[
+		H(Y|X) = \expect{-\log_2p_{Y|X}(y|x)} = \sum_{x\in\mathcal{X}}p_X(x)H(Y|X=x).
+	\]
+	\label{defn:conditional-entropy}
+\end{definition}
+Conditional entropy has a natural interpretation which is that it tells us how surprised we are to see $Y=y$ given that we know $X=x$.
+If $X$ and $Y$ are independent, then $H(Y) = H(Y|X)$ because realizing $X$ gives no additional information about $Y$.
+\begin{theorem}[Chain Rule of Entropy]
+	\[
+		H(X, Y) = H(X) + H(X|Y).
+	\]
+	\label{thm:chain-entropy}
+\end{theorem}
+In addition to knowing how much our surprise changes for a random variable when we observe a different random variable, we can also quantify how much additional information observing a random variable gives us about another.
+\begin{definition}
+	For random variables $X$ and $Y$, the mutual information is given by \[
+		I(X;Y) = H(X) - H(X|Y) = H(Y) - H(Y|X).
+	\]
+	\label{defn:mutual-info}
+\end{definition}
+\subsection{Source Coding}
+Source coding deals with finding the minimal number of bits required to represent data.
+This is essentially the idea of lossless compression.
+In this case, our message is the sequence of realizations of independently and identically distributed random variables $\left(X_i\right)_{i=1}^n \sim p_X$.
+The probability of observing a particular sequence is then \[
+	P(x_1, x_2, \cdots, x_n) = \prod_{i=1}^np_X(x_i).
+\]
+\begin{theorem}[Asymptotic Equipartition Property]
+	If we have a sequence of independently and identically distributed random variables $\left(X_i\right)_{i=1}^n \sim p_X$, then $-\frac{1}{n}\log P(x_1, x_2, \cdots, x_n)$ converges to $H(X)$ in probability.
+	\label{thm:aep}
+\end{theorem}
+\cref{thm:aep} tells us that with overwhelming probability, we will observe a sequence that is assigned probability $2^{-nH(X)}$.
+Using this idea, we can define a subset of possible observed sequences that in the limit, our observed sequence must belong to with overwhelming probability.
+\begin{definition}
+	For a fixed $\epsilon > 0$, for each $n\geq 1$, the typical set is given by \[
+		A_\epsilon^{(n)} = \left\{ (x_1, x_2, \cdots, x_n) : 2^{-n(H(X)+\epsilon)}\leq P(x_1, x_2, \cdots, x_n) \leq 2^{-n(H(X)-\epsilon)} \right\}.
+	\]
+	\label{defn:typical-set}
+\end{definition}
+Two important properties of the typical set are that
+\begin{enumerate}
+	\item $\lim_{n\to\infty}P\left((x_1, x_2, \ldots, x_n) \in A_{\epsilon}^{(n)}\right) = 1$
+	\item $|A_{\epsilon}^{(n)}| \leq 2^{n(H(X)+\epsilon)}$
+\end{enumerate}
+The typical set gives us an easy way to do source coding.
+If I have $N$ total objects, then I only need $\log N$ bits to represent each object, so I can define a simple protocol which is
+\begin{enumerate}
+	\item If $(x_i)_{i=1}^{n} \in A^{(n)}_{\frac{\epsilon}{2}}$, then describe them using the $\log|A^{(n)}_{\frac{\epsilon}{2}}| \leq n\left(H(X)+\frac{\epsilon}{2}\right)$ bits
+	\item If $(x_i)_{i=1}^n \not \in A^{(n)}_{\frac{\epsilon}{2}}$, then describe them naiively with $n\log|\mathcal{X}|$ bits.
+\end{enumerate}
+This makes the average number of bits required to describe a message 
+\begin{align*}
+	\expect{\text{\# of Bits}} &\leq n\left(H(X)+\frac{\epsilon}{2}\right)P\left((x_i)_{i=1}^n\in A_{\frac{\epsilon}{2}}^{(n)}\right) + n\log |\mathcal{X}|P\left((x_i)_{i=1}^n\in A_{\frac{\epsilon}{2}}^{(n)}\right) \\
+	&\leq n(H(X)+\frac{\epsilon}{2}) + n \frac{\epsilon}{2} \leq n(H(X)+\epsilon)
+\end{align*}
+This is the first half of a central result of source coding.
+\begin{theorem}[Source Coding Theorem]
+	If $(X_i)_{i=1}^n \sim p_X$ are a sequence of independently and identically distributed random varibles, then for any $\epsilon > 0$ and $n$ sufficiently large, we can represent $(X_i)_{i=1}^n$ using fewer than $n(H(X) + \epsilon)$ bits. Conversely, we can not losslessly represent $(X_i)_{i=1}^n$ using fewer than $nH(X)$ bits.
+	\label{thm:source-coding}
+\end{theorem}
+This lends a new interpretation of the entropy $H(X)$: it is the average number of bits required to represent $X$.
+\subsection{Channel Coding}
+Whereas source coding deals with encoding information, channel coding deals with transmitting it over a noisy channel.
+In general, we have a message $M$, and encoder, a channel, and a decoder as in \cref{fig:channel-coding}.
+\begin{gitbook-image}
+  \begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[auto, node distance=2cm,>=latex']
+	  % We start by placing the blocks
+	  \node [input, name=input] (input) {};
+	  \node [block, name=encoder, right of=input, node distance=2cm] (encoder) {Encoder};
+	  \node [block, name=channel, right of=encoder, node distance=5cm] (channel) {Noisy Channel};
+	  \node [block, name=Decoder, right of=channel, node distance=5cm] (decoder) {Decoder};
+	  \node [output, right of=decoder, node distance=3cm] (output) {};
+
+	  % Once the nodes are placed, connecting them is easy. 
+	  \draw [->] (input) -- node {$M$} (encoder);
+		\draw [->] (encoder) -- node {$X^{(n)}(M)$} (channel);
+		\draw [->] (channel) -- node {$Y^{(n)}$} (decoder);
+		\draw [->] (decoder) -- node {$\hat{M}(Y^{(n)})$} (output);	
+	\end{tikzpicture}
+	\caption{Channel Coding}
+	\label{fig:channel-coding}
+  \end{figure}
+\end{gitbook-image}
+Each channel can be described by a conditional probability distribution $p_{Y|X}(y|x)$ for each time the channel is used.
+\begin{definition}
+	For a channel described by $p_{Y|X}$, the capacity is given by \[
+		C = \max_{p_X} I(X; Y).
+	\]
+	\label{defn:capacity}
+\end{definition}
+In words, the capacity describes the maximum mutual information between the channel input and output.
+\begin{definition}
+	Suppose we use the channel $n$ times to send a message that takes on average $H(m)$ bits to encode, then the rate of the channel is \[
+		R = \frac{H(M)}{n}
+	\]
+	\label{defn:rate}
+\end{definition}
+\begin{theorem}[Channel Coding Theorem]
+	For a channel decsribed by $p_{Y|X}$ and $\epsilon>0$ and $R < C$, for all $n$ sufficiently large, there exists a rate $R$ communication scheme that achieves a probability of error less than $\epsilon$. If $R > C$, then the probability of error converges to 1 for any communication scheme. 
+	\label{thm:channel-coding}
+\end{theorem}
+\section{Random Processes}
+\begin{definition}
+	A random/stochastic process is a sequence of random variables $(X_n)_{n\geq 0}$.
+	\label{defn:random-process}
+\end{definition}
+The random variables in a stochastic process do not have to be independently and identically distributed.
+In fact, if they are not, then we can get additional modeling power.
+\begin{definition}
+	A random process $(X_n)_{n\in\mathbb{N}}$ is stationary if for all $k, n > 0$ and all events $A_1,\cdots,A_n$, then \[
+		\pr{X_1\in A_1,\cdots,X_n\in A_n} = \pr{X_{k+1}\in A_1,\cdots,A_{k+n}\in A_n}
+	\]
+	\label{defn:stationarity}
+\end{definition}
+Stationarity is often a good assumption that can simplify systems which have been running for a long period of time.
+\subsection{Discrete Time Markov Chains}
+\begin{definition}
+	$(X_n)_{n\geq 0}$ is a Markov Chain if each random variable $X_i$ takes values in a discrete set $S$ (the state space), and, \[
+		\forall n \geq 0,\ i,j\in S,\ \pr{X_{n+1}=j|X_n=i,\cdots,X_0=x_0} = \pr{X_{n+1}=i|X_n=j}
+	\]
+	\label{defn:markov-chain}
+\end{definition}
+In words, a Markov Chain is a sequence of random variables satisfying the Markov Property where probability of being in a state during the next time step only depends on the current state.
+\begin{definition}
+	A temporally homogenous Markov Chain is one where the transition probabilities $\pr{X_{n+1}=j|X_n=i} = p_{ij}$ for all $i,j\in S$ and $n\geq 0$.
+	\label{defn:temp-homo-markov-chain}
+\end{definition}
+Temporally Homogenous Markov Chains don't change their transition probabilities over time.
+Since the $p_{ij}$ are conditional probabilities, they must satisfy
+\begin{enumerate}
+	\item $\forall i,j\in S,\ p_{ij} \geq 0$
+	\item $\forall i\in S,\ \sum_{j\in S}p_{ij} = 1$
+\end{enumerate}
+\begin{definition}
+	The transition matrix of a Markov Chain is a matrix $P$ where the ijth entry $P_{ij} = p_{ij}$ for all $i,j\in S$.
+	\label{defn:transition-mat}
+\end{definition}
+The transition matrix encodes the one-step transition probabilities of the Markov Chain.
+\begin{theorem}[Chapman-Kolmogorov Equation]
+	The n-step transition probabilities (i.e starting in $i$ and ending in $j$ $n$ steps later) of the Markov Chain are given by $p_{ij}^{(n)} = P^n_{ij}$.
+	\label{thm:chapman-kolmogorov}
+\end{theorem}
+One useful thing we can comptue with Markov Chain is when the chain first enters a particular state.
+\begin{definition}
+	For a $A \subset S$, the hitting time of $A$ is given by \[
+		T_A = \min_n \{ n\geq 0: X_n\in A\}
+	\]
+	\label{defn:hitting-time}
+\end{definition}
+Computing the expected hitting time is an example of a broader type of Markov Chain Analysis called \textbf{First Step Analysis}.
+In First Step Analysis, we set up a system of equations that relies on the Markov property to generate a system of equations that only look at the first transition in the chain.
+For expected hitting time, these look like
+\begin{enumerate}
+	\item For $i\not\in A$, $\expect{T_A|X_0 = i} = 1 + \sum_j p_{ij} \expect{T_A|X_0 = j}$
+	\item For $i\in A$, $\expect{T_A|X_0 = i} = 0$
+\end{enumerate}
+\subsubsection{Properties of Markov Chains}
+\begin{definition}
+	If $\exists n \geq 1$ such that $p_{ij}^{(n)} \ne 0$, then $j$ is accessible from $i$, and we write $i\rightarrow j$.
+	\label{defn:accesible}
+\end{definition}
+\begin{definition}
+	States $i$ and $j$ communicate with each other when $i\rightarrow j$ and $j\rightarrow i$. We write this as $i\leftrightarrow j$.
+	\label{defn:communicate}
+\end{definition}
+By convention, we say that $i\leftrightarrow i$.
+It turns out that $\leftrightarrow$ is an equivalence relation on the state space $S$.
+An equivalence relation means that 
+\begin{enumerate}
+	\item $\forall i\in S,\ i \leftrightarrow i$
+	\item $\forall i,j\in S,\ i\leftrightarrow j \Leftrightarrow j \leftrightarrow i$
+	\item $\forall i,j,k \in S, i\leftrightarrow k, k\leftrightarrow j \Rightarrow i \leftrightarrow j$
+\end{enumerate}
+This means that $\leftrightarrow$ partitions the state-space $S$ into equivalence classes (i.e classes of communicating states).
+\begin{definition}
+	A Markov Chain is irreducible if $S$ is the only class.
+	\label{defn:irreducible-markov}
+\end{definition}
+\begin{definition}
+	An irreducible Markov Chain is reversible if and only if there exists a probability vector $\pi$ that satisfies the \textbf{Detailed Balance Equations}: \[
+		\forall i,j \in S,\ \pi_j p_{ij} = \pi_i p_{ji}
+	\]
+	\label{defn:reversible-markov}
+\end{definition}
+Markov Chains which satisfy the detailed balance equations are called reversible because if $X_0\sim \pi$, then the random vectors $(X_0, X_1, \cdots, X_n)$ and $(X_n, X_{n-1}, \cdots, X_0)$ are equal in distribution.
+\begin{theorem}
+	If the graph of a Markov Chain (transform the state transition diagram by making edges undirected, removing self-loops, and removing multiple edges) is a tree, then the Markov Chain is reversible.
+	\label{thm:tree-markov}
+\end{theorem}
+\subsubsection{Class Properties}
+A class property is a property where if one element of a class has the property, all elements of the class have the property.
+Markov Chains have several of these properties which allow us to classify states.
+\begin{definition}
+	A state $i\in S$ is recurrent if given that $X_0=i$, the process revisits state $i$ with probability 1.
+	\label{defn:markov-recurrence}
+\end{definition}
+\begin{definition}
+	A state is $i\in S$ is transient if it is not recurrent.
+	\label{defn:markov-transience}
+\end{definition}
+Recurrence means that we will visit a state infinitely often in the future if we start in that state, while transience means we will only visit the state finitely many times.
+Recurrence and transience can be easily identified from the transition diagram.
+\begin{enumerate}
+	\item Any finite communicating class which has no edges leaving the class is recurrent
+	\item If a state has an edge leading outside its communicating class, then it is transient
+	\item If a state is recurrent, then any state it can reach is recurrent
+\end{enumerate}
+We can further break recurrence down if we modify the definition of hitting time to be $T_i = \min_n \{ n \geq 1 : X_n=i \}$ (the first time the chain enters state $i$).
+\begin{definition}
+	State $i$ is positive recurrent if it is recurrent and $\expect{T_i|X_0=i}$ is finite.
+	\label{defn:positive-recurrence}
+\end{definition}
+\begin{definition}
+	State $i$ is null recurrent if it is recurrent and $\expect{T_i|X_0=i}$ is infinite.
+	\label{defn:null-recurrence}
+\end{definition}
+Positive recurrence means we visit a recurrent state so frequently that we spend a positive fraction of time in that state.
+Null recurrencce means we visit a recurrent state so infrequently (but still infinitely many times) that we spend virtually no time in that state.
+\begin{theorem}
+	Every irreducible finite state Markov Chain is positive recurrent.
+	\label{thm:positive-recurrence}
+\end{theorem}
+\begin{definition}
+	For a state $i\in S$, we define the period of the state to be
+	\[
+		\text{period}(i) = \text{GCD}\{n\geq 1 : p_{ii}^{(n)} > 0 \}.
+	\]
+	\label{defn:period}
+\end{definition}
+If we start in state $i$, then revists to $i$ only occur at integer multiples of the period.
+\begin{definition}
+	An irreducible markov chain is aperiodic if any state has period 1.
+	\label{defn:aperiodic-mc}
+\end{definition}
+All of the above properties are class properties.
+\subsubsection{Long-Term Behavior of Markov Chains}
+Since the $p_{ij}$ completely characterize the Markov Chain, we can also describe what happens to the chain in the limit.
+\begin{definition}
+	A probability distribution $\pi$ over the states is a stationary distribution if $\pi = \pi P$
+	\label{defn:stationary-dist-mc}
+\end{definition}
+It is called a stationary distribution because the distribution over states is invariant with time.
+A Markov Chain is only at stationarity if and only if it has been started from the stationary distribution.
+The relationship $\pi = \pi P$ can be expanded for the jth element to show that any stationary distribution must satisfy the \textbf{Global Balance Equations}:
+\[
+	\pi_j = \sum_i p_{ij}\pi_i.
+\]
+Note that if a distribution $\pi$ satisfies the detailed balance equations from \cref{defn:reversible-markov}, then $\pi$ also satisfies \cref{defn:stationary-dist-mc}.
+
+Both the global balance equations and detailed balance equations can be conceptualized as statements of flow.
+If each $\pi_j$ indicates how much mass is placed on state $j$, then the global balance equations tell us the mass leaving the node (going to each neighbor $i$ in proportion to $p_{ij}$) is equal to the mass entering the node (which must sum to $\pi_j$ since it is a stationary distribution.
+Rather than looking at the flow of the whole chain, the detailed balance equations look at the flow between two states. The mass $i$ gives to $j$ is equal to the mass $j$ gives to $i$.
+\begin{theorem}
+	If an irreducible Markov Chain is at stationarity, then the flow-in equals flow-out relationship holds for any cut of the Markov Chain where a cut is a partition of the chain into two disjoint subsets.
+	\label{thm:flow-stationarity}
+\end{theorem}
+\cref{thm:flow-stationarity} is one useful result can help solve for stationary distributions.
+\begin{theorem}[Big Theorem for Markov Chains]
+	Let $(X_n)_{n\geq 0}$ be an irreducible Markov Chain. Then one of the following is true.
+
+	1. Either all states are transient, or all states are null recurrent, and no stationary distribution exists, and $\lim_{n\to\infty}p_{ij}^{(n)} = 0$.
+	
+	2. All states are positive recurrent and the stationary distribution exists, is unique, and satisfies \[
+		\pi_j = \lim_{n\to\infty}\frac{1}{n}\sum_{k=0}^{n}P_{ij}^{(k)} = \frac{1}{\expect{T_j|X_0=j}}.
+		\]
+		If the Markov Chain is aperiodic, then $\lim_{n\to\infty}p_{ij}^{(n)} = \pi_j$
+	\label{thm:big-theorem}
+\end{theorem}
+One consequence of \cref{thm:big-theorem} is that it means the stationary distribution $\pi$ of a reversible Markov Chain is unique.
+This makes solving the detailed balance equations a good technique of solving for the stationary distribution.
+If a stationary distribution exists, then we can also say when the chain will converge to the stationary distribution.
+\begin{theorem}[Convergence Theorem]
+	If a chain is irreducible, positive, recurrent, and aperiodic with stationary distribution $\pi$, then the distribution at time $n$ $\pi_n \to \pi$
+	\label{thm:mc-convergence}
+\end{theorem}
+\subsection{Continuous Time Markov Chains}
+\begin{definition}
+	A process $(X_t)_{t\geq 0}$ taking values in a countable state space $S$ is a temporally homogenous continuous time markov chain if it satisfies the Markov Property
+	\[
+		\pr{X_{t+\tau}=j|X_t=i,X_s=i_s, 0 \leq s \leq t} = \pr{X_{t+\tau}=j|X_t=i} = \pr{X_\tau = j | X_0 = i}
+	\]
+	\label{defn:ctmc}
+\end{definition}
+To characterize how a CTMC functions, we need to define some additional quantities.
+\begin{enumerate}
+	\item $q_i$ is the transition rate of state $i$
+	\item $p_{ij}$ is the transition probability bewteen states $i$ and $j$
+\end{enumerate}
+Every time a CTMC enters a state $i$, it will hold in that state for $\text{Exp}(q_i)$ time before transitioning to the next state $j$ with probability $p_{ij}$.
+\begin{definition}
+	The jump chain is a DTMC which describes the transition probabilities between states in the CTMC
+	\label{defn:jump-chain}
+\end{definition}
+Note that the jump chain cannot have self-loops ($p_{ii}=0$) because otherwise the amount of time spent in state $i$ would not be exponentially distributed.
+An alternative interpretation of a CTMC is
+\begin{enumerate}[1.]
+	\item Define jump rates $q_{ij} = q_i p_{ij}$
+	\item On entering state $i$, jump to $j^\star = \argmin_j T_j$ where $T_j \sim \text{Exp}(q_{ij})$ for all $j\neq i$ and are independent from each other.
+\end{enumerate}
+Essentially, every time we enter a state, we set an alarm clock for all other states, and then jump to the state whose alarm clock goes off first.
+This equivalent interpretation allows us to summarize a CTMC using the rate matrix.
+\[
+	Q_{ij} = \begin{cases}
+		-q_i & \text{ if } i=j\\
+		q_{ij} & \text{ if } i \neq j
+	\end{cases}
+\]
+Following from the first interprentation, all entries of $Q$ are non-negative, and the rows must sum to 0.
+One useful quantity which we can define is how long it takes to come back to a particular state.
+\begin{definition}
+	The time to first re-entry of state $j$ is \[
+		T_j = \min \{t \geq 0: X_t=j \text{ and } X_s \neq j \text{ for some } s < t\}
+	\]
+	\label{defn:ctmc-reentry}
+\end{definition}
+Since a CTMC is essentially a DTMC where we hold in each state for an exponential amount of time, we can apply First Step Analysis in essentially the same way that we do for DTMCs.
+In fact, hitting probabilities will look exactly the same since we can just use the jump chain to comute the transition probabilities.
+The only differences will arise when we consider the time dependent quantities.
+For hitting times (how long it takes to enter a state from $A\subseteq S$),
+\begin{enumerate}
+	\item If $i\in A, \expect{T_A|X_0=i} = 0$
+	\item If $i \not \in A, \expect{T_A|X_0=i} = \frac{1}{q_i} + \sum_{j\in S} p_{ij}\expect{T_A|X_0=j}$
+\end{enumerate}
+\subsubsection{Class Properties}
+Just like in DTMCs, we can classify states in the CTMC.
+\begin{definition}
+	States $i$ and $j$ communicate with eachc other if $i$ and $j$ communicate in the jump chain.
+	\label{defn:ctmc-communicate}
+\end{definition}
+\begin{definition}
+	State $j$ is transient if given $X_0=j$, the process enters $j$ finitely many times with probability 1. Otherwise, it is recurrent.
+	\label{defn:ctmc-recurrent}
+\end{definition}
+\begin{definition}
+	A state $j$ is positive recurrent if its time to first re-entry is finite, and null recurrent otherwise.
+	\label{defn:ctmc-recurrence}
+\end{definition}
+\subsubsection{Long Term Behavior of CTMCs}
+CTMCs also have stationary distributions.
+\begin{definition}
+	A probability vector $\pi$ is a stationary ditribution for a CTMC with rate matrix $Q$ if \[
+		\pi Q = 0 \Leftrightarrow \pi_jq_j = \sum_{i\neq j}\pi_iq_{ij}.
+	\]
+	\label{defn:ctmc-stationary}
+\end{definition}
+The stationary distribution of the CTMC is also related to the jump chain, but we need to normalize for the hold times.
+\begin{theorem}
+	If $\pi$ is a stationary distribution for a CTMC, then the stationary distribution of the jump chain is given by \[
+		\tilde{\pi}_i = \frac{\pi_i q_i}{\sum_j \pi_j q_j} 
+	\]
+	\label{thm:ctmc-jump-stationary}
+\end{theorem}
+To describe how a CTMC behaves over time, first define $p_{ij}^{(t)} = \pr{X_t=j|X_0=i}$ and $m_j = \expect{T_j|X_0=j}$.
+\begin{theorem}[Big Theorem for CTMCs]
+	For an irreducible CTMC, exactly one of the following is true.
+
+	1. All states are transient or null recurrent, no stationary distribution exists, and $\lim_{t\to\infty}p_{ij}^{(t)} = 0$
+	
+	2. All states are positive recurrent, a unique stationary distribution exists, and the stationary distribution satisfies \[
+		\pi_j = \frac{1}{m_jq_j} = \lim_{t\to\infty}p_{ij}^{(t)}
+	\]
+	\label{thm:ctmc-big}
+\end{theorem}
+\subsubsection{Uniformization}
+Let $P^{(t)}$ denote the matrix of transition probabiltiies at time $t>0$.
+By the Markov property, we know that $P^{(s+t)} = P^{(s)}P^{(t)}$.
+For $h \approx 0, P^{(h)} \approx I + hQ + o(h)$. This approximation allows us to compute the derivative of $P^{(t)}$.
+\begin{theorem}[Forward Kolmogorov Equation]
+	\[
+		\frac{\partial}{\partial t}P^{(t)} = \lim_{h\to 0}\frac{P^{(t+h)} - P^{(t)}}{h} = P^{(t)}Q
+	\]
+	\label{thm:forward-kolmogorov}
+\end{theorem}
+\cref{thm:forward-kolmogorov} tells us that the transition probabilties $P^{(t)} = e^{tQ}$ for all $t \geq 0$.
+This is why Q is sometimes called the generator matrix: it generates the transition probabilities.
+However, matrix exponentials are difficult to compute. Instead, we can turn to \textbf{Uniformization}, which allows us to estimate $P^{(t)}$ by simulating it through a DTMC.
+\begin{definition}
+	Given a CTMC where $\exists M$ such that $q_{i} \leq M$ for all $i,j\in S$.
+	Fix a $\gamma \geq M$, and the uniformized chain will be a DTMC with transition probabilities $p_{ij} = \frac{q_{ij}}{\gamma}$ and $p_{ii} = 1 - \frac{q_i}{\gamma}$.
+	 \[
+		P_u = I + \frac{1}{\gamma}Q.
+	\]
+	\label{defn:uniformization}
+\end{definition}
+It turns out that \[
+	P_u^n = \left( I + \frac{1}{\gamma}Q \right)^n \approx e^{\frac{n}{\gamma}Q}
+\]
+when $\frac{1}{\gamma}$ is small.
+This means that we can approximate the transition probabilties of the CTMC using the uniformized chain.
+Observe that uniformization also helps in finding the stationary distribution since the stationary distribution of the uniformized chain is identical to the original chain.
+\[
+	\pi P_u = \pi + \frac{1}{\gamma}\pi Q = \pi \Leftrightarrow \pi Q = 0.
+\]
+\subsubsection{Poisson Processes}
+\begin{definition}
+	A counting process $(N_t)_{t\geq 0}$ is a non-decreasing, continuous time, integer valued random process which has right continuous sample paths.
+	\label{defn:counting-process}
+\end{definition}
+There are two important metrics which describe counting processes.
+\begin{definition}
+	The ith arrival time $T_i$ is given by \[
+		T_i = \min_t \{ t \geq 0: \ N_t \geq i \}
+	\]
+	\label{defn:arrival-time}
+\end{definition}
+\begin{definition}
+	The ith inter-arrival time $S_i$ is given by \[
+		S_i = T_i - T_{i-1}, i > 0
+	\]
+	\label{defn:inter-arrival-time}
+\end{definition}
+\begin{definition}
+	A rate $\lambda$ Poisson Process is a counting process with independently and identically distributed inter-arrival times $S_i \sim \text{Exp}(\lambda)$.
+	\label{defn:poisson-process}
+\end{definition}
+The name Poisson comes from the distribution of each varible in the process.
+\begin{theorem}
+	If $(N_t)_{t\geq 0}$ is a rate $\lambda$ Poisson Process, then for each $t\geq 0$, $N_t\sim \text{Poisson}(\lambda t)$
+	\label{thm:poisson-process}
+\end{theorem}
+A Poisson Process is a special case of a CTMC where the transition rates $q_i = \lambda$ and the transition probabilties $p_{ij}$ are 1 if $j=i+1$ and 0 otherwise.
+Since the inter-arrival times are memoryless and i.i.d, Poisson Processes have many useful properties.
+\begin{theorem}
+	If $(N_t)_{t\geq 0}$ is a rate $\lambda$ Poisson Process, then $(N_{t+s} - N_s)_{t\geq0}$ is also a rate $\lambda$ Poisson Process for all $s \geq 0$ and is independent of the original process.
+	\label{thm:indep-poisson-process}
+\end{theorem}
+\begin{theorem}
+	For $t_0 < t_1 <\ldots< t_k$, then the increments of a rate $\lambda$ Poisson Process $(N_{t_1} - N_{t_0}), (N_{t_2} - N_{t_1}),\ldots,(N_{t_k} - N_{t_{k-1}})$ are independent and $N_{t_i} - N_{t_{i-1}} \sim \text{Poisson}(\lambda(t_i - t_{i-1}))$
+	\label{thm:indep-increments}
+\end{theorem}
+Poisson Processes are the only counting processes with these particular properties.
+
+It turns out that Poisson Processes can be connected with the Order Statistics of Uniform Random Variables.
+\begin{theorem}[Conditional Distribution of Arrivals]
+	Conditioned on $N_t = n$, the random vector $T_1, T_2, \cdots, T_n$ has the same distribution as the order statistics of $n$ random variables $U\sim \text{Uniform}(0, t)$.
+	\label{thm:conditional-dist-of-arrivals}
+\end{theorem}
+What \cref{thm:conditional-dist-of-arrivals} says is that given $n$ arrivals up to time $t$ occur, the distribution of arrival times is equivalent to taking $n$ i.i.d uniform random variables and sorting them.
+
+Two other useful properties of Poisson Processes involve combining and separating them.
+\begin{theorem}[Poisson Merging]
+	If $N_{1,t}$ and $N_{2,t}$ are independent Poisson Processes with rates $\lambda_1$ and $\lambda_2$, then $N_{1, t} + N_{2,t}$ is a Poisson Process with rate $\lambda_1+\lambda_2$.
+	\label{thm:poisson-merging}
+\end{theorem}
+\begin{theorem}[Poisson Splitting]
+	Let $p(x)$ be a probability distribution and $N_t$ be a rate $\lambda$ Poisson process. If each arrival is marked with the label $i$ independently with probability $p(x=i)$, then $N_{i,t}$, the process counting the number of arrivals labeled $i$ is an independent Poisson Process with rate $\lambda p_i$.
+	\label{thm:poisson-splitting}
+\end{theorem}
+\section{Random Graphs}
+A random graph is one which is generated through some amount of randomness.
+\begin{definition}
+	An Erdos-Renyi random graph $G(n, p)$ is an undirected graph on $n \geq 1$ vertices where each edge exists independently with probability $p$.
+	\label{defn:erdos-renyi}
+\end{definition}
+With random graphs, we often ask what happens to particular properties as $n\to\infty$ and $p$ scales with some relationship to $n$.
+In particular, we want that property to hold with high probability (i.e, as $n\to\infty$, the probabilty that $G(n,p)$ has the property approaches 1).
+\begin{theorem}
+	Every monotone graph property (adding more edges doesn't delete the property) has a sharp threshold $t_n$ where if $p	\gg t_n$, then $G(n, p)$ has $p$ with high probability and does not have $p$ with high probability if $t_n \ll G(n,p)$.
+	\label{thm:graph-sharp-threshold}
+\end{theorem}
+One example of a threshold is the connectivity threshold.
+\begin{theorem}[Erdos-Renyi Connectivity Theorem]
+	Fix $\lambda > 0$ and let $P_n = \lambda \frac{\log n}{n}$. If $\lambda > 1$, then $P(G(n,p)\text{ is connected})$ with probability approaching 1, and if $\lambda < 1$, then $P(G(n,p)\text{ is disconnected})$ with probability approaching 1
+	\label{thm:erdos-renyi}
+\end{theorem}
+\section{Statistical Inference}
+Suppose we have a variable $X$ (may or may not be a random variable) that represents the state of nature.
+We observe a variable $Y$ which is obtained by some model of the world $P_{Y|X}$.
+\begin{gitbook-image}
+  \begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[auto, node distance=2cm,>=latex']
+	  % We start by placing the blocks
+	  \node [input, name=input] (input) {};
+		\node [block, name=model, right of=input, node distance=3cm] (model) {Model ($P_{Y|X}$)};
+	  \node [output, right of=model, node distance=3cm] (output) {};
+
+	  % Once the nodes are placed, connecting them is easy. 
+	  \draw [->] (input) -- node {$X$} (model);
+	  \draw [->] (model) -- node {$Y$} (output);
+	\end{tikzpicture}
+	\caption{Inference Setup}
+	\label{fig:inference-setup}
+  \end{figure}
+\end{gitbook-image}
+Suppose we know that $X\sim \pi$ where $\pi$ is a probability distribution.
+If we observe $Y=y$, then the \textit{a posteriori} estimate of $X$ is given by Bayes Rule
+\[
+	\pr{X=x | Y=y} = \frac{P_{Y|X}(y|x)\pi(x)}{\sum_{\tilde{x}}P_{Y|X}(y|\tilde{x})\pi(\tilde{x})} \propto P_{Y|X}(y|x)\pi(x).
+\]
+Since the estimate is only dependent on the model and the prior, we don't actually need to compute the probabilities to figure out the most likely $X$.
+\begin{definition}
+	The Maximum A Posteriori (MAP) estimate is given by \[
+		\hat{X}_{MAP}(y) = \argmax_x P_{Y|X}(y|x)\pi(x)
+	\]
+	\label{defn:map}
+\end{definition}
+If we have no prior information on $X$, then we can assume $\pi$ is uniform, reducing \cref{defn:map} to only optimize over the model.
+\begin{definition}
+	The Maximum Likelihood (ML) estimate is given by 
+	\[
+		\hat{X}_{ML}(y) = \argmax_x P_{Y|X}(y|x)
+	\]
+	\label{defn:mle}
+\end{definition}
+\subsection{Binary Hypothesis Testing}
+\begin{definition}
+	A Binary Hypothesis Test is a type of statistical inference where the unknown variable $X\in\{ 0, 1 \}$.
+	\label{defn:binary-test}
+\end{definition}
+Since there are only two possible values of $X$ in a binary test, there are two ``hypotheses'' that we have, and we want to accept the more likely one.
+\begin{definition}
+	The Null Hypothesis $H_0$ says that $Y\sim P_{Y|X=0}$
+	\label{defn:null-hypothesis}
+\end{definition}
+\begin{definition}
+	The Alternate Hypothesis $H_1$ says that $Y\sim P_{Y|X=1}$
+	\label{defn:alternate-hypothesis}
+\end{definition}
+With two possible hypotheses, there are two kinds of errors we can make.
+\begin{definition}
+	A Type I error (false positive) is when we incorrectly reject the null hypothesis. The Type I error probability is then
+	\[
+		\pr{\hat{X}(Y) = 1 | X = 0}
+	\]
+	\label{defn:type-1-error}
+\end{definition}
+\begin{definition}
+	A Type II error (false negative) is when we incorrectly accept the null hypothesis. The Type II error probability is then
+	\[
+		\pr{\hat{X}(Y) = 0 | X = 1}
+	\]
+	\label{defn:type-2-error}
+\end{definition}
+Our goal is to create a decision rule $\hat{X}: \mathcal{Y} \to \{0, 1\}$ that we can use to predict $X$.
+Based on what the decision rule is used for, there will be requirements on how large the probability of Type I and Type II errors can be.
+We can formulate the search for a hypothesis test as an optimization.
+For some $\beta \in [0, 1]$, we want to find
+\begin{equation}
+	\hat{X}_\beta(Y) = \argmin \pr{\hat{X}(Y)=0 | X=1} \quad : \quad \pr{\hat{X}(Y)=1|X=0} \leq \beta.
+	\label{eqn:hypothesis-optim}
+\end{equation}
+Intuitively, our test should depend on $p_{Y|X}(y|1)$ and $p_{Y|X}(y|0)$ since these quantities give us how likely we are to get our observations if we knew the ground truth.
+We can define a ratio that formally compares these two quantities.
+\begin{definition}
+	The likelihood ratio is given by \[
+		L(y) = \frac{p_{Y|X}(y|1)}{p_{Y|X}(y|0)}
+	\]
+	\label{defn:likelhood-ratio}
+\end{definition}
+Notice that we can write MLE as a threshold on the likelihood ratio since if $L(y) \geq 1$, then we say $X=1$, and vice versa.
+However, there is no particular reason that $1$ must always be the number at which we threshold our likelihood ratio, and so we can generalize this idea to form different forms of tests.
+\begin{definition}
+	For some threshold $c$ and randomization probability $\gamma$, a threshold test is of the form
+	\[
+		\hat{X}(y) = \begin{cases}
+			1 & \text{ if } L(y) > c\\
+			0 & \text{ if } L(y) < c\\
+			\text{ Bernoulli}(\gamma) & \text { if } L(y) = c.
+		\end{cases}
+	\]
+	\label{defn:threshold-test}
+\end{definition}
+MAP fits into the framework of a threshold test since we can write
+\[
+	\hat{X}_{MAP} = \begin{cases}
+		1 & \text{ if } L(y) \geq \frac{\pi_0}{\pi_1}\\
+		0 & \text{ if } L(y) < \frac{\pi_0}{\pi_1}
+	\end{cases}
+\]
+It turns out that threshold tests are optimal with respect to solving \cref{eqn:hypothesis-optim}.
+\begin{theorem}[Neyman Pearson Lemma]
+	Given $\beta\in[0, 1]$, the optimal decision rule to \[
+		\hat{X}_\beta(Y) = \argmin \pr{\hat{X}(Y)=0 | X=1} \quad : \quad \pr{\hat{X}(Y)=1|X=0} \leq \beta
+	\]
+	is a threshold test.
+	\label{thm:neyman-pearson}
+\end{theorem}
+%% TODO: Add Proof of Neyman Pearson
+When $L(y)$ is monotonically increasing or decreasing, we can make the decision rule even simpler since it can be turned into a threshold on $y$.
+For example, if $L(y)$ is monotonically inreasing, then an optimal decision rule might be
+\[
+	\hat{X}(y) = \begin{cases}
+		1 & \text{ if } y > c\\
+		0 & \text{ if } y < c\\
+		\text{Bernoulli}(\gamma) & \text{ if } y = c.
+	\end{cases}
+\]
+
+\section{Estimation}
+Whereas hypothesis testing is about discriminating between two or more hypotheses, estimation is about guessing the numerical value of or ground truth of a random variable.
+\begin{gitbook-image}
+  \begin{figure}[H]
+	\centering
+	\begin{tikzpicture}[auto, node distance=2cm,>=latex']
+	  % We start by placing the blocks
+	  \node [input, name=input] (input) {};
+		\node [block, name=model, right of=input, node distance=3cm, align=center] (model) {Model\\($p_{Y|X}$)};
+		\node [block, name=estim, right of=model, node distance=4cm, align=center] (estim) {Estimation\\Procedure};
+	  \node [output, right of=estim, node distance=3cm] (output) {};
+
+	  % Once the nodes are placed, connecting them is easy. 
+	  \draw [->] (input) -- node {$X$} (model);
+	  \draw [->] (model) -- node {$Y$} (estim);
+		\draw [->] (estim) -- node {$\hat{X}(Y)$} (output);
+	\end{tikzpicture}
+	\caption{Estimation Setup}
+	\label{fig:estimation-setup}
+  \end{figure}
+\end{gitbook-image}
+In order to measure the quality of our estimation, we need a metric to measure error.
+One commonly used error is the mean squared error \[
+	\expect{(X - \hat{X}(Y))^2}.
+\]
+\begin{theorem}
+	The minimum mean square estimate (MMSE) of a random variable $X$ is given by the conditional expectation.
+	\[
+		\hat{X}(Y) = \expect{X|Y} = \argmin_{\hat{X}} \expect{(X - \hat{X}(Y))^2}.
+	\]
+	\label{thm:mmse}
+\end{theorem}
+This essentially follows from the definition of conditional expectation since it is orthogonal to all other functions of $Y$, and so by the Hilbert Projection Theorem, it must be the projection of $X$ onto the space of all functions of $Y$.
+There are two problems with using MMSE all the time.
+\begin{enumerate}
+	\item We often don't know $p_{Y|X}$ explicitly and only have a good model for it.
+	\item Even if we knew the model $p_{Y|X}$, conditional expectations are difficult to compute.
+\end{enumerate}
+\subsection{Linear Estimation}
+Since finding the MMSE is difficult, we can restrict ourselves to funtions of a particular type.
+\begin{definition}
+	The Linear Least Squares Estimator (LLSE) $\llse{\bs{X}}{\bs{Y}}$ is the projection of a vector of random variables $\bs{X}$ onto the subspace of linear functions of observations $Y_i,\ \mathcal{U} = \left\{ \bs{a} + B\bs{Y} \right\}$ where $\bs{Y}$ is a vector of observations.
+	\label{defn:llse}
+\end{definition}
+By the orthogonality principle,
+\begin{enumerate}
+	\item $\expect{(\bs{X} - \llse{\bs{X}}{\bs{Y}})1} = 0 \implies \expect{\llse{\bs{X}}{\bs{Y}}} = \expect{\bs{X}}$
+	\item $\expect{(\bs{X} - \llse{\bs{X}}{\bs{Y}})Y_i} = 0$
+\end{enumerate}
+From here, we can derive a closed form expression for the LLSE.
+Let $\bs{\mu_{Y}} = \expect{\bs{Y}}, \bs{\mu_{X}} = \expect{\bs{X}}, \Sigma_{\bs{Y}} = \expect{(\bs{Y}-\bs{\mu_Y})(\bs{Y}-\bs{\mu_Y})^T}, \Sigma_{\bs{XY}} = \expect{(\bs{X}-\bs{\mu_X})(\bs{Y}-\bs{\mu_Y})^T}$.
+By substituting $\llse{\bs{X}}{\bs{Y}} = \bs{a}+B\bs{Y}$ into the equations we found from the orthogonality principle,
+\begin{align*}
+	\bs{a}+B\bs{\mu_Y} &= \bs{\mu_X} \\
+	a(\bs{\mu_Y})_i + B \expect{\bs{Y}Y_i} = \expect{\bs{X}Y_i} &\implies \bs{a}(\bs{\mu_{Y}})_i + B(\Sigma_{\bs{Y}})_i + B(\bs{\mu_{Y}})_i\bs{\mu_Y} = (\Sigma_{\bs{XY}})_i + (\bs{\mu_{Y}})_i\bs{\mu_x}\\
+	&\implies \bs{a}\bs{\mu_Y}^T + B\Sigma_{\bs{Y}}+B\bs{\mu_Y\mu_Y}^T = \Sigma_{\bs{XY}}+\bs{\mu_X\mu_Y}^T
+\end{align*}
+Solving this system yields
+\[
+	B = \Sigma_{\bs{XY}}\Sigma_{\bs{Y}}^{-1} \qquad \bs{a} = \bs{\mu_X} - \Sigma_{\bs{XY}}\Sigma_{\bs{Y}}^{-1}\bs{\mu_Y}.
+\]
+\begin{theorem}
+	The Linear Least Squares Estimator for vector of random variables $\bs{X}$ given a vector of random variables $\bs{Y}$ is \[
+		\llse{\bs{X}}{\bs{Y}} = \bs{\mu_X} + \Sigma_{\bs{XY}}\Sigma_{\bs{Y}}^{-1}(\bs{Y}-\bs{\mu_Y})
+	\]
+	\label{thm:llse-vector}
+\end{theorem}
+If $X$ and $Y$ are both a single random variable, this reduces to
+\[
+	\llse{X}{Y} = \mu_X + \frac{\cov{X, Y}}{\var{Y}}(Y - \mu_Y)
+\]
+Since LLSE is essentially projection onto a Linear Subspace, if we have an orthogonal basis for the subspace, then we can do the projection onto the subspace one component at a time.
+The Gram-Schmidt Process turns vectors $Y_1,\cdots,Y_n$ into an orthonormal set $\tilde{Y}_1, \cdots, \tilde{Y}_n$.
+If we define $Y^{(n)}=(Y_1, \cdots, Y_n)$,
+\begin{enumerate}
+	\item $\tilde{Y}_1 = \frac{Y_1}{\|Y_1\|}$
+	\item $\tilde{Y}_{i+1} = Y_{i+1} - \sum_{k=1}^{i}\langle Y_{i+1}, \tilde{Y}_k \rangle \tilde{Y}_k = Y_{i+1} - \llse{Y_{i+1}}{Y^{(i)}}$
+\end{enumerate}
+\begin{definition}
+	The linear innovation sequence of random variables $Y_1,\cdots,Y_n$ is the orthogonal set $\tilde{Y_1}, \cdots, \tilde{Y_n}$ produced by Gram Schmidt
+	\label{defn:innovation}
+\end{definition}
+Since $\tilde{Y}_{n}$ is orthogonal to $\llse{Y_n}{\tilde{Y}^{(n-1)}}$, they belong to different parts of the subspace formed by $Y_1,\cdots,Y_n$.
+\begin{theorem}
+	\[
+		\llse{X}{Y^{(n)}} = \llse{X}{\tilde{Y}_n} + \llse{X}{\tilde{Y}^{(n-1)}}
+	\]
+	\label{thm:orthogonal-llse}
+\end{theorem}
+Note that in general, the LLSE is not the same as the MMSE.
+However, if $X$ and $Y$ are Jointly Gaussian, then the LLSE does, in fact, equal the MMSE.
+\subsection{Kalman Filtering}
+\begin{definition}
+	A system evolves according to a state space model if the state $\bs{X}_n$ at time $n$ and observations $\bs{Y}_n$ at time $n$ are related by
+	\[
+		\forall n\geq 0,\ \bs{X}_{n+1} = A\bs{X}_n + \bs{V}_n \qquad \forall n\geq 1,\ \bs{Y}_n=C\bs{X}_n+\bs{W}_n
+	\]
+	where $V_n$ and $W_n$ are noise terms.
+	\label{defn:state-space}
+\end{definition}
+State space models are flexible and describe a variety of processes.
+Suppose we want to linearly estimate $\bs{X}_n$ from the $\bs{Y}_n$ we have seen so far.
+\begin{theorem}
+	The linear estimate $\hat{\bs{X}}_{n|n} = \llse{\bs{X}_n}{\bs{Y}_1,\cdots,\bs{Y}_n}$ can be computed recursively via the Kalman Filter.
+	
+	1. $\hat{\bs{X}}_{0|0} = 0, \Sigma_{0|0} = \cov{\bs{X}_0}$.
+
+	2. For $n\geq 1$, update
+	\[
+		\hat{\bs{X}}_{n|n} = A\hat{\bs{X}}_{n-1|n-1} + K_n\tilde{\bs{Y}}_n \qquad \tilde{\bs{Y}}_n = Y_n - C\hat{\bs{X}}_{n|n-1} \qquad \Sigma_{n|n-1} = A\Sigma_{n-1|n-1}A^T+\Sigma_{\bs{V}}
+	\]
+	\[
+		K_n = \Sigma_{n|n-1}C^T(C\Sigma_{n|n-1}C^T+\Sigma_{\bs{W}})^{-1} \qquad \Sigma_{n|n}=(I - K_nC)\Sigma_{n|n-1}
+	\]
+	\label{thm:kalman-filter}
+\end{theorem}
+Kalman filtering is a simple algorithm which lets us do online, optimal estimation.
+Variants of it can do things such as prediction or smoothing.
+\end{document}
+

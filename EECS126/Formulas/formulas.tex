@@ -1,0 +1,67 @@
+\input{../../formula_header.tex}
+
+\begin{document}
+\section*{Discrete Distributions}
+\subsection*{Probabilities}
+\begin{center}
+  \begin{tabularx}{\textwidth}{XXX}
+	\toprule
+	Distribution & PMF & CDF\\
+	\midrule
+	Bernoulli & $p^k (1-p)^{1-k}, \quad k\in\{0, 1\}$ & $\begin{cases} 0 & k < 0 \\ 1 - p & 0 \leq k < 1 \\ 1 & k \geq 1 \end{cases}$\\
+	Binomial & $ {n \choose k} p^k (1-p)^{n-k} $ & - \\
+	Geometric & $ p(1-p)^{k-1}$ & $1 - (1 - p)^k$\\
+	Poisson & $\frac{\lambda^ke^{-\lambda}}{k!}$ & -
+  \end{tabularx}
+\end{center}
+
+\subsection*{Moments}
+\begin{center}
+  \begin{tabularx}{\textwidth}{XXXX}
+	\toprule
+	Distribution & Expectation & Variance & MGF\\
+	\midrule
+	Bernoulli & $p$ & $p(1-p)$ & $(1-p) + pe^t$\\
+	Binomial & $np$ & $np(1-p)$ & $(1-p + pe^t)^n$\\
+	Geometric & $\frac{1}{p}$ & $\frac{1-p}{p^2}$ & $\frac{pe^t}{1-(1-p)e^t}$\\
+	Poisson & $\lambda$ & $\lambda$ & $e^{\lambda(e^t - 1)}$
+  \end{tabularx}
+\end{center}
+
+\section*{Continuous Distributions}
+\subsection*{Probabilities}
+\begin{center}
+  \begin{tabularx}{\textwidth}{XXX}
+	\toprule
+	Distribution & PDF & CDF\\
+	\midrule
+	Uniform & $\frac{1}{b-a}$ & $\frac{x-a}{b-a}$\\
+	Exponential & $\lambda e^{-\lambda x}$ & $1 - e^{-\lambda x}$\\
+	Normal & $\frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x-\mu)^2}{2\sigma^2}}$ & $\Phi(x)$\\
+	Erlang & $\frac{\lambda^k x^{k-1} e^{-\lambda x}}{(k-1)!}$ & $1 - \sum_{n=0}^{k-1}\frac{1}{n!}e^{-\lambda x}(\lambda x)^n$\\
+  \end{tabularx}
+\end{center}
+
+\subsection*{Moments}
+\begin{center}
+  \begin{tabularx}{\textwidth}{XXXX}
+	\toprule
+	Distribution & Expectation & Variance & MGF\\
+	\midrule
+	Uniform & $\frac{a+b}{2}$ & $\frac{(b-a)^2}{12}$ & $\frac{e^{tb}-e^{ta}}{t(b-a)}$\\
+	Exponential & $\frac{1}{\lambda}$ & $\frac{1}{\lambda^2}$ & $\frac{\lambda}{\lambda - t}$\\
+	Normal & $\mu$ & $\sigma^2$ & $e^{\mu t + \frac{\sigma^2t^2}{2}}$\\
+	Erlang & $\frac{k}{\lambda}$ & $\frac{k}{\lambda^2}$ & $\left(1 - \frac{t}{\lambda}\right)^{-k}$\\
+  \end{tabularx}
+\end{center}
+\subsection*{Derived Distributions}
+\begin{enumerate}
+  \item If $X_1, X_2, \dots, X_N \sim \text{Exp}(\lambda_i)$ are independent, then $\min X_i \sim \text{Exp}(\sum \lambda_i)$.
+  \item If $X_1, X_2, \dots, X_N \sim \text{Exp}(\lambda_i)$ are independent, then $P(X_i = \min X_k) = \frac{\lambda_i}{\sum \lambda_k}$.
+\end{enumerate}
+\subsection*{Assorted Facts}
+\begin{enumerate}
+	\item If $X$ is a random variable, then $P(X=0) \leq \frac{\var{X}}{\expect{X}^2}$
+	\item If $(N_t)_{t\geq0}$ is a Poisson Proccess with rate $\lambda$, then the time from the most recent arrival to the current ``random'' time is $t_0 - T_i \sim \text{Exp}(\lambda)$
+\end{enumerate}
+\end{document}
