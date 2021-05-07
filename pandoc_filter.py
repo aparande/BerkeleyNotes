@@ -10,7 +10,7 @@ from tempfile import mkdtemp
 
 from pandocfilters import toJSONFilters
 from pandocfilters import Para, Image, get_filename4code, get_extension
-from pandocfilters import Math, Space, Str, Header, RawInline, LineBreak, stringify
+from pandocfilters import Math, Space, Str, Header, RawInline, LineBreak, stringify, Strong
 
 eqn_labels = []
 defn_labels = []
@@ -124,7 +124,8 @@ def convert_theorem(code):
     match = re.search(title_exp, code)
     if match is not None:
       sys.stderr.write(f"Theorem has title {match.group(2)}\n")
-      title = match.group(2)
+      title = match.group(2).replace("\'", "'")
+      sys.stderr.write(f"{title}\n")
       code = re.sub(title_exp, "\n", code)
       header = Header(3, [f"theorem-{len(thm_labels)}", [], []], [Str(f"Theorem {len(thm_labels)} ({title})")])
     else:
@@ -318,5 +319,13 @@ def cleanup(key, value, formt, _):
         [attrs, elems] = value
         return elems
 
+def nonmath_macros(key, value, formt, _):
+  if key == "Str" and (match := re.search("\\\\textbf\{(.*?)\}", value)):
+    (start, end) = match.span()
+    bolded = match.group(1)
+    sys.stderr.write(f"Found bolded text: {bolded}\n")
+    return [Str(value[:start]), Strong([Str(bolded)]), Str(value[end+1:])]
+
+
 if __name__ == '__main__':
-    toJSONFilters([tex_envs, custom_math, references, cleanup])
+    toJSONFilters([tex_envs, custom_math, references, nonmath_macros, cleanup])
