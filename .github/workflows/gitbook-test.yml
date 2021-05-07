@@ -25,7 +25,7 @@ jobs:
       - name: Setup Environment
         run: |
           mkdir output
-          mkdir -p output/.gitbook/assets
+          mkdir -p output/gitbook/assets
           sed -i -e 's/..\/..\/header.tex/main\/header.tex/g' main/**/Notes/notes.tex
           sudo sed -i 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/g' /etc/ImageMagick-6/policy.xml
       # Conversion Steps. Output a JSON file to the main folder
@@ -62,28 +62,28 @@ jobs:
           args: --to markdown+pipe_tables-simple_tables-smart --from json --atx-headers --output=output/EECS126.md main/eecs126-filtered.json
       - name: Copy Images (EECS126)
         run: |
-          cp -a main/tikz-images/. output/.gitbook/assets
+          cp -a main/tikz-images/. output/gitbook/assets
       - name: Convert EE128 to Markdown
         uses: docker://pandoc/latex:2.11
         with:
           args: --to markdown+pipe_tables-simple_tables-smart --from json --atx-headers --output=output/EE128.md main/ee128-filtered.json
       - name: Copy Images (EE128)
         run: |
-          cp -a main/tikz-images/. output/.gitbook/assets
+          cp -a main/tikz-images/. output/gitbook/assets
       - name: Convert EE123 to Markdown
         uses: docker://pandoc/latex:2.11
         with:
           args: --to markdown+pipe_tables-simple_tables-smart --from json --atx-headers --output=output/EE123.md main/ee123-filtered.json
       - name: Copy Images (EE123)
         run: |
-          cp -a main/tikz-images/. output/.gitbook/assets
+          cp -a main/tikz-images/. output/gitbook/assets
       - name: Convert EE120 to Markdown
         uses: docker://pandoc/latex:2.11
         with:
           args: --to markdown+pipe_tables-simple_tables-smart --from json --atx-headers --output=output/EE120.md main/ee120-filtered.json
       - name: Copy Images (EE120)
         run: |
-          cp -a main/tikz-images/. output/.gitbook/assets
+          cp -a main/tikz-images/. output/gitbook/assets
       - name: Save raw markdown
         uses: actions/upload-artifact@v2
         with:
@@ -97,6 +97,7 @@ jobs:
           python3 create_book.py EE120.md EE123.md EECS126.md EE128.md 
           cd ../
           sed -i -e 's/\\\$\\\$/\$\$/g' output/**/*.md
+          sed -i -e 's/.gitbook/gitbook/g' output/**/*.md
       - name: Upload Book
         uses: actions/upload-artifact@v2
         with:
