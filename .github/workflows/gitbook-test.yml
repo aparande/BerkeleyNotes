@@ -87,9 +87,9 @@ jobs:
           chmod +x output/create_book.py
           cd output
           python3 create_book.py EE120.md EE123.md EECS126.md EE128.md 
+          ls -la .gitbook/assets
           cd ../
           sed -i -e 's/\\\$\\\$/\$\$/g' output/**/*.md
-          sed -i -e 's/.gitbook/gitbook/g' output/**/*.md
       - name: Upload Book
         uses: actions/upload-artifact@v2
         with:
