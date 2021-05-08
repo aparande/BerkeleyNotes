@@ -27,7 +27,7 @@ jobs:
           mkdir output
           mkdir -p output/.gitbook/assets
           sed -i -e 's/..\/..\/header.tex/main\/header.tex/g' main/**/Notes/notes.tex
-          sudo sed -i 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/g' /etc/ImageMagick-6/policy.xml
+          sudo sed -i 's/rights="none" pattern="PDF"/rights="read | write" pattern="PDF"/' /etc/ImageMagick-6/policy.xml
       # Conversion Steps. Output a JSON file to the main folder
       - name: Convert EECS126 to JSON
         uses: docker://pandoc/latex:2.11
