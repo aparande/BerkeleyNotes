@@ -22,6 +22,7 @@ jobs:
           pip install pandocfilters
           pip install regex
           sudo apt-get install texlive-latex-recommended texlive-science texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra
+          sudo apt-get install ghostscript
       - name: Setup Environment
         run: |
           mkdir output
@@ -51,39 +52,31 @@ jobs:
           cd main
           chmod +x pandoc_filter.py
           cat ee128.json | ./pandoc_filter.py > ee128-filtered.json
+          cp -a tikz-images/. ../output/.gitbook/assets
           cat ee123.json | ./pandoc_filter.py > ee123-filtered.json
+          cp -a tikz-images/. ../output/.gitbook/assets
           cat ee120.json | ./pandoc_filter.py > ee120-filtered.json
+          cp -a tikz-images/. ../output/.gitbook/assets
           cat eecs126.json | ./pandoc_filter.py > eecs126-filtered.json
+          cp -a tikz-images/. ../output/.gitbook/assets
           cd ../
       # Markdown conversion steps. Output a MD file to the output directory
       - name: Convert EECS126 to Markdown
         uses: docker://pandoc/latex:2.11
         with:
           args: --to markdown+pipe_tables-simple_tables-smart --from json --atx-headers --output=output/EECS126.md main/eecs126-filtered.json
-      - name: Copy Images (EECS126)
-        run: |
-          cp -a main/tikz-images/. output/.gitbook/assets
       - name: Convert EE128 to Markdown
         uses: docker://pandoc/latex:2.11
         with:
           args: --to markdown+pipe_tables-simple_tables-smart --from json --atx-headers --output=output/EE128.md main/ee128-filtered.json
-      - name: Copy Images (EE128)
-        run: |
-          cp -a main/tikz-images/. output/.gitbook/assets
       - name: Convert EE123 to Markdown
         uses: docker://pandoc/latex:2.11
         with:
           args: --to markdown+pipe_tables-simple_tables-smart --from json --atx-headers --output=output/EE123.md main/ee123-filtered.json
-      - name: Copy Images (EE123)
-        run: |
-          cp -a main/tikz-images/. output/.gitbook/assets
       - name: Convert EE120 to Markdown
         uses: docker://pandoc/latex:2.11
         with:
           args: --to markdown+pipe_tables-simple_tables-smart --from json --atx-headers --output=output/EE120.md main/ee120-filtered.json
-      - name: Copy Images (EE120)
-        run: |
-          cp -a main/tikz-images/. output/.gitbook/assets
       - name: Save raw markdown
         uses: actions/upload-artifact@v2
         with:
@@ -95,6 +88,7 @@ jobs:
           chmod +x output/create_book.py
           cd output
           python3 create_book.py EE120.md EE123.md EECS126.md EE128.md 
+          ls -la .gitbook/assets
           cd ../
           sed -i -e 's/\\\$\\\$/\$\$/g' output/**/*.md
       - name: Upload Book
