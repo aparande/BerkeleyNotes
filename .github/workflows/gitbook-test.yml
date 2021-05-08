@@ -59,7 +59,6 @@ jobs:
           cp -a tikz-images/. ../output/.gitbook/assets
           cat eecs126.json | ./pandoc_filter.py > eecs126-filtered.json
           cp -a tikz-images/. ../output/.gitbook/assets
-          ls -la tikz-images
           cd ../
       # Markdown conversion steps. Output a MD file to the output directory
       - name: Convert EECS126 to Markdown
