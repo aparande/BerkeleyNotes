@@ -51,12 +51,16 @@ jobs:
           cd main
           chmod +x pandoc_filter.py
           cat ee128.json | ./pandoc_filter.py > ee128-filtered.json
+          wait
           cp -a tikz-images/. ../output/.gitbook/assets
           cat ee123.json | ./pandoc_filter.py > ee123-filtered.json
+          wait
           cp -a tikz-images/. ../output/.gitbook/assets
           cat ee120.json | ./pandoc_filter.py > ee120-filtered.json
+          wait
           cp -a tikz-images/. ../output/.gitbook/assets
           cat eecs126.json | ./pandoc_filter.py > eecs126-filtered.json
+          wait
           cp -a tikz-images/. ../output/.gitbook/assets
           ls -la tikz-images
           cd ../
