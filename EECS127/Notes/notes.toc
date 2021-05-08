@@ -9,13 +9,16 @@
 \contentsline {subsubsection}{\numberline {1.4.2}QR Factorization}{7}{subsubsection.1.4.2}
 \contentsline {subsubsection}{\numberline {1.4.3}Singular Value Decomposition}{8}{subsubsection.1.4.3}
 \contentsline {section}{\numberline {2}Fundamentals of Optimization}{9}{section.2}
-\contentsline {subsection}{\numberline {2.1}Robust Optimization}{10}{subsection.2.1}
-\contentsline {section}{\numberline {3}Linear Algebraic Optimization}{10}{section.3}
-\contentsline {subsection}{\numberline {3.1}Projection}{10}{subsection.3.1}
+\contentsline {subsection}{\numberline {2.1}Problem Transformations}{10}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Robust Optimization}{10}{subsection.2.2}
+\contentsline {section}{\numberline {3}Linear Algebraic Optimization}{11}{section.3}
+\contentsline {subsection}{\numberline {3.1}Projection}{11}{subsection.3.1}
 \contentsline {subsubsection}{\numberline {3.1.1}Matrix Pseudo-inverses}{11}{subsubsection.3.1.1}
-\contentsline {subsection}{\numberline {3.2}Explained Variance}{11}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.2}Explained Variance}{12}{subsection.3.2}
 \contentsline {subsubsection}{\numberline {3.2.1}PCA}{12}{subsubsection.3.2.1}
-\contentsline {subsection}{\numberline {3.3}Removing Constraints}{12}{subsection.3.3}
-\contentsline {section}{\numberline {4}Conic Programming}{12}{section.4}
-\contentsline {subsection}{\numberline {4.1}Quadratic Programming}{13}{subsection.4.1}
-\contentsline {subsection}{\numberline {4.2}Linear Programming}{14}{subsection.4.2}
+\contentsline {subsection}{\numberline {3.3}Removing Constraints}{13}{subsection.3.3}
+\contentsline {section}{\numberline {4}Convex Optimization}{13}{section.4}
+\contentsline {subsection}{\numberline {4.1}Convexity}{13}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Conic Programming}{15}{subsection.4.2}
+\contentsline {subsubsection}{\numberline {4.2.1}Quadratic Programming}{16}{subsubsection.4.2.1}
+\contentsline {subsubsection}{\numberline {4.2.2}Linear Programming}{17}{subsubsection.4.2.2}
