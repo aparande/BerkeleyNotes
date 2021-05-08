@@ -1,4 +1,4 @@
 # EE128
 
-**Disclaimer:** These notes reflect 128 when I took the course \(Fall 2020\). They may not accurately reflect current course content, so use at your own risk. If you find any typos, errors, etc, please raise an issue on the [GitHub repository](https://github.com/parandea17/BerkeleyNotes).\
+**Disclaimer:** These notes reflect 128 when I took the course \(Fall 2020\). They may not accurately reflect current course content, so use at your own risk. If you find any typos, errors, etc, please raise an issue on the [GitHub repository](https://github.com/parandea17/BerkeleyNotes).
 

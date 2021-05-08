@@ -5,9 +5,10 @@ While taking courses at the University of California, Berkeley, I have created d
 1. EE16B: Designing Information Devices and Systems II
 2. EE120: Signals and Systems
 3. EE123: Digital Signal Processing
-4. EE128: Feedback Control
-5. CS61B: Data Structures
-6. CS61C: Machine Structures
+4. EECS126: Probability and Random Processes
+5. EE128: Feedback Control
+6. CS61B: Data Structures
+7. CS61C: Machine Structures
 
 These notes exist as PDFs on [my website](https://anmolparande.com/resources) and also here in this book. If you don't see notes from the list above in this book, I have not converted them, and you should use the PDF from the website.
 
