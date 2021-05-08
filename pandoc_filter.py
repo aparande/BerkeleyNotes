@@ -44,7 +44,7 @@ def tikz2image(tikz_src, filetype, outfile):
     if filetype == 'pdf':
         shutil.copyfile(tmpdir + '/tikz.pdf', outfile + '.pdf')
     else:
-        call(["convert", tmpdir + '/tikz.pdf', "-density", "500", "-strip", outfile + '.' + filetype])
+        call(["convert", tmpdir + '/tikz.pdf', "-density", "300", "-strip", outfile + '.' + filetype])
     shutil.rmtree(tmpdir)
 
 def convert_to_image(format, code):

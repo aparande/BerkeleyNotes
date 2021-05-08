@@ -27,7 +27,7 @@ jobs:
           mkdir output
           mkdir -p output/.gitbook/assets
           sed -i -e 's/..\/..\/header.tex/main\/header.tex/g' main/**/Notes/notes.tex
-          sudo sed -i 's/rights="none" pattern="PDF"/rights="read | write" pattern="PDF"/' /etc/ImageMagick-6/policy.xml
+          sudo sed -i 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/g' /etc/ImageMagick-6/policy.xml
       # Conversion Steps. Output a JSON file to the main folder
       - name: Convert EECS126 to JSON
         uses: docker://pandoc/latex:2.11
@@ -51,16 +51,12 @@ jobs:
           cd main
           chmod +x pandoc_filter.py
           cat ee128.json | ./pandoc_filter.py > ee128-filtered.json
-          wait
           cp -a tikz-images/. ../output/.gitbook/assets
           cat ee123.json | ./pandoc_filter.py > ee123-filtered.json
-          wait
           cp -a tikz-images/. ../output/.gitbook/assets
           cat ee120.json | ./pandoc_filter.py > ee120-filtered.json
-          wait
           cp -a tikz-images/. ../output/.gitbook/assets
           cat eecs126.json | ./pandoc_filter.py > eecs126-filtered.json
-          wait
           cp -a tikz-images/. ../output/.gitbook/assets
           ls -la tikz-images
           cd ../
