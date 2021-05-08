@@ -104,7 +104,17 @@ def convert_definition(code):
     if not found_match:
         defn_labels.append(f"{len(defn_labels)+1}")
 
-    header = Header(3, [f"definition-{len(defn_labels)}", [], []], [Str(f"Definition {len(defn_labels)}")])
+    title_exp = re.compile("(\\\\begin{definition}\[)(.*?)(\])")
+    match = re.search(title_exp, code)
+    if match is not None:
+      sys.stderr.write(f"Definition has title {match.group(2)}\n")
+      title = match.group(2).replace("\'", "'")
+      sys.stderr.write(f"{title}\n")
+      code = re.sub(title_exp, "\n", code)
+      header = Header(3, [f"definition-{len(defn_labels)}", [], []], [Str(f"Definition {len(defn_labels)} ({title})")])
+    else:
+      header = Header(3, [f"definition-{len(defn_labels)}", [], []], [Str(f"Definition {len(defn_labels)}")])
+
     return convert_latex_block(code, header)
 
 def convert_theorem(code):
