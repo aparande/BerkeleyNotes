@@ -32,7 +32,7 @@ Notice that by \cref{defn:affine-set}, a subspace is simply an affine set contai
   \label{defn:lp-norm}
 \end{definition}
 In the limit as $p\to\infty$, \[
-	\norm{\V{x}}_{\infty} = \max_k|x_k|.
+	\|\V{x}\|_{\infty} = \max_k|x_k|.
 \]
 Similar to vectors, matrices can also have norms.
 \begin{definition}
@@ -66,16 +66,16 @@ When $p=2$, the norm is called the spectral norm because it relates to the large
   An inner product on real vector space is a function that maps $\V{x},\V{y} \in \mathcal{X}$ to a non-negative scalar, is distributive, is commutative, and $\langle \V{x}, \V{x}, \rangle = 0 \Leftrightarrow \V{x}=0$.
   \label{defn:inner-product}
 \end{definition}
-Inner products induce a norm $\norm{\V{x}} = \sqrt{\langle \V{x}, \V{x} \rangle}$.
+Inner products induce a norm $\|\V{x}\| = \sqrt{\langle \V{x}, \V{x} \rangle}$.
 In $\mathbb{R}^n$, the standard inner product is $\V{x}^T\V{y}$.
 The angle bewteen two vectors is given by
 \[
-	\cos\theta = \frac{\V{x}^T\V{y}}{\norm{\V{x}}_2\norm{\V{y}}_2}.
+	\cos\theta = \frac{\V{x}^T\V{y}}{\|\V{x}\|_2\|\V{y}\|_2}.
 \]
 In general, we can bound the absolute value of the standard inner product between two vectors.
 \begin{theorem}[Holder Inequality]
   \[
-	|\V{x}^T\V{y}| \leq \sum_{k=1}^n |x_ky_k| \leq \norm{\V{x}}_p\norm{\V{y}}_q,\ p, q\geq 1 \text{ s.t } p^{-1}+q^{-1}=1.
+	|\V{x}^T\V{y}| \leq \sum_{k=1}^n |x_ky_k| \leq \|\V{x}\|_p\|\V{y}\|_q,\ p, q\geq 1 \text{ s.t } p^{-1}+q^{-1}=1.
   \]
   \label{thm:holder}
 \end{theorem}
@@ -235,13 +235,13 @@ If we re-arrange this, to solve for $\V{a}_i$, we see that
 Putting this in matrix form, we can see that
 \[
   \begin{bmatrix}
-	\vrule & \vrule & & \vrule \\
+	| & | & & | \\
 	\V{a}_1 & \V{a}_2 & \cdots & \V{a}_{n}\\
-	\vrule & \vrule & & \vrule 
+	| & | & & | \\
   \end{bmatrix} = \begin{bmatrix}
-	\vrule & \vrule & & \vrule \\
+	| & | & & | \\
 	\V{q}_1 & \V{q}_2 & \cdots & \V{q}_{n}\\
-	\vrule & \vrule & & \vrule 
+	| & | & & | \\
   \end{bmatrix} \begin{bmatrix}
 	r_{11} & r_{12} & \cdots & r_{1n}\\
 	0 & r_{22} & \cdots & r_{2n}\\
@@ -354,7 +354,7 @@ The idea behind projection is to find the closest point in a set closest (with r
 \begin{definition}
   Given a vector $\V{x}$ in inner product space $\mathcal{X}$ and a subspace $S\subseteq\mathcal{X}$, the projection of $\V{x}$ onto $S$ is given by
   \[
-	\Pi_S(\V{x}) = \argmin_{\V{y}\in S}\norm{\V{y}-\V{x}}
+	\Pi_S(\V{x}) = \argmin_{\V{y}\in S}\|\V{y}-\V{x}\|
   \]
   where the norm is the one induced by the inner product.
   \label{defn:projection}
@@ -362,7 +362,7 @@ The idea behind projection is to find the closest point in a set closest (with r
 \begin{theorem}
   There exists a unique vector $\V{x}^*\in S$ which solves
   \[
-	\min_{\V{y}\in S} \norm{\V{y}-\V{x}}.
+	\min_{\V{y}\in S} \|\V{y}-\V{x}\|.
   \]
   \label{thm:projection}
 \end{theorem} It is necessary and sufficient for $\V{x}^*$ to be optimal that $(\V{x}-\V{x}^*)\perp S$.
