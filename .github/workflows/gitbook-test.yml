@@ -30,6 +30,10 @@ jobs:
           sed -i -e 's/..\/..\/header.tex/main\/header.tex/g' main/**/Notes/notes.tex
           sudo sed -i 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/g' /etc/ImageMagick-6/policy.xml
       # Conversion Steps. Output a JSON file to the main folder
+      - name: Convert EECS127 to JSON
+        uses: docker://pandoc/latex:2.11
+        with:
+          args: --to json --from latex+raw_tex --output=main/eecs127.json main/EECS127/Notes/notes.tex
       - name: Convert EECS126 to JSON
         uses: docker://pandoc/latex:2.11
         with:
@@ -59,12 +63,18 @@ jobs:
           cp -a tikz-images/. ../output/.gitbook/assets
           cat eecs126.json | ./pandoc_filter.py > eecs126-filtered.json
           cp -a tikz-images/. ../output/.gitbook/assets
+          cat eecs127.json | ./pandoc_filter.py > eecs127-filtered.json
+          cp -a tikz-images/. ../output/.gitbook/assets
           cd ../
       # Markdown conversion steps. Output a MD file to the output directory
       - name: Convert EECS126 to Markdown
         uses: docker://pandoc/latex:2.11
         with:
           args: --to markdown+pipe_tables-simple_tables-smart --from json --atx-headers --output=output/EECS126.md main/eecs126-filtered.json
+      - name: Convert EECS127 to Markdown
+        uses: docker://pandoc/latex:2.11
+        with:
+          args: --to markdown+pipe_tables-simple_tables-smart --from json --atx-headers --output=output/EECS127.md main/eecs127-filtered.json
       - name: Convert EE128 to Markdown
         uses: docker://pandoc/latex:2.11
         with:
@@ -87,7 +97,7 @@ jobs:
           mv main/create_book.py output/create_book.py
           chmod +x output/create_book.py
           cd output
-          python3 create_book.py EE120.md EE123.md EECS126.md EE128.md 
+          python3 create_book.py EE120.md EE123.md EECS126.md EECS127.md EE128.md 
           ls -la .gitbook/assets
           cd ../
           sed -i -e 's/\\\$\\\$/\$\$/g' output/**/*.md
