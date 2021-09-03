@@ -1,0 +1,112 @@
+\input{../../header.tex}
+\begin{document}
+\title{EECS225A Course Notes}
+\author{Anmol Parande}
+\date{Fall 2021 - Professor Jiantao Jiao}
+\maketitle
+\textbf{Disclaimer: }These notes reflect EECS225A when I took the course (Fall 2021). They may not accurately reflect current course content, so use at your own risk.
+If you find any typos, errors, etc, please raise an issue on the \href{https://github.com/parandea17/BerkeleyNotes}{GitHub repository}.
+\tableofcontents
+\newpage
+\section{Transforms}
+\subsection{Discrete Time Fourier Transform}
+The Discrete Time Fourier Transform is given by \[
+	X(e^{j\omega}) = \sum_{n=-\infty}^{\infty}x[n]e^{-j\omega n}.
+\]
+The Inverse Discrete Time Fourier Transform is given by \[
+	x[n] = \frac{1}{2\pi}\int_{-\pi}^{\pi}X(e^{j\omega})e^{j\omega n}d\omega.
+\]
+Since the DTFT is an infinite summation, it may or may not converge.
+\begin{definition}
+	A signal $x[n]$ belongs to the $l^1$ class of signals if the series converges absolutely. In other words,
+	\[
+		\sum_{k=-\infty}^{\infty}|x[k]| < \infty.
+	\]
+	\label{defn:l1-class}
+\end{definition}
+This class covers most real-world signals.
+\begin{theorem}
+	If $x[n]$ is a $l^1$ signal, then the DTFT $X(e^{j\omega})$ converges uniformly and is well-defined for every $\omega$. $X(e^{j\omega})$ is also a continuous function.
+	\label{thm:l1-dtft}
+\end{theorem}
+\begin{definition}
+	A signal $x[n]$ belongs to the $l^2$ class of signals if it is square summable. In other words,
+	\[
+		\sum_{k=-\infty}^{\infty}|x[k]|^2 < \infty.
+	\]
+	\label{defn:l2-class}
+\end{definition}
+The $l^2$ class contains important functions such as $\sinc$.
+\begin{theorem}
+	If $x[n]$ is a $l^2$ signal, then the DTFT $X(e{j\omega})$ is defined almost everywhere and only converges in the mean-squared sense:
+	\[
+		\lim_{N\to\infty} \int_{-\pi}^{\pi}\left|\left(\sum_{k=-N}^N x[k]e^{-j\omega n}\right) - X(\omega)\right|^2d\omega = 0
+	\]
+	\label{thm:l2-dtft}
+\end{theorem}
+Tempered distributions like the Dirac Delta function are other functions which are important for computing the DTFT, and they arise from the theory of generalized functions.
+\subsection{Z-Transform}
+The Z-transform is a generalized version of the DTFT and is given by \[
+	X(z) = \sum_{n=-\infty}^{\infty}x[n]z^{-n}.
+\]
+It is a special type of series called a \textbf{Laurent Series}.
+\begin{theorem}
+	A Laurent Series will converge absolutely on an open annulus \[
+		A = \{z | r < |z| < R \}
+	\] for some $r$ and $R$.
+	\label{thm:z-transform-roc}
+\end{theorem}
+We can compute $r$ and $R$ using the signal $x[n]$.
+\[
+	r = \limsup_{n\to\infty} |x[n]|^{\frac{1}{n}}, \qquad \frac{1}{R} = \limsup_{n\to\infty}|x[-n]|^{\frac{1}{n}}.
+\]
+\section{Hilbert Space Theory}
+Complex random vectors form a Hilbert space with inner product $\ip{X}{Y} = \expect{XY^*}$.
+If we have a random complex vector, then we can use Hilbert Theory in a more efficient manner by looking at the matrix of inner products.
+For simplicity, we will call this the ``inner product'' of two complex vectors.
+\begin{definition}
+	Let the inner product between two random, complex vectors $\bs{Z_1}, \bs{Z_2}$ \[
+		\ip{\bs{Z_1}}{\bs{Z_2}} = \expect{\bs{Z_1}\bs{Z_2}^*}
+	\]
+	\label{defn:inner-product}
+\end{definition}
+The ij-th entry of the matrix is simply the scalar inner product $\expect{\bs{X_i}\bs{Y_j}^*}$ where $\bs{X_i}$ and $\bs{Y_j}$ are the ith and jth entries of $\bs{X}$ and $\bs{Y}$ respectively.
+This means the matrix is equivalent to the cross correlation $\bs{R}_{XY}$ between the two vectors.
+We can also specify the auto-correlation $\bs{R}_X = \ip{\bs{X}}{\bs{X}}$ and auto-covariance $\bs{\Sigma}_X = \ip{\bs{X} - \expect{\bs{X}}}{\bs{X} - \expect{\bs{X}}}$.
+One reason why we can think of this matrix as the inner product is because it also satisfies the properties of inner products.
+In particular, it is
+\begin{enumerate}
+	\item Linear: $\ip{\alpha_1\bs{V_1}+\alpha_2\bs{V_2}}{\bs{u}} = \alpha_1\ip{\bs{V_1}}{u} + \alpha_2\ip{\bs{V_2}}{u}$.
+	\item Reflexive: $\ip{\bs{U}}{\bs{V}} = \ip{\bs{V}}{\bs{U}}^*$.
+	\item Non-degeneracy: $\ip{\bs{V}}{\bs{V}} = \bs{0} \Leftrightarrow \bs{V} = \bs{0}$.
+\end{enumerate}
+Since we are thinking of the matrix as an inner product, we can also think of the norm as a matrix.
+\begin{definition}
+	The norm of a complex random vector is given by $\|\bs{Z}\|^2 = \ip{\bs{Z}}{\bs{Z}}$.
+	\label{defn:norm}
+\end{definition}
+Since we are thinking of inner products as matrices instead of scalars, we can rewrite the Hilbert Projection Theorem to use matrices instead.
+\begin{theorem}[Hilbert Projection Theorem]
+	The minimization problem $\min_{\hat{\bs{X}}(\bs{Y})}\|\hat{\bs{X}}(\bs{Y}) - \bs{X}\|^2$ has a unique solution which is a linear function of $\bs{Y}$. The error is orthogonal to the linear subspace of $\bs{Y}$ (i.e $\ip{\bs{X} - \hat{\bs{X}}}{\bs{Y}} = \bs{0}$)
+	\label{thm:hilbert-projection}
+\end{theorem}
+When we do a minimization over a matrix, we are minimizing it in a PSD sense, so for any other linear function $\bs{X}'$, \[
+	\|\bs{X}-\hat{\bs{X}}\|^2  \preceq \|\bs{X} - \bs{X}'\|^2.
+\]
+\section{Linear Estimation}
+In Linear Estimation, we are trying to estimate a random variable $\bs{X}$ using an observation $\bs{Y}$ with a llinear function of $\bs{Y}$.
+If $\bs{Y}$ is finite dimensional, then we can say $\hat{\bs{X}}(\bs{Y}) = \bs{W}\bs{Y}$ where $\bs{W}$ is some matrix.
+Using \cref{thm:hilbert-projection} and the orthogonality principle, we know that
+\[
+	\ip{\bs{X}-\bs{W}\bs{Y}}{\bs{Y}} = \bs{0} \Leftrightarrow \bs{R}_{XY} = \bs{W}\bs{R}_Y
+\]
+This is known as the \textbf{Normal Equation}.
+If $\bs{R}_Y$ is invertible, then we can apply the inverse to find $\bs{W}$.
+Otherwise, we can apply the pseudoinverse $\bs{R}_Y^\dagger$ to find $\bs{W}$, which may not be unique.
+If we want to measure the quality of the estimation, since $\bs{X} = \bs{X}+(\bs{X}-\hat{\bs{X}})$,
+\begin{align*}
+	\|\bs{X}\|^2 &= \|\hat{\bs{X}}\|^2 + \|\bs{X} - \hat{\bs{X}}\|^2 \implies \\
+	\|\bs{X}-\hat{\bs{X}}\|^2 &= \|\bs{X}\|^2 - \|\hat{\bs{X}}\|^2 = \bs{R}_X - \bs{X}_{XY}\bs{R}_Y^{-1}\bs{R}_{YX}
+\end{align*}
+\end{document}
+
