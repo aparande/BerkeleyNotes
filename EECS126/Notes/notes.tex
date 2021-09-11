@@ -454,7 +454,7 @@ Jointly Gaussian Random Varables, also known as Gaussian Vectors, can be defined
 In addition to their many definitions, jointly gaussian random variables also have interesting properties.
 \begin{theorem}
 	If $\bs{X}$ and $\bs{Y}$ are jointly gaussian random variables, then \[
-		X = \mu_{\bs{X}}+\Sigma_{\bs{XY}}(\bs{Y} - \bs{\mu_Y}) + \bs{V} \text{ where } V \sim \mathcal{N}(0, \Sigma_X-\Sigma_{\bs{XY}}\Sigma_Y^{-1}\Sigma{\bs{YX}})
+		X = \mu_{\bs{X}}+\Sigma_{\bs{XY}}\Sigma_{\bs{Y}}^{-1}(\bs{Y} - \bs{\mu_Y}) + \bs{V} \text{ where } V \sim \mathcal{N}(0, \Sigma_X-\Sigma_{\bs{XY}}\Sigma_Y^{-1}\Sigma{\bs{YX}})
 	\]
 	\label{thm:gaussian-decomp}
 \end{theorem}
