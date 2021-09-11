@@ -3,3 +3,6 @@
 \contentsline {subsection}{\numberline {1.2}Z-Transform}{3}{subsection.1.2}
 \contentsline {section}{\numberline {2}Hilbert Space Theory}{3}{section.2}
 \contentsline {section}{\numberline {3}Linear Estimation}{4}{section.3}
+\contentsline {subsection}{\numberline {3.1}Affine Estimation}{4}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Least Squares}{5}{subsection.3.2}
+\contentsline {section}{\numberline {4}Discrete Time Random Processes}{5}{section.4}

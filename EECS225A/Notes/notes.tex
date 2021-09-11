@@ -106,7 +106,55 @@ Otherwise, we can apply the pseudoinverse $\bs{R}_Y^\dagger$ to find $\bs{W}$, w
 If we want to measure the quality of the estimation, since $\bs{X} = \bs{X}+(\bs{X}-\hat{\bs{X}})$,
 \begin{align*}
 	\|\bs{X}\|^2 &= \|\hat{\bs{X}}\|^2 + \|\bs{X} - \hat{\bs{X}}\|^2 \implies \\
-	\|\bs{X}-\hat{\bs{X}}\|^2 &= \|\bs{X}\|^2 - \|\hat{\bs{X}}\|^2 = \bs{R}_X - \bs{X}_{XY}\bs{R}_Y^{-1}\bs{R}_{YX}
+	\|\bs{X}-\hat{\bs{X}}\|^2 &= \|\bs{X}\|^2 - \|\hat{\bs{X}}\|^2 = \bs{R}_X - \bs{R}_{XY}\bs{R}_Y^{-1}\bs{R}_{YX}
 \end{align*}
+\subsection{Affine Estimation}
+If we allow ourselves to consider an affine function for estimation $\hat{\bs{X}}(\bs{Y}) = \bs{W}\bs{Y}+b$, then this is equivalent to instead finding an estimator
+\[
+	\hat{\bs{X}}(\bs{Y}') = \bs{W}\bs{Y}' \qquad \text{ where } \bs{Y}' = \begin{bmatrix} \bs{Y} \\ 1 \end{bmatrix}
+\]
+
+This is equivalent to the following orthogonality conditions:
+\begin{enumerate}
+	\item $\ip{\bs{X}-\hat{\bs{X}}}{\bs{Y}}$
+	\item $\ip{\bs{X}-\hat{\bs{X}}}{1}$
+\end{enumerate}
+Solving gives us
+\[
+	\hat{\bs{X}}(\bs{Y}) = W(\bs{Y}-\bs{\mu}_Y) + \mu_x \qquad \text{ where } \bs{W}\bs{\Sigma}_Y=\bs{\Sigma}_{XY}.
+\]
+$\bs{\Sigma}_Y$ and $\bs{\Sigma}_{XY}$ are the auto-covariance and cross-covariance respectively.
+Recall that if \[
+	\begin{bmatrix} \bs{X} \\ \bs{Y} \end{bmatrix} \sim \mathcal{N}\left(\begin{bmatrix} \bs{\mu}_X \\ \bs{\mu}_Y \end{bmatrix}, \begin{bmatrix} \bs{\Sigma}_X & \bs{\Sigma}_{XY}\\ \bs{\Sigma}_{YX} & \bs{\Sigma}_Y \end{bmatrix}\right)
+\]
+then \[
+	\bs{X}|\bs{Y} \sim \mathcal{N}\left(\bs{\mu}_X + \bs{\Sigma}_{XY}\bs{\Sigma}_Y^{-1}(\bs{Y}-\bs{\mu}_Y), \bs{\Sigma}_X-\bs{\Sigma}_{XY}\bs{\Sigma}_Y^{-1}\bs{\Sigma}_{YX} \right)
+\]
+The mean is the best affine estimator of $\bs{X}$, and the covariance is the estimation error.
+This has two interpretations.
+\begin{enumerate}
+	\item Under the Gaussian assumption, the best nonlinear estimator $\expect{\bs{X}|\bs{Y}}$ is affine
+	\item Gaussian random variables are the hardest predict because nonlinearity should improve our error, but it does not in the Gaussian case. This means if affine estimation works well, we shouldn't try and find better non-linear estimators.
+\end{enumerate}
+\subsection{Least Squares}
+The theory of linear estimation is very closely connected with the theory behind least squares in linear algebra.
+In least squares, we have a deterministic $\bs{x}$ and assume nothing else about it, meaning we are looking for an unbiased estimator.
+\cref{thm:gauss-markov} tells us how to find the best linear unbiased estimator in a linear setting.
+\begin{theorem}[Gauss Markov Theorem]
+		Suppose that $\bs{Y}=\bs{H}\bs{x}+\bs{Z}$ and $Z$ is zero-mean with $\ip{\bs{Z}}{\bs{Z}} = \bs{I}$, $\bs{H}$ is full-column rank, then $\hat{\bs{x}_b} = (\bs{H}^*\bs{H})^{-1}\bs{H}^*\bs{Y}$ is the best linear unbiased estimator.
+	\label{thm:gauss-markov}
+\end{theorem}
+\section{Discrete Time Random Processes}
+\begin{definition}
+	A Discrete-Time Random Process is a countably infinite collection of random variables on the same probability space $\{\bs{X}_n: n\in\mathbb{Z}\}$.
+	\label{defn:discrete-time-rp}
+\end{definition}
+Discrete Time Random Processes have a mean function $\bs{\mu}_n = \expect{\bs{X}_n}$ and an auto-correlation function $\bs{R}_X(n_1, n_2) = \expect{\bs{X}_{n_1}\bs{X}_{n_2}^*}$
+\begin{definition}
+	A Wide-Sense Stationary Random Process is a disrete-time random process with constant mean, finite variance, and an autocorrelation function that can be re-written to only depend on $n_1-n_2$.
+	\label{defn:wss-process}
+\end{definition}
+We call this wide-sense stationary because the mean and covariance do not change as the process evolves.
+In a strict-sense stationary proces, the distribution of each random variable in the process would not change.
 \end{document}
 
