@@ -8,58 +8,6 @@
 If you find any typos, errors, etc, please raise an issue on the \href{https://github.com/parandea17/BerkeleyNotes}{GitHub repository}.
 \tableofcontents
 \newpage
-\section{Transforms}
-\subsection{Discrete Time Fourier Transform}
-The Discrete Time Fourier Transform is given by \[
-	X(e^{j\omega}) = \sum_{n=-\infty}^{\infty}x[n]e^{-j\omega n}.
-\]
-The Inverse Discrete Time Fourier Transform is given by \[
-	x[n] = \frac{1}{2\pi}\int_{-\pi}^{\pi}X(e^{j\omega})e^{j\omega n}d\omega.
-\]
-Since the DTFT is an infinite summation, it may or may not converge.
-\begin{definition}
-	A signal $x[n]$ belongs to the $l^1$ class of signals if the series converges absolutely. In other words,
-	\[
-		\sum_{k=-\infty}^{\infty}|x[k]| < \infty.
-	\]
-	\label{defn:l1-class}
-\end{definition}
-This class covers most real-world signals.
-\begin{theorem}
-	If $x[n]$ is a $l^1$ signal, then the DTFT $X(e^{j\omega})$ converges uniformly and is well-defined for every $\omega$. $X(e^{j\omega})$ is also a continuous function.
-	\label{thm:l1-dtft}
-\end{theorem}
-\begin{definition}
-	A signal $x[n]$ belongs to the $l^2$ class of signals if it is square summable. In other words,
-	\[
-		\sum_{k=-\infty}^{\infty}|x[k]|^2 < \infty.
-	\]
-	\label{defn:l2-class}
-\end{definition}
-The $l^2$ class contains important functions such as $\sinc$.
-\begin{theorem}
-	If $x[n]$ is a $l^2$ signal, then the DTFT $X(e{j\omega})$ is defined almost everywhere and only converges in the mean-squared sense:
-	\[
-		\lim_{N\to\infty} \int_{-\pi}^{\pi}\left|\left(\sum_{k=-N}^N x[k]e^{-j\omega n}\right) - X(\omega)\right|^2d\omega = 0
-	\]
-	\label{thm:l2-dtft}
-\end{theorem}
-Tempered distributions like the Dirac Delta function are other functions which are important for computing the DTFT, and they arise from the theory of generalized functions.
-\subsection{Z-Transform}
-The Z-transform is a generalized version of the DTFT and is given by \[
-	X(z) = \sum_{n=-\infty}^{\infty}x[n]z^{-n}.
-\]
-It is a special type of series called a \textbf{Laurent Series}.
-\begin{theorem}
-	A Laurent Series will converge absolutely on an open annulus \[
-		A = \{z | r < |z| < R \}
-	\] for some $r$ and $R$.
-	\label{thm:z-transform-roc}
-\end{theorem}
-We can compute $r$ and $R$ using the signal $x[n]$.
-\[
-	r = \limsup_{n\to\infty} |x[n]|^{\frac{1}{n}}, \qquad \frac{1}{R} = \limsup_{n\to\infty}|x[-n]|^{\frac{1}{n}}.
-\]
 \section{Hilbert Space Theory}
 Complex random vectors form a Hilbert space with inner product $\ip{X}{Y} = \expect{XY^*}$.
 If we have a random complex vector, then we can use Hilbert Theory in a more efficient manner by looking at the matrix of inner products.
@@ -146,15 +94,168 @@ In least squares, we have a deterministic $\bs{x}$ and assume nothing else about
 \end{theorem}
 \section{Discrete Time Random Processes}
 \begin{definition}
-	A Discrete-Time Random Process is a countably infinite collection of random variables on the same probability space $\{\bs{X}_n: n\in\mathbb{Z}\}$.
+	A Discrete-Time Random Process is a countably infinite collection of random variables on the same probability space $\{X_n: n\in\mathbb{Z}\}$.
 	\label{defn:discrete-time-rp}
 \end{definition}
-Discrete Time Random Processes have a mean function $\bs{\mu}_n = \expect{\bs{X}_n}$ and an auto-correlation function $\bs{R}_X(n_1, n_2) = \expect{\bs{X}_{n_1}\bs{X}_{n_2}^*}$
+Discrete Time Random Processes have a mean function $\mu_n = \expect{X_n}$ and an auto-correlation function $R_X(n_1, n_2) = \expect{X_{n_1}X_{n_2}^*}$
 \begin{definition}
 	A Wide-Sense Stationary Random Process is a disrete-time random process with constant mean, finite variance, and an autocorrelation function that can be re-written to only depend on $n_1-n_2$.
 	\label{defn:wss-process}
 \end{definition}
 We call this wide-sense stationary because the mean and covariance do not change as the process evolves.
-In a strict-sense stationary proces, the distribution of each random variable in the process would not change.
+In a strict-sense stationary process, the distribution of each random variable in the process would not change.
+\subsection{Spectral Analysis}
+Recall that the Discrete Time Fourier Transform is given by \[
+	X(e^{j\omega}) = \sum_{n=-\infty}^{\infty}x[n]e^{-j\omega n}.
+\]
+The Inverse Discrete Time Fourier Transform is given by \[
+	x[n] = \frac{1}{2\pi}\int_{-\pi}^{\pi}X(e^{j\omega})e^{j\omega n}d\omega.
+\]
+Since the DTFT is an infinite summation, it may or may not converge.
+\begin{definition}
+	A signal $x[n]$ belongs to the $l^1$ class of signals if the series converges absolutely. In other words,
+	\[
+		\sum_{k=-\infty}^{\infty}|x[k]| < \infty.
+	\]
+	\label{defn:l1-class}
+\end{definition}
+This class covers most real-world signals.
+\begin{theorem}
+	If $x[n]$ is a $l^1$ signal, then the DTFT $X(e^{j\omega})$ converges uniformly and is well-defined for every $\omega$. $X(e^{j\omega})$ is also a continuous function.
+	\label{thm:l1-dtft}
+\end{theorem}
+\begin{definition}
+	A signal $x[n]$ belongs to the $l^2$ class of signals if it is square summable. In other words,
+	\[
+		\sum_{k=-\infty}^{\infty}|x[k]|^2 < \infty.
+	\]
+	\label{defn:l2-class}
+\end{definition}
+The $l^2$ class contains important functions such as $\sinc$.
+\begin{theorem}
+	If $x[n]$ is a $l^2$ signal, then the DTFT $X(e{j\omega})$ is defined almost everywhere and only converges in the mean-squared sense:
+	\[
+		\lim_{N\to\infty} \int_{-\pi}^{\pi}\left|\left(\sum_{k=-N}^N x[k]e^{-j\omega n}\right) - X(\omega)\right|^2d\omega = 0
+	\]
+	\label{thm:l2-dtft}
+\end{theorem}
+Tempered distributions like the Dirac Delta function are other functions which are important for computing the DTFT, and they arise from the theory of generalized functions.
+
+Suppose we want to characterize the signal using its DTFT.
+\begin{definition}
+	The energy of a deterministic, discrete-time signal $x[n]$ is given by \[
+		\sum_{n\in\mathbb{Z}}|x[n]|^2.
+	\]
+	\label{defn:energy}
+\end{definition}
+The autocorrelation of $x[n]$, given by $a[n] = x[n] * x^*[-n]$, is closely related to the energy of the signal since $a[0] = \sum_{n\in\mathbb{Z}}|x(n)|^2$.
+\begin{definition}
+	The Energy Spectral Density $x[n]$ with auto-correlation $a[n]$ is given by \[
+		A(\omega) = \sum_{n\in\mathbb{Z}}a[n]e^{j\omega n}
+	\]
+	\label{defn:esd}
+\end{definition}
+We call the DTFT of the autocorrelation the energy spectral density because by the Inverse DTFT, \[
+	a[0] = \frac{1}{2\pi}\int_{-\pi}^{\pi}A(\omega)d\omega.
+\]
+Since summing over each frequency gives us the energy spectral density, we can think of $A(\omega)$ as storing the energy density of each spectral component of the signal.
+We can apply this same idea to wide-sense stationary stochastic processes.
+\begin{definition}
+	The Power Spectral Density of a Wide-Sense Stationary random process is given by \[
+		S_X(\omega) = \sum_{k\in\mathbb{Z}}R_X(k)e^{-j\omega k}.
+	\]
+	\label{defn:psd}
+\end{definition}
+Note that when considering stochastic signals, the metric changes from energy to power.
+This is because stochastic processes are not generally $l_2$, and if $X_n$ is Wide-Sense Stationary, then \[
+	\expect{\sum_{n\in\mathbb{Z}}|x(n)|^2} = \infty,
+\]
+so energy doesn't even make sense.
+To build our notion of power, let $A_T(\omega)$ be a truncated DTFT of the auto-correlation of a wide-sense stationary process, then
+\begin{align*}
+	\lim_{T\to\infty} \frac{\expect{A_T(\omega)}}{2T + 1} &= \lim_{T\to\infty}\frac{1}{2T+1}\left(\sum_{n=-T}^Tx[n]e^{-j\omega n}\right)\left(\sum_{m=-T}^Tx^*[m]e^{j\omega m}\right)\\
+	&= \lim_{T\to\infty}	\frac{1}{2\pi} \sum_{n,m \in [-T,T]}\expect{x[n]x^*[m]}e^{-j\omega(n-m)}\\
+	&= \lim_{T\to\infty}	\frac{1}{2\pi} \sum_{n,m \in [-T,T]}R_x(n-m)e^{-j\omega(n-m)}\\
+	&= \lim_{T\to\infty} \sum_{k=-2T}^{2T}R_X(k)e^{-j\omega k}\left(1 - \frac{|k|}{2T+1}\right)\\
+	&= \sum_{k=-\infty}^{\infty}R_X(k)e^{-j\omega k}
+\end{align*}
+The DTFT of the auto-correlation function naturally arises out of taking the energy spectral density and normalizing it by time (the truncated sequence is made of $2T+1$ points).
+In practice, this means to measure the PSD, we need to either use the distribution of the signal to compute $R_X$, or estimate the $PSD$ by averaging multiple realizations of the signal.
+
+The inverse DTFT formula tells us that we can represent a deterministic, discrete-time signal $x[n]$ as a sum of complex exponentials weighted by $\frac{X(\omega)d\omega}{2\pi}$.
+This representation has an analog for stochastic signals as well.
+\begin{theorem}[Cramer-Khinchin]
+	For a complex-valued WSS stochastic process $X_n$ with power spectral density $S_X(\omega)$, there exists a unique right-continuous stochastic process $F(\omega), \omega\in(-\pi,\pi]$ with square-integrable, orthogonal increments such that \[
+		X_n = \int_{-\pi}^{\pi}e^{j\omega n}dF(\omega)
+	\] where for any interval $[\omega_1,\omega_2], [\omega_3, \omega_4]\subset [-\pi,\pi]$, \[
+		\expect{(F(\omega_2)-F(\omega_1))(F(\omega_4) - F(\omega_3))^*} = f((\omega_1,\omega_2] \cap (\omega_3, \omega_4])
+	\] where $f$ is the structural measure of the stochastic process and has Radon-Nikodym derivative $\frac{S_X(\omega)}{2\pi}$.
+	\label{thm:cramer-khinchin}
+\end{theorem}
+Besides giving us a decomposition of a WSS random process, \cref{thm:cramer-khinchin} tells a few important facts.
+\begin{enumerate}
+	\item $\omega_1\neq\omega_2 \implies \langle dF(\omega_1), dF(\omega_2) \rangle = 0$ (i.e different frequencies are uncorrelated).
+	\item $\expect{|dF(\omega)|^2} = \frac{S_X(\omega)}{2\pi}$
+\end{enumerate}
+\subsection{LTI Filtering}
+Recall that the Z-transform converts a discrete-time signal into a complex representation.
+It is given by \[
+	X(z) = \sum_{n=-\infty}^{\infty}x[n]z^{-n}.
+\]
+It is a special type of series called a \textbf{Laurent Series}.
+\begin{theorem}
+	A Laurent Series will converge absolutely on an open annulus \[
+		A = \{z | r < |z| < R \}
+	\] for some $r$ and $R$.
+	\label{thm:z-transform-roc}
+\end{theorem}
+We can compute $r$ and $R$ using the signal $x[n]$.
+\[
+	r = \limsup_{n\to\infty} |x[n]|^{\frac{1}{n}}, \qquad \frac{1}{R} = \limsup_{n\to\infty}|x[-n]|^{\frac{1}{n}}.
+\]
+\begin{definition}
+	For two jointly WSS processes $X_n, Y_n$, the z-cross spectrum is the Z-Transform of the correlation function $R_{YX}(k) = \expect{Y_nX^*_{n-k}}$.
+	\[
+		S_{YX}(z) = \sum_{k\in\mathbb{Z}}R_{YX}(k)z^{-k}
+	\]
+	\label{defn:z-cross-spectrum}
+\end{definition}
+Using this definition, we can see that \[
+	S_{XY}(z) = S^*_{YZ}(z^{-*}).
+\]
+\begin{theorem}
+	When $Y(n)$ is formed by passing a WSS process $X_n$ through a stable LTI system with impulse response $h[n]$ and transfer function $H(z)$, then $S_Y(z) = H(z)S_X(z)H^*(z^{-*})$ and $S_{YX}(z) = H(z)S_X(z)$.
+	If we have a third process $Z_n$ that is jointly WSS with $(Y_n, X_n)$, then $S_{ZY}(z) = S_{ZX}(z)H^*(z^{-*})$.
+	\label{thm:lti-process}
+\end{theorem}
+\subsubsection{Wiener Filtering}
+Suppose we have a stochastic WSS process $Y_n$ that is jointly WSS with $X_n$.
+% TODO: Why do we use the same coefficients for each $X(n)$?
+The best linear estimator of $X_n$ given the observations $Y_n$ can be written as \[
+	\hat{X}_n = \sum_{m\in\mathbb{Z}}h(m)Y_{n-m} = h[n] * Y_n.
+\]
+This is identical to passing $Y_n$ through an LTI filter.
+Starting with the orthogonality principle,
+\begin{align*}
+	\expect{(X_n-\hat{X}_n)Y_{n-k}^*} = 0 &\implies \expect{X_nY^*_{n-k}} = \sum_{m\in\mathbb{Z}}h(m)\expect{Y_{n-m}Y^*_{n-k}}\\
+	\therefore R_{XY}(k) = \sum_{m\in\mathbb{Z}}h(m)R_Y(k-m) &\implies S_{XY}(e^{j\omega}) = H(e^{j\omega})S_Y(e^{j\omega})\\
+	\therefore H(e^{j\omega}) &= \frac{S_{XY}(e^{j\omega})}{S_Y(e^{j\omega})}
+\end{align*}
+\begin{definition}
+	The best linear estimator of $X_n$ using $Y_n$ where $(X_n, Y_n)$ is jointly WSS is given by the non-causal Wiener filter.
+	\[
+		H(e^{j\omega}) = \frac{S_{XY}(e^{j\omega})}{S_Y(e^{j\omega})}
+	\]
+	\label{defn:noncausal-wiener}
+\end{definition}
+For a specific $\omega$, we can understand $H(e^{j\omega})$ an optimal linear estimator for $F_X(\omega)$ where $F_X(\omega)$ is the the stochastic process given by the Cramer-Khinchin decomposition (\cref{thm:cramer-khinchin}).
+More specifically, we can use the Cramer-Khinchin decomposition of $Y_n$.
+\begin{align*}
+	\hat{X}_n &= \sum_{i\in\mathbb{Z}}h[i]\int_{-\pi}^\pi e^{j\omega(n-i)}dF_Y(\omega)\\
+	&= \int_{-\pi}^{\pi}\left(\sum_{i\in\mathbb{Z}}h[i]e^{-j\omega i}\right)e^{j\omega n}dF_Y(\omega) \\
+	&= \int_{-\pi}^\pi H(e^{j\omega})e^{j\omega n}dF_Y(\omega)\\
+\end{align*}
+Since $F_X$ and $F_Y$ have jointly orthogonal increments, this tells us that $H(e^{j\omega})$ is just the optimal linear estimator of $dF_X(\omega)$ using $dF_Y(\omega)$.
+$dF_X(\omega)$ and $dF_Y(\omega)$ exist on a Hilbert space, meaning we are essentially projecting each frequency component of $X_n$ onto the corresponding frequency component of $Y_n$.
 \end{document}
 
