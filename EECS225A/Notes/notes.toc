@@ -3,6 +3,9 @@
 \contentsline {subsection}{\numberline {2.1}Affine Estimation}{3}{subsection.2.1}
 \contentsline {subsection}{\numberline {2.2}Least Squares}{4}{subsection.2.2}
 \contentsline {section}{\numberline {3}Discrete Time Random Processes}{4}{section.3}
-\contentsline {subsection}{\numberline {3.1}Spectral Analysis}{4}{subsection.3.1}
-\contentsline {subsection}{\numberline {3.2}LTI Filtering}{7}{subsection.3.2}
-\contentsline {subsubsection}{\numberline {3.2.1}Wiener Filtering}{8}{subsubsection.3.2.1}
+\contentsline {subsection}{\numberline {3.1}Spectral Density}{4}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Z-Spectrum}{7}{subsection.3.2}
+\contentsline {section}{\numberline {4}Filtering}{9}{section.4}
+\contentsline {subsection}{\numberline {4.1}Wiener Filter}{9}{subsection.4.1}
+\contentsline {subsubsection}{\numberline {4.1.1}Non-Causal Case}{10}{subsubsection.4.1.1}
+\contentsline {subsubsection}{\numberline {4.1.2}Causal Case}{11}{subsubsection.4.1.2}

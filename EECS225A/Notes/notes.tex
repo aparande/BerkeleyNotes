@@ -104,7 +104,7 @@ Discrete Time Random Processes have a mean function $\mu_n = \expect{X_n}$ and a
 \end{definition}
 We call this wide-sense stationary because the mean and covariance do not change as the process evolves.
 In a strict-sense stationary process, the distribution of each random variable in the process would not change.
-\subsection{Spectral Analysis}
+\subsection{Spectral Density}
 Recall that the Discrete Time Fourier Transform is given by \[
 	X(e^{j\omega}) = \sum_{n=-\infty}^{\infty}x[n]e^{-j\omega n}.
 \]
@@ -197,7 +197,7 @@ Besides giving us a decomposition of a WSS random process, \cref{thm:cramer-khin
 	\item $\omega_1\neq\omega_2 \implies \langle dF(\omega_1), dF(\omega_2) \rangle = 0$ (i.e different frequencies are uncorrelated).
 	\item $\expect{|dF(\omega)|^2} = \frac{S_X(\omega)}{2\pi}$
 \end{enumerate}
-\subsection{LTI Filtering}
+\subsection{Z-Spectrum}
 Recall that the Z-transform converts a discrete-time signal into a complex representation.
 It is given by \[
 	X(z) = \sum_{n=-\infty}^{\infty}x[n]z^{-n}.
@@ -213,6 +213,13 @@ We can compute $r$ and $R$ using the signal $x[n]$.
 \[
 	r = \limsup_{n\to\infty} |x[n]|^{\frac{1}{n}}, \qquad \frac{1}{R} = \limsup_{n\to\infty}|x[-n]|^{\frac{1}{n}}.
 \]
+In some cases, it can be useful to only compute the Z-transform of the right side of the signal.
+\begin{definition}
+	The unilateral Z-transform of a sequence $x[n]$ is given by \[
+		\trunc{X(z)} = \sum_{n=0}^\infty x[n]z^{-n}
+	\]
+	\label{defn:unilateral-z-transform}
+\end{definition}
 \begin{definition}
 	For two jointly WSS processes $X_n, Y_n$, the z-cross spectrum is the Z-Transform of the correlation function $R_{YX}(k) = \expect{Y_nX^*_{n-k}}$.
 	\[
@@ -223,32 +230,103 @@ We can compute $r$ and $R$ using the signal $x[n]$.
 Using this definition, we can see that \[
 	S_{XY}(z) = S^*_{YZ}(z^{-*}).
 \]
+We can also look at the Z-transform of the auto-correlation function of a WSS process $X$ to obtain $S_X(z)$.
+\begin{definition}
+	For a rational function $S_X(z)$ with finite power $\left(\int_{-\pi}^\pi S_X(e^{j\omega})d\omega < \infty \right)$ and is strictly positive on the unit circle, the canonical spectral factorization decomposes $S_X(z)$ into a product of a $r_e>0$ and the transfer function of a minimum phase system $L(z)$ with $L(\infty) = 1$ \[
+		S_X(z) = L(z)r_eL^*(z^{-*})
+	\]
+	\label{defn:spectral-factorization}
+\end{definition}
+Because $L(z)$ is minimum phase and $L(\infty)=1$, it must take the form \[
+	L(z) = 1 + \sum_{i=1}^\infty l[i]z^{-1}
+\] since minimum phase systems are causal.
+Using \cref{defn:spectral-factorization}, we can express $S_X(z)$ as the product of a right-sided and left-sided process.
+\[
+	S_X(z) = (\sqrt{r_e}L(z))(\sqrt{r_e}L^*(z^{-*})) = S_X^+(z)S_X^-(z)
+\]
+Note that $S_X^-(z) = \left(S_X^+(z)\right)^*$.
+Using the assumptions built into $\cref{defn:spectral-factorization}$, we can find a general form for $L(z)$ since we know $S_Y(z)$ takes the following form
+\[
+	S_Y(z) = r_e \frac{\prod_{i=1}^m(z-\alpha_i)(z^{-1}-\alpha_i^*)}{\prod_{i=1}^n(z-\beta_i)(z^{-1}-\beta_i^*)}\quad |\alpha_i| < 1, |\beta_i| < 1, r_e > 0.
+\]
+We can if we let the $z - \alpha_i$ and $z-\beta_i$ terms be part of $L(z)$, then
+\[
+	L(z) = z^{n-m}\frac{\prod_{i=1}^m(z-\alpha_i)}{\prod_{i=1}^n(z-\beta_i)}.
+\]
+\section{Filtering}
+If we think of our signal as a discrete time random process, then like a normal deterministic signal, we can try filtering our random process.
+\begin{gitbook-image}
+\begin{figure}[!h]
+  \centering
+  \begin{tikzpicture}[node distance=2cm,auto,>=latex']
+		\node [int] (a) {$H(z)$};
+		\node (b) [left of=a,node distance=2cm, coordinate] {$X_n$};
+		\node [coordinate] (end) [right of=a, node distance=2cm]{$Y_n$};
+		\path[->] (b) edge node {$X_n$} (a);
+		\path[->] (a) edge node {$Y_n$} (end);
+  \end{tikzpicture}    
+	\caption{Filtering a Disrete Time Random Process with a system of transfer function $H(z)$}
+  \label{fig:lti-filtering}
+\end{figure}
+\end{gitbook-image}
 \begin{theorem}
 	When $Y(n)$ is formed by passing a WSS process $X_n$ through a stable LTI system with impulse response $h[n]$ and transfer function $H(z)$, then $S_Y(z) = H(z)S_X(z)H^*(z^{-*})$ and $S_{YX}(z) = H(z)S_X(z)$.
 	If we have a third process $Z_n$ that is jointly WSS with $(Y_n, X_n)$, then $S_{ZY}(z) = S_{ZX}(z)H^*(z^{-*})$.
 	\label{thm:lti-process}
 \end{theorem}
-\subsubsection{Wiener Filtering}
-Suppose we have a stochastic WSS process $Y_n$ that is jointly WSS with $X_n$.
-% TODO: Why do we use the same coefficients for each $X(n)$?
+This gives us an interesting interpretation of the spectral factorization $(\cref{defn:spectral-factorization})$ since it essentially passing a WSS process with auto-correlation $R_W(k) = r_e\delta[n]$ through a minimum-phase filter with transfer function $L(z)$.
+\subsection{Wiener Filter}
+Suppose we have a stochastic WSS process $Y_n$ that is jointly WSS with $X_n$ and that we want to find the best linear estimator of $X_n$ using $Y_n$.
+% TODO: Why do we use the same coefficients for each $X(n)$? Do the proof, or see the proof
 The best linear estimator of $X_n$ given the observations $Y_n$ can be written as \[
 	\hat{X}_n = \sum_{m\in\mathbb{Z}}h(m)Y_{n-m} = h[n] * Y_n.
 \]
 This is identical to passing $Y_n$ through an LTI filter.
-Starting with the orthogonality principle,
+If we restrict ourselves to using ${Y_i}_{-\infty}^{n}$ to estimate $X_n$, then the best linear estimator can be written as \[
+	\hat{X}_n = \sum_{m=0}^\infty h(m)Y_{n-m} = h[n] * Y_n.
+\]
+It is identical to passing $Y_n$ through a causal LTI filter.
+Since we are trying to find a best linear estimator, it would be nice if each of the random variables we are using for estimating were uncorrelated with each other.
+In other words, instead of using $Y$ directly, we want to transform $Y$ into a new process $W$ where $R_W(k) = 1$.
+This transformation is known as whitening.
+From the spectral factorization of $Y$, we know if we use the filter $G(z) =\frac{1}{S_Y^+(z)}$ then \[
+	S_W(z) = \frac{S_Y(z)}{|S_Y^+(z)|^2} = \frac{S_Y(z)}{S_Y^+(z)S_Y^-(z)} = 1.
+\]
+Now we want to find the best linear estimator of $X$ using our new process $W$ by designing an LTI filter $Q(z)$.
+\begin{gitbook-image}
+\begin{figure}[!h]
+  \centering
+  \begin{tikzpicture}[node distance=2cm,auto,>=latex']
+		\node [int] (a) {$\frac{1}{S_Y^+(z)}$};
+		\node (b) [left of=a,node distance=2cm, coordinate] {$Y_n$};
+		\node [int, right of=a, node distance=2cm] (q) {$Q(z)$};
+		\node [coordinate] (end) [right of=q, node distance=2cm]{$\hat{X}_n$};
+		\path[->] (b) edge node {$Y_n$} (a);
+		\path[->] (a) edge node {$W_n$} (q);
+		\path[->] (q) edge node {$\hat{X}_n$} (end);
+  \end{tikzpicture}    
+	\caption{Finding the best linear estimator of $X$ using $W$ with a two-stage filter that first whitens the input.}
+  \label{fig:wiener-filter}
+\end{figure}
+\end{gitbook-image}
+\subsubsection{Non-Causal Case}
+Starting with noncausal case, we can apply the orthogonality principle,
 \begin{align*}
-	\expect{(X_n-\hat{X}_n)Y_{n-k}^*} = 0 &\implies \expect{X_nY^*_{n-k}} = \sum_{m\in\mathbb{Z}}h(m)\expect{Y_{n-m}Y^*_{n-k}}\\
-	\therefore R_{XY}(k) = \sum_{m\in\mathbb{Z}}h(m)R_Y(k-m) &\implies S_{XY}(e^{j\omega}) = H(e^{j\omega})S_Y(e^{j\omega})\\
-	\therefore H(e^{j\omega}) &= \frac{S_{XY}(e^{j\omega})}{S_Y(e^{j\omega})}
+	\expect{(X_n-\hat{X}_n)W_{n-k}^*} = 0 &\implies \expect{X_nW^*_{n-k}} = \sum_{m\in\mathbb{Z}}q(m)\expect{W_{n-m}W^*_{n-k}}\\
+	\therefore R_{XW}(k) = \sum_{m\in\mathbb{Z}}h(m)R_W(k-m) &\implies S_{XW}(z) = Q(z)S_W(z)\\
+	\therefore Q(z) = \frac{S_{XW}(z)}{S_W(z)} = S_{XW}(z) &= S_{XY}(z)(S_Y^+(z))^{-*} = \frac{S_{XY}(z)}{S_Y^-(z)}
 \end{align*}
+When we cascade these filters, \[
+	H(z) = G(z)Q(z) = \frac{1}{S_Y^+(z)}\frac{S_{XY}(z)}{S_Y^-(z)} = \frac{S_{XY}(z)}{S_Y(z)}.
+\]
 \begin{definition}
 	The best linear estimator of $X_n$ using $Y_n$ where $(X_n, Y_n)$ is jointly WSS is given by the non-causal Wiener filter.
 	\[
-		H(e^{j\omega}) = \frac{S_{XY}(e^{j\omega})}{S_Y(e^{j\omega})}
+		H(z) = \frac{S_{XY}(z)}{S_Y(z)}
 	\]
 	\label{defn:noncausal-wiener}
 \end{definition}
-For a specific $\omega$, we can understand $H(e^{j\omega})$ an optimal linear estimator for $F_X(\omega)$ where $F_X(\omega)$ is the the stochastic process given by the Cramer-Khinchin decomposition (\cref{thm:cramer-khinchin}).
+If we interpret \cref{defn:noncausal-wiener} in the frequency domain, for a specific $\omega$, we can understand $H(e^{j\omega})$ an optimal linear estimator for $F_X(\omega)$ where $F_X(\omega)$ is the the stochastic process given by the Cramer-Khinchin decomposition (\cref{thm:cramer-khinchin}).
 More specifically, we can use the Cramer-Khinchin decomposition of $Y_n$.
 \begin{align*}
 	\hat{X}_n &= \sum_{i\in\mathbb{Z}}h[i]\int_{-\pi}^\pi e^{j\omega(n-i)}dF_Y(\omega)\\
@@ -257,5 +335,37 @@ More specifically, we can use the Cramer-Khinchin decomposition of $Y_n$.
 \end{align*}
 Since $F_X$ and $F_Y$ have jointly orthogonal increments, this tells us that $H(e^{j\omega})$ is just the optimal linear estimator of $dF_X(\omega)$ using $dF_Y(\omega)$.
 $dF_X(\omega)$ and $dF_Y(\omega)$ exist on a Hilbert space, meaning we are essentially projecting each frequency component of $X_n$ onto the corresponding frequency component of $Y_n$.
+\subsubsection{Causal Case}
+First, note that in the causal case, whitening doesn't break causality because $\frac{1}{S_Y^+(z)}$ is causal.
+In the causal case, when we apply the orthogonality principle,
+\begin{align*}
+	\expect{(X_n-\hat{X}_n)W_{n-k}^*} = 0 &\implies \expect{X_nW^*_{n-k}} = \sum_{m=0}^\infty q(m)\expect{W_{n-m}W^*_{n-k}}\\
+	\therefore R_{XW}(k) &= \sum_{m = 0}^\infty q[m]R_W(k-m) \qquad k \geq 0
+\end{align*}
+We can't take the Z-transform of both sides because the equation is not necessarily true for $k < 0$.
+Instead, we can look at the function \[
+	f(k) = R_{XW}(k) - \sum_{m=0}^\infty R_W(k-m)q[m] = \begin{cases} 0 & k\geq 0,\\ ? & \text{ else.}\end{cases}
+\]
+Taking the unilateral Z-transform of both sides,
+\begin{align*}
+	\trunc{F(z)} &= \trunc{S_{XW}(z) - S_W(z)Q(z)} = \trunc{S_{XW}(z)} - Q(z)\\
+	Q(z) &= \trunc{S_{XQ}(z)} = \trunc{\frac{S_{XY}(z)}{S_Y^-(z)}}
+\end{align*}
+Thus the filter $H$ which gives the causal best linear estimator of $X$ using $Y$ is \[
+	H(z) = G(z)Q(z) = \frac{1}{S_Y^+(z)}\trunc{\frac{S_{XY}(z)}{S_Y^-(z)}}.
+\]
+\begin{definition}
+	The best linear estimator of $X_n$ using ${Y_i}_{-\infty}^{n}$ is given by the causal Wiener filter. \[
+		H(z) = G(z)Q(z) = \frac{1}{S_Y^+(z)}\trunc{\frac{S_{XY}(z)}{S_Y^-(z)}}.
+	\]
+	\label{defn:causal-wiener}
+\end{definition}
+Intuitively, this should make sense because we are using the same $W$ process as in the non-causal case, but only the ones which we are allowed to use, hence use the unilateral Z-transform of the non-causal Wiener filter, which amounts to truncated the noncausal filter to make it causal.
+\begin{theorem}
+	If $\hat{X}_{NC}(n)$ is the non-causal Wiener filter of $X$, then the causal wiener filter of $X$ given $Y$ is the same as the causal wiener filter of $\hat{X}_{NC}$ given $Y$, and if $Y$ is white noise, then \[
+		\hat{X}_C(n) = \sum_{i=0}^{\infty}h[i]Y_{n-i}
+	\]
+	\label{thm:causal-wiener}
+\end{theorem}
 \end{document}
 
