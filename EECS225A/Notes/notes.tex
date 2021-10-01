@@ -104,6 +104,10 @@ Discrete Time Random Processes have a mean function $\mu_n = \expect{X_n}$ and a
 \end{definition}
 We call this wide-sense stationary because the mean and covariance do not change as the process evolves.
 In a strict-sense stationary process, the distribution of each random variable in the process would not change.
+\begin{definition}
+	A WSS process $Z\simil \mathcal{WN}(0, \sigma^2)$ is a white noise process with variance $\sigma^2$ if and only if $\expect{Z_n} = 0$ and $\expect{Z_nZ_M^*} = \sigma^2\delta[n, m]$.
+	\label{<+label+>}
+\end{definition}<++>
 \subsection{Spectral Density}
 Recall that the Discrete Time Fourier Transform is given by \[
 	X(e^{j\omega}) = \sum_{n=-\infty}^{\infty}x[n]e^{-j\omega n}.
@@ -214,6 +218,7 @@ We can compute $r$ and $R$ using the signal $x[n]$.
 	r = \limsup_{n\to\infty} |x[n]|^{\frac{1}{n}}, \qquad \frac{1}{R} = \limsup_{n\to\infty}|x[-n]|^{\frac{1}{n}}.
 \]
 In some cases, it can be useful to only compute the Z-transform of the right side of the signal.
+% TODO: Show how to get unilateral Z from bilateral Z
 \begin{definition}
 	The unilateral Z-transform of a sequence $x[n]$ is given by \[
 		\trunc{X(z)} = \sum_{n=0}^\infty x[n]z^{-n}
@@ -228,7 +233,7 @@ In some cases, it can be useful to only compute the Z-transform of the right sid
 	\label{defn:z-cross-spectrum}
 \end{definition}
 Using this definition, we can see that \[
-	S_{XY}(z) = S^*_{YZ}(z^{-*}).
+	S_{XY}(z) = S^*_{YX}(z^{-*}).
 \]
 We can also look at the Z-transform of the auto-correlation function of a WSS process $X$ to obtain $S_X(z)$.
 \begin{definition}
@@ -238,13 +243,13 @@ We can also look at the Z-transform of the auto-correlation function of a WSS pr
 	\label{defn:spectral-factorization}
 \end{definition}
 Because $L(z)$ is minimum phase and $L(\infty)=1$, it must take the form \[
-	L(z) = 1 + \sum_{i=1}^\infty l[i]z^{-1}
+	L(z) = 1 + \sum_{i=1}^\infty l[i]z^{-i}
 \] since minimum phase systems are causal.
 Using \cref{defn:spectral-factorization}, we can express $S_X(z)$ as the product of a right-sided and left-sided process.
 \[
 	S_X(z) = (\sqrt{r_e}L(z))(\sqrt{r_e}L^*(z^{-*})) = S_X^+(z)S_X^-(z)
 \]
-Note that $S_X^-(z) = \left(S_X^+(z)\right)^*$.
+Note that $S_X^-(e^{j\omega}) = \left(S_X^+(e^{j\omega})\right)^*$.
 Using the assumptions built into $\cref{defn:spectral-factorization}$, we can find a general form for $L(z)$ since we know $S_Y(z)$ takes the following form
 \[
 	S_Y(z) = r_e \frac{\prod_{i=1}^m(z-\alpha_i)(z^{-1}-\alpha_i^*)}{\prod_{i=1}^n(z-\beta_i)(z^{-1}-\beta_i^*)}\quad |\alpha_i| < 1, |\beta_i| < 1, r_e > 0.
@@ -253,6 +258,7 @@ We can if we let the $z - \alpha_i$ and $z-\beta_i$ terms be part of $L(z)$, the
 \[
 	L(z) = z^{n-m}\frac{\prod_{i=1}^m(z-\alpha_i)}{\prod_{i=1}^n(z-\beta_i)}.
 \]
+%%TODO: Kolomogorov-Szego? Wold decomposition?
 \section{Filtering}
 If we think of our signal as a discrete time random process, then like a normal deterministic signal, we can try filtering our random process.
 \begin{gitbook-image}
@@ -290,7 +296,7 @@ Since we are trying to find a best linear estimator, it would be nice if each of
 In other words, instead of using $Y$ directly, we want to transform $Y$ into a new process $W$ where $R_W(k) = 1$.
 This transformation is known as whitening.
 From the spectral factorization of $Y$, we know if we use the filter $G(z) =\frac{1}{S_Y^+(z)}$ then \[
-	S_W(z) = \frac{S_Y(z)}{|S_Y^+(z)|^2} = \frac{S_Y(z)}{S_Y^+(z)S_Y^-(z)} = 1.
+	S_W(z) = \frac{S_Y(z)}{S_Y^+(z)S_Y^{+*}(z^{-*})} = \frac{S_Y(z)}{S_Y^+(z)S_Y^-(z)} = 1.
 \]
 Now we want to find the best linear estimator of $X$ using our new process $W$ by designing an LTI filter $Q(z)$.
 \begin{gitbook-image}
@@ -314,7 +320,7 @@ Starting with noncausal case, we can apply the orthogonality principle,
 \begin{align*}
 	\expect{(X_n-\hat{X}_n)W_{n-k}^*} = 0 &\implies \expect{X_nW^*_{n-k}} = \sum_{m\in\mathbb{Z}}q(m)\expect{W_{n-m}W^*_{n-k}}\\
 	\therefore R_{XW}(k) = \sum_{m\in\mathbb{Z}}h(m)R_W(k-m) &\implies S_{XW}(z) = Q(z)S_W(z)\\
-	\therefore Q(z) = \frac{S_{XW}(z)}{S_W(z)} = S_{XW}(z) &= S_{XY}(z)(S_Y^+(z))^{-*} = \frac{S_{XY}(z)}{S_Y^-(z)}
+	\therefore Q(z) = \frac{S_{XW}(z)}{S_W(z)} = S_{XW}(z) &= S_{XY}(z)(S_Y^+(z^{-*}))^{-*} = \frac{S_{XY}(z)}{S_Y^-(z)}
 \end{align*}
 When we cascade these filters, \[
 	H(z) = G(z)Q(z) = \frac{1}{S_Y^+(z)}\frac{S_{XY}(z)}{S_Y^-(z)} = \frac{S_{XY}(z)}{S_Y(z)}.
@@ -367,5 +373,42 @@ Intuitively, this should make sense because we are using the same $W$ process as
 	\]
 	\label{thm:causal-wiener}
 \end{theorem}
+\subsubsection{Vector Case}
+Suppose that instead of a Wide-Sense Stationary process, we an $N$ length signal $\bs{X}$ which we want to estimate with another $N$ length signal $\bs{Y}$.
+We can represent both $\bs{X}$ and $\bs{Y}$ as vectors in $\mathbb{C}^N$.
+If we are allowed to use all entries of $\bs{Y}$ to estimate $\bs{X}$, this is identical to linear estimation.
+\begin{definition}
+	The non-causal Wiener filter of a finite length $N$ signal $\bs{Y}$ is given by \[
+		K_s = R_{\bs{X}\bs{Y}}R_{\bs{Y}}^{-1}.
+	\]
+	\label{defn:noncausal-vector-wiener}
+\end{definition}
+Note that this requires $R_{\bs{Y}} \succ 0$.
+Suppose that we wanted to design a causal filter for the vector case, so $\hat{X}_i$ only depends on $\{Y_j\}_{j=1}^i$.
+By the orthogonality principle,
+\[
+	\forall 1 \leq l \leq i,\ \expect{X_i - \sum_{j=1}^iK_{f, ij}Y_jY_l^*} = 0 \implies R_{\bs{XY}}(i, l) = \sum_{j=1}^i K_{f, ij}R_{\bs{Y}}(j, l)
+\]
+In matrix form, this means
+\[
+	R_{\bs{XY}} - K_fR_{\bs{Y}} = U^+
+\]
+where $U^+$ is strictly upper triangular.
+\begin{theorem}
+	If matrix $H \succ 0$, then there exists a unique lower-diagonal upper triangular factorization of $H=LDL^*$ where $L$ is lower diagonal and invertible with unit diagonal entries and $D$ is diagonal with positive entries.
+	\label{thm:ldl-decomp}
+\end{theorem}
+Applying the LDL decomposition, we see that
+\begin{align*}
+	R_{\bs{XY}} - K_fLDL^* = U^+ \implies R_{\bs{XY}}L^{-*}D^{-1} -K_f L = U^+L^{-*}D^{-1}\\
+	\therefore [R_{\bs{XY}}L^{-*}D^{-1}]_L -K_f L = 0
+\end{align*}
+where $[\cdot]_L$ represent the lower triangular part of a matrix.
+\begin{definition}
+	The causal Wiener filter of a finite length $N$ signal $\bs{Y}$ is given by \[
+		K_f = [R_{\bs{XY}}L^{-*}D^{-1}]_LL^{-1}
+	\]
+	\label{defn:causal-vector-wiener}
+\end{definition}
 \end{document}
 
