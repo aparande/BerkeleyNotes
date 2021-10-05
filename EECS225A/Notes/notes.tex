@@ -13,14 +13,14 @@ Complex random vectors form a Hilbert space with inner product $\ip{X}{Y} = \exp
 If we have a random complex vector, then we can use Hilbert Theory in a more efficient manner by looking at the matrix of inner products.
 For simplicity, we will call this the ``inner product'' of two complex vectors.
 \begin{definition}
-	Let the inner product between two random, complex vectors $\bs{Z_1}, \bs{Z_2}$ \[
+	Let the inner product between two random, complex vectors $\bs{Z_1}, \bs{Z_2}$ be defined as \[
 		\ip{\bs{Z_1}}{\bs{Z_2}} = \expect{\bs{Z_1}\bs{Z_2}^*}
 	\]
 	\label{defn:inner-product}
 \end{definition}
-The ij-th entry of the matrix is simply the scalar inner product $\expect{\bs{X_i}\bs{Y_j}^*}$ where $\bs{X_i}$ and $\bs{Y_j}$ are the ith and jth entries of $\bs{X}$ and $\bs{Y}$ respectively.
-This means the matrix is equivalent to the cross correlation $\bs{R}_{XY}$ between the two vectors.
-We can also specify the auto-correlation $\bs{R}_X = \ip{\bs{X}}{\bs{X}}$ and auto-covariance $\bs{\Sigma}_X = \ip{\bs{X} - \expect{\bs{X}}}{\bs{X} - \expect{\bs{X}}}$.
+The ij-th entry of the matrix is simply the scalar inner product $\expect{X_iY_j^*}$ where $X_i$ and $Y_j$ are the ith and jth entries of $\bs{X}$ and $\bs{Y}$ respectively.
+This means the matrix is equivalent to the cross correlation $R_{XY}$ between the two vectors.
+We can also specify the auto-correlation $R_X = \ip{\bs{X}}{\bs{X}}$ and auto-covariance $\Sigma_X = \ip{\bs{X} - \expect{\bs{X}}}{\bs{X} - \expect{\bs{X}}}$.
 One reason why we can think of this matrix as the inner product is because it also satisfies the properties of inner products.
 In particular, it is
 \begin{enumerate}
@@ -33,7 +33,7 @@ Since we are thinking of the matrix as an inner product, we can also think of th
 	The norm of a complex random vector is given by $\|\bs{Z}\|^2 = \ip{\bs{Z}}{\bs{Z}}$.
 	\label{defn:norm}
 \end{definition}
-Since we are thinking of inner products as matrices instead of scalars, we can rewrite the Hilbert Projection Theorem to use matrices instead.
+When thinking of inner products as matrices instead of scalars, we must rewrite the Hilbert Projection Theorem to use matrices instead.
 \begin{theorem}[Hilbert Projection Theorem]
 	The minimization problem $\min_{\hat{\bs{X}}(\bs{Y})}\|\hat{\bs{X}}(\bs{Y}) - \bs{X}\|^2$ has a unique solution which is a linear function of $\bs{Y}$. The error is orthogonal to the linear subspace of $\bs{Y}$ (i.e $\ip{\bs{X} - \hat{\bs{X}}}{\bs{Y}} = \bs{0}$)
 	\label{thm:hilbert-projection}
@@ -42,24 +42,24 @@ When we do a minimization over a matrix, we are minimizing it in a PSD sense, so
 	\|\bs{X}-\hat{\bs{X}}\|^2  \preceq \|\bs{X} - \bs{X}'\|^2.
 \]
 \section{Linear Estimation}
-In Linear Estimation, we are trying to estimate a random variable $\bs{X}$ using an observation $\bs{Y}$ with a llinear function of $\bs{Y}$.
-If $\bs{Y}$ is finite dimensional, then we can say $\hat{\bs{X}}(\bs{Y}) = \bs{W}\bs{Y}$ where $\bs{W}$ is some matrix.
+In Linear Estimation, we are trying to estimate a random variable $\bs{X}$ using an observation $\bs{Y}$ with a linear function of $\bs{Y}$.
+If $\bs{Y}$ is finite dimensional, then we can say $\hat{\bs{X}}(\bs{Y}) = W\bs{Y}$ where $W$ is some matrix.
 Using \cref{thm:hilbert-projection} and the orthogonality principle, we know that
 \[
-	\ip{\bs{X}-\bs{W}\bs{Y}}{\bs{Y}} = \bs{0} \Leftrightarrow \bs{R}_{XY} = \bs{W}\bs{R}_Y
+	\ip{\bs{X}-W\bs{Y}}{\bs{Y}} = \bs{0} \Leftrightarrow R_{XY} = W\bs{R}_Y
 \]
 This is known as the \textbf{Normal Equation}.
-If $\bs{R}_Y$ is invertible, then we can apply the inverse to find $\bs{W}$.
-Otherwise, we can apply the pseudoinverse $\bs{R}_Y^\dagger$ to find $\bs{W}$, which may not be unique.
+If $R_Y$ is invertible, then we can apply the inverse to find $W$.
+Otherwise, we can apply the pseudoinverse $R_Y^\dagger$ to find $W$, which may not be unique.
 If we want to measure the quality of the estimation, since $\bs{X} = \bs{X}+(\bs{X}-\hat{\bs{X}})$,
 \begin{align*}
 	\|\bs{X}\|^2 &= \|\hat{\bs{X}}\|^2 + \|\bs{X} - \hat{\bs{X}}\|^2 \implies \\
-	\|\bs{X}-\hat{\bs{X}}\|^2 &= \|\bs{X}\|^2 - \|\hat{\bs{X}}\|^2 = \bs{R}_X - \bs{R}_{XY}\bs{R}_Y^{-1}\bs{R}_{YX}
+	\|\bs{X}-\hat{\bs{X}}\|^2 &= \|\bs{X}\|^2 - \|\hat{\bs{X}}\|^2 = R_X - R_{XY}R_Y^{-1}R_{YX}
 \end{align*}
 \subsection{Affine Estimation}
-If we allow ourselves to consider an affine function for estimation $\hat{\bs{X}}(\bs{Y}) = \bs{W}\bs{Y}+b$, then this is equivalent to instead finding an estimator
+If we allow ourselves to consider an affine function for estimation $\hat{\bs{X}}(\bs{Y}) = W\bs{Y}+b$, then this is equivalent to instead finding an estimator
 \[
-	\hat{\bs{X}}(\bs{Y}') = \bs{W}\bs{Y}' \qquad \text{ where } \bs{Y}' = \begin{bmatrix} \bs{Y} \\ 1 \end{bmatrix}
+	\hat{\bs{X}}(\bs{Y}') = W\bs{Y}' \qquad \text{ where } \bs{Y}' = \begin{bmatrix} \bs{Y} \\ 1 \end{bmatrix}
 \]
 
 This is equivalent to the following orthogonality conditions:
@@ -69,16 +69,16 @@ This is equivalent to the following orthogonality conditions:
 \end{enumerate}
 Solving gives us
 \[
-	\hat{\bs{X}}(\bs{Y}) = W(\bs{Y}-\bs{\mu}_Y) + \mu_x \qquad \text{ where } \bs{W}\bs{\Sigma}_Y=\bs{\Sigma}_{XY}.
+	\hat{\bs{X}}(\bs{Y}) = W(\bs{Y}-\bs{\mu}_Y) + \mu_x \qquad \text{ where } W\Sigma_Y=\Sigma_{XY}.
 \]
-$\bs{\Sigma}_Y$ and $\bs{\Sigma}_{XY}$ are the auto-covariance and cross-covariance respectively.
+$\Sigma_Y$ and $\Sigma_{XY}$ are the auto-covariance and cross-covariance respectively.
 Recall that if \[
-	\begin{bmatrix} \bs{X} \\ \bs{Y} \end{bmatrix} \sim \mathcal{N}\left(\begin{bmatrix} \bs{\mu}_X \\ \bs{\mu}_Y \end{bmatrix}, \begin{bmatrix} \bs{\Sigma}_X & \bs{\Sigma}_{XY}\\ \bs{\Sigma}_{YX} & \bs{\Sigma}_Y \end{bmatrix}\right)
+	\begin{bmatrix} \bs{X} \\ \bs{Y} \end{bmatrix} \sim \mathcal{N}\left(\begin{bmatrix} \bs{\mu}_X \\ \bs{\mu}_Y \end{bmatrix}, \begin{bmatrix} \Sigma_X & \Sigma_{XY}\\ \Sigma_{YX} & \Sigma_Y \end{bmatrix}\right)
 \]
 then \[
-	\bs{X}|\bs{Y} \sim \mathcal{N}\left(\bs{\mu}_X + \bs{\Sigma}_{XY}\bs{\Sigma}_Y^{-1}(\bs{Y}-\bs{\mu}_Y), \bs{\Sigma}_X-\bs{\Sigma}_{XY}\bs{\Sigma}_Y^{-1}\bs{\Sigma}_{YX} \right)
+	\bs{X}|\bs{Y} \sim \mathcal{N}\left(\bs{\mu}_X + \Sigma_{XY}\Sigma_Y^{-1}(\bs{Y}-\bs{\mu}_Y), \Sigma_X-\Sigma_{XY}\Sigma_Y^{-1}\Sigma_{YX} \right)
 \]
-The mean is the best affine estimator of $\bs{X}$, and the covariance is the estimation error.
+Thus in the Joint Gaussian case, the mean of the conditional distribution is the best affine estimator of $\bs{X}$ using $\bs{Y}$, and the covariance is the estimation error.
 This has two interpretations.
 \begin{enumerate}
 	\item Under the Gaussian assumption, the best nonlinear estimator $\expect{\bs{X}|\bs{Y}}$ is affine
@@ -89,7 +89,7 @@ The theory of linear estimation is very closely connected with the theory behind
 In least squares, we have a deterministic $\bs{x}$ and assume nothing else about it, meaning we are looking for an unbiased estimator.
 \cref{thm:gauss-markov} tells us how to find the best linear unbiased estimator in a linear setting.
 \begin{theorem}[Gauss Markov Theorem]
-		Suppose that $\bs{Y}=\bs{H}\bs{x}+\bs{Z}$ and $Z$ is zero-mean with $\ip{\bs{Z}}{\bs{Z}} = \bs{I}$, $\bs{H}$ is full-column rank, then $\hat{\bs{x}_b} = (\bs{H}^*\bs{H})^{-1}\bs{H}^*\bs{Y}$ is the best linear unbiased estimator.
+		Suppose that $\bs{Y}=H\bs{x}+\bs{Z}$ and $Z$ is zero-mean with $\ip{\bs{Z}}{\bs{Z}} = \bs{I}$, $H$ is full-column rank, then $\hat{\bs{x}_b} = (H^*H)^{-1}H^*\bs{Y}$ is the best linear unbiased estimator.
 	\label{thm:gauss-markov}
 \end{theorem}
 \section{Discrete Time Random Processes}
@@ -105,9 +105,9 @@ Discrete Time Random Processes have a mean function $\mu_n = \expect{X_n}$ and a
 We call this wide-sense stationary because the mean and covariance do not change as the process evolves.
 In a strict-sense stationary process, the distribution of each random variable in the process would not change.
 \begin{definition}
-	A WSS process $Z\simil \mathcal{WN}(0, \sigma^2)$ is a white noise process with variance $\sigma^2$ if and only if $\expect{Z_n} = 0$ and $\expect{Z_nZ_M^*} = \sigma^2\delta[n, m]$.
-	\label{<+label+>}
-\end{definition}<++>
+	A WSS process $Z\sim \mathcal{WN}(0, \sigma^2)$ is a white noise process with variance $\sigma^2$ if and only if $\expect{Z_n} = 0$ and $\expect{Z_nZ_m^*} = \sigma^2\delta[n, m]$.
+	\label{defn:white-noise-process}
+\end{definition}
 \subsection{Spectral Density}
 Recall that the Discrete Time Fourier Transform is given by \[
 	X(e^{j\omega}) = \sum_{n=-\infty}^{\infty}x[n]e^{-j\omega n}.
@@ -137,7 +137,7 @@ This class covers most real-world signals.
 \end{definition}
 The $l^2$ class contains important functions such as $\sinc$.
 \begin{theorem}
-	If $x[n]$ is a $l^2$ signal, then the DTFT $X(e{j\omega})$ is defined almost everywhere and only converges in the mean-squared sense:
+	If $x[n]$ is a $l^2$ signal, then the DTFT $X(e^{j\omega})$ is defined almost everywhere and only converges in the mean-squared sense:
 	\[
 		\lim_{N\to\infty} \int_{-\pi}^{\pi}\left|\left(\sum_{k=-N}^N x[k]e^{-j\omega n}\right) - X(\omega)\right|^2d\omega = 0
 	\]
@@ -155,51 +155,51 @@ Suppose we want to characterize the signal using its DTFT.
 The autocorrelation of $x[n]$, given by $a[n] = x[n] * x^*[-n]$, is closely related to the energy of the signal since $a[0] = \sum_{n\in\mathbb{Z}}|x(n)|^2$.
 \begin{definition}
 	The Energy Spectral Density $x[n]$ with auto-correlation $a[n]$ is given by \[
-		A(\omega) = \sum_{n\in\mathbb{Z}}a[n]e^{j\omega n}
+		A(e^{j\omega}) = \sum_{n\in\mathbb{Z}}a[n]e^{-j\omega n}
 	\]
 	\label{defn:esd}
 \end{definition}
-We call the DTFT of the autocorrelation the energy spectral density because by the Inverse DTFT, \[
-	a[0] = \frac{1}{2\pi}\int_{-\pi}^{\pi}A(\omega)d\omega.
+We call the DTFT of the autocorrelation the energy spectral density because, by the Inverse DTFT, \[
+	a[0] = \frac{1}{2\pi}\int_{-\pi}^{\pi}A(e^{j\omega})d\omega.
 \]
-Since summing over each frequency gives us the energy spectral density, we can think of $A(\omega)$ as storing the energy density of each spectral component of the signal.
+Since summing over each frequency gives us the energy, we can think of $A(e^{j\omega})$ as storing the energy density of each spectral component of the signal.
 We can apply this same idea to wide-sense stationary stochastic processes.
 \begin{definition}
 	The Power Spectral Density of a Wide-Sense Stationary random process is given by \[
-		S_X(\omega) = \sum_{k\in\mathbb{Z}}R_X(k)e^{-j\omega k}.
+		S_X(e^{j\omega}) = \sum_{k\in\mathbb{Z}}R_X(k)e^{-j\omega k}.
 	\]
 	\label{defn:psd}
 \end{definition}
 Note that when considering stochastic signals, the metric changes from energy to power.
-This is because stochastic processes are not generally $l_2$, and if $X_n$ is Wide-Sense Stationary, then \[
-	\expect{\sum_{n\in\mathbb{Z}}|x(n)|^2} = \infty,
+This is because if $X_n$ is Wide-Sense Stationary, then \[
+	\expect{\sum_{n\in\mathbb{Z}}|X_n|^2} = \infty,
 \]
 so energy doesn't even make sense.
 To build our notion of power, let $A_T(\omega)$ be a truncated DTFT of the auto-correlation of a wide-sense stationary process, then
 \begin{align*}
-	\lim_{T\to\infty} \frac{\expect{A_T(\omega)}}{2T + 1} &= \lim_{T\to\infty}\frac{1}{2T+1}\left(\sum_{n=-T}^Tx[n]e^{-j\omega n}\right)\left(\sum_{m=-T}^Tx^*[m]e^{j\omega m}\right)\\
-	&= \lim_{T\to\infty}	\frac{1}{2\pi} \sum_{n,m \in [-T,T]}\expect{x[n]x^*[m]}e^{-j\omega(n-m)}\\
-	&= \lim_{T\to\infty}	\frac{1}{2\pi} \sum_{n,m \in [-T,T]}R_x(n-m)e^{-j\omega(n-m)}\\
+	\lim_{T\to\infty} \frac{\expect{A_T(e^{j\omega})}}{2T + 1} &= \lim_{T\to\infty}\frac{1}{2T+1}\left(\sum_{n=-T}^Tx[n]e^{-j\omega n}\right)\left(\sum_{m=-T}^Tx^*[m]e^{j\omega m}\right)\\
+	&= \lim_{T\to\infty}	\frac{1}{2T+1} \sum_{n,m \in [-T,T]}\expect{x[n]x^*[m]}e^{-j\omega(n-m)}\\
+	&= \lim_{T\to\infty}	\frac{1}{2T+1} \sum_{n,m \in [-T,T]}R_x(n-m)e^{-j\omega(n-m)}\\
 	&= \lim_{T\to\infty} \sum_{k=-2T}^{2T}R_X(k)e^{-j\omega k}\left(1 - \frac{|k|}{2T+1}\right)\\
 	&= \sum_{k=-\infty}^{\infty}R_X(k)e^{-j\omega k}
 \end{align*}
 The DTFT of the auto-correlation function naturally arises out of taking the energy spectral density and normalizing it by time (the truncated sequence is made of $2T+1$ points).
 In practice, this means to measure the PSD, we need to either use the distribution of the signal to compute $R_X$, or estimate the $PSD$ by averaging multiple realizations of the signal.
 
-The inverse DTFT formula tells us that we can represent a deterministic, discrete-time signal $x[n]$ as a sum of complex exponentials weighted by $\frac{X(\omega)d\omega}{2\pi}$.
+The inverse DTFT formula tells us that we can represent a deterministic, discrete-time signal $x[n]$ as a sum of complex exponentials weighted by $\frac{X(e^{j\omega})d\omega}{2\pi}$.
 This representation has an analog for stochastic signals as well.
 \begin{theorem}[Cramer-Khinchin]
 	For a complex-valued WSS stochastic process $X_n$ with power spectral density $S_X(\omega)$, there exists a unique right-continuous stochastic process $F(\omega), \omega\in(-\pi,\pi]$ with square-integrable, orthogonal increments such that \[
 		X_n = \int_{-\pi}^{\pi}e^{j\omega n}dF(\omega)
 	\] where for any interval $[\omega_1,\omega_2], [\omega_3, \omega_4]\subset [-\pi,\pi]$, \[
 		\expect{(F(\omega_2)-F(\omega_1))(F(\omega_4) - F(\omega_3))^*} = f((\omega_1,\omega_2] \cap (\omega_3, \omega_4])
-	\] where $f$ is the structural measure of the stochastic process and has Radon-Nikodym derivative $\frac{S_X(\omega)}{2\pi}$.
+	\] where $f$ is the structural measure of the stochastic process and has Radon-Nikodym derivative $\frac{S_X(e^{j\omega})}{2\pi}$.
 	\label{thm:cramer-khinchin}
 \end{theorem}
 Besides giving us a decomposition of a WSS random process, \cref{thm:cramer-khinchin} tells a few important facts.
 \begin{enumerate}
 	\item $\omega_1\neq\omega_2 \implies \langle dF(\omega_1), dF(\omega_2) \rangle = 0$ (i.e different frequencies are uncorrelated).
-	\item $\expect{|dF(\omega)|^2} = \frac{S_X(\omega)}{2\pi}$
+	\item $\expect{|dF(\omega)|^2} = \frac{S_X(e^{j\omega})d\omega}{2\pi}$
 \end{enumerate}
 \subsection{Z-Spectrum}
 Recall that the Z-transform converts a discrete-time signal into a complex representation.
@@ -218,13 +218,20 @@ We can compute $r$ and $R$ using the signal $x[n]$.
 	r = \limsup_{n\to\infty} |x[n]|^{\frac{1}{n}}, \qquad \frac{1}{R} = \limsup_{n\to\infty}|x[-n]|^{\frac{1}{n}}.
 \]
 In some cases, it can be useful to only compute the Z-transform of the right side of the signal.
-% TODO: Show how to get unilateral Z from bilateral Z
 \begin{definition}
 	The unilateral Z-transform of a sequence $x[n]$ is given by \[
 		\trunc{X(z)} = \sum_{n=0}^\infty x[n]z^{-n}
 	\]
 	\label{defn:unilateral-z-transform}
 \end{definition}
+If the Z-transform of the sequence is a rational function, then we can quickly compute what the unilateral Z-transform will be by leveraging its partial fraction decomposition.
+\begin{theorem}
+	Any arbitrary rational function	$H(z)$ with region of convergence including the unit circle corresponds with the unilateral Z-transform \[
+		\trunc{H(z)} = r_0 + \sum_{i=1}^m\sum_{k=1}^{l_i}\frac{r_{ik}}{(z+\alpha_i)^k} + \sum_{i=m+1}^n\sum_{k=1}^{l_i}\frac{r_{ik}}{\beta_i^k}
+	\]
+	where $|\alpha_i| < 1 < |\beta_i|$.
+	\label{thm:unilateral-z}
+\end{theorem}
 \begin{definition}
 	For two jointly WSS processes $X_n, Y_n$, the z-cross spectrum is the Z-Transform of the correlation function $R_{YX}(k) = \expect{Y_nX^*_{n-k}}$.
 	\[
@@ -254,7 +261,7 @@ Using the assumptions built into $\cref{defn:spectral-factorization}$, we can fi
 \[
 	S_Y(z) = r_e \frac{\prod_{i=1}^m(z-\alpha_i)(z^{-1}-\alpha_i^*)}{\prod_{i=1}^n(z-\beta_i)(z^{-1}-\beta_i^*)}\quad |\alpha_i| < 1, |\beta_i| < 1, r_e > 0.
 \]
-We can if we let the $z - \alpha_i$ and $z-\beta_i$ terms be part of $L(z)$, then
+If we let the $z - \alpha_i$ and $z-\beta_i$ terms be part of $L(z)$, then
 \[
 	L(z) = z^{n-m}\frac{\prod_{i=1}^m(z-\alpha_i)}{\prod_{i=1}^n(z-\beta_i)}.
 \]
@@ -283,17 +290,16 @@ If we think of our signal as a discrete time random process, then like a normal 
 This gives us an interesting interpretation of the spectral factorization $(\cref{defn:spectral-factorization})$ since it essentially passing a WSS process with auto-correlation $R_W(k) = r_e\delta[n]$ through a minimum-phase filter with transfer function $L(z)$.
 \subsection{Wiener Filter}
 Suppose we have a stochastic WSS process $Y_n$ that is jointly WSS with $X_n$ and that we want to find the best linear estimator of $X_n$ using $Y_n$.
-% TODO: Why do we use the same coefficients for each $X(n)$? Do the proof, or see the proof
 The best linear estimator of $X_n$ given the observations $Y_n$ can be written as \[
 	\hat{X}_n = \sum_{m\in\mathbb{Z}}h(m)Y_{n-m} = h[n] * Y_n.
 \]
 This is identical to passing $Y_n$ through an LTI filter.
-If we restrict ourselves to using ${Y_i}_{-\infty}^{n}$ to estimate $X_n$, then the best linear estimator can be written as \[
+If we restrict ourselves to using $\{Y_i\}_{i=-\infty}^{n}$ to estimate $X_n$, then the best linear estimator can be written as \[
 	\hat{X}_n = \sum_{m=0}^\infty h(m)Y_{n-m} = h[n] * Y_n.
 \]
 It is identical to passing $Y_n$ through a causal LTI filter.
 Since we are trying to find a best linear estimator, it would be nice if each of the random variables we are using for estimating were uncorrelated with each other.
-In other words, instead of using $Y$ directly, we want to transform $Y$ into a new process $W$ where $R_W(k) = 1$.
+In other words, instead of using $Y$ directly, we want to transform $Y$ into a new process $W$ where $R_W(k) = \delta[k]$.
 This transformation is known as whitening.
 From the spectral factorization of $Y$, we know if we use the filter $G(z) =\frac{1}{S_Y^+(z)}$ then \[
 	S_W(z) = \frac{S_Y(z)}{S_Y^+(z)S_Y^{+*}(z^{-*})} = \frac{S_Y(z)}{S_Y^+(z)S_Y^-(z)} = 1.
@@ -319,11 +325,11 @@ Now we want to find the best linear estimator of $X$ using our new process $W$ b
 Starting with noncausal case, we can apply the orthogonality principle,
 \begin{align*}
 	\expect{(X_n-\hat{X}_n)W_{n-k}^*} = 0 &\implies \expect{X_nW^*_{n-k}} = \sum_{m\in\mathbb{Z}}q(m)\expect{W_{n-m}W^*_{n-k}}\\
-	\therefore R_{XW}(k) = \sum_{m\in\mathbb{Z}}h(m)R_W(k-m) &\implies S_{XW}(z) = Q(z)S_W(z)\\
+	\therefore R_{XW}(k) = \sum_{m\in\mathbb{Z}}q(m)R_W(k-m) &\implies S_{XW}(z) = Q(z)S_W(z)\\
 	\therefore Q(z) = \frac{S_{XW}(z)}{S_W(z)} = S_{XW}(z) &= S_{XY}(z)(S_Y^+(z^{-*}))^{-*} = \frac{S_{XY}(z)}{S_Y^-(z)}
 \end{align*}
 When we cascade these filters, \[
-	H(z) = G(z)Q(z) = \frac{1}{S_Y^+(z)}\frac{S_{XY}(z)}{S_Y^-(z)} = \frac{S_{XY}(z)}{S_Y(z)}.
+	H(z) = Q(z)G(z) = \frac{S_{XY}(z)}{S_Y^-(z)} \frac{1}{S_Y^+(z)}= \frac{S_{XY}(z)}{S_Y(z)}.
 \]
 \begin{definition}
 	The best linear estimator of $X_n$ using $Y_n$ where $(X_n, Y_n)$ is jointly WSS is given by the non-causal Wiener filter.
@@ -332,7 +338,7 @@ When we cascade these filters, \[
 	\]
 	\label{defn:noncausal-wiener}
 \end{definition}
-If we interpret \cref{defn:noncausal-wiener} in the frequency domain, for a specific $\omega$, we can understand $H(e^{j\omega})$ an optimal linear estimator for $F_X(\omega)$ where $F_X(\omega)$ is the the stochastic process given by the Cramer-Khinchin decomposition (\cref{thm:cramer-khinchin}).
+If we interpret \cref{defn:noncausal-wiener} in the frequency domain, for a specific $\omega$, we can understand $H(e^{j\omega})$ as an optimal linear estimator for $F_X(\omega)$ where $F_X(\omega)$ is the the stochastic process given by the Cramer-Khinchin decomposition (\cref{thm:cramer-khinchin}).
 More specifically, we can use the Cramer-Khinchin decomposition of $Y_n$.
 \begin{align*}
 	\hat{X}_n &= \sum_{i\in\mathbb{Z}}h[i]\int_{-\pi}^\pi e^{j\omega(n-i)}dF_Y(\omega)\\
@@ -343,7 +349,7 @@ Since $F_X$ and $F_Y$ have jointly orthogonal increments, this tells us that $H(
 $dF_X(\omega)$ and $dF_Y(\omega)$ exist on a Hilbert space, meaning we are essentially projecting each frequency component of $X_n$ onto the corresponding frequency component of $Y_n$.
 \subsubsection{Causal Case}
 First, note that in the causal case, whitening doesn't break causality because $\frac{1}{S_Y^+(z)}$ is causal.
-In the causal case, when we apply the orthogonality principle,
+When we apply the orthogonality principle,
 \begin{align*}
 	\expect{(X_n-\hat{X}_n)W_{n-k}^*} = 0 &\implies \expect{X_nW^*_{n-k}} = \sum_{m=0}^\infty q(m)\expect{W_{n-m}W^*_{n-k}}\\
 	\therefore R_{XW}(k) &= \sum_{m = 0}^\infty q[m]R_W(k-m) \qquad k \geq 0
@@ -354,15 +360,15 @@ Instead, we can look at the function \[
 \]
 Taking the unilateral Z-transform of both sides,
 \begin{align*}
-	\trunc{F(z)} &= \trunc{S_{XW}(z) - S_W(z)Q(z)} = \trunc{S_{XW}(z)} - Q(z)\\
-	Q(z) &= \trunc{S_{XQ}(z)} = \trunc{\frac{S_{XY}(z)}{S_Y^-(z)}}
+	\trunc{F(z)} &= \trunc{S_{XW}(z) - S_W(z)Q(z)} = \trunc{S_{XW}(z)} - Q(z) = 0\\
+	Q(z) &= \trunc{S_{XW}(z)} = \trunc{\frac{S_{XY}(z)}{S_Y^-(z)}}
 \end{align*}
 Thus the filter $H$ which gives the causal best linear estimator of $X$ using $Y$ is \[
-	H(z) = G(z)Q(z) = \frac{1}{S_Y^+(z)}\trunc{\frac{S_{XY}(z)}{S_Y^-(z)}}.
+	H(z) = Q(z) G(z)= \trunc{\frac{S_{XY}(z)}{S_Y^-(z)}}\frac{1}{S_Y^+(z)}.
 \]
 \begin{definition}
-	The best linear estimator of $X_n$ using ${Y_i}_{-\infty}^{n}$ is given by the causal Wiener filter. \[
-		H(z) = G(z)Q(z) = \frac{1}{S_Y^+(z)}\trunc{\frac{S_{XY}(z)}{S_Y^-(z)}}.
+	The best linear estimator of $X_n$ using $\{Y_i\}_{i=-\infty}^{n}$ is given by the causal Wiener filter. \[
+		H(z) = Q(z)G(z) = \trunc{\frac{S_{XY}(z)}{S_Y^-(z)}}\frac{1}{S_Y^+(z)}.
 	\]
 	\label{defn:causal-wiener}
 \end{definition}
