@@ -111,12 +111,13 @@ In least squares, we have a deterministic $\bs{x}$ and assume nothing else about
 		Suppose that $\bs{Y}=H\bs{x}+\bs{Z}$ and $Z$ is zero-mean with $\ip{\bs{Z}}{\bs{Z}} = \bs{I}$, $H$ is full-column rank, then $\hat{\bs{x}_b} = (H^*H)^{-1}H^*\bs{Y}$ is the best linear unbiased estimator.
 	\label{thm:gauss-markov}
 \end{theorem}
-\section{Wide-Sense Stationary Random Processes}
+\section{Discrete Time Random Processes}
 \begin{definition}
 	A Discrete-Time Random Process is a countably infinite collection of random variables on the same probability space $\{X_n: n\in\mathbb{Z}\}$.
 	\label{defn:discrete-time-rp}
 \end{definition}
 Discrete Time Random Processes have a mean function $\mu_n = \expect{X_n}$ and an auto-correlation function $R_X(n_1, n_2) = \expect{X_{n_1}X_{n_2}^*}$
+\subsection{Wide-Sense Stationary Random Processes}
 \begin{definition}
 	A Wide-Sense Stationary Random Process is a disrete-time random process with constant mean, finite variance, and an autocorrelation function that can be re-written to only depend on $n_1-n_2$.
 	\label{defn:wss-process}
@@ -127,7 +128,7 @@ In a strict-sense stationary process, the distribution of each random variable i
 	A WSS process $Z\sim \mathcal{WN}(0, \sigma^2)$ is a white noise process with variance $\sigma^2$ if and only if $\expect{Z_n} = 0$ and $\expect{Z_nZ_m^*} = \sigma^2\delta[n, m]$.
 	\label{defn:white-noise-process}
 \end{definition}
-\subsection{Spectral Density}
+\subsubsection{Spectral Density}
 Recall that the Discrete Time Fourier Transform is given by \[
 	X(e^{j\omega}) = \sum_{n=-\infty}^{\infty}x[n]e^{-j\omega n}.
 \]
@@ -220,7 +221,7 @@ Besides giving us a decomposition of a WSS random process, \cref{thm:cramer-khin
 	\item $\omega_1\neq\omega_2 \implies \langle dF(\omega_1), dF(\omega_2) \rangle = 0$ (i.e different frequencies are uncorrelated).
 	\item $\expect{|dF(\omega)|^2} = \frac{S_X(e^{j\omega})d\omega}{2\pi}$
 \end{enumerate}
-\subsection{Z-Spectrum}
+\subsubsection{Z-Spectrum}
 Recall that the Z-transform converts a discrete-time signal into a complex representation.
 It is given by \[
 	X(z) = \sum_{n=-\infty}^{\infty}x[n]z^{-n}.
@@ -285,9 +286,9 @@ If we let the $z - \alpha_i$ and $z-\beta_i$ terms be part of $L(z)$, then
 	L(z) = z^{n-m}\frac{\prod_{i=1}^m(z-\alpha_i)}{\prod_{i=1}^n(z-\beta_i)}.
 \]
 %%TODO: Kolomogorov-Szego? Wold decomposition?
-\section{Hidden Markov Processes}
+\subsection{Markov Processes}
 \begin{definition}
-	We say that random variables $X, Y, Z$ form a Markov Triple $\markov{X}{Y}{Z}$ if and only if $X$ and $Z$ are conditionall independent on $Y$
+	We say that random variables $X, Y, Z$ form a Markov Triplet $\markov{X}{Y}{Z}$ if and only if $X$ and $Z$ are conditionall independent on $Y$
 	\label{defn:markov-triplet}
 \end{definition}
 Mathematically, Markov triplets satisfy three properties.
@@ -309,6 +310,29 @@ To simplify notation, we can define $X_m^n = \left(X_m,X_{m+1},\cdots, X_n\right
 Because of the conditional independence property, we can write the joint distribution of all states in the Markov process as \[
 	p(x^n) = \prod_{t=1}^n p(x_t|x^{t-1}) = \prod_{t=1}^np(x_t|x_{t-1}).
 \]
+The requirement for $\markov{X}{Y}{Z}$ to satisfy $p(x, y, z) = p(x)p(y|x)p(z|y)$ is a very strict requirement.
+If we wanted to create a ``wider'' requirement of Markovity, then we could settle for $\hat{X}(Y) = \hat{X}(Y, Z)$ where $\hat{X}$ is the best linear estimator of $X$ since this property is satisfied by all Markov triplets, but does not imply a Markov Triplet.
+\begin{definition}
+	Random variables $X, Y, Z$ form a Wide Sense Markov Triplet $\markov{X}{Y}{Z}$ if and only if the best linear estimator of X given Y is identical to the best linear estimator of X given Y and Z.
+	\[
+		\hat{X}(Y) = \hat{X}(Y, Z)
+	\]
+	\label{defn:wss-markov-triplet}
+\end{definition}
+\begin{definition}
+	A stochastic process $\{Y_i\}_{i=0}^n$ is a Wide-Sense Markov Process if and only if for any $1 \leq i \leq n - 1$, $\markov{Y_{i+1}}{Y_i}{Y^{i-1}}$ forms a Wide-Sense Markov Triplet.
+	\label{defn:ws-markov}
+\end{definition}
+All Wide-Sense Markov models have a very succint representation.
+\begin{theorem}
+	A process $\bs{X}$ is Wide-Sense Markov if and only if $\bs{X}_{i+1} = F_i \bs{X}_i + G_i \bs{U}_i$ and \[
+		\ip{\begin{bmatrix} U_i \\ \bs{X}_0 \end{bmatrix}}{\begin{bmatrix} U_j \\ \bs{X}_0 \end{bmatrix}} = \begin{bmatrix} Q_i \delta[i-j] & 0\\
+			0 & \Pi_0
+		\end{bmatrix}
+	\]
+	\label{thm:ws-markov}
+\end{theorem}
+\subsubsection{Hidden Markov Processes}
 \begin{definition}
 	If $\{X_n\}_{n\geq1}$ is a Markov Process, then $\{Y_n\}_{n\geq1}$ is a Hidden Markov Process if we can factorize the conditional probability density
 	\[
@@ -331,11 +355,11 @@ Undirected graphical models of Hidden Markov Processes are useful because they l
 	For 3 disjoint sets $S_1, S_2, S_3$ of notes in a graphical model, if any path from $S_1$ to $S_3$ passes through a node in $S_2$, then $\markov{S_1}{S_2}{S_3}$.
 	\label{thm:graphic-triplet}
 \end{theorem}
-\section{State-Space Models}
-Suppose we have a discrete-time random process which evolves in a regressive fashion, meaning the current state depends in some way on the previous state.
-We can express this regression with a set of equations.
+\subsubsection{State-Space Models}
+Suppose we have a discrete-time random process which evolves in a recursive fashion, meaning the current state depends in some way on the previous state.
+We can express this recursion with a set of equations.
 \begin{definition}
-	The standard state space model describes random processes which describe the evolution of state vectors $\bs{X}_i$ and observation vectors $Y_i$ according to the equations
+	The standard state space model describes random processes which describe the evolution of state vectors $\bs{X}_i$ and observation vectors $\bs{Y}_i$ according to the equations
 	\[
 		\begin{cases}
 			\bs{X}_{i+1} = F_i \bs{X}_i + G_i \bs{U}_i\\
@@ -344,7 +368,7 @@ We can express this regression with a set of equations.
 	\]
 	with initial condition
 	\[
-		\ip{\begin{bmatrix}\bs{X}_0 \\ U_i \\ V_i\end{bmatrix}}{\begin{bmatrix}\bs{X}_0 \\ U_j \\ V_j\end{bmatrix}} = \begin{bmatrix}
+		\ip{\begin{bmatrix}\bs{X}_0 \\ \bs{U}_i \\ \bs{V}_i\end{bmatrix}}{\begin{bmatrix}\bs{X}_0 \\ \bs{U}_j \\ \bs{V}_j\end{bmatrix}} = \begin{bmatrix}
 			\Pi_0 & 0 & 0\\
 			0 & Q_i\delta[i-j] & S_i\delta[i-j]\\
 			0 & S_i^*\delta[i-j] & R_i\delta[i-j]
@@ -352,6 +376,7 @@ We can express this regression with a set of equations.
 	\]
 	\label{defn:state-space-model}
 \end{definition}
+From \cref{thm:ws-markov}, we can easily see that state space models are Wide-Sense Markov.
 Note that $U_i$ and $V_i$ are white noise, and that the dynamics of the system can change at every time step.
 From these equations, we can derive six different properties.
 Let $\Pi_i = \ip{\bs{X}_i}{\bs{X}_i}$ and $\Phi_{i,j} = \prod_{k=j}^{i-1}F_k$ and $\Phi_{i,u} = I$.
@@ -390,7 +415,7 @@ If we think of our signal as a discrete time random process, then like a normal 
   \label{fig:lti-filtering}
 \end{figure}
 \end{gitbook-image}
-Filtering can either be accomplished with an LTI system or some other non-linear system just like with deterministic signals.
+Filtering can either be accomplished with an LTI system or some other non-linear/non-time-invariant system just like with deterministic signals.
 \subsection{LTI Filtering on WSS Processes}
 If we use an LTI filter on a WSS process, then we can easily compute how the filter impacts the spectrum of the signal.
 \begin{theorem}
@@ -548,8 +573,8 @@ Now we have a recursive algorithm for computing the distribution of $x_t$.
 	\SetAlgoLined
 	$\beta_1(x_1) = p(x_1)$\;
 	\For{$t \geq 1$}{
-		$\alpha_t(x_t) = p(x_t|y^t) = \frac{\beta_t(x_t)p(y_t|x_t)}{\sum_x \beta_t(x)p(y_t|x_t)}$ (Measurement Update)\;
-		$\beta_{t+1}(x_{t+1}) = p(x_t|y^{t-1}) = \sum_x \alpha_t(x)p(x_{t+1}|x_t=x)$ (Time Update)\;
+		$\alpha_t(x_t) = p(x_t|y^t) = \frac{\beta_t(x_t)p(y_t|x_t)}{\sum_x \beta_t(x)p(y_t|x_t = x)}$ (Measurement Update)\;
+		$\beta_{t+1}(x_{t+1}) = p(x_{t+1}|y^{t}) = \sum_x \alpha_t(x)p(x_{t+1}|x_t=x)$ (Time Update)\;
 	}
 	\caption{Forward Recursion}
 \end{algorithm}
@@ -591,7 +616,6 @@ We see that there is a recursion in the joint distribution, so if we let $V_t(x_
 	&= p(y_t|x_t)\max_{x^{t-1}}p(x_t|x_{t-1}) V_{t-1}(x_{t-1})
 \end{align*}
 The base case is that $V_1(x_1) = p(x_1)p(y_1|x_1)$.
-% TODO: Understand this better
 $V_t$ is useful because $\hat{x}_n = \argmax_{x_n}V_n(x_n)$.
 This is because we can first maximize over $\hat{X}^{n-1}$ and $Y^n$, so the only thing left to maximize is $\hat{x}_n$.
 Once we have $\hat{x}_t$, then we can comptue $\hat{x}_{t-1}$ by \[
@@ -607,9 +631,161 @@ Putting these equations gives us the Viterbi algorithm.
 	}
 	$\hat{x}_n = \argmax_{x_n} V_n(x_n)$\;
 	\For{$t=n$ \KwTo $2$}{
-		$\hat{x}^{t-1} = \argmax_{x_{t-1}} p(\hat{x}_t|x_{t-1})V_{t-1}(x_{t-1})$\;
+		$\hat{x}_{t-1} = \argmax_{x} p(\hat{x}_t|x_{t-1} = x)V_{t-1}(x)$\;
 	}
 	\caption{Viterbi Algorithm}
+\end{algorithm}
+\subsection{Kalman Filtering}
+In the Kalman Filter setup, we assume that the signal we would like to filter can be represented by a state-space model.
+We want to predict the state vectors $\bs{\hat{X}}_i$ using some linear combination of the observations $\bs{Y}_i$.
+\subsubsection{Kalman Prediction Filter}
+Suppose that we want to compute the one-step prediction.
+In other words, given $\bs{Y}^i$, we want to predict $\bs{\hat{X}}_{i+1}$.
+Our observations $\bs{Y}$ are the only thing which give us information about the state, so it would be nice if we could de-correlate all of the $\bs{Y}$.
+To do this, we can define the innovation process \[
+	\bs{e}_i = \bs{Y}_i - \bs{\hat{Y}_{i|i-1}} = \bs{Y}_i - F_i\bs{\hat{X}}_{i|i-1}
+\]
+The last equality follows from the state-space modela and that past observation noises are uncorrelated with the current one.
+Now, to compute the one-step prediction, we just need to project $\bs{\hat{X}}_i$ onto the innovations.
+\begin{align*}
+	\bs{\hat{X}}_{i+1|i} &= \sum_{j=0}^i\ip{\bs{X}_{i+1}}{\bs{e}_j}R_{\bs{e},j}^{-1}\bs{e}_j \\
+	&= \ip{\bs{X}_{i+1}}{\bs{e}_{i}}R_{\bs{e},i}^{-1}\bs{e}_i + \sum_{j=0}^{i-1}\ip{\bs{X}_{i+1}}{\bs{e}_j}R_{\bs{e},j}^{-1}\bs{e}_j\\
+	&= \ip{\bs{X}_{i+1}}{\bs{e}_{i}}R_{\bs{e},i}^{-1}\bs{e}_i + \bs{\hat{X}}_{i+1|i-1} = \ip{\bs{X}_{i+1}}{\bs{e}_{i}}R_{\bs{e},i}^{-1}\bs{e}_i + \bs{\hat{X}}_{i+1|i}\\
+	&= \ip{\bs{X}_{i+1}}{\bs{e}_{i}}R_{\bs{e},i}^{-1}\bs{e}_i + F_i\bs{\hat{X}}_{i|i-1}
+\end{align*}
+The second to last equality follows from the Wide-Sense Markovity of state space models, and the last equality is due to the state evolution noises being uncorrelated.
+If we let $K_{p,i} = \ip{\bs{X}_{i+1}}{\bs{e}_i}R_{\bs{e},i}^{-1}$ (called the prediction gain), then we have a recursive estimate of the optimal one-step predictor.
+\[
+	\bs{\hat{X}}_{i+1|i} = F_i\bs{\hat{X}}_{i|i-1} + K_{p,i}\bs{e}_i.
+\]
+Now, we just need to find a recursive formulation for $K_{p,i}$ and $R_{\bs{e},i}$.
+Starting with $R_{\bs{e},i}$, notice that we can write $\bs{e}_i = \bs{Y}_i-H_i\bs{\hat{X}}_{i|i-1} = H_i(\bs{X}_i-\bs{\hat{X}}_{i|i-1})+\bs{V}_i$.
+\begin{align*}
+	R_{\bs{e},i} &= \ip{H_i(\bs{X}_i - \bs{\hat{X}}_{i|i-1})+ \bs{V_i}}{H_i(\bs{X}_i - \bs{\hat{X}}_{i|i-1})+\bs{V_i}}\\
+	&= H_i\ip{\bs{X}_i - \bs{\hat{X}}_{i|i-1}}{\bs{X}_i - \bs{\hat{X}}_{i|i-1}}H_i^* + R_i
+\end{align*}
+To find $K_{p,i}$, we should first find $\ip{\bs{X}_{i+1}}{\bs{e}_i}$.
+\begin{align*}
+	\ip{\bs{X}_{i+1}}{\bs{e}_i} &= F_i\ip{\bs{X}_i}{\bs{e}_i} + G_i\ip{\bs{U}_i}{\bs{e}_i}\\
+	&= F_i\ip{\bs{X}_i}{H_i(\bs{X}_i - \bs{\hat{X}}_{i|i-1})+\bs{V}_i} + \ip{\bs{U}_i}{H_i(\bs{X}_i - \bs{\hat{X}}_{i|i-1})+\bs{V}_i} \\
+	&= F_i\ip{\bs{X}_i}{\bs{X}_i - \bs{\hat{X}}_{i|i-1}}H_i^* + G_iS_i\\
+	&= F_i\ip{(\bs{X}_i - \bs{\hat{X}}_{i|i-1}) + \bs{\hat{X}}_{i|i-1}}{\bs{X}_i - \bs{\hat{X}}_{i|i-1}}H_i^* + G_iS_i\\
+	&= F_i\ip{\bs{X}_i - \bs{\hat{X}}_{i|i-1}}{\bs{X}_i - \bs{\hat{X}}_{i|i-1}}H_i^* + G_iS_i
+\end{align*}
+Notice that the matrix $P_i = \ip{\bs{X}_i - \bs{\hat{X}}_{i|i-1}}{\bs{X}_i - \bs{\hat{X}}_{i|i-1}}$ is the auto-correlation of the estimation error, and it shows up in both $K_{p,i}$ and $R_{\bs{e}_i}$.
+It would be useful to have a recursive solution for this matrix as well.
+\begin{align*}
+	P_{i+1} &= \Pi_{i+1}-\ip{\bs{\hat{X}}_{i+1|i}}{\bs{\hat{X}}_{i+1|i}} \\
+	&= F_i\Pi_iF_i^* + G_iQ_iG_i^* - \ip{F_i\bs{\hat{X}}_{i|i-1}+K_{p,i}\bs{e}_i}{F_i\bs{\hat{X}}_{i|i-1}+K_{p,i}\bs{e}_i}\\
+	&= F_i\Pi_iF_i^* + G_iQ_iG_i^* - F_i\ip{\bs{\hat{X}}_{i|i-1}}{\bs{\hat{X}}_{i|i-1}}F^*+K_{p,i}R_{\bs{e},i}K_{p,i}^*\\
+	&= F_iP_iF_i^* + G_iQ_iG_i^* - K_{p,i}R_{\bs{e},j}K_{p,i}^*
+\end{align*}
+Putting this into a concrete algorithm, we get the Kalman Prediction Filter.
+
+\begin{algorithm}[H]
+	\SetAlgoLined
+	$P_0 = \Pi_0$\;
+	$\bs{\hat{X}}_{0|-1} = 0$\;
+	\For{$i \geq 0$}{
+		$\bs{e}_i = \bs{Y}_i - H_i\bs{\hat{X}}_{i|i-1}$\;
+		$R_{\bs{e},i} = H_iP_iH_i^* + R_i$\;
+		$K_{p,i} = (F_iP_iH_i^* + G_iS_i)R_{\bs{e},i}^{-1}$\;
+		$P_{i+1} = F_iP_iF_i^* + G_iQ_iG_i^* - K_{p,i}R_{\bs{e},i}K_{p,i}^*$\;
+		$\bs{\hat{X}}_{i+1|i} = F_i\bs{\hat{X}}_{i|i-1} + K_{p,i}\bs{e}_i$\;
+	}
+	\caption{Kalman Prediction Filter}
+\end{algorithm}
+\subsubsection{Schmidt's Modification of the Kalman Filter}
+The predictive Kalman filter goes directly from $\bs{\hat{X}}_{i|i-1}$ to $\bs{\hat{X}}_{i+1|i}$ without ever determining $\bs{\hat{X}}_{i|i}$.
+The Schmidt Modification of the Kalman filter separates the predictive kalman filter into two steps, allowing us to estimate the current state.
+\begin{enumerate}
+	\item Measurement Update: Find $\bs{\hat{X}}_{i|i}$ given the latest observation $\bs{Y}_{i}$ and $\bs{\hat{X}}_{i|i-1}$.
+	\item State Evolution (Time) Update: Find $\bs{\hat{X}}_{i+1|i}$ using what we know about the state evolution.
+\end{enumerate}
+This mimics the approach of the forward algorithm for Hidden Markov Models, which separated updates to the distribution using a time update and a measurement update.
+Using our innovation process,
+\begin{align*}
+	\bs{\hat{X}}_{i|i} &= \sum_{j=0}^i \ip{\bs{X}_i}{\bs{e}_j}R_{\bs{e},j}^{-1}\bs{e}_j \\
+	&= \bs{\hat{X}}_{i|i-1} + \ip{\bs{X}_i}{\bs{e}_j}R_{\bs{e},i}^{-1}\bs{e}^j\\
+	&= \bs{\hat{X}}_{i|i-1} + \ip{(\bs{X}_i - \bs{\hat{X}}_{i|i-1}) + \bs{\hat{X}}_{i|i-1}}{H_i(\bs{X}_i - \bs{\hat{X}}_{i|i-1}) + \bs{V}_i}R_{\bs{e},i}^{-1}\bs{e}^j\\
+	&= \bs{\hat{X}}_{i|i-1} + P_iH_i^*R_{\bs{e},i}^{-1}\bs{e}_i
+\end{align*}
+The gain on the coefficient of the innovation $K_{f,i}=P_iH_i^*R_{\bs{e},i}$ is called the Kalman Filter Gain.
+The error of our estimator $P_{i|i} = \ip{\bs{\hat{X}}_{i|i}}{\bs{\hat{X}}_{i|i}}$ is given by \[
+	P_{i|i} = P_i - P_iH_i^*R_{\bs{e},i}^{-1}H_iP_i.
+\]
+For the time update,
+\begin{align*}
+	\bs{\hat{X}}_{i+1|i} &= F_i\bs{\hat{X}}_{i|i} + G_i\bs{\hat{U}}_{i|i} \\
+	&= F_i\bs{\hat{X}}_{i|i} + G_i\ip{\bs{U}_i}{\bs{e}_i}R_{\bs{e},i}^{-1}\bs{e}_i = F_i\bs{\hat{X}}_{i|i} + G_i\ip{\bs{U}_i}{\bs{e}_i}R_{\bs{e},i}^{-1}\bs{e}_i\\
+	&= F_i\bs{\hat{X}}_{i|i} + G_i\ip{\bs{U}_i}{H\bs{X}_i+\bs{V}_i - H_i\bs{\hat{X}}_{i|i-1}}R_{\bs{e},i}^{-1}\bs{e}_i\\
+	&= F_i\bs{\hat{X}}_{i|i} + G_iS_iR_{\bs{e},i}^{-1}\bs{e}_i
+\end{align*}
+We can re-write the error if this estimator $P_{i+1}$ as \[
+	P_{i+1} = F_iP_{i|i}F_i^* + G_i(Q_i - S_iR_{\bs{e},i}^{-1}S_i^*)G_i^* - F_iK_{f,i}S_i^*G_i^* - G_iS_iK_{f,i}^*F_i^*
+\]
+Writing this as an algorithm,
+
+\begin{algorithm}[H]
+	\SetAlgoLined
+	$P_0 = \Pi_0$\;
+	$\bs{\hat{X}}_{0|-1} = 0$\;
+	\For{$i \geq 0$}{
+		$\bs{e}_i = \bs{Y}_i - H_i\bs{\hat{X}}_{i|i-1}$\;
+		$R_{\bs{e},i} = H_iP_iH_i^* + R_i$\;
+		$K_{f,i} = P_iH_i^*R_{\bs{e},i}^{-1}$\;
+		$\bs{\hat{X}}_{i|i} = \bs{\hat{X}}_{i|i-1} + K_{f,i}\bs{e}_i$\;
+		$P_{i|i} = P_i - P_iH_i^*R_{\bs{e},i}^{-1}H_iP_i$\;
+		$\bs{\hat{X}}_{i+1|i} = F_i\bs{\hat{X}}_{i|i} + G_iS_iR_{\bs{e},i}^{-1}\bs{e}_i$\;
+		$P_{i+1} = F_iP_{i|i}F_i^* + G_i(Q_i - S_iR_{\bs{e},i}^{-1}S_i^*)G_i^* - F_iK_{f,i}S_i^*G_i^* - G_iS_iK_{f,i}^*F_i^*$\;
+	}
+	\caption{Kalman Prediction Filter}
+\end{algorithm}
+\subsubsection{Kalman Smoother}
+The Kalman Prediction Filter and Schmidt's modification of the Kalman filter are both causal filters.
+The Kalman Smoother provides a non-causal estimate in the same way that the Backward Recursion algorithm does for Hidden Markov Processes.
+In other words, the Kalman Smoother predicts $\hat{\bs{X}}_{i|n}$, the best linear estimator of $\hat{\bs{X}}_i$ from $\{\bs{Y}_0, \cdots, \bs{Y}_N\}$.
+As before, we can start with the innovation process $\bs{e}_j = \bs{Y}_j - H_j\hat{\bs{X}}_{j|j-1}$.
+\[
+	\hat{\bs{X}}_{i|N} = \sum_{j=0}^N \ip{\bs{X}_i}{\bs{e}_j}R_{e,j}^{-1}\bs{e}_j = \hat{\bs{X}}_{i|i-1} + \sum_{j=i}^N \ip{X_i}{\bs{e}_j}R_{e,j}^{-1}\bs{e}_j.
+\]
+We can compute $\hat{\bs{X}}_{i|i-1}$ using the Predictive Kalman filter, so we just need to compute the $\ip{\bs{X}_i}{\bs{e}_j}R_{e,j}^{-1}\bs{e}_j$.
+\begin{align*}
+	\ip{\bs{X}_i}{\bs{e}_j} &= \ip{\bs{X}_i}{H_j(\bs{X}_i - \hat{\bs{X}}_{j|j-1}) + \bs{V}_j} = \ip{\bs{X}_i}{H_j(\bs{X}_j - \hat{\bs{X}}_{j|j-1})} \\
+	&= \ip{\hat{\bs{X}}_{i|i-1} + (\bs{X}_i - \hat{\bs{X}}_{i|i-1})}{\bs{X}_j - \hat{\bs{X}}_{j|j-1}}H_j^*
+\end{align*}
+$\bs{X}_j - \hat{\bs{X}}_{j|j-1}$ is orthgonal to any linear function of $\{\bs{Y}_0, \cdots, \bs{Y}_{j-1}\}$, so when $j \geq i$, it must be orthgonal to $\hat{\bs{X}}_{i|i-1}$ since it is a function of $\{\bs{Y}_k\}^{i-1}_0$.
+Thus, for $j\geq i$, \[
+	\ip{\bs{X}_i}{\bs{e}_j} = \ip{\bs{X}_i - \hat{\bs{X}}_{i|i-1}}{\bs{X}_j - \hat{\bs{X}}_{j|j-1}}H_j^*
+\]
+If we denote $P_{ij} = \ip{\bs{X}_i - \hat{\bs{X}}_{i|i-1}}{\bs{X}_j - \hat{\bs{X}}_{j|j-1}}$, then \[
+	P_{ij} = P_{i}\Phi_{p}^*(j, i) = P_{i} \begin{cases} I & \text{ if } j =  i\\ \prod_{k=i}^{j-1} F_{p,k} & \text{ if } j > i \end{cases}
+\]
+where $F_{p,k} = (F_k - K_{p, k}H_k)$.
+This gives us the expression \[
+	\hat{\bs{X}}_{i|N} = \hat{\bs{X}}_{i|i-1} + P_i \sum_{j=i}^N \Phi_p^*(j, i)H_i^*R_{e,j}^{-1}\bs{e}_j.
+\]
+If we let $\lambda_{i|N} = \sum_{j=i}^N \Phi_p^*(j, i)H_i^*R_{e,j}^{-1}\bs{e}_j$, then we get the recursion
+\[
+	\lambda{i|N} = F_{p,i}^*\lambda_{i+1|N} + H_i^*R_{e, i}^{-1}\bs{e}_i.
+\]
+If we want to look at the error of this estimator, we see that \[
+	P_{i|N} = P_i - P_i \Lambda_{i|N} P_i \text{ where } \Lambda_{i|N} = \ip{\lambda_{i|N}}{\lambda_{i|N}} = F_{p,i}^*\Lambda_{i+1|N}F_{p,i}+H_i^*R_{e, i}^{-1}H_i.
+\]
+Writing all of this as an algorithm,
+
+\begin{algorithm}[H]
+	\SetAlgoLined
+	Run Kalman Prediction Filter\;
+	$\lambda_{N+1|N} = 0$\;
+	$\Lambda_{N+1|N} = 0$\;
+	\For{$i = N$ \KwTo 0}{
+		$\lambda_{i|N} = F_{p,i}^* \lambda_{i+1|N} + H_i^*R_{e,i}^{-1}\bs{e}_i$\;
+		$\hat{\bs{X}}_{i|N} = \hat{\bs{X}}_{i|i-1} + P_i \lambda_{i|N}$\;
+		$\Lambda_i = F_{p,i}^*\Lambda_{i+1|N}F_{p,i} + H_i^*R_{e,i}^{-1}H_i$\;
+		$P_{i|N} = P_i - P_i\Lambda_{i|N}P_i$\;
+	}
+	\caption{Kalman Smoother Filter}
 \end{algorithm}
 \end{document}
 
