@@ -3,24 +3,25 @@
 \contentsline {section}{\numberline {2}Linear Estimation}{4}{section.2}
 \contentsline {subsection}{\numberline {2.1}Affine Estimation}{5}{subsection.2.1}
 \contentsline {subsection}{\numberline {2.2}Least Squares}{5}{subsection.2.2}
-\contentsline {section}{\numberline {3}Discrete Time Random Processes}{6}{section.3}
-\contentsline {subsection}{\numberline {3.1}Wide-Sense Stationary Random Processes}{6}{subsection.3.1}
-\contentsline {subsubsection}{\numberline {3.1.1}Spectral Density}{6}{subsubsection.3.1.1}
-\contentsline {subsubsection}{\numberline {3.1.2}Z-Spectrum}{9}{subsubsection.3.1.2}
-\contentsline {subsection}{\numberline {3.2}Markov Processes}{11}{subsection.3.2}
-\contentsline {subsubsection}{\numberline {3.2.1}Hidden Markov Processes}{12}{subsubsection.3.2.1}
-\contentsline {subsubsection}{\numberline {3.2.2}State-Space Models}{13}{subsubsection.3.2.2}
-\contentsline {section}{\numberline {4}Filtering}{14}{section.4}
-\contentsline {subsection}{\numberline {4.1}LTI Filtering on WSS Processes}{14}{subsection.4.1}
-\contentsline {subsection}{\numberline {4.2}Wiener Filter}{14}{subsection.4.2}
-\contentsline {subsubsection}{\numberline {4.2.1}Non-Causal Case}{15}{subsubsection.4.2.1}
-\contentsline {subsubsection}{\numberline {4.2.2}Causal Case}{16}{subsubsection.4.2.2}
-\contentsline {subsubsection}{\numberline {4.2.3}Vector Case}{17}{subsubsection.4.2.3}
-\contentsline {subsection}{\numberline {4.3}Hidden Markov Model State Estimation}{18}{subsection.4.3}
-\contentsline {subsubsection}{\numberline {4.3.1}Causal Distribution Estimation}{18}{subsubsection.4.3.1}
-\contentsline {subsubsection}{\numberline {4.3.2}Non-Causal Distribution Estimation}{19}{subsubsection.4.3.2}
-\contentsline {subsubsection}{\numberline {4.3.3}State Sequence Estimation}{19}{subsubsection.4.3.3}
-\contentsline {subsection}{\numberline {4.4}Kalman Filtering}{20}{subsection.4.4}
-\contentsline {subsubsection}{\numberline {4.4.1}Kalman Prediction Filter}{20}{subsubsection.4.4.1}
-\contentsline {subsubsection}{\numberline {4.4.2}Schmidt's Modification of the Kalman Filter}{22}{subsubsection.4.4.2}
-\contentsline {subsubsection}{\numberline {4.4.3}Kalman Smoother}{23}{subsubsection.4.4.3}
+\contentsline {subsubsection}{\numberline {2.2.1}Recursive Least Squares}{6}{subsubsection.2.2.1}
+\contentsline {section}{\numberline {3}Discrete Time Random Processes}{7}{section.3}
+\contentsline {subsection}{\numberline {3.1}Wide-Sense Stationary Random Processes}{7}{subsection.3.1}
+\contentsline {subsubsection}{\numberline {3.1.1}Spectral Density}{8}{subsubsection.3.1.1}
+\contentsline {subsubsection}{\numberline {3.1.2}Z-Spectrum}{11}{subsubsection.3.1.2}
+\contentsline {subsection}{\numberline {3.2}Markov Processes}{12}{subsection.3.2}
+\contentsline {subsubsection}{\numberline {3.2.1}Hidden Markov Processes}{14}{subsubsection.3.2.1}
+\contentsline {subsubsection}{\numberline {3.2.2}State-Space Models}{14}{subsubsection.3.2.2}
+\contentsline {section}{\numberline {4}Filtering}{15}{section.4}
+\contentsline {subsection}{\numberline {4.1}LTI Filtering on WSS Processes}{15}{subsection.4.1}
+\contentsline {subsection}{\numberline {4.2}Wiener Filter}{16}{subsection.4.2}
+\contentsline {subsubsection}{\numberline {4.2.1}Non-Causal Case}{17}{subsubsection.4.2.1}
+\contentsline {subsubsection}{\numberline {4.2.2}Causal Case}{18}{subsubsection.4.2.2}
+\contentsline {subsubsection}{\numberline {4.2.3}Vector Case}{19}{subsubsection.4.2.3}
+\contentsline {subsection}{\numberline {4.3}Hidden Markov Model State Estimation}{19}{subsection.4.3}
+\contentsline {subsubsection}{\numberline {4.3.1}Causal Distribution Estimation}{20}{subsubsection.4.3.1}
+\contentsline {subsubsection}{\numberline {4.3.2}Non-Causal Distribution Estimation}{20}{subsubsection.4.3.2}
+\contentsline {subsubsection}{\numberline {4.3.3}State Sequence Estimation}{21}{subsubsection.4.3.3}
+\contentsline {subsection}{\numberline {4.4}Kalman Filtering}{22}{subsection.4.4}
+\contentsline {subsubsection}{\numberline {4.4.1}Kalman Prediction Filter}{22}{subsubsection.4.4.1}
+\contentsline {subsubsection}{\numberline {4.4.2}Schmidt's Modification of the Kalman Filter}{23}{subsubsection.4.4.2}
+\contentsline {subsubsection}{\numberline {4.4.3}Kalman Smoother}{25}{subsubsection.4.4.3}

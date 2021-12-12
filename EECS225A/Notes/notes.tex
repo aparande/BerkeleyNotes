@@ -111,6 +111,68 @@ In least squares, we have a deterministic $\bs{x}$ and assume nothing else about
 		Suppose that $\bs{Y}=H\bs{x}+\bs{Z}$ and $Z$ is zero-mean with $\ip{\bs{Z}}{\bs{Z}} = \bs{I}$, $H$ is full-column rank, then $\hat{\bs{x}_b} = (H^*H)^{-1}H^*\bs{Y}$ is the best linear unbiased estimator.
 	\label{thm:gauss-markov}
 \end{theorem}
+\subsubsection{Recursive Least Squares}
+Suppose we extend the least squares setup to allow a stochastic, but fixed, $\bs{X}$ where $\ip{\bs{X}}{\bs{X}} = \Pi_0$.
+At each timestep, we receive observations of $\bs{X}$ such that $\bs{Y}_i = h_i^* \bs{X} + \bs{V}_i$ where $\ip{\bs{V}_i}{\bs{V}_j} = \delta[i, j]$ and $\ip{\bs{X}}{\bs{V}}$.
+Define \[
+	\bs{Y}^i = \begin{bmatrix} \bs{Y}_0 \\ \bs{Y}_1 \\ \cdots \\ \bs{Y}_i \end{bmatrix}
+	\qquad 
+	H_i = \begin{bmatrix} 
+		h_0^*\\
+		h_1^*\\
+		\vdots\\
+		h_i^*\\
+	\end{bmatrix}
+	\qquad
+	\bs{V}^i = \begin{bmatrix} \bs{V}_0 \\ \bs{V}_1 \\ \cdots \\ \bs{V}_i \end{bmatrix}
+\]
+Then our setup becomes $\bs{Y}^i= H_i \bs{X} + \bs{V}^i$.
+\[
+	R_{XY^i} = \Pi_0 H_i^* \qquad R_{Y^i} = (H_i\Pi_0H_i^* + I)
+\]
+Applying \cref{thm:hilbert-projection} and solving the normal equation, we see
+\begin{align*}
+	W &= \Pi_0 H_i^*(H_i\Pi_0H_i^* + I)^{-1} = \Pi_0 H_i^* (I - H(\Pi_0^{-1} + H_i^*H_i)^{-1}H_i^*)\\
+	&= \Pi_0 (I - H_i^*H_i(\Pi_0^{-1} + H_i^*H_i)^{-1})H_i^* \\
+	&= \Pi_0 ((\Pi_0^{-1} + H_i^*H_i)(H_i^*H_i)^{-1}(H_i^*H_i)(\Pi_0^{-1} + H_i^*H_i)^{-1}- H_i^*H_i(\Pi_0^{-1} + H_i^*H_i)^{-1})H_i^*\\
+	&= \Pi_0 \Pi_0^{-1}(H_i^*H_i)^{-1}H_i^*H_i(\Pi_0^{-1}+H_i^*H_i)^{-1}H_i^*\\
+	&= (\Pi_0 + H_i^* H_i)^{-1}H_i^*
+\end{align*}
+Suppose we want to do this in an online fashion where at each timestep $i$, we only use the current $h_i, \bs{Y}_i$ and our previous estimate $\bs{X}_{i-1}$.
+Let $P_i = (\Pi_0 + H_i^*H_i)^{-1}$.
+Then \[
+	P_i^{-1} = \Pi_0 + \sum_{k=0}^i h_k h_k^* = P_{i-1}^{-1} + h_ih_i^*.
+\]
+By applying the Sherman-Morrison-Woodbury identity, we can see that
+\[
+	P_i = P_{i-1} = P_{i-1} \frac{h_ih_i^*}{1 + h_i^*P_{-1}h_i} P_{i-1}
+\]
+\begin{theorem}[Recursive Least Squares Update]
+	The best least squares estimate using $i+1$ data points can be found by updating the best least squares estimate using $i$ data points using
+	\[
+		\hat{\bs{X}}_i = \hat{\bs{X}}_{i-1} + \frac{P_{i-1}h_i}{1 + h_i^*P_{i-1}h_i}(\bs{Y}_i - h_i^* \hat{\bs{X}}_{i-1})
+	\]
+	\label{thm:rls:update}
+\end{theorem}
+Notice that this formula scales an innovation in order to improve the current estimate of $\bs{X}$.
+
+Just as we could compute a recursive update, we can also compute a ``downdate'' where we forget a particular observation.
+More concretely, we want to use $\hat{\bs{X}}_i$ to find $\hat{\bs{X}}_{i|k}$, the best linear estimator of $\bs{X}$ using $\bs{Y}_0,\bs{Y}_1,\cdots,\bs{Y}_{k-1},\bs{Y}_{k+1},\cdots,\bs{Y}_i$.
+Defining $P_{i|k} = (\Pi_0^{-1} + H_{i|k}^*H_{i|k})^{-1}$,
+\[
+	P_{i|k}^{-1} = \Pi_0^{-1} + \sum_{j=0,j\neq k}^i h_jh_j^* = P_i^{-1} - h_kh_k^{-1}.
+\]
+Applying the Sherman-Morrison-Woodbury identity,
+\[
+	P_{i|k} = P_i + P_i \frac{h_kh_k^*}{h_k^*P_ih_k - 1}P_i
+\]
+\begin{theorem}[Recursive Least Squares Downdate]
+	The best least squares estimate using all but the kth observation can be found by updating the best least squares estimate using all data points using
+	\[
+		\hat{\bs{X}}_{i|k} = \hat{X}_i + \frac{P_ih_k}{h_k^*P_ih_k - 1}(Y_k - h_k^*\hat{\bs{X}}_i)
+	\]
+	\label{thm:rls:downdate}
+\end{theorem}
 \section{Discrete Time Random Processes}
 \begin{definition}
 	A Discrete-Time Random Process is a countably infinite collection of random variables on the same probability space $\{X_n: n\in\mathbb{Z}\}$.
