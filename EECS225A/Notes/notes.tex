@@ -643,7 +643,7 @@ Suppose that we want to compute the one-step prediction.
 In other words, given $\bs{Y}^i$, we want to predict $\bs{\hat{X}}_{i+1}$.
 Our observations $\bs{Y}$ are the only thing which give us information about the state, so it would be nice if we could de-correlate all of the $\bs{Y}$.
 To do this, we can define the innovation process \[
-	\bs{e}_i = \bs{Y}_i - \bs{\hat{Y}_{i|i-1}} = \bs{Y}_i - F_i\bs{\hat{X}}_{i|i-1}
+	\bs{e}_i = \bs{Y}_i - \bs{\hat{Y}_{i|i-1}} = \bs{Y}_i - H_i\bs{\hat{X}}_{i|i-1}
 \]
 The last equality follows from the state-space modela and that past observation noises are uncorrelated with the current one.
 Now, to compute the one-step prediction, we just need to project $\bs{\hat{X}}_i$ onto the innovations.
