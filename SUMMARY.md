@@ -38,3 +38,8 @@
 	* [State-Space Control ](EE128/EE128-6.md)
 	* [Digital Control Systems](EE128/EE128-7.md)
 	* [Cayley-Hamilton ](EE128/EE128-8.md)
+* [EECS225A](EECS225A/EECS225A-0.md)
+	* [Hilbert Space Theory](EECS225A/EECS225A-1.md)
+	* [Linear Estimation](EECS225A/EECS225A-2.md)
+	* [Discrete Time Random Processes](EECS225A/EECS225A-3.md)
+	* [Filtering](EECS225A/EECS225A-4.md)
