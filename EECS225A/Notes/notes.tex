@@ -339,7 +339,7 @@ Using \cref{defn:spectral-factorization}, we can express $S_X(z)$ as the product
 	S_X(z) = (\sqrt{r_e}L(z))(\sqrt{r_e}L^*(z^{-*})) = S_X^+(z)S_X^-(z)
 \]
 Note that $S_X^-(e^{j\omega}) = \left(S_X^+(e^{j\omega})\right)^*$.
-Using the assumptions built into $\cref{defn:spectral-factorization}$, we can find a general form for $L(z)$ since we know $S_Y(z)$ takes the following form
+Using the assumptions built into \cref{defn:spectral-factorization}, we can find a general form for $L(z)$ since we know $S_Y(z)$ takes the following form
 \[
 	S_Y(z) = r_e \frac{\prod_{i=1}^m(z-\alpha_i)(z^{-1}-\alpha_i^*)}{\prod_{i=1}^n(z-\beta_i)(z^{-1}-\beta_i^*)}\quad |\alpha_i| < 1, |\beta_i| < 1, r_e > 0.
 \]
@@ -485,7 +485,7 @@ If we use an LTI filter on a WSS process, then we can easily compute how the fil
 	If we have a third process $Z_n$ that is jointly WSS with $(Y_n, X_n)$, then $S_{ZY}(z) = S_{ZX}(z)H^*(z^{-*})$.
 	\label{thm:lti-process}
 \end{theorem}
-This gives us an interesting interpretation of the spectral factorization $(\cref{defn:spectral-factorization})$ since it essentially passing a WSS process with auto-correlation $R_W(k) = r_e\delta[n]$ through a minimum-phase filter with transfer function $L(z)$.
+This gives us an interesting interpretation of the spectral factorization (\cref{defn:spectral-factorization}) since it essentially passing a WSS process with auto-correlation $R_W(k) = r_e\delta[n]$ through a minimum-phase filter with transfer function $L(z)$.
 \subsection{Wiener Filter}
 Suppose we have a stochastic WSS process $Y_n$ that is jointly WSS with $X_n$ and that we want to find the best linear estimator of $X_n$ using $Y_n$.
 The best linear estimator of $X_n$ given the observations $Y_n$ can be written as \[
@@ -631,6 +631,7 @@ Now if we know $p(x_t|y^{t-1})$, then we are set.
 \end{align*}
 Now we have a recursive algorithm for computing the distribution of $x_t$.
 
+\begin{gitbook-image}
 \begin{algorithm}[H]
 	\SetAlgoLined
 	$\beta_1(x_1) = p(x_1)$\;
@@ -640,6 +641,7 @@ Now we have a recursive algorithm for computing the distribution of $x_t$.
 	}
 	\caption{Forward Recursion}
 \end{algorithm}
+\end{gitbook-image}
 \subsubsection{Non-Causal Distribution Estimation}
 Suppose we are allowed to non-causally filter our signal and we care about the distribution of $X_t$ after we have observed $Y^n$.
 In other words, for $t \geq n$, we want to find $\gamma_t(x_t) = p(x_t|y^n)$.
@@ -652,6 +654,7 @@ If we continue expanding backwards, then
 \end{align*}
 This gives us a clear algorithm for non-causally computing the distribution of $x_t$.
 
+\begin{gitbook-image}
 \begin{algorithm}[H]
 	\SetAlgoLined
 	Run Forward Recursion\;
@@ -661,6 +664,7 @@ This gives us a clear algorithm for non-causally computing the distribution of $
 	}
 	\caption{Backward Recursion}
 \end{algorithm}
+\end{gitbook-image}
 \subsubsection{State Sequence Estimation}
 Suppose we want to find the most likely sequence of states given our observations.
 This means we should compute \[
@@ -685,6 +689,7 @@ Once we have $\hat{x}_t$, then we can comptue $\hat{x}_{t-1}$ by \[
 \]
 Putting these equations gives us the Viterbi algorithm.
 
+\begin{gitbook-image}
 \begin{algorithm}[H]
 	\SetAlgoLined
 	$V_1(x_1) = p(x_1)p(y_1|x_1)$\;
@@ -697,6 +702,7 @@ Putting these equations gives us the Viterbi algorithm.
 	}
 	\caption{Viterbi Algorithm}
 \end{algorithm}
+\end{gitbook-image}
 \subsection{Kalman Filtering}
 In the Kalman Filter setup, we assume that the signal we would like to filter can be represented by a state-space model.
 We want to predict the state vectors $\bs{\hat{X}}_i$ using some linear combination of the observations $\bs{Y}_i$.
