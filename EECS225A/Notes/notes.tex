@@ -9,7 +9,7 @@ If you find any typos, errors, etc, please raise an issue on the \href{https://g
 \tableofcontents
 \newpage
 \section{Hilbert Space Theory}
-Complex random vectors form a Hilbert space with inner product $\ip{X}{Y} = \expect{XY^*}$.
+Complex random variables form a Hilbert space with inner product $\ip{X}{Y} = \expect{XY^*}$.
 If we have a random complex vector, then we can use Hilbert Theory in a more efficient manner by looking at the matrix of inner products.
 For simplicity, we will call this the ``inner product'' of two complex vectors.
 \begin{definition}
@@ -24,7 +24,7 @@ We can also specify the auto-correlation $R_X = \ip{\bs{X}}{\bs{X}}$ and auto-co
 One reason why we can think of this matrix as the inner product is because it also satisfies the properties of inner products.
 In particular, it is
 \begin{enumerate}
-	\item Linear: $\ip{\alpha_1\bs{V_1}+\alpha_2\bs{V_2}}{\bs{u}} = \alpha_1\ip{\bs{V_1}}{u} + \alpha_2\ip{\bs{V_2}}{u}$.
+	\item Linear: $\ip{\alpha_1\bs{V_1}+\alpha_2\bs{V_2}}{\bs{u}} = \alpha_1\ip{\bs{V_1}}{\bs{u}} + \alpha_2\ip{\bs{V_2}}{\bs{u}}$.
 	\item Reflexive: $\ip{\bs{U}}{\bs{V}} = \ip{\bs{V}}{\bs{U}}^*$.
 	\item Non-degeneracy: $\ip{\bs{V}}{\bs{V}} = \bs{0} \Leftrightarrow \bs{V} = \bs{0}$.
 \end{enumerate}
@@ -132,14 +132,14 @@ Then our setup becomes $\bs{Y}^i= H_i \bs{X} + \bs{V}^i$.
 \]
 Applying \cref{thm:hilbert-projection} and solving the normal equation, we see
 \begin{align*}
-	W &= \Pi_0 H_i^*(H_i\Pi_0H_i^* + I)^{-1} = \Pi_0 H_i^* (I - H(\Pi_0^{-1} + H_i^*H_i)^{-1}H_i^*)\\
+	W &= \Pi_0 H_i^*(H_i\Pi_0H_i^* + I)^{-1} = \Pi_0 H_i^* (I - H_i(\Pi_0^{-1} + H_i^*H_i)^{-1}H_i^*)\\
 	&= \Pi_0 (I - H_i^*H_i(\Pi_0^{-1} + H_i^*H_i)^{-1})H_i^* \\
 	&= \Pi_0 ((\Pi_0^{-1} + H_i^*H_i)(H_i^*H_i)^{-1}(H_i^*H_i)(\Pi_0^{-1} + H_i^*H_i)^{-1}- H_i^*H_i(\Pi_0^{-1} + H_i^*H_i)^{-1})H_i^*\\
 	&= \Pi_0 \Pi_0^{-1}(H_i^*H_i)^{-1}H_i^*H_i(\Pi_0^{-1}+H_i^*H_i)^{-1}H_i^*\\
-	&= (\Pi_0 + H_i^* H_i)^{-1}H_i^*
+	&= (\Pi_0^{-1} + H_i^* H_i)^{-1}H_i^*
 \end{align*}
 Suppose we want to do this in an online fashion where at each timestep $i$, we only use the current $h_i, \bs{Y}_i$ and our previous estimate $\bs{X}_{i-1}$.
-Let $P_i = (\Pi_0 + H_i^*H_i)^{-1}$.
+Let $P_i = (\Pi_0^{-1} + H_i^*H_i)^{-1}$.
 Then \[
 	P_i^{-1} = \Pi_0 + \sum_{k=0}^i h_k h_k^* = P_{i-1}^{-1} + h_ih_i^*.
 \]
@@ -350,7 +350,7 @@ If we let the $z - \alpha_i$ and $z-\beta_i$ terms be part of $L(z)$, then
 %%TODO: Kolomogorov-Szego? Wold decomposition?
 \subsection{Markov Processes}
 \begin{definition}
-	We say that random variables $X, Y, Z$ form a Markov Triplet $\markov{X}{Y}{Z}$ if and only if $X$ and $Z$ are conditionall independent on $Y$
+	We say that random variables $X, Y, Z$ form a Markov Triplet $\markov{X}{Y}{Z}$ if and only if $X$ and $Z$ are conditionally independent on $Y$
 	\label{defn:markov-triplet}
 \end{definition}
 Mathematically, Markov triplets satisfy three properties.
