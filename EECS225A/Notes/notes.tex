@@ -1,0 +1,859 @@
+\input{../../header.tex}
+\begin{document}
+\title{EECS225A Course Notes}
+\author{Anmol Parande}
+\date{Fall 2021 - Professor Jiantao Jiao}
+\maketitle
+\textbf{Disclaimer: }These notes reflect EECS225A when I took the course (Fall 2021). They may not accurately reflect current course content, so use at your own risk.
+If you find any typos, errors, etc, please raise an issue on the \href{https://github.com/parandea17/BerkeleyNotes}{GitHub repository}.
+\tableofcontents
+\newpage
+\section{Hilbert Space Theory}
+Complex random variables form a Hilbert space with inner product $\ip{X}{Y} = \expect{XY^*}$.
+If we have a random complex vector, then we can use Hilbert Theory in a more efficient manner by looking at the matrix of inner products.
+For simplicity, we will call this the ``inner product'' of two complex vectors.
+\begin{definition}
+	Let the inner product between two random, complex vectors $\bs{Z_1}, \bs{Z_2}$ be defined as \[
+		\ip{\bs{Z_1}}{\bs{Z_2}} = \expect{\bs{Z_1}\bs{Z_2}^*}
+	\]
+	\label{defn:inner-product}
+\end{definition}
+The ij-th entry of the matrix is simply the scalar inner product $\expect{X_iY_j^*}$ where $X_i$ and $Y_j$ are the ith and jth entries of $\bs{X}$ and $\bs{Y}$ respectively.
+This means the matrix is equivalent to the cross correlation $R_{XY}$ between the two vectors.
+We can also specify the auto-correlation $R_X = \ip{\bs{X}}{\bs{X}}$ and auto-covariance $\Sigma_X = \ip{\bs{X} - \expect{\bs{X}}}{\bs{X} - \expect{\bs{X}}}$.
+One reason why we can think of this matrix as the inner product is because it also satisfies the properties of inner products.
+In particular, it is
+\begin{enumerate}
+	\item Linear: $\ip{\alpha_1\bs{V_1}+\alpha_2\bs{V_2}}{\bs{u}} = \alpha_1\ip{\bs{V_1}}{\bs{u}} + \alpha_2\ip{\bs{V_2}}{\bs{u}}$.
+	\item Reflexive: $\ip{\bs{U}}{\bs{V}} = \ip{\bs{V}}{\bs{U}}^*$.
+	\item Non-degeneracy: $\ip{\bs{V}}{\bs{V}} = \bs{0} \Leftrightarrow \bs{V} = \bs{0}$.
+\end{enumerate}
+Since we are thinking of the matrix as an inner product, we can also think of the norm as a matrix.
+\begin{definition}
+	The norm of a complex random vector is given by $\|\bs{Z}\|^2 = \ip{\bs{Z}}{\bs{Z}}$.
+	\label{defn:norm}
+\end{definition}
+When thinking of inner products as matrices instead of scalars, we must rewrite the Hilbert Projection Theorem to use matrices instead.
+\begin{theorem}[Hilbert Projection Theorem]
+	The minimization problem $\min_{\hat{\bs{X}}(\bs{Y})}\|\hat{\bs{X}}(\bs{Y}) - \bs{X}\|^2$ has a unique solution which is a linear function of $\bs{Y}$. The error is orthogonal to the linear subspace of $\bs{Y}$ (i.e $\ip{\bs{X} - \hat{\bs{X}}}{\bs{Y}} = \bs{0}$)
+	\label{thm:hilbert-projection}
+\end{theorem}
+When we do a minimization over a matrix, we are minimizing it in a PSD sense, so for any other linear function $\bs{X}'$, \[
+	\|\bs{X}-\hat{\bs{X}}\|^2  \preceq \|\bs{X} - \bs{X}'\|^2.
+\]
+\subsection{Innovations}
+Suppose we have jointly distributed random variables $Y_0, Y_1,\cdots,Y_n$.
+Ideally, we would be able to ``de-correlate'' them so each new vector $E_0$ captures the new information which is orthogonal to previous random vectors in the sequence.
+Since vectors of a Hilbert Space operate like vectors in $\mathbb{R}^n$, we can simply do Gram-Schmidt on the $\{Y_i\}_{i=0}^n$.
+\begin{definition}
+	Given jointly distributed random vectors $\{Y_i\}_{i=0}^n$ with $\mathcal{L}_i = \text{span}\{Y_j\}_{j=0}^i$, the ith innovation $E_i$ is given by
+	\[
+		E_i = Y_i - \text{proj}(Y_i|\mathcal{L}_{i-1}) = Y_i - \sum_{j=0}^{i-1}\frac{\ip{Y_i}{E_j}}{\|E_j\|^2}E_j
+	\]
+	\label{defn:innovation}
+\end{definition}
+Innovations have two key properties.
+\begin{enumerate}
+	\item $\forall i\neq j,\ \ip{E_i}{E_j}=0$
+	\item $\forall i,\ \text{span}\{Y_j\}_{j=0}^i = \text{span}\{E_j\}_{j=0}^i$
+\end{enumerate}
+We can also write innovations in terms of a matrix where $\bs{\varepsilon} = A\bs{Y}$ where $\bs{\varepsilon} = \begin{bmatrix}E_0 & E_1 & \cdots & E_n\end{bmatrix}^T$ and $\bs{Y} = \begin{bmatrix}Y_0 & Y_1 & \cdots & Y_n\end{bmatrix}^T$.
+Since each $E_i$ only depends on the previous $Y_i$, then A must be lower triangular, and because we need each $E_i$ to be mutually orthogonal, $R_{\varepsilon}$ should be diagonal.
+$R_{\varepsilon} = AR_YA^*$, so if $R_Y \succ 0$, then we can use its unique LDL decomposition $R_Y = LDL^*$ and let $A = L^{-1}$.
+\section{Linear Estimation}
+In Linear Estimation, we are trying to estimate a random variable $\bs{X}$ using an observation $\bs{Y}$ with a linear function of $\bs{Y}$.
+If $\bs{Y}$ is finite dimensional, then we can say $\hat{\bs{X}}(\bs{Y}) = W\bs{Y}$ where $W$ is some matrix.
+Using \cref{thm:hilbert-projection} and the orthogonality principle, we know that
+\[
+	\ip{\bs{X}-W\bs{Y}}{\bs{Y}} = \bs{0} \Leftrightarrow R_{XY} = W\bs{R}_Y
+\]
+This is known as the \textbf{Normal Equation}.
+If $R_Y$ is invertible, then we can apply the inverse to find $W$.
+Otherwise, we can apply the pseudoinverse $R_Y^\dagger$ to find $W$, which may not be unique.
+If we want to measure the quality of the estimation, since $\bs{X} = \bs{X}+(\bs{X}-\hat{\bs{X}})$,
+\begin{align*}
+	\|\bs{X}\|^2 &= \|\hat{\bs{X}}\|^2 + \|\bs{X} - \hat{\bs{X}}\|^2 \implies \\
+	\|\bs{X}-\hat{\bs{X}}\|^2 &= \|\bs{X}\|^2 - \|\hat{\bs{X}}\|^2 = R_X - R_{XY}R_Y^{-1}R_{YX}
+\end{align*}
+\subsection{Affine Estimation}
+If we allow ourselves to consider an affine function for estimation $\hat{\bs{X}}(\bs{Y}) = W\bs{Y}+b$, then this is equivalent to instead finding an estimator
+\[
+	\hat{\bs{X}}(\bs{Y}') = W\bs{Y}' \qquad \text{ where } \bs{Y}' = \begin{bmatrix} \bs{Y} \\ 1 \end{bmatrix}
+\]
+
+This is equivalent to the following orthogonality conditions:
+\begin{enumerate}
+	\item $\ip{\bs{X}-\hat{\bs{X}}}{\bs{Y}}$
+	\item $\ip{\bs{X}-\hat{\bs{X}}}{1}$
+\end{enumerate}
+Solving gives us
+\[
+	\hat{\bs{X}}(\bs{Y}) = W(\bs{Y}-\bs{\mu}_Y) + \mu_x \qquad \text{ where } W\Sigma_Y=\Sigma_{XY}.
+\]
+$\Sigma_Y$ and $\Sigma_{XY}$ are the auto-covariance and cross-covariance respectively.
+Recall that if \[
+	\begin{bmatrix} \bs{X} \\ \bs{Y} \end{bmatrix} \sim \mathcal{N}\left(\begin{bmatrix} \bs{\mu}_X \\ \bs{\mu}_Y \end{bmatrix}, \begin{bmatrix} \Sigma_X & \Sigma_{XY}\\ \Sigma_{YX} & \Sigma_Y \end{bmatrix}\right)
+\]
+then \[
+	\bs{X}|\bs{Y} \sim \mathcal{N}\left(\bs{\mu}_X + \Sigma_{XY}\Sigma_Y^{-1}(\bs{Y}-\bs{\mu}_Y), \Sigma_X-\Sigma_{XY}\Sigma_Y^{-1}\Sigma_{YX} \right)
+\]
+Thus in the Joint Gaussian case, the mean of the conditional distribution is the best affine estimator of $\bs{X}$ using $\bs{Y}$, and the covariance is the estimation error.
+This has two interpretations.
+\begin{enumerate}
+	\item Under the Gaussian assumption, the best nonlinear estimator $\expect{\bs{X}|\bs{Y}}$ is affine
+	\item Gaussian random variables are the hardest predict because nonlinearity should improve our error, but it does not in the Gaussian case. This means if affine estimation works well, we shouldn't try and find better non-linear estimators.
+\end{enumerate}
+\subsection{Least Squares}
+The theory of linear estimation is very closely connected with the theory behind least squares in linear algebra.
+In least squares, we have a deterministic $\bs{x}$ and assume nothing else about it, meaning we are looking for an unbiased estimator.
+\cref{thm:gauss-markov} tells us how to find the best linear unbiased estimator in a linear setting.
+\begin{theorem}[Gauss Markov Theorem]
+		Suppose that $\bs{Y}=H\bs{x}+\bs{Z}$ and $Z$ is zero-mean with $\ip{\bs{Z}}{\bs{Z}} = \bs{I}$, $H$ is full-column rank, then $\hat{\bs{x}_b} = (H^*H)^{-1}H^*\bs{Y}$ is the best linear unbiased estimator.
+	\label{thm:gauss-markov}
+\end{theorem}
+\subsubsection{Recursive Least Squares}
+Suppose we extend the least squares setup to allow a stochastic, but fixed, $\bs{X}$ where $\ip{\bs{X}}{\bs{X}} = \Pi_0$.
+At each timestep, we receive observations of $\bs{X}$ such that $\bs{Y}_i = h_i^* \bs{X} + \bs{V}_i$ where $\ip{\bs{V}_i}{\bs{V}_j} = \delta[i, j]$ and $\ip{\bs{X}}{\bs{V}}$.
+Define \[
+	\bs{Y}^i = \begin{bmatrix} \bs{Y}_0 \\ \bs{Y}_1 \\ \cdots \\ \bs{Y}_i \end{bmatrix}
+	\qquad 
+	H_i = \begin{bmatrix} 
+		h_0^*\\
+		h_1^*\\
+		\vdots\\
+		h_i^*\\
+	\end{bmatrix}
+	\qquad
+	\bs{V}^i = \begin{bmatrix} \bs{V}_0 \\ \bs{V}_1 \\ \cdots \\ \bs{V}_i \end{bmatrix}
+\]
+Then our setup becomes $\bs{Y}^i= H_i \bs{X} + \bs{V}^i$.
+\[
+	R_{XY^i} = \Pi_0 H_i^* \qquad R_{Y^i} = (H_i\Pi_0H_i^* + I)
+\]
+Applying \cref{thm:hilbert-projection} and solving the normal equation, we see
+\begin{align*}
+	W &= \Pi_0 H_i^*(H_i\Pi_0H_i^* + I)^{-1} = \Pi_0 H_i^* (I - H_i(\Pi_0^{-1} + H_i^*H_i)^{-1}H_i^*)\\
+	&= \Pi_0 (I - H_i^*H_i(\Pi_0^{-1} + H_i^*H_i)^{-1})H_i^* \\
+	&= \Pi_0 ((\Pi_0^{-1} + H_i^*H_i)(H_i^*H_i)^{-1}(H_i^*H_i)(\Pi_0^{-1} + H_i^*H_i)^{-1}- H_i^*H_i(\Pi_0^{-1} + H_i^*H_i)^{-1})H_i^*\\
+	&= \Pi_0 \Pi_0^{-1}(H_i^*H_i)^{-1}H_i^*H_i(\Pi_0^{-1}+H_i^*H_i)^{-1}H_i^*\\
+	&= (\Pi_0^{-1} + H_i^* H_i)^{-1}H_i^*
+\end{align*}
+Suppose we want to do this in an online fashion where at each timestep $i$, we only use the current $h_i, \bs{Y}_i$ and our previous estimate $\bs{X}_{i-1}$.
+Let $P_i = (\Pi_0^{-1} + H_i^*H_i)^{-1}$.
+Then \[
+	P_i^{-1} = \Pi_0 + \sum_{k=0}^i h_k h_k^* = P_{i-1}^{-1} + h_ih_i^*.
+\]
+By applying the Sherman-Morrison-Woodbury identity, we can see that
+\[
+	P_i = P_{i-1} = P_{i-1} \frac{h_ih_i^*}{1 + h_i^*P_{-1}h_i} P_{i-1}
+\]
+\begin{theorem}[Recursive Least Squares Update]
+	The best least squares estimate using $i+1$ data points can be found by updating the best least squares estimate using $i$ data points using
+	\[
+		\hat{\bs{X}}_i = \hat{\bs{X}}_{i-1} + \frac{P_{i-1}h_i}{1 + h_i^*P_{i-1}h_i}(\bs{Y}_i - h_i^* \hat{\bs{X}}_{i-1})
+	\]
+	\label{thm:rls:update}
+\end{theorem}
+Notice that this formula scales an innovation in order to improve the current estimate of $\bs{X}$.
+
+Just as we could compute a recursive update, we can also compute a ``downdate'' where we forget a particular observation.
+More concretely, we want to use $\hat{\bs{X}}_i$ to find $\hat{\bs{X}}_{i|k}$, the best linear estimator of $\bs{X}$ using $\bs{Y}_0,\bs{Y}_1,\cdots,\bs{Y}_{k-1},\bs{Y}_{k+1},\cdots,\bs{Y}_i$.
+Defining $P_{i|k} = (\Pi_0^{-1} + H_{i|k}^*H_{i|k})^{-1}$,
+\[
+	P_{i|k}^{-1} = \Pi_0^{-1} + \sum_{j=0,j\neq k}^i h_jh_j^* = P_i^{-1} - h_kh_k^{-1}.
+\]
+Applying the Sherman-Morrison-Woodbury identity,
+\[
+	P_{i|k} = P_i + P_i \frac{h_kh_k^*}{h_k^*P_ih_k - 1}P_i
+\]
+\begin{theorem}[Recursive Least Squares Downdate]
+	The best least squares estimate using all but the kth observation can be found by updating the best least squares estimate using all data points using
+	\[
+		\hat{\bs{X}}_{i|k} = \hat{X}_i + \frac{P_ih_k}{h_k^*P_ih_k - 1}(Y_k - h_k^*\hat{\bs{X}}_i)
+	\]
+	\label{thm:rls:downdate}
+\end{theorem}
+\section{Discrete Time Random Processes}
+\begin{definition}
+	A Discrete-Time Random Process is a countably infinite collection of random variables on the same probability space $\{X_n: n\in\mathbb{Z}\}$.
+	\label{defn:discrete-time-rp}
+\end{definition}
+Discrete Time Random Processes have a mean function $\mu_n = \expect{X_n}$ and an auto-correlation function $R_X(n_1, n_2) = \expect{X_{n_1}X_{n_2}^*}$
+\subsection{Wide-Sense Stationary Random Processes}
+\begin{definition}
+	A Wide-Sense Stationary Random Process is a disrete-time random process with constant mean, finite variance, and an autocorrelation function that can be re-written to only depend on $n_1-n_2$.
+	\label{defn:wss-process}
+\end{definition}
+We call this wide-sense stationary because the mean and covariance do not change as the process evolves.
+In a strict-sense stationary process, the distribution of each random variable in the process would not change.
+\begin{definition}
+	A WSS process $Z\sim \mathcal{WN}(0, \sigma^2)$ is a white noise process with variance $\sigma^2$ if and only if $\expect{Z_n} = 0$ and $\expect{Z_nZ_m^*} = \sigma^2\delta[n, m]$.
+	\label{defn:white-noise-process}
+\end{definition}
+\subsubsection{Spectral Density}
+Recall that the Discrete Time Fourier Transform is given by \[
+	X(e^{j\omega}) = \sum_{n=-\infty}^{\infty}x[n]e^{-j\omega n}.
+\]
+The Inverse Discrete Time Fourier Transform is given by \[
+	x[n] = \frac{1}{2\pi}\int_{-\pi}^{\pi}X(e^{j\omega})e^{j\omega n}d\omega.
+\]
+Since the DTFT is an infinite summation, it may or may not converge.
+\begin{definition}
+	A signal $x[n]$ belongs to the $l^1$ class of signals if the series converges absolutely. In other words,
+	\[
+		\sum_{k=-\infty}^{\infty}|x[k]| < \infty.
+	\]
+	\label{defn:l1-class}
+\end{definition}
+This class covers most real-world signals.
+\begin{theorem}
+	If $x[n]$ is a $l^1$ signal, then the DTFT $X(e^{j\omega})$ converges uniformly and is well-defined for every $\omega$. $X(e^{j\omega})$ is also a continuous function.
+	\label{thm:l1-dtft}
+\end{theorem}
+\begin{definition}
+	A signal $x[n]$ belongs to the $l^2$ class of signals if it is square summable. In other words,
+	\[
+		\sum_{k=-\infty}^{\infty}|x[k]|^2 < \infty.
+	\]
+	\label{defn:l2-class}
+\end{definition}
+The $l^2$ class contains important functions such as $\sinc$.
+\begin{theorem}
+	If $x[n]$ is a $l^2$ signal, then the DTFT $X(e^{j\omega})$ is defined almost everywhere and only converges in the mean-squared sense:
+	\[
+		\lim_{N\to\infty} \int_{-\pi}^{\pi}\left|\left(\sum_{k=-N}^N x[k]e^{-j\omega n}\right) - X(\omega)\right|^2d\omega = 0
+	\]
+	\label{thm:l2-dtft}
+\end{theorem}
+Tempered distributions like the Dirac Delta function are other functions which are important for computing the DTFT, and they arise from the theory of generalized functions.
+
+Suppose we want to characterize the signal using its DTFT.
+\begin{definition}
+	The energy of a deterministic, discrete-time signal $x[n]$ is given by \[
+		\sum_{n\in\mathbb{Z}}|x[n]|^2.
+	\]
+	\label{defn:energy}
+\end{definition}
+The autocorrelation of $x[n]$, given by $a[n] = x[n] * x^*[-n]$, is closely related to the energy of the signal since $a[0] = \sum_{n\in\mathbb{Z}}|x(n)|^2$.
+\begin{definition}
+	The Energy Spectral Density $x[n]$ with auto-correlation $a[n]$ is given by \[
+		A(e^{j\omega}) = \sum_{n\in\mathbb{Z}}a[n]e^{-j\omega n}
+	\]
+	\label{defn:esd}
+\end{definition}
+We call the DTFT of the autocorrelation the energy spectral density because, by the Inverse DTFT, \[
+	a[0] = \frac{1}{2\pi}\int_{-\pi}^{\pi}A(e^{j\omega})d\omega.
+\]
+Since summing over each frequency gives us the energy, we can think of $A(e^{j\omega})$ as storing the energy density of each spectral component of the signal.
+We can apply this same idea to wide-sense stationary stochastic processes.
+\begin{definition}
+	The Power Spectral Density of a Wide-Sense Stationary random process is given by \[
+		S_X(e^{j\omega}) = \sum_{k\in\mathbb{Z}}R_X(k)e^{-j\omega k}.
+	\]
+	\label{defn:psd}
+\end{definition}
+Note that when considering stochastic signals, the metric changes from energy to power.
+This is because if $X_n$ is Wide-Sense Stationary, then \[
+	\expect{\sum_{n\in\mathbb{Z}}|X_n|^2} = \infty,
+\]
+so energy doesn't even make sense.
+To build our notion of power, let $A_T(\omega)$ be a truncated DTFT of the auto-correlation of a wide-sense stationary process, then
+\begin{align*}
+	\lim_{T\to\infty} \frac{\expect{A_T(e^{j\omega})}}{2T + 1} &= \lim_{T\to\infty}\frac{1}{2T+1}\left(\sum_{n=-T}^Tx[n]e^{-j\omega n}\right)\left(\sum_{m=-T}^Tx^*[m]e^{j\omega m}\right)\\
+	&= \lim_{T\to\infty}	\frac{1}{2T+1} \sum_{n,m \in [-T,T]}\expect{x[n]x^*[m]}e^{-j\omega(n-m)}\\
+	&= \lim_{T\to\infty}	\frac{1}{2T+1} \sum_{n,m \in [-T,T]}R_x(n-m)e^{-j\omega(n-m)}\\
+	&= \lim_{T\to\infty} \sum_{k=-2T}^{2T}R_X(k)e^{-j\omega k}\left(1 - \frac{|k|}{2T+1}\right)\\
+	&= \sum_{k=-\infty}^{\infty}R_X(k)e^{-j\omega k}
+\end{align*}
+The DTFT of the auto-correlation function naturally arises out of taking the energy spectral density and normalizing it by time (the truncated sequence is made of $2T+1$ points).
+In practice, this means to measure the PSD, we need to either use the distribution of the signal to compute $R_X$, or estimate the $PSD$ by averaging multiple realizations of the signal.
+
+The inverse DTFT formula tells us that we can represent a deterministic, discrete-time signal $x[n]$ as a sum of complex exponentials weighted by $\frac{X(e^{j\omega})d\omega}{2\pi}$.
+This representation has an analog for stochastic signals as well.
+\begin{theorem}[Cramer-Khinchin]
+	For a complex-valued WSS stochastic process $X_n$ with power spectral density $S_X(\omega)$, there exists a unique right-continuous stochastic process $F(\omega), \omega\in(-\pi,\pi]$ with square-integrable, orthogonal increments such that \[
+		X_n = \int_{-\pi}^{\pi}e^{j\omega n}dF(\omega)
+	\] where for any interval $[\omega_1,\omega_2], [\omega_3, \omega_4]\subset [-\pi,\pi]$, \[
+		\expect{(F(\omega_2)-F(\omega_1))(F(\omega_4) - F(\omega_3))^*} = f((\omega_1,\omega_2] \cap (\omega_3, \omega_4])
+	\] where $f$ is the structural measure of the stochastic process and has Radon-Nikodym derivative $\frac{S_X(e^{j\omega})}{2\pi}$.
+	\label{thm:cramer-khinchin}
+\end{theorem}
+Besides giving us a decomposition of a WSS random process, \cref{thm:cramer-khinchin} tells a few important facts.
+\begin{enumerate}
+	\item $\omega_1\neq\omega_2 \implies \langle dF(\omega_1), dF(\omega_2) \rangle = 0$ (i.e different frequencies are uncorrelated).
+	\item $\expect{|dF(\omega)|^2} = \frac{S_X(e^{j\omega})d\omega}{2\pi}$
+\end{enumerate}
+\subsubsection{Z-Spectrum}
+Recall that the Z-transform converts a discrete-time signal into a complex representation.
+It is given by \[
+	X(z) = \sum_{n=-\infty}^{\infty}x[n]z^{-n}.
+\]
+It is a special type of series called a \textbf{Laurent Series}.
+\begin{theorem}
+	A Laurent Series will converge absolutely on an open annulus \[
+		A = \{z | r < |z| < R \}
+	\] for some $r$ and $R$.
+	\label{thm:z-transform-roc}
+\end{theorem}
+We can compute $r$ and $R$ using the signal $x[n]$.
+\[
+	r = \limsup_{n\to\infty} |x[n]|^{\frac{1}{n}}, \qquad \frac{1}{R} = \limsup_{n\to\infty}|x[-n]|^{\frac{1}{n}}.
+\]
+In some cases, it can be useful to only compute the Z-transform of the right side of the signal.
+\begin{definition}
+	The unilateral Z-transform of a sequence $x[n]$ is given by \[
+		\trunc{X(z)} = \sum_{n=0}^\infty x[n]z^{-n}
+	\]
+	\label{defn:unilateral-z-transform}
+\end{definition}
+If the Z-transform of the sequence is a rational function, then we can quickly compute what the unilateral Z-transform will be by leveraging its partial fraction decomposition.
+\begin{theorem}
+	Any arbitrary rational function	$H(z)$ with region of convergence including the unit circle corresponds with the unilateral Z-transform \[
+		\trunc{H(z)} = r_0 + \sum_{i=1}^m\sum_{k=1}^{l_i}\frac{r_{ik}}{(z+\alpha_i)^k} + \sum_{i=m+1}^n\sum_{k=1}^{l_i}\frac{r_{ik}}{\beta_i^k}
+	\]
+	where $|\alpha_i| < 1 < |\beta_i|$.
+	\label{thm:unilateral-z}
+\end{theorem}
+\begin{definition}
+	For two jointly WSS processes $X_n, Y_n$, the z-cross spectrum is the Z-Transform of the correlation function $R_{YX}(k) = \expect{Y_nX^*_{n-k}}$.
+	\[
+		S_{YX}(z) = \sum_{k\in\mathbb{Z}}R_{YX}(k)z^{-k}
+	\]
+	\label{defn:z-cross-spectrum}
+\end{definition}
+Using this definition, we can see that \[
+	S_{XY}(z) = S^*_{YX}(z^{-*}).
+\]
+We can also look at the Z-transform of the auto-correlation function of a WSS process $X$ to obtain $S_X(z)$.
+\begin{definition}
+	For a rational function $S_X(z)$ with finite power $\left(\int_{-\pi}^\pi S_X(e^{j\omega})d\omega < \infty \right)$ and is strictly positive on the unit circle, the canonical spectral factorization decomposes $S_X(z)$ into a product of a $r_e>0$ and the transfer function of a minimum phase system $L(z)$ with $L(\infty) = 1$ \[
+		S_X(z) = L(z)r_eL^*(z^{-*})
+	\]
+	\label{defn:spectral-factorization}
+\end{definition}
+Because $L(z)$ is minimum phase and $L(\infty)=1$, it must take the form \[
+	L(z) = 1 + \sum_{i=1}^\infty l[i]z^{-i}
+\] since minimum phase systems are causal.
+Using \cref{defn:spectral-factorization}, we can express $S_X(z)$ as the product of a right-sided and left-sided process.
+\[
+	S_X(z) = (\sqrt{r_e}L(z))(\sqrt{r_e}L^*(z^{-*})) = S_X^+(z)S_X^-(z)
+\]
+Note that $S_X^-(e^{j\omega}) = \left(S_X^+(e^{j\omega})\right)^*$.
+Using the assumptions built into \cref{defn:spectral-factorization}, we can find a general form for $L(z)$ since we know $S_Y(z)$ takes the following form
+\[
+	S_Y(z) = r_e \frac{\prod_{i=1}^m(z-\alpha_i)(z^{-1}-\alpha_i^*)}{\prod_{i=1}^n(z-\beta_i)(z^{-1}-\beta_i^*)}\quad |\alpha_i| < 1, |\beta_i| < 1, r_e > 0.
+\]
+If we let the $z - \alpha_i$ and $z-\beta_i$ terms be part of $L(z)$, then
+\[
+	L(z) = z^{n-m}\frac{\prod_{i=1}^m(z-\alpha_i)}{\prod_{i=1}^n(z-\beta_i)}.
+\]
+%%TODO: Kolomogorov-Szego? Wold decomposition?
+\subsection{Markov Processes}
+\begin{definition}
+	We say that random variables $X, Y, Z$ form a Markov Triplet $\markov{X}{Y}{Z}$ if and only if $X$ and $Z$ are conditionally independent on $Y$
+	\label{defn:markov-triplet}
+\end{definition}
+Mathematically, Markov triplets satisfy three properties.
+\begin{enumerate}
+	\item $p(x, z | y) = p(x|y)p(z|y)$
+	\item $p(z|x, y) = p(z|y)$
+	\item $p(x|y, z) = p(x|y)$
+\end{enumerate}
+Because of these rules, the joint distribution can be written as $p(x, y, z) = p(x)p(y|x)p(z|y)$.
+\begin{theorem}
+	Random variables $X,Y,Z$ form a Markov triplet if and only if there exist $\phi_1, \phi_2$ such that $p(x, y, z) = \phi_1(x, y)\phi_2(y, z)$.
+	\label{thm:markov-triplet}
+\end{theorem}
+To simplify notation, we can define $X_m^n = \left(X_m,X_{m+1},\cdots, X_n\right)$ and $X^n=X_1^n$.
+\begin{definition}
+	A Markov Process is a Discrete Time Random Process $\{X_n\}_{n\geq1}$ where $\markov{X_n}{X_{n-1}}{X^{n-2}}$ for all $n\geq 2$
+	\label{defn:markov-process}
+\end{definition}
+Because of the conditional independence property, we can write the joint distribution of all states in the Markov process as \[
+	p(x^n) = \prod_{t=1}^n p(x_t|x^{t-1}) = \prod_{t=1}^np(x_t|x_{t-1}).
+\]
+The requirement for $\markov{X}{Y}{Z}$ to satisfy $p(x, y, z) = p(x)p(y|x)p(z|y)$ is a very strict requirement.
+If we wanted to create a ``wider'' requirement of Markovity, then we could settle for $\hat{X}(Y) = \hat{X}(Y, Z)$ where $\hat{X}$ is the best linear estimator of $X$ since this property is satisfied by all Markov triplets, but does not imply a Markov Triplet.
+\begin{definition}
+	Random variables $X, Y, Z$ form a Wide Sense Markov Triplet $\markov{X}{Y}{Z}$ if and only if the best linear estimator of X given Y is identical to the best linear estimator of X given Y and Z.
+	\[
+		\hat{X}(Y) = \hat{X}(Y, Z)
+	\]
+	\label{defn:wss-markov-triplet}
+\end{definition}
+\begin{definition}
+	A stochastic process $\{Y_i\}_{i=0}^n$ is a Wide-Sense Markov Process if and only if for any $1 \leq i \leq n - 1$, $\markov{Y_{i+1}}{Y_i}{Y^{i-1}}$ forms a Wide-Sense Markov Triplet.
+	\label{defn:ws-markov}
+\end{definition}
+All Wide-Sense Markov models have a very succint representation.
+\begin{theorem}
+	A process $\bs{X}$ is Wide-Sense Markov if and only if $\bs{X}_{i+1} = F_i \bs{X}_i + G_i \bs{U}_i$ and \[
+		\ip{\begin{bmatrix} U_i \\ \bs{X}_0 \end{bmatrix}}{\begin{bmatrix} U_j \\ \bs{X}_0 \end{bmatrix}} = \begin{bmatrix} Q_i \delta[i-j] & 0\\
+			0 & \Pi_0
+		\end{bmatrix}
+	\]
+	\label{thm:ws-markov}
+\end{theorem}
+\subsubsection{Hidden Markov Processes}
+\begin{definition}
+	If $\{X_n\}_{n\geq1}$ is a Markov Process, then $\{Y_n\}_{n\geq1}$ is a Hidden Markov Process if we can factorize the conditional probability density
+	\[
+		p(y^n, x^n) = \prod_{i=1}^np(y_i|x_i)
+	\]
+	\label{defn:hidden-markov-process}
+\end{definition}
+We can think of $Y$ as a noisy observation of an underlying Markov Process.
+The joint distribution of $\{X_n\}_{n\geq1}$ and $\{Y_n\}_{n\geq1}$ can be written as \[
+	p(x^n, y^n) = p(x^n)p(y^n|x^n) = \prod_{t=1}^np(x_t|x_{t-1})\prod_{i=1}^np(y_i|x_i).
+\]
+Hidden Markov Models can be represented by undirected graphical models.
+To create an undirected graphical model,
+\begin{enumerate}
+	\item Create a node for each random variable.
+	\item Draw an edge between two nodes if a factor of the joint distribution contains both nodes.
+\end{enumerate}
+Undirected graphical models of Hidden Markov Processes are useful because they let us derive additional Markov dependepencies between groups of variables.
+\begin{theorem}
+	For 3 disjoint sets $S_1, S_2, S_3$ of notes in a graphical model, if any path from $S_1$ to $S_3$ passes through a node in $S_2$, then $\markov{S_1}{S_2}{S_3}$.
+	\label{thm:graphic-triplet}
+\end{theorem}
+\subsubsection{State-Space Models}
+Suppose we have a discrete-time random process which evolves in a recursive fashion, meaning the current state depends in some way on the previous state.
+We can express this recursion with a set of equations.
+\begin{definition}
+	The standard state space model describes random processes which describe the evolution of state vectors $\bs{X}_i$ and observation vectors $\bs{Y}_i$ according to the equations
+	\[
+		\begin{cases}
+			\bs{X}_{i+1} = F_i \bs{X}_i + G_i \bs{U}_i\\
+			\bs{Y}_{i} = H_i\bs{X}_i + \bs{V}_i
+		\end{cases}
+	\]
+	with initial condition
+	\[
+		\ip{\begin{bmatrix}\bs{X}_0 \\ \bs{U}_i \\ \bs{V}_i\end{bmatrix}}{\begin{bmatrix}\bs{X}_0 \\ \bs{U}_j \\ \bs{V}_j\end{bmatrix}} = \begin{bmatrix}
+			\Pi_0 & 0 & 0\\
+			0 & Q_i\delta[i-j] & S_i\delta[i-j]\\
+			0 & S_i^*\delta[i-j] & R_i\delta[i-j]
+		\end{bmatrix}
+	\]
+	\label{defn:state-space-model}
+\end{definition}
+From \cref{thm:ws-markov}, we can easily see that state space models are Wide-Sense Markov.
+Note that $U_i$ and $V_i$ are white noise, and that the dynamics of the system can change at every time step.
+From these equations, we can derive six different properties.
+Let $\Pi_i = \ip{\bs{X}_i}{\bs{X}_i}$ and $\Phi_{i,j} = \prod_{k=j}^{i-1}F_k$ and $\Phi_{i,u} = I$.
+\begin{enumerate}
+	\item $\forall i \geq j,\ \ip{\bs{U}_i}{\bs{X}_j} = 0,\ \ip{\bs{V}_i}{\bs{X}_j} = 0$
+	\item $\forall i > j,\ \ip{\bs{U}_i}{\bs{Y}_j} = 0,\ \ip{\bs{V}_i}{\bs{Y}_j} = 0$
+	\item $\forall i,\ \ip{\bs{U}_i}{\bs{Y}_i} = S_i,\ \ip{\bs{V}_i}{\bs{Y}_i} = R_i$
+	\item $\Pi_{i+1} = F_i\Pi_iF_i^* + G_iQ_iG_i^*$
+	\item \[
+			\ip{\bs{X}_i}{\bs{X}_j} = \begin{cases}
+				\Phi_{i,j}\Pi_j & i \geq j \\
+				\Pi_i \Phi_{j,i}^* & i \leq j
+			\end{cases}
+		\]
+	\item \[
+			\ip{\bs{Y}_i}{\bs{Y}_j} = \begin{cases} 
+				H_i \Phi_{i,j+1}N_j & i > j\\ 
+				R_i + H_i\Pi_iH_i^* & i=j \\ 
+				N_i^*\Phi^*_{j,i+1}H_j^* & i < j
+			\end{cases} \text{ where } N_i=F_i\Pi_iH_i^*+G_iS_i
+		\]
+\end{enumerate}
+\section{Filtering}
+If we think of our signal as a discrete time random process, then like a normal deterministic signal, we can try filtering our random process.
+\begin{gitbook-image}
+\begin{figure}[!h]
+  \centering
+  \begin{tikzpicture}[node distance=2cm,auto,>=latex']
+		\node [int] (a) {$H(z)$};
+		\node (b) [left of=a,node distance=2cm, coordinate] {$X_n$};
+		\node [coordinate] (end) [right of=a, node distance=2cm]{$Y_n$};
+		\path[->] (b) edge node {$X_n$} (a);
+		\path[->] (a) edge node {$Y_n$} (end);
+  \end{tikzpicture}    
+	\caption{Filtering a Disrete Time Random Process with an LTI system with transfer function $H(z)$}
+  \label{fig:lti-filtering}
+\end{figure}
+\end{gitbook-image}
+Filtering can either be accomplished with an LTI system or some other non-linear/non-time-invariant system just like with deterministic signals.
+\subsection{LTI Filtering on WSS Processes}
+If we use an LTI filter on a WSS process, then we can easily compute how the filter impacts the spectrum of the signal.
+\begin{theorem}
+	When $Y(n)$ is formed by passing a WSS process $X_n$ through a stable LTI system with impulse response $h[n]$ and transfer function $H(z)$, then $S_Y(z) = H(z)S_X(z)H^*(z^{-*})$ and $S_{YX}(z) = H(z)S_X(z)$.
+	If we have a third process $Z_n$ that is jointly WSS with $(Y_n, X_n)$, then $S_{ZY}(z) = S_{ZX}(z)H^*(z^{-*})$.
+	\label{thm:lti-process}
+\end{theorem}
+This gives us an interesting interpretation of the spectral factorization (\cref{defn:spectral-factorization}) since it essentially passing a WSS process with auto-correlation $R_W(k) = r_e\delta[n]$ through a minimum-phase filter with transfer function $L(z)$.
+\subsection{Wiener Filter}
+Suppose we have a stochastic WSS process $Y_n$ that is jointly WSS with $X_n$ and that we want to find the best linear estimator of $X_n$ using $Y_n$.
+The best linear estimator of $X_n$ given the observations $Y_n$ can be written as \[
+	\hat{X}_n = \sum_{m\in\mathbb{Z}}h(m)Y_{n-m} = h[n] * Y_n.
+\]
+This is identical to passing $Y_n$ through an LTI filter.
+If we restrict ourselves to using $\{Y_i\}_{i=-\infty}^{n}$ to estimate $X_n$, then the best linear estimator can be written as \[
+	\hat{X}_n = \sum_{m=0}^\infty h(m)Y_{n-m} = h[n] * Y_n.
+\]
+It is identical to passing $Y_n$ through a causal LTI filter.
+Since we are trying to find a best linear estimator, it would be nice if each of the random variables we are using for estimating were uncorrelated with each other.
+In other words, instead of using $Y$ directly, we want to transform $Y$ into a new process $W$ where $R_W(k) = \delta[k]$.
+This transformation is known as whitening.
+From the spectral factorization of $Y$, we know if we use the filter $G(z) =\frac{1}{S_Y^+(z)}$ then \[
+	S_W(z) = \frac{S_Y(z)}{S_Y^+(z)S_Y^{+*}(z^{-*})} = \frac{S_Y(z)}{S_Y^+(z)S_Y^-(z)} = 1.
+\]
+Now we want to find the best linear estimator of $X$ using our new process $W$ by designing an LTI filter $Q(z)$.
+\begin{gitbook-image}
+\begin{figure}[!h]
+  \centering
+  \begin{tikzpicture}[node distance=2cm,auto,>=latex']
+		\node [int] (a) {$\frac{1}{S_Y^+(z)}$};
+		\node (b) [left of=a,node distance=2cm, coordinate] {$Y_n$};
+		\node [int, right of=a, node distance=2cm] (q) {$Q(z)$};
+		\node [coordinate] (end) [right of=q, node distance=2cm]{$\hat{X}_n$};
+		\path[->] (b) edge node {$Y_n$} (a);
+		\path[->] (a) edge node {$W_n$} (q);
+		\path[->] (q) edge node {$\hat{X}_n$} (end);
+  \end{tikzpicture}    
+	\caption{Finding the best linear estimator of $X$ using $W$ with a two-stage filter that first whitens the input.}
+  \label{fig:wiener-filter}
+\end{figure}
+\end{gitbook-image}
+\subsubsection{Non-Causal Case}
+Starting with noncausal case, we can apply the orthogonality principle,
+\begin{align*}
+	\expect{(X_n-\hat{X}_n)W_{n-k}^*} = 0 &\implies \expect{X_nW^*_{n-k}} = \sum_{m\in\mathbb{Z}}q(m)\expect{W_{n-m}W^*_{n-k}}\\
+	\therefore R_{XW}(k) = \sum_{m\in\mathbb{Z}}q(m)R_W(k-m) &\implies S_{XW}(z) = Q(z)S_W(z)\\
+	\therefore Q(z) = \frac{S_{XW}(z)}{S_W(z)} = S_{XW}(z) &= S_{XY}(z)(S_Y^+(z^{-*}))^{-*} = \frac{S_{XY}(z)}{S_Y^-(z)}
+\end{align*}
+When we cascade these filters, \[
+	H(z) = Q(z)G(z) = \frac{S_{XY}(z)}{S_Y^-(z)} \frac{1}{S_Y^+(z)}= \frac{S_{XY}(z)}{S_Y(z)}.
+\]
+\begin{definition}
+	The best linear estimator of $X_n$ using $Y_n$ where $(X_n, Y_n)$ is jointly WSS is given by the non-causal Wiener filter.
+	\[
+		H(z) = \frac{S_{XY}(z)}{S_Y(z)}
+	\]
+	\label{defn:noncausal-wiener}
+\end{definition}
+If we interpret \cref{defn:noncausal-wiener} in the frequency domain, for a specific $\omega$, we can understand $H(e^{j\omega})$ as an optimal linear estimator for $F_X(\omega)$ where $F_X(\omega)$ is the the stochastic process given by the Cramer-Khinchin decomposition (\cref{thm:cramer-khinchin}).
+More specifically, we can use the Cramer-Khinchin decomposition of $Y_n$.
+\begin{align*}
+	\hat{X}_n &= \sum_{i\in\mathbb{Z}}h[i]\int_{-\pi}^\pi e^{j\omega(n-i)}dF_Y(\omega)\\
+	&= \int_{-\pi}^{\pi}\left(\sum_{i\in\mathbb{Z}}h[i]e^{-j\omega i}\right)e^{j\omega n}dF_Y(\omega) \\
+	&= \int_{-\pi}^\pi H(e^{j\omega})e^{j\omega n}dF_Y(\omega)\\
+\end{align*}
+Since $F_X$ and $F_Y$ have jointly orthogonal increments, this tells us that $H(e^{j\omega})$ is just the optimal linear estimator of $dF_X(\omega)$ using $dF_Y(\omega)$.
+$dF_X(\omega)$ and $dF_Y(\omega)$ exist on a Hilbert space, meaning we are essentially projecting each frequency component of $X_n$ onto the corresponding frequency component of $Y_n$.
+\subsubsection{Causal Case}
+First, note that in the causal case, whitening doesn't break causality because $\frac{1}{S_Y^+(z)}$ is causal.
+When we apply the orthogonality principle,
+\begin{align*}
+	\expect{(X_n-\hat{X}_n)W_{n-k}^*} = 0 &\implies \expect{X_nW^*_{n-k}} = \sum_{m=0}^\infty q(m)\expect{W_{n-m}W^*_{n-k}}\\
+	\therefore R_{XW}(k) &= \sum_{m = 0}^\infty q[m]R_W(k-m) \qquad k \geq 0
+\end{align*}
+We can't take the Z-transform of both sides because the equation is not necessarily true for $k < 0$.
+Instead, we can look at the function \[
+	f(k) = R_{XW}(k) - \sum_{m=0}^\infty R_W(k-m)q[m] = \begin{cases} 0 & k\geq 0,\\ ? & \text{ else.}\end{cases}
+\]
+Taking the unilateral Z-transform of both sides,
+\begin{align*}
+	\trunc{F(z)} &= \trunc{S_{XW}(z) - S_W(z)Q(z)} = \trunc{S_{XW}(z)} - Q(z) = 0\\
+	Q(z) &= \trunc{S_{XW}(z)} = \trunc{\frac{S_{XY}(z)}{S_Y^-(z)}}
+\end{align*}
+Thus the filter $H$ which gives the causal best linear estimator of $X$ using $Y$ is \[
+	H(z) = Q(z) G(z)= \trunc{\frac{S_{XY}(z)}{S_Y^-(z)}}\frac{1}{S_Y^+(z)}.
+\]
+\begin{definition}
+	The best linear estimator of $X_n$ using $\{Y_i\}_{i=-\infty}^{n}$ is given by the causal Wiener filter. \[
+		H(z) = Q(z)G(z) = \trunc{\frac{S_{XY}(z)}{S_Y^-(z)}}\frac{1}{S_Y^+(z)}.
+	\]
+	\label{defn:causal-wiener}
+\end{definition}
+Intuitively, this should make sense because we are using the same $W$ process as in the non-causal case, but only the ones which we are allowed to use, hence use the unilateral Z-transform of the non-causal Wiener filter, which amounts to truncated the noncausal filter to make it causal.
+\begin{theorem}
+	If $\hat{X}_{NC}(n)$ is the non-causal Wiener filter of $X$, then the causal wiener filter of $X$ given $Y$ is the same as the causal wiener filter of $\hat{X}_{NC}$ given $Y$, and if $Y$ is white noise, then \[
+		\hat{X}_C(n) = \sum_{i=0}^{\infty}h[i]Y_{n-i}
+	\]
+	\label{thm:causal-wiener}
+\end{theorem}
+\subsubsection{Vector Case}
+Suppose that instead of a Wide-Sense Stationary process, we an $N$ length signal $\bs{X}$ which we want to estimate with another $N$ length signal $\bs{Y}$.
+We can represent both $\bs{X}$ and $\bs{Y}$ as vectors in $\mathbb{C}^N$.
+If we are allowed to use all entries of $\bs{Y}$ to estimate $\bs{X}$, this is identical to linear estimation.
+\begin{definition}
+	The non-causal Wiener filter of a finite length $N$ signal $\bs{Y}$ is given by \[
+		K_s = R_{\bs{X}\bs{Y}}R_{\bs{Y}}^{-1}.
+	\]
+	\label{defn:noncausal-vector-wiener}
+\end{definition}
+Note that this requires $R_{\bs{Y}} \succ 0$.
+Suppose that we wanted to design a causal filter for the vector case, so $\hat{X}_i$ only depends on $\{Y_j\}_{j=1}^i$.
+By the orthogonality principle,
+\[
+	\forall 1 \leq l \leq i,\ \expect{X_i - \sum_{j=1}^iK_{f, ij}Y_jY_l^*} = 0 \implies R_{\bs{XY}}(i, l) = \sum_{j=1}^i K_{f, ij}R_{\bs{Y}}(j, l)
+\]
+In matrix form, this means
+\[
+	R_{\bs{XY}} - K_fR_{\bs{Y}} = U^+
+\]
+where $U^+$ is strictly upper triangular.
+\begin{theorem}
+	If matrix $H \succ 0$, then there exists a unique lower-diagonal upper triangular factorization of $H=LDL^*$ where $L$ is lower diagonal and invertible with unit diagonal entries and $D$ is diagonal with positive entries.
+	\label{thm:ldl-decomp}
+\end{theorem}
+Applying the LDL decomposition, we see that
+\begin{align*}
+	R_{\bs{XY}} - K_fLDL^* = U^+ \implies R_{\bs{XY}}L^{-*}D^{-1} -K_f L = U^+L^{-*}D^{-1}\\
+	\therefore [R_{\bs{XY}}L^{-*}D^{-1}]_L -K_f L = 0
+\end{align*}
+where $[\cdot]_L$ represent the lower triangular part of a matrix.
+\begin{definition}
+	The causal Wiener filter of a finite length $N$ signal $\bs{Y}$ is given by \[
+		K_f = [R_{\bs{XY}}L^{-*}D^{-1}]_LL^{-1}
+	\]
+	\label{defn:causal-vector-wiener}
+\end{definition}
+\subsection{Hidden Markov Model State Estimation}
+Suppose we have a Hidden Markov Process $\{Y_n\}_{n\geq1}$.
+We can think of determining the state $\{X_n\}_{n\geq1}$ as filtering $\{Y_n\}_{n\geq1}$.
+\subsubsection{Causal Distribution Estimation}
+Suppose we want to know the distribution of $X_t$ after we have observered $Y^t$.
+\begin{align*}
+	p(x_t|y^t) &= \frac{p(x_t,y^t)}{p(y^t)} = \frac{p(x_t)p(y_t, y^{t-1}|x_t)}{\sum_{x}p(y_t,y^{t-1}|x_t=x)p(x_t=x)}\\
+	&= \frac{p(x_t)p(y_t|x_t)p(y^{t-1}|x_t)}{\sum_xp(y_t|x_t=x)p(y^{t-1}|x_t=x)p(x_t=x)} = \frac{p(y_t|x_t)p(y^{t-1})p(x_t|y^{t-1})}{\sum_{x}p(y_t|x_t=x)p(y^{t-1})p(x_t=x|y^{t-1})}\\
+	&=\frac{p(y_t|x_t)p(x_t|y^{t-1})}{\sum_{x}p(y_t|x_t=x)p(x_t=x|y^{t-1})}
+\end{align*}
+Now if we know $p(x_t|y^{t-1})$, then we are set.
+\begin{align*}
+	p(x_t|y^{t-1}) &= \sum_xp(x_t,x_{t-1}=x|y^{t-1}) = \sum_x p(x_{t-1}=x|y^{t-1})p(x_t|x_{t-1}=x,y^{t-1}) \\
+	&= \sum_x p(x_{t-1}=x|y^t)p(x_t|x_{t-1}=x)
+\end{align*}
+Now we have a recursive algorithm for computing the distribution of $x_t$.
+
+\begin{gitbook-image}
+\begin{algorithm}[H]
+	\SetAlgoLined
+	$\beta_1(x_1) = p(x_1)$\;
+	\For{$t \geq 1$}{
+		$\alpha_t(x_t) = p(x_t|y^t) = \frac{\beta_t(x_t)p(y_t|x_t)}{\sum_x \beta_t(x)p(y_t|x_t = x)}$ (Measurement Update)\;
+		$\beta_{t+1}(x_{t+1}) = p(x_{t+1}|y^{t}) = \sum_x \alpha_t(x)p(x_{t+1}|x_t=x)$ (Time Update)\;
+	}
+	\caption{Forward Recursion}
+\end{algorithm}
+\end{gitbook-image}
+\subsubsection{Non-Causal Distribution Estimation}
+Suppose we are allowed to non-causally filter our signal and we care about the distribution of $X_t$ after we have observed $Y^n$.
+In other words, for $t \geq n$, we want to find $\gamma_t(x_t) = p(x_t|y^n)$.
+When $t=n$, $\gamma_n(x_n) = \alpha_n(x_n)$.
+If we continue expanding backwards, then
+\begin{align*}
+	p(x_t|y^n) &= \sum_x p(x_t,x_{t+1}=x|y^n) = \sum_x p(x_{t+1}=x|y^n)p(x_t|x_{t+1}=x,y^t,y_{t+1}^n)\\
+	&= \sum_x p(x_{t+1}=x|y^n)p(x_t|x_{t+1},y^t) = \sum_x p(x_{t+1}=x|y^n)\frac{p(x_t|y^t)p(x_{t+1}=x|x_t,y^t)}{p(x_{t+1}=x|y^t)}\\
+	&= \sum_x \gamma_{t+1}(x)\frac{\alpha_t(x_t)p(x_{t+1}=x|x_t)}{\beta_{t+1}(x)}
+\end{align*}
+This gives us a clear algorithm for non-causally computing the distribution of $x_t$.
+
+\begin{gitbook-image}
+\begin{algorithm}[H]
+	\SetAlgoLined
+	Run Forward Recursion\;
+	$\gamma_n(x_n) = \alpha_n(x_n)$\;
+	\For{$t=n-1$ \KwTo 1}{
+		$\gamma_t(x_t) = \sum_x \gamma_{t+1}(x)\frac{\alpha_t(x_t)p(x_{t+1}=x|x_t)}{\beta_{t+1}(x)}$\;
+	}
+	\caption{Backward Recursion}
+\end{algorithm}
+\end{gitbook-image}
+\subsubsection{State Sequence Estimation}
+Suppose we want to find the most likely sequence of states given our observations.
+This means we should compute \[
+	\hat{X}^n = \argmax_{X^n}p(x^n|y^n)
+\]
+\begin{align*}
+	p(x^t, y^t) &= p(x^{t-1}, y^{t-1})p(x_t, y_t|x^{t-1},y^{t-1})\\
+	&= p(x^{t-1}, y^{t-1})p(x_t|x^{t-1},y^{t-1})p(y_t|x_t,x^{t-1},y^{t-1}) \\
+	&= p(x^{t-1},y^{t-1})p(x_t|x_{t-1})p(y_t|x_t)
+\end{align*}
+We see that there is a recursion in the joint distribution, so if we let $V_t(x_t) = \max_{x^{t-1}}p(x^t,y^t)$, then
+\begin{align*}
+	V_t(x_t) &= \max_{x^{t-1}} p(x^t, y^t) = p(y_t|x_t)\max_{x^{t-1}}p(x^{t-1},y^{t-1})p(x_t|x_{t-1})\\
+	&= p(y_t|x_t)\max_{x^{t-1}}\left[p(x_t|x_{t-1}) \max_{x^{t-2}} p(x^{t-1},y^{t-1})\right]\\
+	&= p(y_t|x_t)\max_{x^{t-1}}p(x_t|x_{t-1}) V_{t-1}(x_{t-1})
+\end{align*}
+The base case is that $V_1(x_1) = p(x_1)p(y_1|x_1)$.
+$V_t$ is useful because $\hat{x}_n = \argmax_{x_n}V_n(x_n)$.
+This is because we can first maximize over $\hat{X}^{n-1}$ and $Y^n$, so the only thing left to maximize is $\hat{x}_n$.
+Once we have $\hat{x}_t$, then we can comptue $\hat{x}_{t-1}$ by \[
+	\hat{x}_{t-1} = \argmax_{x_{t-1}}p(\hat{x}_t|x_{t-1})V_{t-1}(x_{t-1}).
+\]
+Putting these equations gives us the Viterbi algorithm.
+
+\begin{gitbook-image}
+\begin{algorithm}[H]
+	\SetAlgoLined
+	$V_1(x_1) = p(x_1)p(y_1|x_1)$\;
+	\For{$t=2$ \KwTo $n$}{
+		$V_t(x_t) = p(y_t|x_t)\max_{x_{t-1}}p(x_t|x_{t-1}) V_{t-1}(x_{t-1})$\;
+	}
+	$\hat{x}_n = \argmax_{x_n} V_n(x_n)$\;
+	\For{$t=n$ \KwTo $2$}{
+		$\hat{x}_{t-1} = \argmax_{x} p(\hat{x}_t|x_{t-1} = x)V_{t-1}(x)$\;
+	}
+	\caption{Viterbi Algorithm}
+\end{algorithm}
+\end{gitbook-image}
+\subsection{Kalman Filtering}
+In the Kalman Filter setup, we assume that the signal we would like to filter can be represented by a state-space model.
+We want to predict the state vectors $\bs{\hat{X}}_i$ using some linear combination of the observations $\bs{Y}_i$.
+\subsubsection{Kalman Prediction Filter}
+Suppose that we want to compute the one-step prediction.
+In other words, given $\bs{Y}^i$, we want to predict $\bs{\hat{X}}_{i+1}$.
+Our observations $\bs{Y}$ are the only thing which give us information about the state, so it would be nice if we could de-correlate all of the $\bs{Y}$.
+To do this, we can define the innovation process \[
+	\bs{e}_i = \bs{Y}_i - \bs{\hat{Y}_{i|i-1}} = \bs{Y}_i - H_i\bs{\hat{X}}_{i|i-1}
+\]
+The last equality follows from the state-space modela and that past observation noises are uncorrelated with the current one.
+Now, to compute the one-step prediction, we just need to project $\bs{\hat{X}}_i$ onto the innovations.
+\begin{align*}
+	\bs{\hat{X}}_{i+1|i} &= \sum_{j=0}^i\ip{\bs{X}_{i+1}}{\bs{e}_j}R_{\bs{e},j}^{-1}\bs{e}_j \\
+	&= \ip{\bs{X}_{i+1}}{\bs{e}_{i}}R_{\bs{e},i}^{-1}\bs{e}_i + \sum_{j=0}^{i-1}\ip{\bs{X}_{i+1}}{\bs{e}_j}R_{\bs{e},j}^{-1}\bs{e}_j\\
+	&= \ip{\bs{X}_{i+1}}{\bs{e}_{i}}R_{\bs{e},i}^{-1}\bs{e}_i + \bs{\hat{X}}_{i+1|i-1} = \ip{\bs{X}_{i+1}}{\bs{e}_{i}}R_{\bs{e},i}^{-1}\bs{e}_i + \bs{\hat{X}}_{i+1|i}\\
+	&= \ip{\bs{X}_{i+1}}{\bs{e}_{i}}R_{\bs{e},i}^{-1}\bs{e}_i + F_i\bs{\hat{X}}_{i|i-1}
+\end{align*}
+The second to last equality follows from the Wide-Sense Markovity of state space models, and the last equality is due to the state evolution noises being uncorrelated.
+If we let $K_{p,i} = \ip{\bs{X}_{i+1}}{\bs{e}_i}R_{\bs{e},i}^{-1}$ (called the prediction gain), then we have a recursive estimate of the optimal one-step predictor.
+\[
+	\bs{\hat{X}}_{i+1|i} = F_i\bs{\hat{X}}_{i|i-1} + K_{p,i}\bs{e}_i.
+\]
+Now, we just need to find a recursive formulation for $K_{p,i}$ and $R_{\bs{e},i}$.
+Starting with $R_{\bs{e},i}$, notice that we can write $\bs{e}_i = \bs{Y}_i-H_i\bs{\hat{X}}_{i|i-1} = H_i(\bs{X}_i-\bs{\hat{X}}_{i|i-1})+\bs{V}_i$.
+\begin{align*}
+	R_{\bs{e},i} &= \ip{H_i(\bs{X}_i - \bs{\hat{X}}_{i|i-1})+ \bs{V_i}}{H_i(\bs{X}_i - \bs{\hat{X}}_{i|i-1})+\bs{V_i}}\\
+	&= H_i\ip{\bs{X}_i - \bs{\hat{X}}_{i|i-1}}{\bs{X}_i - \bs{\hat{X}}_{i|i-1}}H_i^* + R_i
+\end{align*}
+To find $K_{p,i}$, we should first find $\ip{\bs{X}_{i+1}}{\bs{e}_i}$.
+\begin{align*}
+	\ip{\bs{X}_{i+1}}{\bs{e}_i} &= F_i\ip{\bs{X}_i}{\bs{e}_i} + G_i\ip{\bs{U}_i}{\bs{e}_i}\\
+	&= F_i\ip{\bs{X}_i}{H_i(\bs{X}_i - \bs{\hat{X}}_{i|i-1})+\bs{V}_i} + \ip{\bs{U}_i}{H_i(\bs{X}_i - \bs{\hat{X}}_{i|i-1})+\bs{V}_i} \\
+	&= F_i\ip{\bs{X}_i}{\bs{X}_i - \bs{\hat{X}}_{i|i-1}}H_i^* + G_iS_i\\
+	&= F_i\ip{(\bs{X}_i - \bs{\hat{X}}_{i|i-1}) + \bs{\hat{X}}_{i|i-1}}{\bs{X}_i - \bs{\hat{X}}_{i|i-1}}H_i^* + G_iS_i\\
+	&= F_i\ip{\bs{X}_i - \bs{\hat{X}}_{i|i-1}}{\bs{X}_i - \bs{\hat{X}}_{i|i-1}}H_i^* + G_iS_i
+\end{align*}
+Notice that the matrix $P_i = \ip{\bs{X}_i - \bs{\hat{X}}_{i|i-1}}{\bs{X}_i - \bs{\hat{X}}_{i|i-1}}$ is the auto-correlation of the estimation error, and it shows up in both $K_{p,i}$ and $R_{\bs{e}_i}$.
+It would be useful to have a recursive solution for this matrix as well.
+\begin{align*}
+	P_{i+1} &= \Pi_{i+1}-\ip{\bs{\hat{X}}_{i+1|i}}{\bs{\hat{X}}_{i+1|i}} \\
+	&= F_i\Pi_iF_i^* + G_iQ_iG_i^* - \ip{F_i\bs{\hat{X}}_{i|i-1}+K_{p,i}\bs{e}_i}{F_i\bs{\hat{X}}_{i|i-1}+K_{p,i}\bs{e}_i}\\
+	&= F_i\Pi_iF_i^* + G_iQ_iG_i^* - F_i\ip{\bs{\hat{X}}_{i|i-1}}{\bs{\hat{X}}_{i|i-1}}F^*+K_{p,i}R_{\bs{e},i}K_{p,i}^*\\
+	&= F_iP_iF_i^* + G_iQ_iG_i^* - K_{p,i}R_{\bs{e},j}K_{p,i}^*
+\end{align*}
+Putting this into a concrete algorithm, we get the Kalman Prediction Filter.
+
+\begin{algorithm}[H]
+	\SetAlgoLined
+	$P_0 = \Pi_0$\;
+	$\bs{\hat{X}}_{0|-1} = 0$\;
+	\For{$i \geq 0$}{
+		$\bs{e}_i = \bs{Y}_i - H_i\bs{\hat{X}}_{i|i-1}$\;
+		$R_{\bs{e},i} = H_iP_iH_i^* + R_i$\;
+		$K_{p,i} = (F_iP_iH_i^* + G_iS_i)R_{\bs{e},i}^{-1}$\;
+		$P_{i+1} = F_iP_iF_i^* + G_iQ_iG_i^* - K_{p,i}R_{\bs{e},i}K_{p,i}^*$\;
+		$\bs{\hat{X}}_{i+1|i} = F_i\bs{\hat{X}}_{i|i-1} + K_{p,i}\bs{e}_i$\;
+	}
+	\caption{Kalman Prediction Filter}
+\end{algorithm}
+\subsubsection{Schmidt's Modification of the Kalman Filter}
+The predictive Kalman filter goes directly from $\bs{\hat{X}}_{i|i-1}$ to $\bs{\hat{X}}_{i+1|i}$ without ever determining $\bs{\hat{X}}_{i|i}$.
+The Schmidt Modification of the Kalman filter separates the predictive kalman filter into two steps, allowing us to estimate the current state.
+\begin{enumerate}
+	\item Measurement Update: Find $\bs{\hat{X}}_{i|i}$ given the latest observation $\bs{Y}_{i}$ and $\bs{\hat{X}}_{i|i-1}$.
+	\item State Evolution (Time) Update: Find $\bs{\hat{X}}_{i+1|i}$ using what we know about the state evolution.
+\end{enumerate}
+This mimics the approach of the forward algorithm for Hidden Markov Models, which separated updates to the distribution using a time update and a measurement update.
+Using our innovation process,
+\begin{align*}
+	\bs{\hat{X}}_{i|i} &= \sum_{j=0}^i \ip{\bs{X}_i}{\bs{e}_j}R_{\bs{e},j}^{-1}\bs{e}_j \\
+	&= \bs{\hat{X}}_{i|i-1} + \ip{\bs{X}_i}{\bs{e}_j}R_{\bs{e},i}^{-1}\bs{e}^j\\
+	&= \bs{\hat{X}}_{i|i-1} + \ip{(\bs{X}_i - \bs{\hat{X}}_{i|i-1}) + \bs{\hat{X}}_{i|i-1}}{H_i(\bs{X}_i - \bs{\hat{X}}_{i|i-1}) + \bs{V}_i}R_{\bs{e},i}^{-1}\bs{e}^j\\
+	&= \bs{\hat{X}}_{i|i-1} + P_iH_i^*R_{\bs{e},i}^{-1}\bs{e}_i
+\end{align*}
+The gain on the coefficient of the innovation $K_{f,i}=P_iH_i^*R_{\bs{e},i}$ is called the Kalman Filter Gain.
+The error of our estimator $P_{i|i} = \ip{\bs{\hat{X}}_{i|i}}{\bs{\hat{X}}_{i|i}}$ is given by \[
+	P_{i|i} = P_i - P_iH_i^*R_{\bs{e},i}^{-1}H_iP_i.
+\]
+For the time update,
+\begin{align*}
+	\bs{\hat{X}}_{i+1|i} &= F_i\bs{\hat{X}}_{i|i} + G_i\bs{\hat{U}}_{i|i} \\
+	&= F_i\bs{\hat{X}}_{i|i} + G_i\ip{\bs{U}_i}{\bs{e}_i}R_{\bs{e},i}^{-1}\bs{e}_i = F_i\bs{\hat{X}}_{i|i} + G_i\ip{\bs{U}_i}{\bs{e}_i}R_{\bs{e},i}^{-1}\bs{e}_i\\
+	&= F_i\bs{\hat{X}}_{i|i} + G_i\ip{\bs{U}_i}{H\bs{X}_i+\bs{V}_i - H_i\bs{\hat{X}}_{i|i-1}}R_{\bs{e},i}^{-1}\bs{e}_i\\
+	&= F_i\bs{\hat{X}}_{i|i} + G_iS_iR_{\bs{e},i}^{-1}\bs{e}_i
+\end{align*}
+We can re-write the error if this estimator $P_{i+1}$ as \[
+	P_{i+1} = F_iP_{i|i}F_i^* + G_i(Q_i - S_iR_{\bs{e},i}^{-1}S_i^*)G_i^* - F_iK_{f,i}S_i^*G_i^* - G_iS_iK_{f,i}^*F_i^*
+\]
+Writing this as an algorithm,
+
+\begin{algorithm}[H]
+	\SetAlgoLined
+	$P_0 = \Pi_0$\;
+	$\bs{\hat{X}}_{0|-1} = 0$\;
+	\For{$i \geq 0$}{
+		$\bs{e}_i = \bs{Y}_i - H_i\bs{\hat{X}}_{i|i-1}$\;
+		$R_{\bs{e},i} = H_iP_iH_i^* + R_i$\;
+		$K_{f,i} = P_iH_i^*R_{\bs{e},i}^{-1}$\;
+		$\bs{\hat{X}}_{i|i} = \bs{\hat{X}}_{i|i-1} + K_{f,i}\bs{e}_i$\;
+		$P_{i|i} = P_i - P_iH_i^*R_{\bs{e},i}^{-1}H_iP_i$\;
+		$\bs{\hat{X}}_{i+1|i} = F_i\bs{\hat{X}}_{i|i} + G_iS_iR_{\bs{e},i}^{-1}\bs{e}_i$\;
+		$P_{i+1} = F_iP_{i|i}F_i^* + G_i(Q_i - S_iR_{\bs{e},i}^{-1}S_i^*)G_i^* - F_iK_{f,i}S_i^*G_i^* - G_iS_iK_{f,i}^*F_i^*$\;
+	}
+	\caption{Kalman Prediction Filter}
+\end{algorithm}
+\subsubsection{Kalman Smoother}
+The Kalman Prediction Filter and Schmidt's modification of the Kalman filter are both causal filters.
+The Kalman Smoother provides a non-causal estimate in the same way that the Backward Recursion algorithm does for Hidden Markov Processes.
+In other words, the Kalman Smoother predicts $\hat{\bs{X}}_{i|n}$, the best linear estimator of $\hat{\bs{X}}_i$ from $\{\bs{Y}_0, \cdots, \bs{Y}_N\}$.
+As before, we can start with the innovation process $\bs{e}_j = \bs{Y}_j - H_j\hat{\bs{X}}_{j|j-1}$.
+\[
+	\hat{\bs{X}}_{i|N} = \sum_{j=0}^N \ip{\bs{X}_i}{\bs{e}_j}R_{e,j}^{-1}\bs{e}_j = \hat{\bs{X}}_{i|i-1} + \sum_{j=i}^N \ip{X_i}{\bs{e}_j}R_{e,j}^{-1}\bs{e}_j.
+\]
+We can compute $\hat{\bs{X}}_{i|i-1}$ using the Predictive Kalman filter, so we just need to compute the $\ip{\bs{X}_i}{\bs{e}_j}R_{e,j}^{-1}\bs{e}_j$.
+\begin{align*}
+	\ip{\bs{X}_i}{\bs{e}_j} &= \ip{\bs{X}_i}{H_j(\bs{X}_i - \hat{\bs{X}}_{j|j-1}) + \bs{V}_j} = \ip{\bs{X}_i}{H_j(\bs{X}_j - \hat{\bs{X}}_{j|j-1})} \\
+	&= \ip{\hat{\bs{X}}_{i|i-1} + (\bs{X}_i - \hat{\bs{X}}_{i|i-1})}{\bs{X}_j - \hat{\bs{X}}_{j|j-1}}H_j^*
+\end{align*}
+$\bs{X}_j - \hat{\bs{X}}_{j|j-1}$ is orthgonal to any linear function of $\{\bs{Y}_0, \cdots, \bs{Y}_{j-1}\}$, so when $j \geq i$, it must be orthgonal to $\hat{\bs{X}}_{i|i-1}$ since it is a function of $\{\bs{Y}_k\}^{i-1}_0$.
+Thus, for $j\geq i$, \[
+	\ip{\bs{X}_i}{\bs{e}_j} = \ip{\bs{X}_i - \hat{\bs{X}}_{i|i-1}}{\bs{X}_j - \hat{\bs{X}}_{j|j-1}}H_j^*
+\]
+If we denote $P_{ij} = \ip{\bs{X}_i - \hat{\bs{X}}_{i|i-1}}{\bs{X}_j - \hat{\bs{X}}_{j|j-1}}$, then \[
+	P_{ij} = P_{i}\Phi_{p}^*(j, i) = P_{i} \begin{cases} I & \text{ if } j =  i\\ \prod_{k=i}^{j-1} F_{p,k} & \text{ if } j > i \end{cases}
+\]
+where $F_{p,k} = (F_k - K_{p, k}H_k)$.
+This gives us the expression \[
+	\hat{\bs{X}}_{i|N} = \hat{\bs{X}}_{i|i-1} + P_i \sum_{j=i}^N \Phi_p^*(j, i)H_i^*R_{e,j}^{-1}\bs{e}_j.
+\]
+If we let $\lambda_{i|N} = \sum_{j=i}^N \Phi_p^*(j, i)H_i^*R_{e,j}^{-1}\bs{e}_j$, then we get the recursion
+\[
+	\lambda{i|N} = F_{p,i}^*\lambda_{i+1|N} + H_i^*R_{e, i}^{-1}\bs{e}_i.
+\]
+If we want to look at the error of this estimator, we see that \[
+	P_{i|N} = P_i - P_i \Lambda_{i|N} P_i \text{ where } \Lambda_{i|N} = \ip{\lambda_{i|N}}{\lambda_{i|N}} = F_{p,i}^*\Lambda_{i+1|N}F_{p,i}+H_i^*R_{e, i}^{-1}H_i.
+\]
+Writing all of this as an algorithm,
+
+\begin{algorithm}[H]
+	\SetAlgoLined
+	Run Kalman Prediction Filter\;
+	$\lambda_{N+1|N} = 0$\;
+	$\Lambda_{N+1|N} = 0$\;
+	\For{$i = N$ \KwTo 0}{
+		$\lambda_{i|N} = F_{p,i}^* \lambda_{i+1|N} + H_i^*R_{e,i}^{-1}\bs{e}_i$\;
+		$\hat{\bs{X}}_{i|N} = \hat{\bs{X}}_{i|i-1} + P_i \lambda_{i|N}$\;
+		$\Lambda_i = F_{p,i}^*\Lambda_{i+1|N}F_{p,i} + H_i^*R_{e,i}^{-1}H_i$\;
+		$P_{i|N} = P_i - P_i\Lambda_{i|N}P_i$\;
+	}
+	\caption{Kalman Smoother Filter}
+\end{algorithm}
+\end{document}
+

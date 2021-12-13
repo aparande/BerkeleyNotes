@@ -30,6 +30,10 @@ jobs:
           sed -i -e 's/..\/..\/header.tex/main\/header.tex/g' main/**/Notes/notes.tex
           sudo sed -i 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/g' /etc/ImageMagick-6/policy.xml
       # Conversion Steps. Output a JSON file to the main folder
+      - name: Convert EECS225A to JSON
+        uses: docker://pandoc/latex:2.11
+        with:
+          args: --to json --from latex+raw_tex --output=main/eecs225a.json main/EECS225A/Notes/notes.tex
       - name: Convert EECS127 to JSON
         uses: docker://pandoc/latex:2.11
         with:
@@ -65,6 +69,8 @@ jobs:
           cp -a tikz-images/. ../output/.gitbook/assets
           cat eecs127.json | ./pandoc_filter.py > eecs127-filtered.json
           cp -a tikz-images/. ../output/.gitbook/assets
+          cat eecs225a.json | ./pandoc_filter.py > eecs225a-filtered.json
+          cp -a tikz-images/. ../output/.gitbook/assets
           cd ../
       # Markdown conversion steps. Output a MD file to the output directory
       - name: Convert EECS126 to Markdown
@@ -87,6 +93,10 @@ jobs:
         uses: docker://pandoc/latex:2.11
         with:
           args: --to markdown+pipe_tables-simple_tables-smart --from json --atx-headers --output=output/EE120.md main/ee120-filtered.json
+      - name: Convert EECS225A to Markdown
+        uses: docker://pandoc/latex:2.11
+        with:
+          args: --to markdown+pipe_tables-simple_tables-smart --from json --atx-headers --output=output/EECS225A.md main/eecs225a-filtered.json
       - name: Save raw markdown
         uses: actions/upload-artifact@v2
         with:
@@ -97,7 +107,7 @@ jobs:
           mv main/create_book.py output/create_book.py
           chmod +x output/create_book.py
           cd output
-          python3 create_book.py EE120.md EE123.md EECS126.md EECS127.md EE128.md 
+          python3 create_book.py EE120.md EE123.md EECS126.md EECS127.md EE128.md EECS225A.md
           ls -la .gitbook/assets
           cd ../
           sed -i -e 's/\\\$\\\$/\$\$/g' output/**/*.md

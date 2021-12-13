@@ -31,20 +31,20 @@ def tikz2image(tikz_src, filetype, outfile):
     os.chdir(tmpdir)
 
     with open('tikz.tex', 'w') as f:
-        f.write("\\documentclass[]{standalone}")
+        f.write("\\documentclass[]{article}")
         f.write("\n\\input{" + header_file + "}")
-        f.write("""
-                \\begin{document}
-                """)
+        f.write("\\begin{document}")
+        f.write("\\thispagestyle{empty}")
         f.write(tikz_src)
         f.write("\n\\end{document}\n")
 
     call(["pdflatex", 'tikz.tex'], stdout=sys.stderr)
+    shutil.copyfile(tmpdir + '/tikz.tex', olddir+"/test.tex")
     os.chdir(olddir)
     if filetype == 'pdf':
         shutil.copyfile(tmpdir + '/tikz.pdf', outfile + '.pdf')
     else:
-        call(["convert", tmpdir + '/tikz.pdf', "-density", "500", "-strip", outfile + '.' + filetype])
+      call(["convert", tmpdir + '/tikz.pdf', "-density", "500", "-strip", "-fuzz", "50%", "-trim", "+repage", outfile + '.' + filetype])
     shutil.rmtree(tmpdir)
 
 def convert_to_image(format, code):
@@ -57,6 +57,13 @@ def convert_to_image(format, code):
         sys.stderr.write('Created image ' + src + '\n')
 
     return filename, filetype
+
+def convert_algorithm(fmt, code):
+    # code = re.sub("caption", "caption*", code)
+    figure_code = "\n".join(code.split("\n")[1:-1])
+    filename, filetype = convert_to_image(format, figure_code)
+    
+    return Para([Image(['', [], []], [], [f"../.gitbook/assets/{filename}.{filetype}", ""])])
 
 def convert_figure(format, code):
     """
@@ -194,7 +201,10 @@ def tex_envs(key, value, formt, meta):
         [fmt, code] = value
         if fmt == "latex":
             if re.match("\\\\begin{gitbook-image}", code):
-                return convert_figure(formt, code)
+                if "algorithm" in code:
+                    return convert_algorithm(formt, code)
+                else:
+                    return convert_figure(formt, code)
             elif re.match("\\\\begin{definition}", code):
                 return convert_definition(code)
             elif re.match("\\\\begin{theorem}", code):
@@ -223,6 +233,8 @@ def convert_custom_tex(code, level=0):
       out += code[marker:start-4] + "\\text{Var}\\left(" + convert_custom_tex(match.group(1), level+1) + "\\right) " 
     elif start - 4 >= marker and code[start - 4: start] == "\\cov":
       out += code[marker:start-4] + "\\text{Cov}\\left(" + convert_custom_tex(match.group(1), level+1) + "\\right) " 
+    elif start - 6 >= marker and code[start - 6: start] == "\\trunc":
+      out += code[marker:start-6] + "\\left[" + convert_custom_tex(match.group(1), level+1) + "\\right]_+" 
     else:
       out += code[marker:start+1] + convert_custom_tex(code[start + 1:end-1]) + code[end-1]
     marker = end
@@ -249,6 +261,12 @@ def convert_math(code):
     
     llse_exp = regex.compile("\\\\llse\{((?>[^{}]+|\{(?1)\})*)\}\{((?>[^{}]+|\{(?1)\})*)\}")
     code = llse_exp.sub(r"\\mathbb{L}\\left[\1|\2\\right]", code)
+
+    ip_exp = regex.compile("\\\\ip\{((?>[^{}]+|\{(?1)\})*)\}\{((?>[^{}]+|\{(?1)\})*)\}")
+    code = ip_exp.sub(r"\\langle \1, \2 \\rangle ", code)
+
+    markov_exp = regex.compile("\\\\markov\{((?>[^{}]+|\{(?1)\})*)\}\{((?>[^{}]+|\{(?1)\})*)\}\{((?>[^{}]+|\{(?1)\})*)\}")
+    code = markov_exp.sub(r"\1 \\textemdash \2 \\textemdash \3", code)
 
     sinc_exp = re.compile("\\\\sinc")
     code = sinc_exp.sub(r"\\text{sinc}", code)
