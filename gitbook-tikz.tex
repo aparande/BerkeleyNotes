@@ -2,6 +2,9 @@
 \usepackage{amsmath,amsfonts,amssymb,amscd,verbatim,graphicx,fancyhdr,tikz}
 \usepackage{mathtools} %for minus plus sign alignment in matrices and vectors, added 13 Feb 2017
 
+\usepackage[ruled,vlined]{algorithm2e}
+
+
 \usepackage{pgfplots}
 \usetikzlibrary{arrows,automata}
 \usetikzlibrary{positioning}
@@ -83,3 +86,6 @@
 \tikzstyle{int}=[draw, fill=white, minimum size=2em]
 \tikzstyle{init} = [pin edge={to-,thin,black}]
 \tikzstyle{filter} = [draw, fill=white, rectangle, minimum height=3em, minimum width=6em, align=center, text width=2cm]
+
+%# turnoff algorithm numbering
+\renewcommand{\thealgocf}{}

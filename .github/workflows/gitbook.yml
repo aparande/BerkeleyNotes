@@ -32,6 +32,10 @@ jobs:
           mkdir -p gitbook/.gitbook/assets
           sed -i -e 's/..\/..\/header.tex/main\/header.tex/g' main/**/Notes/notes.tex
           sudo sed -i 's/rights="none" pattern="PDF"/rights="read|write" pattern="PDF"/g' /etc/ImageMagick-6/policy.xml
+      - name: Convert EECS225A to JSON
+        uses: docker://pandoc/latex:2.11
+        with:
+          args: --to json --from latex+raw_tex --output=main/eecs225a.json main/EECS225A/Notes/notes.tex
       - name: Convert EECS126 to JSON
         uses: docker://pandoc/latex:2.11
         with:
@@ -66,7 +70,13 @@ jobs:
           cp -a tikz-images/. ../gitbook/.gitbook/assets
           cat eecs127.json | ./pandoc_filter.py > eecs127-filtered.json
           cp -a tikz-images/. ../gitbook/.gitbook/assets
+          cat eecs225a.json | ./pandoc_filter.py > eecs225a-filtered.json
+          cp -a tikz-images/. ../gitbook/.gitbook/assets
           cd ../
+      - name: Convert EECS225A to Markdown
+        uses: docker://pandoc/latex:2.11
+        with:
+          args: --to markdown+pipe_tables-simple_tables-smart --from json --atx-headers --output=gitbook/EECS225A.md main/eecs225a-filtered.json
       - name: Convert EECS127 to Markdown
         uses: docker://pandoc/latex:2.11
         with:
@@ -92,7 +102,7 @@ jobs:
           mv main/create_book.py gitbook/create_book.py
           chmod +x gitbook/create_book.py
           cd gitbook
-          python3 create_book.py EE120.md EE123.md EECS126.md EECS127.md EE128.md 
+          python3 create_book.py EE120.md EE123.md EECS126.md EECS127.md EE128.md EECS225A.md
           cd ../
           sed -i -e 's/\\\$\\\$/\$\$/g' gitbook/**/*.md
       - name: Publish Book
