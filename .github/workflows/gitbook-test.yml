@@ -26,7 +26,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install pandocfilters
           pip install regex
-          pip install yaml
+          pip install pyyaml
           sudo apt-get install texlive-latex-recommended texlive-science texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra
           sudo apt-get install ghostscript
       - name: Setup Environment
