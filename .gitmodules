@@ -1,0 +1,3 @@
+[submodule "latex_filters"]
+	path = latex_filters
+	url = https://github.com/aparande/latex-pandoc-filters
