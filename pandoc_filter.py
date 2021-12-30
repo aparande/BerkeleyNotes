@@ -5,6 +5,8 @@ import yaml
 from latex_filters.filters import *
 from latex_filters import PandocState
 
+from numbered_env_hint_filter import NumberedEnvHintFilter
+
 from pandocfilters import toJSONFilters
 
 if __name__ == '__main__':

@@ -1,5 +1,5 @@
 ---
-- class_name: CustomNumberedEnvFilter
+- class_name: NumberedEnvHintFilter
   config:
     - label_prefix: defn
       tag: definition
