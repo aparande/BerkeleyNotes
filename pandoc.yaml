@@ -1,0 +1,73 @@
+---
+- class_name: CustomNumberedEnvFilter
+  config:
+    - label_prefix: defn
+      tag: definition
+      name: Definition
+    - label_prefix: thm
+      tag: theorem
+      name: Theorem
+- class_name: FigureFilter
+  config:
+    dir: './tikz-images'
+    tag: gitbook-image
+    header: 'gitbook-tikz.tex'
+    cache_prefix: tikz
+- class_name: SectionLabelFilter
+  config: {}
+- class_name: CustomMathFilter
+  config:
+    exprs:
+      - reg_exp: '(\\diff\[)(.*?)(\]\{)(.*?)(\}\{)(.*?)(\})'
+        sub_exp: '\\frac{d^{\2}\4}{d\6^{\2}}'
+      - reg_exp: '(\\V\{)(.*?)(\})'
+        sub_exp: '\\mathbf{\2}'
+      - reg_exp: '(\\bs\{)(.*?)(\})'
+        sub_exp: '\\boldsymbol{\2}'
+      - reg_exp: '(\\mathbbm\{)(.*?)(\})'
+        sub_exp: '\\mathbb{\2}'
+      - reg_exp: '\\llse\{((?>[^{}]+|\{(?1)\})*)\}\{((?>[^{}]+|\{(?1)\})*)\}'
+        sub_exp: '\\mathbb{L}\\left[\1|\2\\right]'
+      - reg_exp: '\\ip\{((?>[^{}]+|\{(?1)\})*)\}\{((?>[^{}]+|\{(?1)\})*)\}'
+        sub_exp: '\\langle \1, \2 \\rangle '
+      - reg_exp: '\\markov\{((?>[^{}]+|\{(?1)\})*)\}\{((?>[^{}]+|\{(?1)\})*)\}\{((?>[^{}]+|\{(?1)\})*)\}'
+        sub_exp: '\1 \\textemdash \2 \\textemdash \3'
+      - reg_exp: '\\\\sinc'
+        sub_exp: '\\text{sinc}'
+      - reg_exp: '\\argmin'
+        sub_exp: '\\text{argmin}'
+      - reg_exp: '\\argmax'
+        sub_exp: '\\text{argmax}'
+    eqn_env:
+      name: Equation
+      label_prefix: eqn
+- class_name: SingleArgCmdFilter
+  config:
+    - latex: '\expect'
+      left: '\mathbb{E}\left['
+      right: '\right] '
+    - latex: '\pr'
+      left: '\text{Pr}\left\{'
+      right: '\right\} '
+    - latex: '\var'
+      left: '\text{Var}\left('
+      right: '\right) '
+    - latex: '\cov'
+      left: '\text{Cov}\left('
+      right: '\right) '
+    - latex: '\trunc'
+      left: '\left['
+      right: '\right]_+ '
+- class_name: UnitFilter
+  config:
+    unit_map:
+      decibel: dB
+      degree: ˚
+      per: /
+      decade: dec
+- class_name: DisplayMathFilter
+  config: {}
+- class_name: CrefFilter
+  config: {}
+- class_name: BoldedFilter
+  config: {}
