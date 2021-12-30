@@ -71,3 +71,7 @@
   config: {}
 - class_name: BoldedFilter
   config: {}
+- class_name: LatexCleanupFilter
+  config: {}
+- class_name: DivCleanupFilter
+  config: {}
