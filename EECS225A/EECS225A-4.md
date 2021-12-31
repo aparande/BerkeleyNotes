@@ -24,7 +24,7 @@ If we have a third process $$Z_n$$ that is jointly WSS with $$(Y_n, X_n)$$, then
 {% endhint %}
 
 This gives us an interesting interpretation of the spectral
-factorization (definition 14) since it essentially passing a WSS process
+factorization (Definition 14) since it essentially passing a WSS process
 with auto-correlation $$R_W(k) = r_e\delta[n]$$ through a minimum-phase
 filter with transfer function $$L(z)$$.
 
@@ -80,11 +80,11 @@ $$ H(z) = \frac{S_{XY}(z)}{S_Y(z)} $$
 
 {% endhint %}
 
-If we interpret definition 21 in the frequency domain, for a specific
+If we interpret Definition 21 in the frequency domain, for a specific
 $$\omega$$, we can understand $$H(e^{j\omega})$$ as an optimal linear
 estimator for $$F_X(\omega)$$ where $$F_X(\omega)$$ is the the
 stochastic process given by the Cramer-Khinchin decomposition
-(theorem 7). More specifically, we can use the Cramer-Khinchin
+(Theorem 7). More specifically, we can use the Cramer-Khinchin
 decomposition of $$Y_n$$.
 
 $$\begin{aligned}     \hat{X}_n &= \sum_{i\in\mathbb{Z}}h[i]\int_{-\pi}^\pi e^{j\omega(n-i)}dF_Y(\omega)\\     &= \int_{-\pi}^{\pi}\left(\sum_{i\in\mathbb{Z}}h[i]e^{-j\omega i}\right)e^{j\omega n}dF_Y(\omega) \\     &= \int_{-\pi}^\pi H(e^{j\omega})e^{j\omega n}dF_Y(\omega)\\\end{aligned}$$
@@ -111,12 +111,12 @@ $$f(k) = R_{XW}(k) - \sum_{m=0}^\infty R_W(k-m)q[m] = \begin{cases} 0 & k\geq 0,
 
 Taking the unilateral Z-transform of both sides,
 
-$$\begin{aligned}     \left[F(z)\right]_+ &= \left[S_{XW}(z) - S_W(z)Q(z)\right]_+ = \left[S_{XW}(z)\right]_+ - Q(z) = 0\\     Q(z) &= \left[S_{XW}(z)\right]_+ = \left[\frac{S_{XY}(z)}{S_Y^-(z)}\right]_+\end{aligned}$$
+$$\begin{aligned}     \left[F(z)\right]_+  &= \left[S_{XW}(z) - S_W(z)Q(z)\right]_+  = \left[S_{XW}(z)\right]_+  - Q(z) = 0\\     Q(z) &= \left[S_{XW}(z)\right]_+  = \left[\frac{S_{XY}(z)}{S_Y^-(z)}\right]_+ \end{aligned}$$
 
 Thus the filter $$H$$ which gives the causal best linear estimator of
 $$X$$ using $$Y$$ is
 
-$$H(z) = Q(z) G(z)= \left[\frac{S_{XY}(z)}{S_Y^-(z)}\right]_+\frac{1}{S_Y^+(z)}.$$
+$$H(z) = Q(z) G(z)= \left[\frac{S_{XY}(z)}{S_Y^-(z)}\right]_+ \frac{1}{S_Y^+(z)}.$$
 
 {% hint style="info" %}
 
@@ -124,7 +124,7 @@ $$H(z) = Q(z) G(z)= \left[\frac{S_{XY}(z)}{S_Y^-(z)}\right]_+\frac{1}{S_Y^+(z)}.
 
 The best linear estimator of $$X_n$$ using $$\{Y_i\}_{i=-\infty}^{n}$$ is given by the causal Wiener filter. 
 
-$$ H(z) = Q(z)G(z) = \left[\frac{S_{XY}(z)}{S_Y^-(z)}\right]_+\frac{1}{S_Y^+(z)}. $$
+$$ H(z) = Q(z)G(z) = \left[\frac{S_{XY}(z)}{S_Y^-(z)}\right]_+ \frac{1}{S_Y^+(z)}. $$
 
 {% endhint %}
 

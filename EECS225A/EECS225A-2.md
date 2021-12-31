@@ -5,7 +5,7 @@ $$\boldsymbol{X}$$ using an observation $$\boldsymbol{Y}$$ with a linear
 function of $$\boldsymbol{Y}$$. If $$\boldsymbol{Y}$$ is finite
 dimensional, then we can say
 $$\hat{\boldsymbol{X}}(\boldsymbol{Y}) = W\boldsymbol{Y}$$ where $$W$$
-is some matrix. Using theorem 1 and the orthogonality principle, we know
+is some matrix. Using Theorem 1 and the orthogonality principle, we know
 that
 
 $$\langle \boldsymbol{X}-W\boldsymbol{Y}, \boldsymbol{Y} \rangle  = \boldsymbol{0} \Leftrightarrow R_{XY} = W\boldsymbol{R}_Y$$
@@ -63,7 +63,7 @@ two interpretations.
 The theory of linear estimation is very closely connected with the
 theory behind least squares in linear algebra. In least squares, we have
 a deterministic $$\boldsymbol{x}$$ and assume nothing else about it,
-meaning we are looking for an unbiased estimator. theorem 2 tells us how
+meaning we are looking for an unbiased estimator. Theorem 2 tells us how
 to find the best linear unbiased estimator in a linear setting.
 
 {% hint style="info" %}
@@ -91,7 +91,7 @@ $$\boldsymbol{Y}^i= H_i \boldsymbol{X} + \boldsymbol{V}^i$$.
 
 $$R_{XY^i} = \Pi_0 H_i^* \qquad R_{Y^i} = (H_i\Pi_0H_i^* + I)$$
 
-Applying theorem 1 and solving the normal equation, we see
+Applying Theorem 1 and solving the normal equation, we see
 
 $$\begin{aligned}     W &= \Pi_0 H_i^*(H_i\Pi_0H_i^* + I)^{-1} = \Pi_0 H_i^* (I - H_i(\Pi_0^{-1} + H_i^*H_i)^{-1}H_i^*)\\     &= \Pi_0 (I - H_i^*H_i(\Pi_0^{-1} + H_i^*H_i)^{-1})H_i^* \\     &= \Pi_0 ((\Pi_0^{-1} + H_i^*H_i)(H_i^*H_i)^{-1}(H_i^*H_i)(\Pi_0^{-1} + H_i^*H_i)^{-1}- H_i^*H_i(\Pi_0^{-1} + H_i^*H_i)^{-1})H_i^*\\     &= \Pi_0 \Pi_0^{-1}(H_i^*H_i)^{-1}H_i^*H_i(\Pi_0^{-1}+H_i^*H_i)^{-1}H_i^*\\     &= (\Pi_0^{-1} + H_i^* H_i)^{-1}H_i^*\end{aligned}$$
 

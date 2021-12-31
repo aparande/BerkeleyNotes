@@ -182,7 +182,7 @@ $$ \mathbb{E}\left[(F(\omega_2)-F(\omega_1))(F(\omega_4) - F(\omega_3))^*\right]
 
 {% endhint %}
 
-Besides giving us a decomposition of a WSS random process, theorem 7
+Besides giving us a decomposition of a WSS random process, Theorem 7
 tells a few important facts.
 
 1.  $$\omega_1\neq\omega_2 \implies \langle dF(\omega_1), dF(\omega_2) \rangle = 0$$
@@ -224,7 +224,7 @@ right side of the signal.
 
 The unilateral Z-transform of a sequence $$x[n]$$ is given by 
 
-$$ \left[X(z)\right]_+ = \sum_{n=0}^\infty x[n]z^{-n} $$
+$$ \left[X(z)\right]_+  = \sum_{n=0}^\infty x[n]z^{-n} $$
 
 {% endhint %}
 
@@ -238,7 +238,7 @@ its partial fraction decomposition.
 
 Any arbitrary rational function $$H(z)$$ with region of convergence including the unit circle corresponds with the unilateral Z-transform 
 
-$$ \left[H(z)\right]_+ = r_0 + \sum_{i=1}^m\sum_{k=1}^{l_i}\frac{r_{ik}}{(z+\alpha_i)^k} + \sum_{i=m+1}^n\sum_{k=1}^{l_i}\frac{r_{ik}}{\beta_i^k} $$
+$$ \left[H(z)\right]_+  = r_0 + \sum_{i=1}^m\sum_{k=1}^{l_i}\frac{r_{ik}}{(z+\alpha_i)^k} + \sum_{i=m+1}^n\sum_{k=1}^{l_i}\frac{r_{ik}}{\beta_i^k} $$
 
 
 where $$|\alpha_i| < 1 < |\beta_i|$$.
@@ -278,14 +278,14 @@ form
 
 $$L(z) = 1 + \sum_{i=1}^\infty l[i]z^{-i}$$
 
-since minimum phase systems are causal. Using definition 14, we can
+since minimum phase systems are causal. Using Definition 14, we can
 express $$S_X(z)$$ as the product of a right-sided and left-sided
 process.
 
 $$S_X(z) = (\sqrt{r_e}L(z))(\sqrt{r_e}L^*(z^{-*})) = S_X^+(z)S_X^-(z)$$
 
 Note that $$S_X^-(e^{j\omega}) = \left(S_X^+(e^{j\omega})\right)^*$$.
-Using the assumptions built into definition 14, we can find a general
+Using the assumptions built into Definition 14, we can find a general
 form for $$L(z)$$ since we know $$S_Y(z)$$ takes the following form
 
 $$S_Y(z) = r_e \frac{\prod_{i=1}^m(z-\alpha_i)(z^{-1}-\alpha_i^*)}{\prod_{i=1}^n(z-\beta_i)(z^{-1}-\beta_i^*)}\quad |\alpha_i| < 1, |\beta_i| < 1, r_e > 0.$$
@@ -440,7 +440,7 @@ $$ \langle \begin{bmatrix}\boldsymbol{X}_0 \\ \boldsymbol{U}_i \\ \boldsymbol{V}
 
 {% endhint %}
 
-From theorem 11, we can easily see that state space models are
+From Theorem 11, we can easily see that state space models are
 Wide-Sense Markov. Note that $$U_i$$ and $$V_i$$ are white noise, and
 that the dynamics of the system can change at every time step. From
 these equations, we can derive six different properties. Let
