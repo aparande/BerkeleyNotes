@@ -1,4 +1,6 @@
 ---
+- class_name: TextDegreeFilter
+  config: {}
 - class_name: NumberedEnvHintFilter
   config:
     - label_prefix: defn
@@ -9,7 +11,7 @@
       name: Theorem
 - class_name: FigureFilter
   config:
-    dir: '../.gitbook/assets/'
+    dir: '../.gitbook/assets'
     tag: gitbook-image
     header: 'gitbook-tikz.tex'
     cache_prefix: tikz
