@@ -24,10 +24,13 @@ jobs:
           python -m pip install --upgrade pip
           pip install pandocfilters
           pip install regex
+          pip install pyyaml
           sudo apt-get install texlive-latex-recommended texlive-science texlive-fonts-recommended texlive-fonts-extra texlive-latex-extra
           sudo apt-get install ghostscript
       - name: Setup Environment
         run: |
+          git -C main submodule init
+          git -C main submodule update
           rm -rf gitbook/.gitbook/assets
           mkdir -p gitbook/.gitbook/assets
           sed -i -e 's/..\/..\/header.tex/main\/header.tex/g' main/**/Notes/notes.tex
