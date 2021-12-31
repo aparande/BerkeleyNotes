@@ -9,7 +9,7 @@
       name: Theorem
 - class_name: FigureFilter
   config:
-    dir: './tikz-images'
+    dir: '../.gitbook/assets/'
     tag: gitbook-image
     header: 'gitbook-tikz.tex'
     cache_prefix: tikz
@@ -32,7 +32,7 @@
         sub_exp: '\\langle \1, \2 \\rangle '
       - reg_exp: '\\markov\{((?>[^{}]+|\{(?1)\})*)\}\{((?>[^{}]+|\{(?1)\})*)\}\{((?>[^{}]+|\{(?1)\})*)\}'
         sub_exp: '\1 \\textemdash \2 \\textemdash \3'
-      - reg_exp: '\\\\sinc'
+      - reg_exp: '\\sinc'
         sub_exp: '\\text{sinc}'
       - reg_exp: '\\argmin'
         sub_exp: '\\text{argmin}'
