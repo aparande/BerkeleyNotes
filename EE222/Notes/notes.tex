@@ -1,0 +1,120 @@
+\input{../../header.tex}
+\begin{document}
+\title{EE222 Course Notes}
+\author{Anmol Parande}
+\date{Spring 2022 - Professors Shankar Shastry and Koushil Srinath}
+\maketitle
+\textbf{Disclaimer: }These notes reflect EE222 when I took the course (Fall 2021). They may not accurately reflect current course content, so use at your own risk.
+If you find any typos, errors, etc, please raise an issue on the \href{https://github.com/parandea17/BerkeleyNotes}{GitHub repository}.
+\tableofcontents
+\newpage
+\section{Nonlinear System Dynamics}
+Consider the non-linear system \[
+	\diff[]{x}{t} = f(x, t).
+\]
+\begin{definition}
+	The system is autonomous if $f(x, t)$ is not explicitly dependent on time $t$.
+	\label{defn:autonomous-system}
+\end{definition}
+\begin{definition}
+	A point $x_0$ is an equilibrium point at time $t_0$ if \[
+		\forall t \geq t_0, \ f(x_0, t) = 0 
+	\]
+	\label{defn:equilibrium-point}
+\end{definition}
+\subsection{Planar Dynamical Systems}
+Planar dynamical systems are those with 2 state variables.
+Suppose we linearize the system $\diff[]{\bs{x}}{t} = f(\bs{x})$ at an equilibrium point.
+\[
+	\diff[]{\bs{x}}{t} = D_f|_{\bs{x} = \bs{x_0}}\bs{x} 
+\]
+Depending on the eigenvalues of $D_f$, the Jacobian, we get several cases for
+how this linear system behaves. We'll let $z_1$ and $z_2$ be the eigenbasis of
+the \textit{phase space}.
+\begin{enumerate}
+	\item The eigenvalues are real, yielding solutions $z_1 = z_1(0)e^{\lambda_1
+		t}, z_2 = z_2(0)e^{\lambda_2 t}$. If we eliminate the time variable, we can
+		plot the trajectories of the system.
+		\[
+			\frac{z_1}{z_1(0)} = \left(\frac{z_2}{z_2(0)}\right)^{\frac{\lambda_1}{\lambda_2}}
+		\]
+		\begin{enumerate}
+			\item When $\lambda_1, \lambda_2 < 0$, all trajectories converge to the origin, so we call this a \textbf{stable node}.
+			\item When $\lambda_1, \lambda_2 > 0$, all trajectories blow up, so we call this an \textbf{unstable node}.
+			\item When $\lambda_1 < 0 < \lambda_2$, the trajectories will converge to
+				the origin along the axis corresponding to $\lambda_1$ and diverge along
+				the axis corresponding to $\lambda_2$, so we call this a \textbf{saddle node}.
+		\end{enumerate}
+	\item There is a single repeated eigenvalue with one eigenvector. As before,
+		we can eliminate the time variable and plot the trajectories on the $z_1$,
+		$z_2$ axes.
+		\begin{enumerate}
+			\item When $\lambda < 0$, the trajetories will converge to the origin, so
+				we call it an \textbf{improper stable node}
+			\item When $\lambda > 0$, the trajetories will diverge from the origin, so
+				we call it an \textbf{improper unstable node}
+		\end{enumerate}
+	\item When there is a complex pair of eigenvalues, the linear system will have
+		oscillatory behavior. The Real Jordan form of $D_f$ will look like \[
+			D_f = \begin{bmatrix} \alpha & \beta \\ -\beta & \alpha \end{bmatrix}.
+		\]
+		The parameter $\beta$ will determine the direction of the trajectories
+		(clockwise if positive).
+		\begin{enumerate}
+			\item When $\alpha < 0$, the trajectories will spiral towards the origin,
+				so we call it a \textbf{stable focus}.
+			\item When $\alpha = 0$, the trajectories will remain at a constant radius
+				from the origin, so we call it a \textbf{center}.
+			\item When $\alpha > 0$, the trajectories will spiral away from the
+				origin, so we call it an \textbf{unstable focus}.
+		\end{enumerate}
+\end{enumerate}
+It turns out that understanding the linear dynamics at equilibrium points can be helpful in
+understanding the nonlinear dynamics near equilibrium points.
+\begin{theorem}[Hartman-Grobman Theorem]
+	If the linearization of a planar dynamical system $\diff{\bs{x}}{t} =
+	f(\bs{x})$ at an equilibrium point $\bs{x_0}$ has no zero or purely imaginary eigenvalues, then there exists a
+	homeomorphism from a neighborhood $U$ of $x_0$ into $\mathbb{R}^2$ which takes
+	trajectories of the nonlinear system and maps them onto the linearization
+	where $h(\bs{x_0}) = 0$, and the homeomorphism can be chosen to preserve the
+	parameterization by time.
+	\label{thm:hartman-grobman}
+\end{theorem}
+\Cref{thm:hartman-grobman} essentially says that the linear dynamics predict the
+nonlinear dynamics around equilibria, but only for a neighborhood around the
+equilibrium point. Outisde of this neighborhood, the linearization may be very
+wrong.
+
+Non-linear systems can also have periodic solutions.
+\begin{definition}
+	A closed orbit $\gamma$ is a trajectory of the system such that $\gamma(0) =
+	\gamma(T)$ for finite $T$.
+	\label{defn:closed-orbit}
+\end{definition}
+
+Suppose that we have a simply connected region $D$ (meaning $D$ cannot be
+contracted to a point) and we want to know if it contains a closed orbit.
+\begin{theorem}[Bendixon's Theorem]
+	If $\divergence(f)$ is not identically zero in a sub-region of $D$ and does not
+	change sign in $D$, then $D$ contains no closed orbits.
+	\label{thm:bendixons}
+\end{theorem}
+\Cref{thm:bendixons} lets us rule out closed orbits from regions of
+$\mathbb{R}^2$.
+\begin{definition}
+	A region $M \subset \mathbb{R}^2$ is positively invariant for a trajectory
+	$\phi_t(\bs{x})$ if $\forall x\in M, \forall t \geq 0, \phi_t(\bs{x}) \in M$.
+	\label{defn:positive-invariance}
+\end{definition}
+A positively invariant set essentially means that once a trajectory enters the
+set, it cannot leave. That means all of the vector field lines must point inside
+the set.
+If we have a positively invariant region, then we can determine whether it
+contains closed orbits.
+\begin{theorem}[Poincare-Bendixson Theorem]
+	If $M$ is a compact, positively invariant set for the flow $\phi_t(\bs{x})$,
+	then if $M$ contains no equilibrium points, then $M$ has a limit cycle.
+	\label{thm:poincare-bendixson}
+\end{theorem}
+\end{document}
+
