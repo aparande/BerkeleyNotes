@@ -37,9 +37,9 @@ If you find any typos, errors, etc, please raise an issue on the \href{https://g
     The unit impulse in continuous time is the dirac delta function
     \[
 	  \delta(t)=lim_{\Delta\rightarrow 0}\delta_{\Delta}(t) \qquad
-	  \delta_{\Delta}=\begin{cases}
-		  \frac{1}{\Delta},\text{ if }\ge 0 \\
-		  0 else
+		\delta_{\Delta}(t)=\begin{cases}
+			\frac{1}{\Delta}, & \text{if } 0 \leq t < \Delta \\
+			0 & \text{else.}
 		\end{cases}
     \]
 \end{definition}
