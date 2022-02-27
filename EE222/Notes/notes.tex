@@ -8,9 +8,286 @@
 If you find any typos, errors, etc, please raise an issue on the \href{https://github.com/parandea17/BerkeleyNotes}{GitHub repository}.
 \tableofcontents
 \newpage
+\section{Real Analysis}
+\begin{definition}
+	The extended real line is the set \[
+		\{-\infty\} \cup \R \cup \{\infty\}
+	\]
+	\label{defn:extended-real-line}
+\end{definition}
+\begin{definition}
+	The supremum of a set $S \subset \R$ is a value $a \in \R_e$
+	such that $\forall s\in S,\ s \leq a$ and if $b \in \R_e$ such that
+	$\forall s\in S,\ s \leq b$, then $a \leq b$.
+	\label{defn:supremum}
+\end{definition}
+Supremum is essentially the ``least upper bound'' in a set. It always exists,
+and is called $\sup S$. The opposite of supremum is the infinimum.
+\begin{definition}
+	The infinimum of a set $S \subset \R$ is a value $a \in \R_e$
+	such that $\forall s\in S,\ s \geq a$ and if $b \in \R_e$ such that
+	$\forall s\in S,\ s \geq b$, then $a \geq b$.
+	\label{defn:infinimum}
+\end{definition}
+The infinimum is the ``greatest upper bound''. Like the supremum, it always
+exists, and it is denoted $\inf S$. Supremum and Infinimum can be applied to
+scalar function $f: S\to \R$ by letting \[
+	\sup_{x\in S} f(x) = \sup \{f(x) | x\in S \}.
+\]
+\subsection{Norms}
+\begin{definition}
+	Let $V$ be a vector space of $\R$, then $\|\cdot\|: V \to \R$ is a norm if
+	$\forall \bs{x},\bs{y}\in V, \alpha \in \R$, \[
+		\|\bs{x}\| \geq 0 \qquad \bs{x} = 0 \Leftrightarrow \|\bs{x}\| = 0 \qquad
+		\|\alpha \bs{x}\| = |\alpha|\|\bs{x}\| \qquad \|\bs{x} + \bs{y}\| \leq
+		\|\bs{x}\| + \|\bs{y}\|
+	\]
+	\label{defn:norm}
+\end{definition}
+\begin{definition}
+	A normed space $(V, \|\cdot\|)$ is a vector space which is equipped with a
+	norm $\|\cdot\|: V \to \R$.
+	\label{defn:normed-space}
+\end{definition}
+If we have an operator $A$ which takes as inputs vectors from normed space $(X,
+\|\cdot\|_X)$ and outputs vectors in normed space $(Y, \|\cdot\|_Y)$, then we
+can define another norm on the vector space of operators from $X\to Y$.
+\begin{definition}
+	Let $A:X\to Y$ be an operator between normed spaces $(X, \|\cdot\|_X)$ and
+	$(Y, \|\cdot\|_Y)$, then the induced norm of $A$ is \[
+		\|A\|_i = \sup_{\|\bs{x} \neq 0\|_X} \frac{\|A\bs{x}\|_Y}{\|\bs{x}\|_X}
+	\]
+	\label{defn:induced-norm}
+\end{definition}
+The induced norm can be thought of as the maximum gain of the operator.
+\begin{definition}
+	Two norms $\|\cdot\|$ and $|||\cdot|||$ on a vector space $V$ if $\exists k_1,
+	k_2 > 0$ suh that \[
+		\forall \bs{x}\in V,\ k_1\|\bs{x}\| \leq |||\bs{x}||| \leq k_2\|\bs{x}\|
+	\]
+	\label{defn:equivalent-norm}
+\end{definition}
+If $V$ is a finite dimensional vector space if and only if all norms of $V$ are
+equivalent.
+
+\subsection{Sets}
+\begin{definition}
+	Let $(V, \|\cdot\|)$ be a normed space, $a\in \R$, $a > 0$, $\bs{x}_0\in V$,
+	then the open ball of radius $a$ centered around $x_0$ is given by \[
+		B_a(\bs{x}_0) = \{ \bs{x} \in V \ | \ \|\bs{x} - \bs{x}_0\| < a \}
+	\]
+	\label{defn:open-ball}
+\end{definition}
+\begin{definition}
+	A set $S\subset V$ is open if $\forall \bs{s}_0\in V,\ \exists \epsilon > 0$
+	such that $B_\epsilon(\bs{s}_0) \subset S$.
+	\label{defn:open-set}
+\end{definition}
+Open sets have a boundary which is not included in the set. By convention, we
+say that the empty set is open.
+
+The opposite of an open set is a closed set.
+\begin{definition}
+	A set $S$ is closed if $\sim S$ is open.
+	\label{defn:closed-set}
+\end{definition}
+Closed sets have a boundary which is included in the set.
+
+\subsection{Convergence}
+\begin{definition}
+	A sequence of points $\bs{x}_k$ in normed space $(V, \|\cdot\|)$ converges to
+	a point $\bar{\bs{x}}$ if \[
+		\forall \epsilon > 0,\ \exists N < \infty,\ \text{ such that } \forall k
+		\geq N, \|\bs{x}_k - \bar{\bs{x}}\| < \epsilon
+	\]
+	\label{defn:convergence}
+\end{definition}
+Convergence means that we can always find a finite time such that after that
+time, all points in the sequence stay within a specicied norm ball.
+\begin{definition}
+	A sequence $\bs{x}_k$ is cauchy if \[
+		\forall \epsilon > 0,\ \exists N < \infty \text{ such that } \forall n,m
+		\geq N, \|\bs{x}_m - \bs{x}_n\| < \epsilon
+	\]
+	\label{defn:cauchy-sequence}
+\end{definition}
+A Cauchy sequence has a looser type of convergence than a convergent sequence
+since it only requires all elements to in the sequence to be part of the same
+norm ball after some time instead of requiring the sequence to get closed and
+closer to a single point.
+\begin{theorem}
+	If $\bs{x}_n$ is a convergent sequence, then $\bs{x}_n$ is a also a Cauchy
+	sequence.
+	\label{thm:cauchy-convergence}
+\end{theorem}
+\begin{definition}
+	A normed space $(V, \|\cdot\|)$ is complete if every Cauchy sequence converges
+	to a point in $V$
+	\label{defn:complete-space}
+\end{definition}
+Because a complete space requires that Cauchy sequences converge, all cauchy
+sequences are convergent in a complete space. Two important complete spaces are
+\begin{enumerate}
+	\item Every finite dimensional vector space
+	\item $(C[a,b], \|\cdot\|_\infty)$, the set of continuously differentiable
+		functions on the closed interval $[a,b]$ equipped with the infinity norm.
+\end{enumerate}
+A complete normed space is also called a \textbf{Banach Space}.
+
+\subsection{Contractions}
+\begin{definition}
+	A point $x^*$ is a fixed point of a function $P:X\to X$ if $P(x^*)=x^*$.
+	\label{defn:fixed-point}
+\end{definition}
+\begin{definition}
+	A function $P:X\to X$ is a contract if there exists a constant $0\leq c < 1$
+	such that \[
+		\forall \bs{x},\bs{y}\in X,\ \|P(\bs{x}) - P(\bs{y})\| \leq c
+		\|\bs{x}-\bs{y}\|
+	\]
+	\label{defn:contraction}
+\end{definition}
+Informally, a contraction is a function which makes distances smaller 
+
+Suppose we look at a sequence defined by iterates of a function \[
+	\bs{x}_{k+1} = P(\bs{x}_k).
+\]
+where $P$ is a function $P:X\to X$. When does this sequence converge, and to
+what point will it converge?
+\begin{theorem}[Contraction Mapping Theorem]
+	If $P:X\to X$ is a contraction on the Banach space $(X, \|\cdot\|)$, then
+	there is a unique $\bs{x}^*\in X$ such that $P(\bs{x}^*) = \bs{x}^*$ and
+	$\forall x_0\in X$, the sequence $\bs{x}_{n+1} = P(\bs{x}_n)$ is converges to
+	$\bs{x}^*$.
+	\label{thm:contraction-mapping}
+\end{theorem}
+The contraction mapping theorem that contractions will have a unique fixed
+points and that repeatedly applying the contraction will converge to the fixed
+point.
+
+\subsection{Continuity}
+\begin{definition}
+	A function $h:V\to W$ on normed spaces $(V, \|\cdot\|_V)$ and $(W,
+	\|\cdot\|_W)$ is continuous at a point $\bs{x}_0$ if $\forall \epsilon > 0,
+	\exists \delta > 0$ such that \[
+		\|\bs{x}-\bs{x}\|_V < \delta \implies \|h(\bs{x}) - h(\bs{x_0})\|_W < \epsilon
+	\]
+	\label{thm:continuity}
+\end{definition}
+Continuity essentially means that given an $\epsilon-$ball in $W$, we can find a
+$\delta-$ball in $V$ which is mapped to the ball in $W$.
+If a function is continuous at all points $\bs{x}_0$, then we say the function
+is continuous.
+
+We can make the definition of continuity more restrictive by restraining the
+rate of growth of the function.
+\begin{definition}
+	A function $h:V\to W$ on normed spaces $(V, \|\cdot\|_V)$ and $(W,
+	\|\cdot\|_W)$ is Lipschitz continuous at $\bs{x}_0\in V$ if $\exists r > 0$
+	and $L < \infty$ such that \[
+		\forall \bs{x}, \bs{y}\in B_r(\bs{x}_0),\ \|h(\bs{x}) - h(\bs{y})\|_W \leq L
+		\|\bs{x} - \bs{y}\|_V
+	\]
+	\label{defn:lipschitz-continuity}
+\end{definition}
+A good interpretation of Lipschitz Continuity is that given two points in a ball
+around $\bs{x}_0$, the slope of the line connecting those two points is less
+than $L$. It means that the function is growings slower than linear for some
+region around $\bs{x}_0$. Lipschitz continuity implies continuity. If a function
+is lipschitz continuous with respect to one norm, it is also lipschitz
+continuous with respect to all equivalent norms.
+
+When the function $h$ is a function on $\R^n$ and is also
+differentiable, then Lipschitz continuity is easy to determine.
+\begin{theorem}
+	For a differentiably function $h:\R^n\to\R^n$, \[
+		\exists r>0, L < \infty, \bs{x}_0\in\R^n,\ \forall \bs{x}\in B_r(\bs{x}),
+		\left\lvert\left\lvert\frac{\partial h}{\partial
+		\bs{x}}\right\rvert\right\rvert_2 \leq L
+	\] implies Lipschitz Continuity at $\bs{x}_0$.
+	\label{thm:differentiable-lipschitz}
+\end{theorem}
+\begin{definition}
+	A function $h:\R\to V$ is piecewise continuous if $\forall k\in \mathbb{Z}$,
+	$h:[-k, k] \to V$ is continuous except at a possibly finite number of points,
+	and at the points of discontinuity $t_i$, $\lim_{s\to0^+} h(t_i+s)$ and
+	$\lim_{s\to0^-}$ exist and are finite. 
+	\label{defn:piecewise-continuous}
+\end{definition}
+\section{Solutions to Nonlinear Systems}
+Consider the nonlinear system \[
+	\diff[]{\bs{x}}{t} = f(\bs{x}, t),\ \bs{x}(t_0) = \bs{x}_0\in \R^n.
+\]
+\begin{definition}
+	A function $\bs{\Phi}(t)$ is a solution to $\diff[]{\bs{x}}{t} = f(x, t),\
+	\bs{x}(t_0) = \bs{x}_0$ on the closed interval $[t_0, t]$ if $\bs{\Phi}(t)$
+	is defined on the interval $[t_0, t]$, $\diff[]{\bs{\Phi}}{t} =
+	f(\bs{\Phi}(t), t)$ on the interval $[t_0, t]$, and $\bs{\Phi}(t_0) =
+	\bs{x}_0$.
+	\label{defn:nonlinear-solution}
+\end{definition}
+We say that $\Phi(t)$ is a solution in the sense of Caratheodory if \[
+	\Phi(t) = \bs{x}_0 + \int_{t_0}^t f(\bs{\Phi}(\tau), \tau)d\tau.
+\]
+Because the sytem is non-linear, it could potentially have no solution, one
+solution, or many solutions. These solutions could exist locally, or they could
+exist for all time. We might also want to know when there is a solution which
+depends continuously on the initial conditions.
+\begin{theorem}[Local Existence and Uniqueness]
+	Given $\diff{\bs{x}}{t} = f(\bs{x}, t),\ \bs{x}(t_0) = \bs{x}_0\in\R^n$ where
+	$f$ is piecewise continuous in $t$ and $\exists T>t_0$ such that $\forall t\in
+	[t_0, T], f$ is $L$-Lipschitz Continuous, then $\exists \delta > 0$ such that a
+	solution exists and is unique $\forall t\in [t_0, t_0 + \delta]$.
+	\label{thm:local-existence}
+\end{theorem}
+\Cref{thm:local-existence} can be proved using the Contraction Mapping Theorem
+(\cref{thm:contraction-mapping}) by finding $\delta$ such that the function
+$P:C_n[t_0, t_0+\delta] \to C_n[t_0, t_0+\delta]$ given by \[
+	P(\bs{\Phi})(t) = \bs{x}_0 + \int_{t_0}^{t_0+\delta} f(\bs{\Phi}(\tau),
+	\tau)d\tau
+\]
+is a contraction under the norm $\|\bs{\Phi}\|_\infty = \sup_{t_0\leq t \leq
+t_0+\delta} \|\bs{\Phi}(t)\|$.
+\begin{theorem}[Global Existence and Uniqueness]
+	Suppose $f(\bs{x}, t)$ is piecewise continuous in $t$ and $\forall T\in [t_0,
+	\infty)$, $\exists L_T < \infty$ such that $f$ is $L_T$ Lipshitz continuous
+	for all $\bs{x}, \bs{y} \in \R^n$, then the nonlinear system  has exactly one
+	solution on $[t_0, T]$.
+	\label{thm:global-existence}
+\end{theorem}
+Once we know that solutions to a nonlinear system exist, we can sometimes bound
+them.
+\begin{theorem}[Bellman-Gronwall Lemma]
+	Suppose $\lambda\in\R$ is a constant and $\mu:[a,b]\to\R$ is continuous and
+	non-negative, then for a continuous function $y:[a, b]\to\R$ \[
+		y(t) \leq \lambda + \int_a^t \mu(\tau)y(\tau)d\tau \implies y(t) \leq
+		\lambda \text{exp}\left(\int_a^t\mu(\tau)d\tau\right)
+	\]
+	\label{thm:bellman-gronwall}
+\end{theorem}
+Another thing we might want to do is understand how the non-linear system reacts
+to changes in the initial condition.
+\begin{theorem}
+	Suppose the system $\diff{\bs{x}}{t} = f(\bs{x}, t),\ \bs{x}(t_0) = \bs{x}_0$
+	satisfies the conditions of global uniqueness and existence. Fix $T\in[t_0,
+	\infty]$ and suppose $\bs{x}(\cdot)$ and $\bs{z}(\cdot)$  are two solutions
+	satisfying $\diff{\bs{x}}{t} = f(\bs{x}, t), \bs{x}(t_0) = \bs{x}_0$ and
+	$\diff{\bs{z}}{t} = f(\bs{z}(t), t),\ \bs{z}(t_0)=\bs{z}_0$, then $\forall
+	\epsilon > 0, \exists \delta > 0$ such that \[
+		\|\bs{x}_0 - \bs{z}_0\| < \delta \implies \|\bs{x} - \bs{z}\|_{\infty} <
+		\epsilon.
+	\]
+	\label{thm:continuous-dependence-on-ic}
+\end{theorem}
+\Cref{thm:continuous-dependence-on-ic} is best understood by defining a function
+$\Psi:\R^n \to C_n[t_0, t]$ where $\Psi(\bs{x}_0)(t)$ returns the solution to
+the system given the initial condition. If the conditions of
+\Cref{thm:continuous-dependence-on-ic} are satisfied, then the function $\Psi$
+will be continuous.
+
 \section{Nonlinear System Dynamics}
 Consider the non-linear system \[
-	\diff[]{x}{t} = f(x, t).
+	\diff[]{\bs{x}}{t} = f(\bs{x}, t).
 \]
 \begin{definition}
 	The system is autonomous if $f(x, t)$ is not explicitly dependent on time $t$.
@@ -74,7 +351,7 @@ understanding the nonlinear dynamics near equilibrium points.
 \begin{theorem}[Hartman-Grobman Theorem]
 	If the linearization of a planar dynamical system $\diff{\bs{x}}{t} =
 	f(\bs{x})$ at an equilibrium point $\bs{x_0}$ has no zero or purely imaginary eigenvalues, then there exists a
-	homeomorphism from a neighborhood $U$ of $x_0$ into $\mathbb{R}^2$ which takes
+	homeomorphism from a neighborhood $U$ of $x_0$ into $\R^2$ which takes
 	trajectories of the nonlinear system and maps them onto the linearization
 	where $h(\bs{x_0}) = 0$, and the homeomorphism can be chosen to preserve the
 	parameterization by time.
@@ -100,9 +377,9 @@ contracted to a point) and we want to know if it contains a closed orbit.
 	\label{thm:bendixons}
 \end{theorem}
 \Cref{thm:bendixons} lets us rule out closed orbits from regions of
-$\mathbb{R}^2$.
+$\R^2$.
 \begin{definition}
-	A region $M \subset \mathbb{R}^2$ is positively invariant for a trajectory
+	A region $M \subset \R^2$ is positively invariant for a trajectory
 	$\phi_t(\bs{x})$ if $\forall x\in M, \forall t \geq 0, \phi_t(\bs{x}) \in M$.
 	\label{defn:positive-invariance}
 \end{definition}
