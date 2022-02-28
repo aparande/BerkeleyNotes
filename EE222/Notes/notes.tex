@@ -170,7 +170,7 @@ point.
 	A function $h:V\to W$ on normed spaces $(V, \|\cdot\|_V)$ and $(W,
 	\|\cdot\|_W)$ is continuous at a point $\bs{x}_0$ if $\forall \epsilon > 0,
 	\exists \delta > 0$ such that \[
-		\|\bs{x}-\bs{x}\|_V < \delta \implies \|h(\bs{x}) - h(\bs{x_0})\|_W < \epsilon
+		\|\bs{x}-\bs{x}_0\|_V < \delta \implies \|h(\bs{x}) - h(\bs{x_0})\|_W < \epsilon
 	\]
 	\label{thm:continuity}
 \end{definition}
@@ -200,7 +200,7 @@ continuous with respect to all equivalent norms.
 When the function $h$ is a function on $\R^n$ and is also
 differentiable, then Lipschitz continuity is easy to determine.
 \begin{theorem}
-	For a differentiably function $h:\R^n\to\R^n$, \[
+	For a differentiable function $h:\R^n\to\R^n$, \[
 		\exists r>0, L < \infty, \bs{x}_0\in\R^n,\ \forall \bs{x}\in B_r(\bs{x}),
 		\left\lvert\left\lvert\frac{\partial h}{\partial
 		\bs{x}}\right\rvert\right\rvert_2 \leq L
@@ -214,7 +214,40 @@ differentiable, then Lipschitz continuity is easy to determine.
 	$\lim_{s\to0^-}$ exist and are finite. 
 	\label{defn:piecewise-continuous}
 \end{definition}
-\section{Solutions to Nonlinear Systems}
+\section{Nonlinear System Dynamics}
+Consider the non-linear system \[
+	\diff[]{\bs{x}}{t} = f(\bs{x}, t).
+\]
+\begin{definition}
+	The system is autonomous if $f(x, t)$ is not explicitly dependent on time $t$.
+	\label{defn:autonomous-system}
+\end{definition}
+\begin{definition}
+	A point $x_0$ is an equilibrium point at time $t_0$ if \[
+		\forall t \geq t_0, \ f(x_0, t) = 0 
+	\]
+	\label{defn:equilibrium-point}
+\end{definition}
+Consider a single trajectory $\bs{x}(t, t_0, \bs{x}_0)$.
+\begin{definition}
+	A set $S$ is said to be the $\omega-$limit set of $\phi$ if\[
+		\forall y\in S,\exists t_n\to \infty, \lim_{n\to\infty}\phi(t_n, t_0,
+		\bs{x}_0) = y
+	\]
+	\label{defn:w-limit-set}
+\end{definition}
+Whereas linear systems converge to a single point if they converge at all,
+nonlinear systems can converge to a set of points. Thus the $\omega-$limit set
+essentially generalizes the idea of a limit.
+\begin{definition}
+	A set $M\subset \R^n$ is said to be invariant if \[
+		\forall t\geq t_0,\ \bs{y}\in M \implies \phi(t, t_0, \bs{y}) \in M
+	\]
+	\label{defn:invariant-set}
+\end{definition}
+An invariant set is one which a trajectory of the system will never leave once it enters the
+set.
+\subsection{Solutions to Nonlinear Systems}
 Consider the nonlinear system \[
 	\diff[]{\bs{x}}{t} = f(\bs{x}, t),\ \bs{x}(t_0) = \bs{x}_0\in \R^n.
 \]
@@ -285,20 +318,6 @@ the system given the initial condition. If the conditions of
 \Cref{thm:continuous-dependence-on-ic} are satisfied, then the function $\Psi$
 will be continuous.
 
-\section{Nonlinear System Dynamics}
-Consider the non-linear system \[
-	\diff[]{\bs{x}}{t} = f(\bs{x}, t).
-\]
-\begin{definition}
-	The system is autonomous if $f(x, t)$ is not explicitly dependent on time $t$.
-	\label{defn:autonomous-system}
-\end{definition}
-\begin{definition}
-	A point $x_0$ is an equilibrium point at time $t_0$ if \[
-		\forall t \geq t_0, \ f(x_0, t) = 0 
-	\]
-	\label{defn:equilibrium-point}
-\end{definition}
 \subsection{Planar Dynamical Systems}
 Planar dynamical systems are those with 2 state variables.
 Suppose we linearize the system $\diff[]{\bs{x}}{t} = f(\bs{x})$ at an equilibrium point.
@@ -392,6 +411,348 @@ contains closed orbits.
 	If $M$ is a compact, positively invariant set for the flow $\phi_t(\bs{x})$,
 	then if $M$ contains no equilibrium points, then $M$ has a limit cycle.
 	\label{thm:poincare-bendixson}
+\end{theorem}
+\section{Stability of Nonlinear Systems}
+The equilibria of a system can tell us a great deal about the stability of the
+system. For nonlinear systems, stability is a property of the equilibrium
+points, and to be stable is to converge to or stay equilibrium.
+\begin{definition}
+	An equilibrium point $\bs{x}_e\in \R$ is a stable equilibrium point in the
+	sense of Lyapunov if and only if $\forall \epsilon > 0,\exists \delta(t_0,
+	\epsilon)$ such that \[
+		\forall t \geq t_0,\ \|\bs{x}_0 - \bs{x}_e\| < \delta(t_0, \epsilon)
+		\implies \|\bs{x}(t) - \bs{x}_e\| < \epsilon
+	\]
+	\label{defn:stability}
+\end{definition}
+Lyapunov Stability essentially says that a finite deviation in the initial
+condition from equilibrium means the resulting trajectory of the system stay close to
+equilibrium. Notice that this definition is nearly identical to
+\cref{thm:continuous-dependence-on-ic}. That means stability of an equilibrium
+point is the same as saying the function which returns the solution to a system
+given its initial condition is continuous at the equilibrium point.
+\begin{definition}
+	An equilibrium point $\bs{x}_e\in \R$ is an uniformly stable equilibrium point in the
+	sense of Lyapunov if and only if $\forall \epsilon > 0,\exists \delta(
+	\epsilon)$ such that \[
+		\forall t \geq t_0,\ \|\bs{x}_0 - \bs{x}_e\| < \delta(\epsilon)
+		\implies \|\bs{x}(t) - \bs{x}_e\| < \epsilon
+	\]
+	\label{defn:uniformly-stable}
+\end{definition}
+Uniform stability means that the $\delta$ can be chosen independently of the
+time the system starts at.
+Both stability and uniform stability do not imply convergence to the equilibrium
+point. They only guarantee the solution stays within a particular norm ball.
+Stricter notions of stabilty add this idea in.
+\begin{definition}
+	An equilibrium point $\bs{x}_e$ is attractive if $\forall t_0 > 0,\ \exists
+	c(t_0)$ such that \[
+		\bs{x}(t_0) \in B_c(\bs{x}_e) \implies \lim_{t\to\infty} \|\bs{x}(t, t_0,
+		\bs{x}_0) - \bs{x}_e\| = 0
+	\]
+	\label{defn:attractivity}
+\end{definition}
+Attractive equilibria guarantee that trajectories beginning from initial
+conditions inside of a ball will converge to the equilibrium. However,
+attractivity does not imply stability since the trajectory could go arbitarily
+far from the equilibrium so long as it eventually returns.
+\begin{definition}
+	An equilibrium point $\bs{x}_e$ is asymptotically stable if $\bs{x}_e$ is
+	stable in the sense of Lyapunov and attractive.
+	\label{defn:asymptotic-stability}
+\end{definition}
+Asymptotic stability fixes the problem of attractivity where trajectories could
+go far from the equilibrium, and it fixes the problem with stability where the
+trajectory may not converge to equilibrium. It means that trajectories starting
+in a ball around equilibrium will converge to equilibrium without leaving that
+ball. Because the constant for attractivity may depend on time, defining
+uniform asymptotic stability requires some modifications to the idea of
+attractivity.
+\begin{definition}
+	An equilibrium point is uniformly asympototically stable if $\bs{x}_e$ is
+	uniformly stable in the sense of Lyapunov, and $\exists c$ and
+	$\gamma:\R_+\times\R^n\to\R_+$ such that \[
+		\forall \bs{x}_0\in B_c(\bs{x}_e),\ \lim_{\tau\to\infty}\gamma(\tau,
+		\bs{x}_0) = 0, \qquad \forall t\geq t_0,\ \|\bs{x}(t, t_0, \bs{x}_0) - \bs{x}_e\| \leq
+		\gamma(t-t_0, \bs{x}_0)
+	\]
+	\label{defn:uniform-asymptotic-stability}
+\end{definition}
+The existence of the $\gamma$ function helps guarantee that the rate of
+converges to equilibrium does not depend on $t_0$ since the function $\gamma$ is
+independent of $t_0$.
+Suppose that the $\gamma$ is an exponential function. Then solutions to the
+system will converge to the equilibrium exponentially fast.
+\begin{definition}
+	An equilibrium point $\bs{x}_e$ is locally exponentially stable if $\exists
+	h,m,\alpha$
+	such that \[
+		\forall \bs{x}_0\in B_h(\bs{x}_e),\ \|\bs{x}(t, t_0, \bs{x}_0) -
+		\bs{x}_e\| \leq me^{-\alpha(t - t_0)}\|\bs{x}(t) - \bs{x}_e\|
+	\]
+	\label{defn:exponential-stability}
+\end{definition}
+\Cref{defn:stability,defn:uniformly-stable,defn:asymptotic-stability,defn:uniform-asymptotic-stability,defn:exponential-stability}
+are all local definitions because the only need to hold for $\bs{x}_0$ inside a
+ball around the equilibrium. If they hold $\forall \bs{x}_0\in\R^n$, then they
+become global properties.
+
+Just as we can define stability, we can also define instability.
+\begin{definition}
+	An equilibrium point $\bs{x}_e$ is unstable in the sense of Lyapunov if
+	$\exists \epsilon > 0, \forall delta > 0$ such that \[
+		\exists \bs{x}_0\in B_\delta(\bs{x}_e) \implies \exists T\geq t_0, x(T, t_0,
+		\bs{x}_0) \not\in B_\epsilon(\bs{x}_e)
+	\]
+	\label{defn:unstable}
+\end{definition}
+Instability means that for any $\delta-$ball, we can find an $\epsilon-$ball for
+which there is at least one initial condition whose corresponding trajectory
+leaves the $\epsilon-$ball.
+\subsection{Lyapunov Functions}
+In order to prove different types of stability, we will construct functions
+which have particular properties around equilibrium points of the system. The
+properties of these functions will help determine what type of stable the
+equilibrium point is.
+\begin{definition}
+	A class $\mathcal{K}$ function is a function $\alpha: \R_+ \to \R_+$ such that
+	$\alpha(0) = 0$ and $\alpha(s)$ is strictly monotonically increasing in $s$.
+	\label{defn:class-k-function}
+\end{definition}
+A subset of the class $\mathcal{K}$ functions grow unbounded as the argument
+approaches infinity.
+\begin{definition}
+	A class $\mathcal{KR}$ function is a class $\mathcal{K}$ function $\alpha$
+	where $\lim_{s\to\infty}\alpha(s) = s$.
+	\label{defn:class-kr-function}
+\end{definition}
+Class $\mathcal{KR}$ functions are ``radially unbounded''.
+We can use class $\mathcal{K}$ and class $\mathcal{KR}$ to bound ``energy-like''
+functions called \textbf{Lyapunov Functions}.
+\begin{definition}
+	A function $V(\bs{x}, t): \R^n \times \R_+ \to \R$ is locally positive
+	definite (LPDF) on a set $G\subset \R^n$ containing $\bs{x}_e$ if $\exists
+	\alpha \in \mathcal{K}$ such that \[
+		V(\bs{x}, t) \geq \alpha(\|\bs{x} - \bs{x}_e\|)
+	\]
+	\label{defn:lpdf}
+\end{definition}
+LPDF functions are locally ``energy-like'' in the sense that the equilibrium
+point is assigned the lowest ``energy'' value, and the larger the deviation from
+the equilibrium, the higher the value of the ``energy''.
+\begin{definition}
+	A function $V(\bs{x}, t): \R^n \times \R_+ \to \R$ is positive
+	definite (PDF) if $\exists
+	\alpha \in \mathcal{KR}$ such that \[
+		\forall \bs{x}\in\R^n,\ V(\bs{x}, t) \geq \alpha(\|\bs{x} - \bs{x}_e\|)
+	\]
+	\label{defn:pdf}
+\end{definition}
+Positive definite functions act like ``energy functions'' everywhere in $\R^n$.
+\begin{definition}
+	A function $V(\bs{x}, t): \R^n \times \R_+ \to \R$ is decrescent
+	if $\exists
+	\alpha \in \mathcal{K}$ such that \[
+		\forall \bs{x}\in B_h(\bs{x}_e),\ V(\bs{x}, t) \leq \beta(\|\bs{x} - \bs{x}_e\|)
+	\]
+	\label{defn:decrescent}
+\end{definition}
+Descresence means that for a ball around the equilibrium, we can upper bound the
+growth of the energy.
+
+Note that we can assume $\bs{x}_e = 0$ without loss of generality for
+\cref{defn:lpdf,defn:pdf,defn:decrescent} since for a given system, we can always define a linear
+change of variables that shifts the equilibrium point to the origin.
+
+\subsection{Proving Stability}
+To prove the stability of an equilibrium point for a given nonlinear system, we
+will construct a Lyapunov function and determine stability from the properties
+of the Lyapunov functions which we can find.
+\begin{definition}
+	The Lie derivative of a function $V(\bs{x}, t)$ is given by \[
+		\diff{V}{t} = \frac{\partial V}{\partial t}  +
+		\frac{\partial V}{\partial \bs{x}}f(\bs{x}, t).
+	\]
+	\label{defn:lie-derivative}
+\end{definition}
+The Lie derivative is essentially the directional derivative along the
+trajectories of the system.
+Given properties of $V$ and $\diff{V}{t}$, we can use the \textbf{Lyapunov
+Stability Theorems} to prove the stability of equilibria.
+\begin{theorem}
+	If $\exists V(\bs{x}, t)$ such that $V$ is LPDF and the Lie Derivative
+	$-\diff{V}{t} \geq 0$ locally, then $\bs{x}_e$ is stable in the sense of
+	Lyapunov.
+	\label{thm:lyapunov-sisl}
+\end{theorem}
+\begin{theorem}
+	If $\exists V(\bs{x}, t)$ such that $V$ is LPDF and decrescent, and the Lie Derivative
+	$-\diff{V}{t} \geq 0$ locally, then $\bs{x}_e$ is uniformly stable in the sense of
+	Lyapunov.
+	\label{thm:lyapunov-uniformly-sisl}
+\end{theorem}
+\begin{theorem}
+	If $\exists V(\bs{x}, t)$ such that $V$ is LPDF and decrescent, and the Lie Derivative
+	$-\diff{V}{t}$ is LPDF, then $\bs{x}_e$ is uniformly asymptotically stable in the sense of
+	Lyapunov.
+	\label{thm:lyapunov-uniformly-as}
+\end{theorem}
+\begin{theorem}
+	If $\exists V(\bs{x}, t)$ such that $V$ is PDF and decrescent, and the Lie Derivative
+	$-\diff{V}{t}$ is LPDF, then $\bs{x}_e$ is globally uniformly asymptotically stable in the sense of
+	Lyapunov.
+	\label{thm:lyapunov-globally-as}
+\end{theorem}
+\begin{theorem}
+	If $\exists V(\bs{x}, t)$ and $h, \alpha > 0$ such that V is LPDF is
+	decrescent, The Lie derivative $-\diff{V}{t}$ is LDPF, and \[
+		\forall \bs{x}\in B_h(\bs{x}_e),\ \left\lvert\left\lvert\frac{\partial
+		V}{\partial t}\right\rvert\right\rvert \leq \alpha \|\bs{x}-\bs{x}_e\|
+	\]
+	\label{thm:lyapunov-exponential-stability}
+\end{theorem}
+The results of
+\cref{thm:lyapunov-sisl,thm:lyapunov-uniformly-sisl,thm:lyapunov-uniformly-as,thm:lyapunov-globally-as,thm:lyapunov-exponential-stability}
+are summarized in \cref{table:lyapunov-stability}.
+\begin{gitbook-image}
+\begin{table}[!h]
+	\centering
+	\begin{tabularx}{\textwidth}{YYY}
+		\toprule
+		\textbf{Conditions on} $\mathbf{V}$ & \textbf{Conditions on}
+		$\mathbf{-\diff{V}{t}}$ & \textbf{Conclusion} \\
+		\midrule
+		LPDF & $\geq 0$ locally & Stable\\
+		\hline
+		LPDF, Decrescent & $\geq 0$ locally & Uniformly Stable\\
+		\hline
+		LPDF, Decrescent & LPDF & Uniformly, Asymptotically Stable\\
+		\hline
+		LPDF, Decrescent & LDPF, $\exists \alpha > 0$ such that $\left\lvert\left\lvert
+		\diff{V}{t}\right\rvert\right\rvert \leq \alpha \|\bs{x} - \bs{x}_e\|$ &
+		Exponentially Stable\\
+		\hline
+		PDF, Decrescent & PDF & Globally, Uniformly, Asymptotically Stable\\
+		\bottomrule
+	\end{tabularx}
+	\caption{Summary of Lyapunov Stability Theorems}
+	\label{table:lyapunov-stability}
+\end{table}
+\end{gitbook-image}
+Going down the rows of \cref{table:lyapunov-stability} lead to increasingly
+stricter forms of stability. Descresence appears to add uniformity to the
+stability, while $-\diff{V}{t}$ being LPDF adds asymptotic convergence. However,
+these conditions are only sufficient, meaning if we cannot find a suitable $V$,
+that does not mean that an equilibrium point is not stable.
+
+One very common case where it can be difficult to find appropriate Lyapunov
+functions is in proving asymptotic stability since it can be hard to find $V$
+such that $-\diff{V}{t}$ is LPDF. In the case of autonomous systems, we can
+still prove asymptotic stability without such a $V$.
+\begin{theorem}[LaSalle's Invariance Principle]
+	Consider a smooth function $V:\R^n\to\R$ with bounded sub-level sets $\Omega_c
+	= \left\{\bs{x} | V(\bs{x}) \leq c \right\}$ and $\forall \bs{x}\in \Omega_c$, the Lie
+	derivative $-\diff{V}{t} \leq 0$. Define $S = \left\{\bs{x}|\diff{V}{t} = 0\right\}$ and let
+		$M$ be the largest invariant set in $S$, then \[
+			\forall \bs{x}_0\in \Omega_c,\ \bs{x}(t, t_0, x_0) \to M \text{ as } t\to
+			\infty.
+		\]
+	\label{thm:la-salles}
+\end{theorem}
+LaSalle's theorem helps prove general convergence to an invariant set. Since $V$
+is always decreasing in the sub-level set $\Omega_c$, trajectories starting in
+$\Omega_c$ must eventually reach $S$. At some point, they will reach the set $M$
+in $S$, and then they will stay there. Thus if the set $M$ is only the
+equilibrium point, or a set of equilibrium points, then we can show that the
+system trajectories asymptotically converges to this equilibrium or set of
+equilibria. Moreover, if $V(\bs{x})$ is PDF, and $\forall \bs{x}\in\mathbb{R}^n,
+\diff{V}{t} \leq 0$, then we can show global asymptotic stability as well.
+
+LaSalle's theorem can be generalized to non-autonomous systems as well, but it
+is slightly more complicated since the set $S$ may change over time.
+
+\subsubsection{Indirect Method of Lyapunov}
+It turns out that we can also prove the stability of systems by looking at the
+linearization around the equilibrium. Without loss of generality, suppose
+$\bs{x}_e = 0$. The linearization at the equilibrium is given by \[
+	\diff{\bs{x}}{t} = f(x,t) = f(0, t) + \frac{\partial f}{\partial
+	\bs{x}}|_{\bs{x} = 0}\bs{x} + f_1(\bs{x},t) \approx A(t)\bs{x}.
+\]
+The function $f_1(\bs{x}, t)$ is the higher-order terms of the linearization.
+The linearization is a time-varying system.
+Consider the time-varying linear system
+\[
+	\diff{\bs{x}}{t} = A(t)\bs{x},\ \bs{x}(t_0) = \bs{x}_0.
+\]
+\begin{definition}
+	The state transition matrix $\Phi(t, t_0)$ of a time-varying linear system is
+	a matrix satisfying \[
+		\bs{x}(t) = \Phi(t, t_0)\bs{x}_0,\ \diff{\Phi}{t} = A(t)\Phi(t, t_0),\
+		\Phi(t_0, t_0) = I
+	\]
+	\label{defn:state-transition-matrix}
+\end{definition}
+The state transition matrix is useful in determining properties of the system.
+\begin{enumerate}
+	\item $\sup_{t\geq t_0} \|\Phi(t, t_0)\| = m(t_0) < \infty \implies$ the system
+		is stable at the origin at $t_0$.
+	\item $\sup_{t_0\geq 0}\sup_{t\geq t_0} \|\Phi(t, t_0)\| = m < \infty \implies$ the system
+		is uniformly stable at the origin at $t_0$.
+	\item $\lim_{t\to\infty}\|\Phi(t, t_0)\| = 0 \implies$ the system is
+		asymptotically stable.
+	\item $\forall t_0,\epsilon>0,\exists T$ such that $\forall t\geq t_0 + T,\ \|\Phi(t, t_0)\| <
+		\epsilon \implies$ the system is uniformly asymptotically stable.
+	\item $\|\Phi(t, t_0)\| \leq Me^{-\lambda(t-t_0)} \implies$ exponential
+		stability.
+\end{enumerate}
+If the system was Time-Invariant, then the system would be stable so long as the
+eigenvalues of $A$ were in the open left-half of the complex plane. In fact, we
+could use $A$ to construct positive definite matrices.
+\begin{theorem}[Lyapunov Lemma]
+	For a matrix $A\in \R^{n\times n}$, its eigenvalues $\lambda_i$ satisfy
+	$\Re(\lambda_i) < 0$ if and only if $\forall Q \succ 0$, there exists
+	a solution $P\succ 0$ to the equation \[
+		A^TP + PA = -Q.
+	\]
+	\label{thm:lyapunov-lemma}
+\end{theorem}
+In general, we can use the \textbf{Lyapunov Equation} to count how many
+eigenvalues of $A$ are stable.
+\begin{theorem}[Tausskey Lemma]
+	For $A\in\R^{n\times n}$ and given $Q \succ 0$, if there are no eigenvalues on
+	the $j\omega$ axis, then the solution $P$ to $A^TP + PA = -Q$ has as many
+	positive eigenvalues as $A$ has eigenvalues in the complex left half plane.
+	\label{thm:tausskey-lemma}
+\end{theorem}
+The Lyapunov Lemma has extensions to the time-varying case.
+\begin{theorem}[Time-Varying Lyapunov Lemma]
+	If $A(\cdot)$ is bounded and for some $Q(t) \succeq \alpha I$, the solution
+	$P(t)$ to $A(t)^TP(t) + P(t)A(t) = -Q(t)$ is bounded, then the origin is a
+	asymptotically stable equilibrium point.
+	\label{thm:tv-lyapuynov-lemma}
+\end{theorem}
+It turns out that uniform asymptotic stability of the linearization of a system
+corresponds to uniform, asymptotic stability of the nonlinear system.
+\begin{theorem}[Indirect Theorem of Lyapunov]
+	For a nonlinear system whose higher-order terms of the linearization are given
+	by $f(\bs{x},t)$, if \[
+		\lim_{\|\bs{x}\|\to 0}\sup_{t\geq 0} \frac{\|f_1(\bs{x},t)\|}{\|\bs{x}\|} =
+		0
+	\]
+	and if $\bs{x}_e$ is a uniformly asymptotic stable equilibrium point of
+	$\diff{\bs{z}}{t}=A(t)\bs{z}$ where $A(t)$ is the Jacobian at the $\bs{x}_e$,
+	then $\bs{x}_e$ is a uniformly asymptotic stable
+	equilibrium point of $\diff{\bs{x}}{t} = f(\bs{x},t)$
+	\label{thm:indirect-lyapunov}
+\end{theorem}
+\subsection{Proving Instability}
+\begin{theorem}
+	An equilibrium point $\bs{x}_e$ is unstable in the sense of Lyapunov if
+	$\exists V(\bs{x},t)$ which is decrescent, the Lie derivative $\diff{V}{t}$ is
+	LPDF, $V(\bs{x}_e, t)$, and $\exists \bs{x}$ in the neighborhood of $\bs{x}_e$
+	such that $V(\bs{x}_0, t) > 0$.
+	\label{thm:lyapunov-instability}
 \end{theorem}
 \end{document}
 

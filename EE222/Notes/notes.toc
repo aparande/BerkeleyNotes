@@ -4,6 +4,11 @@
 \contentsline {subsection}{\numberline {1.3}Convergence}{3}{subsection.1.3}
 \contentsline {subsection}{\numberline {1.4}Contractions}{4}{subsection.1.4}
 \contentsline {subsection}{\numberline {1.5}Continuity}{5}{subsection.1.5}
-\contentsline {section}{\numberline {2}Solutions to Nonlinear Systems}{6}{section.2}
-\contentsline {section}{\numberline {3}Nonlinear System Dynamics}{7}{section.3}
-\contentsline {subsection}{\numberline {3.1}Planar Dynamical Systems}{8}{subsection.3.1}
+\contentsline {section}{\numberline {2}Nonlinear System Dynamics}{6}{section.2}
+\contentsline {subsection}{\numberline {2.1}Solutions to Nonlinear Systems}{6}{subsection.2.1}
+\contentsline {subsection}{\numberline {2.2}Planar Dynamical Systems}{8}{subsection.2.2}
+\contentsline {section}{\numberline {3}Stability of Nonlinear Systems}{10}{section.3}
+\contentsline {subsection}{\numberline {3.1}Lyapunov Functions}{12}{subsection.3.1}
+\contentsline {subsection}{\numberline {3.2}Proving Stability}{13}{subsection.3.2}
+\contentsline {subsubsection}{\numberline {3.2.1}Indirect Method of Lyapunov}{15}{subsubsection.3.2.1}
+\contentsline {subsection}{\numberline {3.3}Proving Instability}{17}{subsection.3.3}
