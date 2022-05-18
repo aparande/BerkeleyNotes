@@ -214,6 +214,130 @@ differentiable, then Lipschitz continuity is easy to determine.
 	$\lim_{s\to0^-}$ exist and are finite. 
 	\label{defn:piecewise-continuous}
 \end{definition}
+\section{Differential Geometry}
+\begin{definition}
+	$M\subset \R^n$ is a $m$-dimensional smooth sub-manifold of $\R^n$ if $\forall
+	\bs{p}\in M,\ \exists r > 0$ and $F: B_r(\bs{p}) \to \R^{n-m}$ such that \[
+		\begin{aligned}
+			M \bigcap B_r(p) = \{\bs{x}\in B_r(\bs{p}) | F(\bs{x}) = 0\}\\
+			F\text{ is smooth,}\\
+			\forall \bar{\bs{x}} \in (M \bigcap B_r(\bs{p})),
+			\text{Rank}\left(\frac{\partial F}{\partial \bs{x}}
+			\bigg\rvert_{\bar{\bs{x}}}\right) = n - m
+		\end{aligned}
+	\]
+	\label{defn:manifold}
+\end{definition}
+By \cref{defn:manifold}, a manifold is essentially defined as the 0-level set of
+some smooth function $F$ and can be thought of as a surface embedded in a higher
+dimension.
+\begin{definition}
+	The tangent space of a manifold $M$ at $\bs{p}\in M$ is given by \[
+		T_{\bs{p}}M = \mathcal{N}\left(\frac{\partial F}{\partial
+		\bs{x}}\bigg |_{\bs{p}}\right)
+	\]
+	\label{defn:tangent-space}
+\end{definition}
+The tangent space consists of all vectors tangent to the manifold at a
+particular point $\bs{p}$.
+\begin{definition}
+	The Tangent Bundle of a manifold $M$ is the collection of all tangent spaces \[
+		T_M = \bigcup_{\bs{p}\in M} T_p M
+	\]
+	\label{defn:tangent-bundle}
+\end{definition}
+\begin{definition}
+	A vector field $f:M\to T_M$ on a manifold $M$ is an assignment of each point $\bs{p}\in
+	M$ to a vector in the tangent space in that point $T_{\bs{p}}M$.
+	\label{defn:vector-field}
+\end{definition}
+Therefore, a vector field can be thought of as a curve through the tangent
+bundle of a manifold.
+\begin{definition}
+	The Lie Derivative of a function $V$ with respect to a vector field $f$ is
+	given by \[
+		L_fV = \frac{\partial V}{\partial \bs{x}} f(\bs{x})
+	\]
+	\label{defn:lie-derivative}
+\end{definition}
+A Lie Derivative is essentially a directional derivative, and it measures how a
+function changes along a vector field.
+\begin{definition}
+	Suppose that $f(\bs{x})$ and $g(\bs{x})$ are vector fields. The Lie Bracket of
+	$f$ and $g$ is given by \[
+		[f, g] = L_fg - L_gf
+	\]
+	\label{defn:lie-bracket}
+\end{definition}
+The Lie Bracket is another vector field, and it essentially measures the
+difference between moving along vector field $f$ and vector field $g$ across
+some infinitesimal distance. Another way to think about the Lie Bracket is as a
+measure of the extent to which $f$ and $g$ commute with each other. The Lie
+Bracket is also sometimes denoted using the adjoint map \[
+	\ad_fg = [f, g].
+\]
+It is helpful when chaining Lie Brackets since we can denote \[
+	[f,[f,[f,\cdots[f,g]]]] = \ad_f^ig.
+\]
+Since the Lie Bracket is a vector field, we can look at Lie Derivatives with
+respect to the Lie Bracket of two vector fields.
+\begin{theorem}
+	For a function $h$ and vector fields $f$ and $g$, \[
+		L_{[f,g]}h = L_fL_gh - L_gL_fh
+	\]
+	\label{thm:lie-brack-derivative}
+\end{theorem}
+We can also use relate repeated Lie Derivatives to doing repeated Lie Brackets.
+\begin{theorem}
+	\[
+		L_gL_f^ih(\bs{x}) = 0 \Leftrightarrow L_{\ad_f^ig}h(\bs{x}) = 0
+	\]
+	\label{thm:repeated-lie}
+\end{theorem}
+\begin{definition}
+	Suppose $f_1,f_2,\cdots,f_n$ are vector fields. A distribution $\Delta$ is the
+	span of the vector fields at each point $\bs{x}$: \[
+		\Delta(\bs{x}) = \text{span}\{f_1(\bs{x}), f_2(\bs{x}),\cdots,f_n(\bs{x})\}.
+	\]
+	\label{defn:distribution}
+\end{definition}
+At each point $\bs{x},\ \Delta(\bs{x})$ is a subspace of the tangent space at
+$\bs{x}$.
+\begin{definition}
+	The dimension of a distribution at a point $\bs{x}$ is given by \[
+		\text{Dim }\Delta(\bs{x}) = \text{rank}\left(\begin{bmatrix}
+				f_1(\bs{x}) | f_2(\bs{x}) | \cdots | f_n(\bs{x})
+		\end{bmatrix}\right)
+	\]
+	\label{defn:distribution-dimension}
+\end{definition}
+Distributions have different properties which are important to look at.
+\begin{definition}
+	A distribution $\Delta$ is nonsingular, also known as regular, if its
+	dimension is constant.
+	\label{defn:regular-dimension}
+\end{definition}
+\begin{definition}
+	A distribution $\Delta$ is involutive if \[
+		\forall f, g\in \Delta, \quad [f, g] \in \Delta
+	\]
+	\label{defn:involutive-distribution}
+\end{definition}
+In involutive distributions, you can never leave the distribution by traveling
+along vectors inside the distribution.
+\begin{definition}
+	A nonsingular $K$-dimensional distribution $\Delta(\bs{x}) =
+	\text{span}\{f_1(\bs{x}), \cdots, f_k(\bs{x})\}$ is completely integrable if
+	$\exists \phi_1,\cdots,\phi_{n-k}$ such that $\forall i,k,\ L_{f_k}\phi_i = 0$
+	and $\frac{\partial\phi_i}{\bs{x}}$ are linearly independent.
+	\label{thm:involutive}
+\end{definition}
+It turns out that integrability and involutivity are equivalent to each other.
+\begin{theorem}[Frobenius Theorem]
+	A nonsingular $\Delta$ is completely integrable if and only if $\Delta$ is
+	involutive.
+	\label{thm:frobenius}
+\end{theorem}
 \section{Nonlinear System Dynamics}
 Consider the non-linear system \[
 	\diff[]{\bs{x}}{t} = f(\bs{x}, t).
@@ -564,21 +688,70 @@ growth of the energy.
 Note that we can assume $\bs{x}_e = 0$ without loss of generality for
 \cref{defn:lpdf,defn:pdf,defn:decrescent} since for a given system, we can always define a linear
 change of variables that shifts the equilibrium point to the origin.
+\subsubsection{Quadratic Lyapunov Functions}
+\begin{definition}
+	A Quadratic Lypunov function is of the form \[
+		V(\bs{x}) = \bs{x}^\top P \bs{x},\quad P \succ 0
+	\]
+	\label{defn:quadratic-lyapunov}
+\end{definition}
+Quadratic Lyapunov Functions are one of the simplest types of Lyapunov
+Functions. Their level sets are ellipses where the major axis is the eigenvector
+corresponding to $\lambda_{min}(P)$, and the minor axis is the eigenvecctor
+corresponding to $\lambda_{max}(P)$.
+
+\begin{theorem}
+	Consider the sublevel set $\Omega_c = \{ \bs{x} | V(\bs{x}) \leq c \}$. Then
+	$r_*$ is the radius of the largest circle contained inside $\Omega_c$, and $r^*$
+	is the radius of the largest circle containing $\Omega_c$.
+	\[
+		r_* = \sqrt{\frac{c}{\lambda_{max}(P)}} \qquad r^* =
+		\sqrt{\frac{c}{\lambda_{min}(P)}}
+	\]
+	\label{thm:quadratic-level-sets}
+\end{theorem}
+
+\subsubsection{Sum-of-Squares Lyapunov Functions}
+\begin{definition}
+	A polynomial $p(\bs{x})$ is sum-of-squares (SOS) if $\exists g_1,\cdots,g_r$
+	such that \[
+		p(\bs{x}) = \sum_{i=1}^r g_i^2(\bs{x})
+	\]
+	\label{defn:sos}
+\end{definition}
+SOS polynomials have the nice property that they are always non-negative due to
+being a sum of squared numbers. Since any polynomial can be written in a
+quadratic form $P(\bs{x}) = z^\top(\bs{x}) Q z(\bs{x})$ where $z$ is a vector of
+monomials, the properties of $Q$
+can tell us if $P$ is SOS or not.
+\begin{theorem}
+	A polynomial is SOS if and only if it can be written as \[
+		p(\bs{x}) = z^\top(\bs{x}) Q z(\bs{x}), \quad Q \succeq 0
+	\]
+	\label{thm:sos}
+\end{theorem}
+Note that $Q$ is not necessarily unique, and if we construct a linear operator
+which maps $Q$ to $P$, then this linear operator will have a Null Space.
+Mathematically, consider \[
+	\mathcal{L}(Q)(\bs{x}) = z^\top(\bs{x})Qz(\bs{x}).
+\]
+This linear operator has a null space spanned by the polynomials $N_j$. Given a
+matrix $Q_0 \succeq 0$ such that $p(\bs{x}) = z^\top(\bs{x})Q_0z(\bs{x})$ (i.e
+$p$ is SOS), it is also true that \[
+	p(\bs{x}) = z^\top(\bs{x})\left( Q_0 + \sum_{j} \lambda_j N_j(\bs{x}) \right)
+	z(\bs{x}).
+\]
+SOS polynomials are helpful in finding Lyapunov functions because we can use SOS
+Programming to find SOS polynomials which satisfy desired properties. For
+example, if we want $V(\bs{x})$ to be PDF, then one constraint in our SOS program
+will be that \[
+	V(\bs{x}) - \epsilon \bs{x}^\top \bs{x}, \quad \epsilon > 0
+\] is SOS.
 
 \subsection{Proving Stability}
 To prove the stability of an equilibrium point for a given nonlinear system, we
 will construct a Lyapunov function and determine stability from the properties
-of the Lyapunov functions which we can find.
-\begin{definition}
-	The Lie derivative of a function $V(\bs{x}, t)$ is given by \[
-		\diff{V}{t} = \frac{\partial V}{\partial t}  +
-		\frac{\partial V}{\partial \bs{x}}f(\bs{x}, t).
-	\]
-	\label{defn:lie-derivative}
-\end{definition}
-The Lie derivative is essentially the directional derivative along the
-trajectories of the system.
-Given properties of $V$ and $\diff{V}{t}$, we can use the \textbf{Lyapunov
+of the Lyapunov functions which we can find. Given properties of $V$ and $\diff{V}{t}$, we can use the \textbf{Lyapunov
 Stability Theorems} to prove the stability of equilibria.
 \begin{theorem}
 	If $\exists V(\bs{x}, t)$ such that $V$ is LPDF and the Lie Derivative
@@ -653,7 +826,7 @@ still prove asymptotic stability without such a $V$.
 \begin{theorem}[LaSalle's Invariance Principle]
 	Consider a smooth function $V:\R^n\to\R$ with bounded sub-level sets $\Omega_c
 	= \left\{\bs{x} | V(\bs{x}) \leq c \right\}$ and $\forall \bs{x}\in \Omega_c$, the Lie
-	derivative $-\diff{V}{t} \leq 0$. Define $S = \left\{\bs{x}|\diff{V}{t} = 0\right\}$ and let
+	derivative $\diff{V}{t} \leq 0$. Define $S = \left\{\bs{x}|\diff{V}{t} = 0\right\}$ and let
 		$M$ be the largest invariant set in $S$, then \[
 			\forall \bs{x}_0\in \Omega_c,\ \bs{x}(t, t_0, x_0) \to M \text{ as } t\to
 			\infty.
@@ -754,5 +927,465 @@ corresponds to uniform, asymptotic stability of the nonlinear system.
 	such that $V(\bs{x}_0, t) > 0$.
 	\label{thm:lyapunov-instability}
 \end{theorem}
+\subsection{Region of Attraction}
+For asymptotically stable and exponential stable equilibria, it makes sense to
+wonder which initial conditions will cause trajectories to converge to the
+equilibrium.
+\begin{definition}
+	If $\bs{x}_e$ is an equilibrium point of a time-invariant system $\diff{x}{t}
+	= f(x)$, then the Region of Attraction of $\bs{x}_e$ is \[
+		\mathcal{R}_A(\bs{x}_e) = \{ \bs{x}_0 \in \mathbb{R}^n | \lim_{t\to\infty}
+		\bs{x}(t, t_0) = \bs{x}_e \}
+	\]
+	\label{defn:region-of-attraction}
+\end{definition}
+Suppose that we have a Lyapunov function $V(\bs{x})$ and a region $D$ such that
+$V(\bs{x}) > 0$ and $\diff{V}{t} < 0$ in $D$. Define a sublevel set of the
+Lypunov function $\Omega_c$ which is a subset of $D$. We know that if
+$\bs{x}_0\in\Omega_c$, then the trajectory will stay inside $\Omega_c$ and
+converge to the equilibrium point. Thus we can use the largest $\Omega_c$ that
+is compact and contained in $D$ as an estimate of the region of attraction.
+
+When we have a Quadratic Lyapunov Function, we can set $D$ to be the largest
+circle which satisfies the conditions on $V$, and the corresponding $\Omega_c$
+contained inside $D$ will be the estimate of the Region of Attraction.
+
+We can find even better approximations of the region of attraction using SOS
+programming. Suppose we have a $V$ which we used to prove asymptotic stability.
+Then if there exists an $s$ which satisfies the following SOS program, then the
+sublevel set $\Omega_c$ is an estimate of the Region of Attraction.
+\begin{align*}
+	&\max_{c, s} c\\
+	\text{such that } &s(\bs{x}) \text{ is SOS,}\\
+	& -\left(\diff{V}{t} + \epsilon \bs{x}^\top \bs{x}\right) + s(\bs{x})(c -
+	V(\bs{x})) \text{ is SOS.}
+\end{align*}
+\section{Nonlinear Feedback Control}
+In nonlinear control problems, we have a system \[
+	\diff{\bs{x}}{t} = f(\bs{x}, \bs{u}).
+\]
+$\bs{x}$ is the state of the system, and $\bs{u}$ is the input to the system.
+Note that for simplicity, the system is time-invariant. Further assume, without
+loss of generality, that $f(0, 0) = 0$. The goal of nonlinear feedback control
+is to find a state feedback law $\alpha(\bs{x})$ such that the equilibrium point
+$\bs{x}_e = 0$ is globally asymptotically stable for the closed loop system \[
+	\diff{\bs{x}}{t} = f(\bs{x}, \alpha(\bs{x}))
+\]
+Sometimes, the control impacts the state evolution in an affine manner.
+\begin{definition}
+	A control affine system is given by the differential equation \[
+		\diff{\bs{x}}{t} = f(\bs{x}) + G(\bs{x})\bs{u}
+	\] where $G(\bs{x})$ is a matrix dependent on the state vector $\bs{x}$.
+	\label{defn:control-affine}
+\end{definition}
+
+When designing controllers, there is a wide variety of techniques we can use.
+Some simple techniques involve canceling out various types of nonlinearities in
+the system using the input. Here are some examples.
+\begin{enumerate}
+	\item Set $\bs{u}$ such that it cancels out nonlinear terms and adds a stable
+		linear term, effectively making the nonlinear system behave linear in the
+		closed loop.
+	\item Set $\bs{u}$ to cancel destabilitizing nonlinear terms and add a stable
+		linear term, so the stable nonlinearities help the input drive the system to
+		equilibrium.
+	\item Set $\bs{u}$ to cancel destabiliizing nonlinear terms, so the nonlinear
+		system dynamics drive the system to equilibrium.
+	\item Set $\bs{u}$ to dominate destabilizing terms so they have a minimal
+		impact on the overall system behavior.
+\end{enumerate}
+While these techniques can work, there are also more principled ways of
+designing controllers to satisfy different criteria, particularly for the case
+of control affine systems.
+\subsection{Control Lyapunov Functions}
+If we can find an $\alpha(\bs{x})$ that makes the origin globally asymptotically
+stable, then the converse Lyapunov theorem says that we can find a
+corresponding Lyapunov function for the system.
+\begin{align*}
+	\forall \bs{x} \neq 0, \diff{V}{t} < 0 &\implies \frac{\partial V}{\partial
+	\bs{x}} f(\bs{x}, \alpha(\bs{x})) < 0 \\
+	&\implies \exists \bs{u} \text{ s.t } \frac{\partial V}{\partial \bs{x}} f(\bs{x},
+	\bs{u}) < 0\\
+	& \Leftrightarrow \inf_{\bs{u}} \frac{\partial V}{\partial \bs{x}} f(\bs{x}, \bs{u}) < 0
+\end{align*}
+This result motivates the following definition.
+\begin{definition}
+	A continuously differentiable, PDF, radially unbounded $V: \R^n \to \R$ is a
+	Control Lyapunov Function for the system $\diff{\bs{x}}{t} = f(\bs{x},
+	\bs{u})$ if \[
+		\forall \bs{x} \neq 0, \inf_{\bs{u}} \frac{\partial V}{\partial \bs{x}}
+		f(\bs{x}, \bs{u}) < 0
+	\]
+	\label{defn:control-lyapunov-function}
+\end{definition}
+Once we have a control lyapunov function, we can prove that it is possible to
+find a state feedback law that will make the origin globally asymptotically
+stable.
+\begin{theorem}
+	Suppose $f$ is Lipschitz and $V$ is a control Lyapunov function, then there
+	exists a smooth function $\alpha$ such that the origin is a globally
+	asympototically stable equilibrium point of $\diff{\bs{x}}{t} = f(\bs{x},
+	\alpha(\bs{x}))$.
+	\label{thm:artstein}
+\end{theorem}
+Suppose that we have a control affine system, and we want to construct a control
+lyapunov function for the system. \[
+	\inf_{\bs{u}} \frac{\partial V}{\partial \bs{x}}f(\bs{x}, \bs{u}) =
+	\inf_{\bs{u}} L_f V + \sum_i L_{g_i} V \bs{u}_i < 0
+\]
+If $\forall i,\ L_{g_i} V = 0$, then \cref{defn:control-lyapunov-function} is
+satisfied so long as $L_f V < 0$.
+\begin{theorem}
+	A function $V$ is a control lyapunov function for a control affine system \[
+		\diff{\bs{x}}{t} = f(\bs{x}) + \sum_i g_i(\bs{x}) \bs{u}
+	\] if \[
+		L_{g_i} V\, \forall i \implies L_f V \leq 0
+	\]
+	\label{thm:control-affine-lyap}
+\end{theorem}
+Notice that the condition in \cref{thm:control-affine-lyap} is essentially
+saying that the $l_2$-norm of the vector composed of the $L_{g_i} V$ is equal to
+0. The choice of CLF is important because different CLFs have different
+properties when used to derive controllers.
+\begin{definition}
+	A CLF $V(\bs{x})$ satisfies the small control property if $\forall \epsilon >
+	0$, $\exists \delta > 0$ such that $\bs{x}\in B_\delta(0)$, then if
+	$\bs{x}\neq0, \exists \bs{u}\in B_\epsilon(0)$ satisfying \[
+		\diff{V}{t} = L_fV + L_gV^T\bs{u} < 0.
+	\]
+	\label{defn:small-control}
+\end{definition}
+The small control property means that CLF will lead to a controller which has a
+small value that does not get too large when close to the equilibrium.
+
+Given a control lyapunov function for a control affine system $V(\bs{x},
+\bs{u})$, we can devise
+a controller which stabilizes the system. In particular, we need \[
+	\frac{dV}{dt}(x, u) = L_f V(\bs{x}) + L_gV(\bs{x})^\top \bs{u} \leq 0.
+\]
+Hence, let \[
+	\bs{u} = \begin{cases}
+		0, & \text{if } L_f V < 0,\\
+		(L_gVL_gV^\top)^{-1}(-L_fV L_gV^\top), & \text{if } L_f V > 0.
+	\end{cases}
+\]
+When the plant dynamics are naturally stabilizing, this controller exerts no
+control effort. When the plant dynamics are not naturally stabilizing, then the
+controller applies some control to stabilize the system. We can show that this
+is a minimum norm controller as it solves the optimization problem \[
+	\begin{aligned}
+		\min &\quad \bs{u}^\top \bs{u}\\
+		\text{s.t} &\quad L_fV + L_gV^\top \bs{u} \leq 0.
+	\end{aligned}
+\]
+Another type of controller is known as the Sontag controller.
+\begin{theorem}
+	Suppose $V:\R^n\to\R$ is a CLF for SISO control affine system $\diff[]{\bs{x}}{t} =
+	f(\bs{x}) + g(\bs{x})u$ where $f(0) = 0$ where $f$ and $g$ are Lipschitz. Then
+	the Sontag feedback control law is given by \[
+		\alpha_S(\bs{x}) = \begin{cases}
+			\frac{-L_fV - \sqrt{(L_fV)^2 + (L_gV)^4}}{L_gV}, & \text{if } L_gV \neq
+			0,\\
+			0, & \text{else.}
+		\end{cases}
+	\]
+	makes the origin globally asymptotically stable. Moreover,
+	$\alpha_S(\bs{x})$ is continuous everywhere except $\bs{x} = 0$, is
+	continuous at $\bs{x}=0$ if $V$ satisfies the small control property, and if
+	$V(\bs{x})$ is $K+1$ times continuously differentiable and $f(\bs{x}),
+	g(\bs{x})$ are $K$ times continously differentiable $\forall \bs{x}\neq0$,
+	then $\alpha_S$ is $K$ times continuously differentiable.
+	\label{thm:sontag}
+\end{theorem}
+\subsection{Feedback Linearization}
+Since we have a large number of tools which allow us to control linear systems,
+it would be ideal if we could somehow leverage those tools for nonlinear
+control. Feedback linearization is the process of finding a feedback control law $\bs{u} =
+\alpha(\bs{x})$ such that under a nonlinear change of coordinates $z =
+\Phi(\bs{x})$, the system $\diff[]{x}{t} = f(\bs{x}, \alpha(\bs{x}))$ behaves like a linear
+system $\diff[]{\bs{z}}{t} = A\bs{z}$. When the system is control-affine, there
+are well-established results which help us do this.
+
+\subsubsection{SISO Case}
+Suppose we have a SISO control-affine system \[
+	\begin{aligned}
+		\diff[]{\bs{x}}{t} &= f(\bs{x}) + g(\bs{x})u\\
+		y &= h(\bs{x})
+	\end{aligned}
+\]
+\begin{definition}
+	A SISO control affine system with an equilibrium point $\bs{x}_e$ has
+	strict relative degree $\gamma$ if in a neighborhood $U$ around the
+	equilibirum point, $L_gL_f^{\gamma-1}h(\bs{x})$ is bounded away from 0 and \[
+		\forall i=0,\cdots,\gamma-2,\ L_gL_f^{\gamma - 1}h(\bs{x}) = 0
+	\]
+	\label{defn:strict-relative-degree}
+\end{definition}
+To understand relative degree, suppose we differentiate $y$ once \[
+	\diff{y}{t} = L_fh + L_gh u.
+\]
+If $\forall \bs{x}\in U,\ L_gh(\bs{x}) = 0$ where $U$ is some region around the
+equilibrium, then \[
+	\forall \bs{x}\in U,\ \diff{y}{t} = L_fh(\bs{x}).
+\]
+If we differentiate again, then \[
+	\forall \bs{x}\in U,\ \diff[2]{y}{t} = L_f^2h(\bs{x}) + L_gL_f(\bs{x}).
+\]
+Suppose that $\forall \bs{x}\in U,\ L_gL_f(\bs{x}) = 0$, then we can
+differentiate again. At some point, after $\gamma$ differentiations, we will
+get \[
+	\forall \bs{x}\in U,\ \diff{\gamma}{y}{t} = L_f^\gamma h(\bs{x}) +
+	L_gL_f^{\gamma-1}h(\bs{x})u.
+\]
+Therefore, the relative degree of the system is essentially telling us which
+derivative of the output that we can control. By sequentially taking
+derivatives, we are essentially looking at the system \[
+	\begin{aligned}
+		y &= h(\bs{x})\\
+		\diff{y}{t} &= L_fh(\bs{x})\\
+		\diff[2]{y}{t} &= L_f^2h(\bs{x})\\
+		&\vdots\\
+		\diff[\gamma]{y}{t} &= L_f^\gamma h(\bs{x}) + L_gL_f^{\gamma-1}h(\bs{x})
+	\end{aligned}
+\]
+Suppose $\forall i=0,\cdots,\gamma-1,$ we let $\xi_i(\bs{x}) = \diff[i]{y}{t}$.
+These are $\gamma$ linearly independent coordinates. Since the distribution \[
+	\Delta(\bs{x}) = \text{span}\{g(\bs{x})\}
+\]
+is involutive, it is integrable, and so there must be $n-1$ functions $\eta_i$
+such that \[
+	\forall \bs{x}\in U,\ (\nabla_{\bs{x}}\bs{\eta})^\top g(\bs{x}) = 0.
+\]
+We can now choose $n-\gamma$ of them which are linearly independent of the
+$\xi_i$ and linearly independent with each other, and this forms a change of
+coordinates \[
+	\begin{bmatrix}
+		\xi_1\\
+		\vdots\\
+		\xi_{\gamma}\\
+		\eta_1\\
+		\vdots\\
+		\eta_{n-\gamma}
+	\end{bmatrix} = \Phi(\bs{x}) = \begin{bmatrix}
+		h(\bs{x})\\
+		L_fh(\bs{x})\\
+		\vdots\\
+		L_f^{\gamma-1}\\
+		\eta_1\\
+		\vdots\\
+		\eta_{n-\gamma}
+	\end{bmatrix}
+\]
+This change of coordinates allows us to put the system into a canonical form.
+\begin{definition}
+	The normal form of a SISO control affine system is given by \[
+		\begin{aligned}
+			\diff[]{\xi_1}{t} &= \xi_2\\
+			\diff[]{\xi_2}{t} &= \xi_3\\
+			&\vdots\\
+			\diff[]{\xi_{\gamma}}{t} &= b(\bs{\xi}, \bs{\eta}) + a(\bs{\eta},
+			\bs{\xi})u\\
+			\diff[]{\bs{\eta}}{t} &= q(\bs{\xi}, \bs{\eta}),\\
+			y &= \eta_1
+		\end{aligned}
+	\]
+	\label{defn:normal-form-siso}
+\end{definition}
+When the original system is given by $\diff{x}{t} = f(\bs{x})+g(\bs{x})u$, then
+\[
+	b(\bs{\xi},\bs{\eta}) = L_f^\gamma h(\Phi^{-1}(\bs{\xi}, \bs{\eta})) \qquad
+	a(\bs{\xi}, \bs{\eta}) = L_gL_f^{\gamma-1} h(\Phi^{-1}(\bs{\xi}, \bs{\eta}))
+\]
+With this parameterization, it is quite easy to see how we can make our system
+behave linearly. In particular, choose \[
+	u = \frac{1}{a(\bs{\xi}, \bs{\eta})}\left(-b(\bs{\xi}, \bs{\eta}) +
+	\bs{v}\right)
+\]
+where $\bs{v}$ is some control input. Then the system becomes
+\[
+	\begin{aligned}
+		\diff[]{\xi_1}{t} &= \xi_2\\
+		\diff[]{\xi_2}{t} &= \xi_3\\
+		&\vdots\\
+		\diff[]{\xi_{\gamma}}{t} &= \bs{v}\\
+		\diff[]{\bs{\eta}}{t} &= q(\bs{\xi}, \bs{\eta})\\
+		y &= \eta_1
+	\end{aligned}
+\],
+which is a linear system. Therefore, we can design a linear controller input $\bs{v}$
+where we have all of the tools of linear control at our disposal. However,
+notice that the $\eta_i$ cannot be impacted by the control effort. These are
+known as the \textbf{internal dynamics} of the system. When $\bs{\xi} = 0$,
+then \[
+	\diff{\bs{\eta}}{t} = q(0, \bs{\eta})
+\]
+are known as the \textbf{Zero Dynamics} of the system. Zero dynamics for a
+system can be dangerous because if they are unstable, then the system could be
+blowing up. When $\gamma = n$, then there are no zero dynamics. When this
+happens, we say the system is \textbf{Full State Linearizable}. Fortunately,
+there are necessary and sufficient conditions which guarantee full state
+linearization.
+\begin{theorem}
+	There exists a function $h$ such that a control affine system
+	$\diff{\bs{x}}{t} = f(\bs{x}) + g(\bs{x})u$ has relative degree $n$ at
+	$\bs{x}_0$ if and only if \[
+		\begin{bmatrix}
+			g(\bs{x}) & \cdots & \ad_f^{n-2}g(\bs{x}) & \ad_f^{n-1}g(\bs{x})
+		\end{bmatrix}
+	\]
+	has rank $n$ and \[
+		\begin{bmatrix}
+			g(\bs{x}) & \cdots & \ad_f^{n-3}g(\bs{x}) & \ad_f^{n-2}g(\bs{x})
+		\end{bmatrix}
+	\]
+	has rank $n-1$ and is involutive in the neighborhood of $\bs{x}_0$. The $h$ is
+	chosen to satisfy \[
+		(\nabla_{\bs{x}}h)^\top \begin{bmatrix}
+			g(\bs{x}) & \cdots & \ad_f^{n-3}g(\bs{x}) & \ad_f^{n-2}g(\bs{x})
+		\end{bmatrix} = 0
+	\]
+	\label{thm:full-state-linearization}
+\end{theorem}
+\subsubsection{MIMO Case}
+Suppose instead we have a MIMO control affine system where \[
+	\begin{aligned}
+		\diff{\bs{x}}{t} &= f(\bs{x}) + G(\bs{x})\bs{u}\\
+		\bs{y} &= h(\bs{x})
+	\end{aligned}
+\]
+We will assume that the number of outputs is equal to the number of inputs (i.e
+$\bs{y}, \bs{u} \in \R^m$). To linearize the system, we can take the same idea
+of relative degree from the SISO case and apply it to the MIMO case.
+Define $\gamma_j$ to be the lowest derivative of $y_j$ which is impacted by at
+least one input.\[
+	\begin{bmatrix}
+		\diff[\gamma_1]{y_1}{t}\\
+		\vdots\\
+		\diff[\gamma_m]{y_m}{t}
+	\end{bmatrix}
+	= \begin{bmatrix}
+		L_f^{\gamma_1}h_1(\bs{x})\\
+		\vdots\\
+		L_f^{\gamma_m}h_m(\bs{x})\\
+	\end{bmatrix} + A(\bs{x})\bs{u}, \qquad A(\bs{x}) = \begin{bmatrix}
+		L_{g_1}L_f^{\gamma_1-1}h_1(\bs{x}) & \cdots &
+		L_{g_m}L_f^{\gamma_1-1}h_m(\bs{x})\\
+		\vdots & \ddots & \vdots\\
+		L_{g_1}L_f^{\gamma_m-1}h_1(\bs{x}) & \cdots &
+		L_{g_m}L_f^{\gamma_m-1}h_m(\bs{x})
+	\end{bmatrix}
+\]
+\begin{definition}
+	A square control affine system has a vector relative degree $(\gamma_1,
+	\cdots, \gamma_m)$ at $\bs{x}_0\in U$ if $A(\bs{x}_0)$ is nonsingular and \[
+		\forall 1\leq i\leq m,\ 1\leq j \leq m,\ 0 \leq k \leq \gamma_j-2,\ \forall
+		\bs{x}\in U,\ L_{g_i}L_f^kh_j(\bs{x}) = 0
+	\]
+	\label{thm:vector-relative-degree}
+\end{definition}
+As before, we can assign $\diff[i]{y_j}{t} = \xi_i^j$ as a partial change of
+coordinates and then choose linearly independent $\bs{\eta}$.
+\begin{definition}
+	The normal form of a square MIMO system is given by
+	\[
+		\begin{aligned}
+			\diff{\bs{\eta}}{t} &= q(\bs{\xi},\bs{\eta}) + p(\bs{\xi}, \bs{\eta})\bs{u}\\
+			\diff{\xi_i^j}{t} &= \xi_{i+1}^j, &\quad \forall j,\ \forall i < \gamma_j-1\\
+			\diff{\xi_{\gamma_j-1}^j}{t} &= b^j(\bs{\xi},\bs{\eta}) +
+			\bs{a}^j(\bs{\xi},\bs{\eta})^\top\bs{u}
+		\end{aligned}
+	\]
+	\label{defn:mimo-normal-form}
+\end{definition}
+As before the $\diff{\bs{\eta}}{t}$ represent the internal dynamics of the
+system that are not impacted by the control. As with the linear case, we can
+design a controller \[
+	\bs{u} = A^{-1}(\bs{x})\left(
+	\begin{bmatrix}
+		L_f^{\gamma_1}h_1(\bs{x})\\
+		\vdots\\
+		L_f^{\gamma_m}h_m(\bs{x})\\
+	\end{bmatrix} + \bs{v}\right)
+\]
+which renders the system linear. We can now choose $\bs{v}$ where each entry of
+$\bs{v}$ controls a different output. For this reason, we call $A(\bs{x})$ the
+decoupling matrix. As in the SISO case, unless $\sum_j \gamma_j = n$, there are
+zero dynamics to the system.
+\begin{theorem}
+	A control affine square system $\diff{\bs{x}}{t} = f(\bs{x}) +
+	g(\bs{x})\bs{u}$ has vector relative degree $\sum_j \gamma_j = n$ if and only
+	if $\Delta_i$ is involutive for all $i \leq n-2$, $\Delta_i$ has constant rank
+	for all $1 \leq i \leq n-1$ and $\Delta_{n-1}$ has rank $n$ where \[
+		\begin{aligned}
+			\Delta_0(\bs{x}) &= \text{span}\{g_1(\bs{x}),\cdots,g_m(\bs{x})\}\\
+			\Delta_i(\bs{x}) &= \text{span}\{\ad_f^kg_i(\bs{x})| \forall 0 \leq k \leq i,
+			1 \leq j \leq m\}, &\quad \forall 1 \leq i \leq n-1
+		\end{aligned}
+	\]
+	\label{thm:full-state-linearization-mimo}
+\end{theorem}
+\subsubsection{Dynamic Extension}
+Sometimes, we can use full-state linearization even if $h$ does not satisfy the
+conditions in \cref{thm:full-state-linearization}. We do this by adding
+additional states to the system and corresponding pseudo-control inputs which
+help control these states. Sometimes, this can be done in a way which makes the
+extended system full-state linearizable.
+\subsubsection{Sliding Mode Control}
+In sliding mode control, we design a controller \[
+	u = \beta(\bs{x})\text{sgn}(s)
+\]
+where $s(\bs{x})$ describes a manifold called the ``sliding manifold''. Sliding mode
+controllers have two states
+\begin{enumerate}
+	\item Reaching Mode
+	\item Sliding Mode
+\end{enumerate}
+During the reaching mode, the controller drives the state towards the sliding
+manifold $s(\bs{x}) = 0$. We choose $s$ such that on the manifold, when the
+system is in sliding mode, the system
+naturally converges asymptotically to the equilibrium. If $s(\bs{x}) = 0$ is an
+invariant manifold, then the system will smoothly travel along the manifold to
+equilibrium. If the sliding manifold is not invariant, then the state will
+chatter around the manifold towards equilibrium as the controller continuously
+drives it back to the manifold once it leaves. To choose $s$, we need to find a CLF $V(s)$ which
+converges to $0$ in finite time when applying the sliding mode controller.
+\subsubsection{Backstepping}
+\begin{definition}
+	A system expressed in strict feedback form is given by \[
+		\begin{aligned}
+			\diff{\bs{x}}{t} &= f_0(\bs{x}) + g_0(\bs{x})\xi_1\\
+			\diff{\xi_1}{t} &= f_1(\bs{x}, \xi_1) + g_1(\bs{x}, \xi_1)\xi_2\\
+			&\vdots\\
+			\diff{\xi_k}{t} &= f_k(\bs{x}, \xi_1,\cdots,\xi_k) + g_k(\bs{x},
+			\xi_1,\cdots,\xi_k)u\\
+		\end{aligned}
+	\]
+	\label{defn:strict-feedback-form}
+\end{definition}
+When systems are expressed in this way, we have a convenient method of designing
+controllers.
+\begin{theorem}[Backstepping Lemma]
+	Suppose there is a continuously differentiable $u=\alpha(\bs{x})$ and a CLF
+	$V(\bs{x})$ such that \[
+		L_fV + L_gV\alpha \leq -W
+	\] where $W$ is a positive semi-definite function for the system
+	$\diff{\bs{x}}{t} = f(\bs{x})+g(\bs{x})u$. Then for the system \[
+		\begin{aligned}
+			\diff{\bs{x}}{t} &= f(\bs{x}) + g(\bs{x})\xi\\
+			\diff{\xi}{t} &= u
+		\end{aligned}
+	\]
+	the function \[
+		V_a(\bs{x},\xi) = V(\bs{x}) + \frac{1}{2}(\xi - \alpha(\bs{x}))^2
+	\] is a valid CLF and the control input \[
+		u = -c(\xi-\alpha(\bs{x})) + (\nabla_{\bs{x}}\alpha)^\top(f(\bs{x}) +
+		g(\bs{x})\xi) - (\nabla_{\bs{x}}V)^\top g(\bs{x}), \qquad c > 0
+	\]
+	is a stabilizing controller.
+	\label{thm:backstepping}
+\end{theorem}
+If we apply \cref{thm:backstepping} to a system expressed in strict feedback
+form, then we can recursively define controllers until we arrive at a controller
+for the full system.
 \end{document}
 
