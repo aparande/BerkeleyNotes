@@ -4,14 +4,15 @@
 \author{Anmol Parande}
 \date{Spring 2022 - Professors Shankar Shastry and Koushil Srinath}
 \maketitle
-\textbf{Disclaimer: }These notes reflect EE222 when I took the course (Fall 2021). They may not accurately reflect current course content, so use at your own risk.
+\textbf{Disclaimer: }These notes reflect EE222 when I took the course (Spring
+2022). They may not accurately reflect current course content, so use at your own risk.
 If you find any typos, errors, etc, please raise an issue on the \href{https://github.com/parandea17/BerkeleyNotes}{GitHub repository}.
 \tableofcontents
 \newpage
 \section{Real Analysis}
 \begin{definition}
 	The extended real line is the set \[
-		\{-\infty\} \cup \R \cup \{\infty\}
+		\{-\infty\} \cup \R \cup \{\infty\}.
 	\]
 	\label{defn:extended-real-line}
 \end{definition}
@@ -38,9 +39,9 @@ scalar function $f: S\to \R$ by letting \[
 \begin{definition}
 	Let $V$ be a vector space of $\R$, then $\|\cdot\|: V \to \R$ is a norm if
 	$\forall \bs{x},\bs{y}\in V, \alpha \in \R$, \[
-		\|\bs{x}\| \geq 0 \qquad \bs{x} = 0 \Leftrightarrow \|\bs{x}\| = 0 \qquad
-		\|\alpha \bs{x}\| = |\alpha|\|\bs{x}\| \qquad \|\bs{x} + \bs{y}\| \leq
-		\|\bs{x}\| + \|\bs{y}\|
+		\|\bs{x}\| \geq 0, \qquad \bs{x} = 0 \Leftrightarrow \|\bs{x}\| = 0, \qquad
+		\|\alpha \bs{x}\| = |\alpha|\|\bs{x}\|, \qquad \|\bs{x} + \bs{y}\| \leq
+		\|\bs{x}\| + \|\bs{y}\|.
 	\]
 	\label{defn:norm}
 \end{definition}
@@ -49,20 +50,21 @@ scalar function $f: S\to \R$ by letting \[
 	norm $\|\cdot\|: V \to \R$.
 	\label{defn:normed-space}
 \end{definition}
-If we have an operator $A$ which takes as inputs vectors from normed space $(X,
+If we have an operator $A$ which takes vectors from normed space $(X,
 \|\cdot\|_X)$ and outputs vectors in normed space $(Y, \|\cdot\|_Y)$, then we
 can define another norm on the vector space of operators from $X\to Y$.
 \begin{definition}
 	Let $A:X\to Y$ be an operator between normed spaces $(X, \|\cdot\|_X)$ and
 	$(Y, \|\cdot\|_Y)$, then the induced norm of $A$ is \[
-		\|A\|_i = \sup_{\|\bs{x} \neq 0\|_X} \frac{\|A\bs{x}\|_Y}{\|\bs{x}\|_X}
+		\|A\|_i = \sup_{\|\bs{x}\|_X \neq 0} \frac{\|A\bs{x}\|_Y}{\|\bs{x}\|_X}
 	\]
 	\label{defn:induced-norm}
 \end{definition}
 The induced norm can be thought of as the maximum gain of the operator.
 \begin{definition}
-	Two norms $\|\cdot\|$ and $|||\cdot|||$ on a vector space $V$ if $\exists k_1,
-	k_2 > 0$ suh that \[
+	Two norms $\|\cdot\|$ and $|||\cdot|||$ on a vector space $V$ are said to be
+	equivalent if $\exists k_1,
+	k_2 > 0$ such that \[
 		\forall \bs{x}\in V,\ k_1\|\bs{x}\| \leq |||\bs{x}||| \leq k_2\|\bs{x}\|
 	\]
 	\label{defn:equivalent-norm}
@@ -79,7 +81,7 @@ equivalent.
 	\label{defn:open-ball}
 \end{definition}
 \begin{definition}
-	A set $S\subset V$ is open if $\forall \bs{s}_0\in V,\ \exists \epsilon > 0$
+	A set $S\subset V$ is open if $\forall \bs{s}_0\in S,\ \exists \epsilon > 0$
 	such that $B_\epsilon(\bs{s}_0) \subset S$.
 	\label{defn:open-set}
 \end{definition}
@@ -103,7 +105,7 @@ Closed sets have a boundary which is included in the set.
 	\label{defn:convergence}
 \end{definition}
 Convergence means that we can always find a finite time such that after that
-time, all points in the sequence stay within a specicied norm ball.
+time, all points in the sequence stay within a specified norm ball.
 \begin{definition}
 	A sequence $\bs{x}_k$ is cauchy if \[
 		\forall \epsilon > 0,\ \exists N < \infty \text{ such that } \forall n,m
@@ -113,7 +115,7 @@ time, all points in the sequence stay within a specicied norm ball.
 \end{definition}
 A Cauchy sequence has a looser type of convergence than a convergent sequence
 since it only requires all elements to in the sequence to be part of the same
-norm ball after some time instead of requiring the sequence to get closed and
+norm ball after some time instead of requiring the sequence to get closer and
 closer to a single point.
 \begin{theorem}
 	If $\bs{x}_n$ is a convergent sequence, then $\bs{x}_n$ is a also a Cauchy
@@ -122,7 +124,7 @@ closer to a single point.
 \end{theorem}
 \begin{definition}
 	A normed space $(V, \|\cdot\|)$ is complete if every Cauchy sequence converges
-	to a point in $V$
+	to a point in $V$.
 	\label{defn:complete-space}
 \end{definition}
 Because a complete space requires that Cauchy sequences converge, all cauchy
@@ -136,33 +138,32 @@ A complete normed space is also called a \textbf{Banach Space}.
 
 \subsection{Contractions}
 \begin{definition}
-	A point $x^*$ is a fixed point of a function $P:X\to X$ if $P(x^*)=x^*$.
+	A point $\bs{x}^*$ is a fixed point of a function $P:X\to X$ if
+	$P(\bs{x}^*)=\bs{x}^*$.
 	\label{defn:fixed-point}
 \end{definition}
 \begin{definition}
-	A function $P:X\to X$ is a contract if there exists a constant $0\leq c < 1$
+	A function $P:X\to X$ is a contraction if $\exists c\in\R, 0 \leq c < 1$ 
 	such that \[
 		\forall \bs{x},\bs{y}\in X,\ \|P(\bs{x}) - P(\bs{y})\| \leq c
 		\|\bs{x}-\bs{y}\|
 	\]
 	\label{defn:contraction}
 \end{definition}
-Informally, a contraction is a function which makes distances smaller 
-
-Suppose we look at a sequence defined by iterates of a function \[
-	\bs{x}_{k+1} = P(\bs{x}_k).
+Informally, a contraction is a function which makes distances smaller. Suppose we look at a sequence defined by iterates of a function \[
+	\bs{x}_{k+1} = P(\bs{x}_k)
 \]
 where $P$ is a function $P:X\to X$. When does this sequence converge, and to
 what point will it converge?
 \begin{theorem}[Contraction Mapping Theorem]
 	If $P:X\to X$ is a contraction on the Banach space $(X, \|\cdot\|)$, then
 	there is a unique $\bs{x}^*\in X$ such that $P(\bs{x}^*) = \bs{x}^*$ and
-	$\forall x_0\in X$, the sequence $\bs{x}_{n+1} = P(\bs{x}_n)$ is converges to
+	$\forall \bs{x}_0\in X$, the sequence $\bs{x}_{n+1} = P(\bs{x}_n)$ converges to
 	$\bs{x}^*$.
 	\label{thm:contraction-mapping}
 \end{theorem}
-The contraction mapping theorem that contractions will have a unique fixed
-points and that repeatedly applying the contraction will converge to the fixed
+The contraction mapping theorem proves that contractions have a unique fixed
+points, and that repeatedly applying the contraction will converge to the fixed
 point.
 
 \subsection{Continuity}
@@ -192,7 +193,7 @@ rate of growth of the function.
 \end{definition}
 A good interpretation of Lipschitz Continuity is that given two points in a ball
 around $\bs{x}_0$, the slope of the line connecting those two points is less
-than $L$. It means that the function is growings slower than linear for some
+than $L$. It means that the function is growing slower than linear for some
 region around $\bs{x}_0$. Lipschitz continuity implies continuity. If a function
 is lipschitz continuous with respect to one norm, it is also lipschitz
 continuous with respect to all equivalent norms.
@@ -201,17 +202,18 @@ When the function $h$ is a function on $\R^n$ and is also
 differentiable, then Lipschitz continuity is easy to determine.
 \begin{theorem}
 	For a differentiable function $h:\R^n\to\R^n$, \[
-		\exists r>0, L < \infty, \bs{x}_0\in\R^n,\ \forall \bs{x}\in B_r(\bs{x}),
+		\exists r>0, L < \infty, \bs{x}_0\in\R^n,\ \forall \bs{x}\in B_r(\bs{x}_0),
 		\left\lvert\left\lvert\frac{\partial h}{\partial
 		\bs{x}}\right\rvert\right\rvert_2 \leq L
 	\] implies Lipschitz Continuity at $\bs{x}_0$.
 	\label{thm:differentiable-lipschitz}
 \end{theorem}
+This captures the idea of growing slower than linear in high dimensional space.
 \begin{definition}
 	A function $h:\R\to V$ is piecewise continuous if $\forall k\in \mathbb{Z}$,
 	$h:[-k, k] \to V$ is continuous except at a possibly finite number of points,
 	and at the points of discontinuity $t_i$, $\lim_{s\to0^+} h(t_i+s)$ and
-	$\lim_{s\to0^-}$ exist and are finite. 
+	$\lim_{s\to0^-}h(t_i+s)$ exist and are finite. 
 	\label{defn:piecewise-continuous}
 \end{definition}
 \section{Differential Geometry}
@@ -219,9 +221,9 @@ differentiable, then Lipschitz continuity is easy to determine.
 	$M\subset \R^n$ is a $m$-dimensional smooth sub-manifold of $\R^n$ if $\forall
 	\bs{p}\in M,\ \exists r > 0$ and $F: B_r(\bs{p}) \to \R^{n-m}$ such that \[
 		\begin{aligned}
-			M \bigcap B_r(p) = \{\bs{x}\in B_r(\bs{p}) | F(\bs{x}) = 0\}\\
+			M \cap B_r(\bs{p}) = \{\bs{x}\in B_r(\bs{p}) | F(\bs{x}) = 0\},\\
 			F\text{ is smooth,}\\
-			\forall \bar{\bs{x}} \in (M \bigcap B_r(\bs{p})),
+			\forall \bar{\bs{x}} \in M \cap B_r(\bs{p}),
 			\text{Rank}\left(\frac{\partial F}{\partial \bs{x}}
 			\bigg\rvert_{\bar{\bs{x}}}\right) = n - m
 		\end{aligned}
@@ -233,7 +235,7 @@ some smooth function $F$ and can be thought of as a surface embedded in a higher
 dimension.
 \begin{definition}
 	The tangent space of a manifold $M$ at $\bs{p}\in M$ is given by \[
-		T_{\bs{p}}M = \mathcal{N}\left(\frac{\partial F}{\partial
+		T_{\bs{p}}M = \text{Null}\left(\frac{\partial F}{\partial
 		\bs{x}}\bigg |_{\bs{p}}\right)
 	\]
 	\label{defn:tangent-space}
@@ -242,7 +244,7 @@ The tangent space consists of all vectors tangent to the manifold at a
 particular point $\bs{p}$.
 \begin{definition}
 	The Tangent Bundle of a manifold $M$ is the collection of all tangent spaces \[
-		T_M = \bigcup_{\bs{p}\in M} T_p M
+		T_M = \bigcup_{\bs{p}\in M} T_{\bs{p}} M
 	\]
 	\label{defn:tangent-bundle}
 \end{definition}
@@ -256,7 +258,7 @@ bundle of a manifold.
 \begin{definition}
 	The Lie Derivative of a function $V$ with respect to a vector field $f$ is
 	given by \[
-		L_fV = \frac{\partial V}{\partial \bs{x}} f(\bs{x})
+			L_fV = (\nabla_{\bs{x}}V)^\top f(\bs{x}).
 	\]
 	\label{defn:lie-derivative}
 \end{definition}
@@ -305,8 +307,9 @@ At each point $\bs{x},\ \Delta(\bs{x})$ is a subspace of the tangent space at
 $\bs{x}$.
 \begin{definition}
 	The dimension of a distribution at a point $\bs{x}$ is given by \[
-		\text{Dim }\Delta(\bs{x}) = \text{rank}\left(\begin{bmatrix}
-				f_1(\bs{x}) | f_2(\bs{x}) | \cdots | f_n(\bs{x})
+		\text{Dim }\Delta(\bs{x}) = \text{Rank}\left(\begin{bmatrix}
+				f_1(\bs{x}) & \bigg\lvert & f_2(\bs{x}) & \bigg\lvert & \cdots &
+				\bigg\lvert & f_n(\bs{x})
 		\end{bmatrix}\right)
 	\]
 	\label{defn:distribution-dimension}
@@ -329,7 +332,7 @@ along vectors inside the distribution.
 	A nonsingular $K$-dimensional distribution $\Delta(\bs{x}) =
 	\text{span}\{f_1(\bs{x}), \cdots, f_k(\bs{x})\}$ is completely integrable if
 	$\exists \phi_1,\cdots,\phi_{n-k}$ such that $\forall i,k,\ L_{f_k}\phi_i = 0$
-	and $\frac{\partial\phi_i}{\bs{x}}$ are linearly independent.
+	and $\nabla_{\bs{x}}\phi_i$ are linearly independent.
 	\label{thm:involutive}
 \end{definition}
 It turns out that integrability and involutivity are equivalent to each other.
@@ -339,24 +342,26 @@ It turns out that integrability and involutivity are equivalent to each other.
 	\label{thm:frobenius}
 \end{theorem}
 \section{Nonlinear System Dynamics}
-Consider the non-linear system \[
+Consider the nonlinear system \[
 	\diff[]{\bs{x}}{t} = f(\bs{x}, t).
 \]
+$f$ is a vector field which potentially changes with time and governs how the
+system evolves.
 \begin{definition}
-	The system is autonomous if $f(x, t)$ is not explicitly dependent on time $t$.
+	The system is autonomous if $f(\bs{x}, t)$ is not explicitly dependent on time $t$.
 	\label{defn:autonomous-system}
 \end{definition}
 \begin{definition}
 	A point $x_0$ is an equilibrium point at time $t_0$ if \[
-		\forall t \geq t_0, \ f(x_0, t) = 0 
+		\forall t \geq t_0, \ f(\bs{x}_0, t) = 0 
 	\]
 	\label{defn:equilibrium-point}
 \end{definition}
-Consider a single trajectory $\bs{x}(t, t_0, \bs{x}_0)$.
+Consider a single trajectory $\phi(t, t_0, \bs{x}_0)$.
 \begin{definition}
 	A set $S$ is said to be the $\omega-$limit set of $\phi$ if\[
-		\forall y\in S,\exists t_n\to \infty, \lim_{n\to\infty}\phi(t_n, t_0,
-		\bs{x}_0) = y
+		\forall \bs{y}\in S,\exists t_n\to \infty, \lim_{n\to\infty}\phi(t_n, t_0,
+		\bs{x}_0) = \bs{y}
 	\]
 	\label{defn:w-limit-set}
 \end{definition}
@@ -370,23 +375,29 @@ essentially generalizes the idea of a limit.
 	\label{defn:invariant-set}
 \end{definition}
 An invariant set is one which a trajectory of the system will never leave once it enters the
-set.
+set. Just like linear systems, non-linear systems can also have periodic solutions.
+\begin{definition}
+	A closed orbit $\gamma$ is a trajectory of the system such that $\gamma(0) =
+	\gamma(T)$ for finite $T$.
+	\label{defn:closed-orbit}
+\end{definition}
+
 \subsection{Solutions to Nonlinear Systems}
 Consider the nonlinear system \[
-	\diff[]{\bs{x}}{t} = f(\bs{x}, t),\ \bs{x}(t_0) = \bs{x}_0\in \R^n.
+	\diff[]{\bs{x}}{t} = f(\bs{x}, t),\qquad \bs{x}(t_0) = \bs{x}_0\in \R^n.
 \]
 \begin{definition}
-	A function $\bs{\Phi}(t)$ is a solution to $\diff[]{\bs{x}}{t} = f(x, t),\
+	A function $\bs{\Phi}(t)$ is a solution to $\diff[]{\bs{x}}{t} = f(\bs{x}, t),\
 	\bs{x}(t_0) = \bs{x}_0$ on the closed interval $[t_0, t]$ if $\bs{\Phi}(t)$
 	is defined on the interval $[t_0, t]$, $\diff[]{\bs{\Phi}}{t} =
 	f(\bs{\Phi}(t), t)$ on the interval $[t_0, t]$, and $\bs{\Phi}(t_0) =
 	\bs{x}_0$.
 	\label{defn:nonlinear-solution}
 \end{definition}
-We say that $\Phi(t)$ is a solution in the sense of Caratheodory if \[
-	\Phi(t) = \bs{x}_0 + \int_{t_0}^t f(\bs{\Phi}(\tau), \tau)d\tau.
+We say that $\bs{\Phi}(t)$ is a solution in the sense of Caratheodory if \[
+	\bs{\Phi}(t) = \bs{x}_0 + \int_{t_0}^t f(\bs{\Phi}(\tau), \tau)d\tau.
 \]
-Because the sytem is non-linear, it could potentially have no solution, one
+Because the system is nonlinear, it could potentially have no solution, one
 solution, or many solutions. These solutions could exist locally, or they could
 exist for all time. We might also want to know when there is a solution which
 depends continuously on the initial conditions.
@@ -422,7 +433,7 @@ them.
 	\]
 	\label{thm:bellman-gronwall}
 \end{theorem}
-Another thing we might want to do is understand how the non-linear system reacts
+Another thing we might want to do is understand how the nonlinear system reacts
 to changes in the initial condition.
 \begin{theorem}
 	Suppose the system $\diff{\bs{x}}{t} = f(\bs{x}, t),\ \bs{x}(t_0) = \bs{x}_0$
@@ -444,11 +455,11 @@ will be continuous.
 
 \subsection{Planar Dynamical Systems}
 Planar dynamical systems are those with 2 state variables.
-Suppose we linearize the system $\diff[]{\bs{x}}{t} = f(\bs{x})$ at an equilibrium point.
+Suppose we linearize the autonomous system $\diff[]{\bs{x}}{t} = f(\bs{x})$ at an equilibrium point.
 \[
-	\diff[]{\bs{x}}{t} = D_f|_{\bs{x} = \bs{x_0}}\bs{x} 
+	\diff[]{\bs{x}}{t} = \frac{\partial f}{\partial \bs{x}} \bigg\lvert_{\bs{x_0}}\bs{x} 
 \]
-Depending on the eigenvalues of $D_f$, the Jacobian, we get several cases for
+Depending on the eigenvalues of $\frac{\partial f}{\partial \bs{x}}$, the Jacobian, we get several cases for
 how this linear system behaves. We'll let $z_1$ and $z_2$ be the eigenbasis of
 the \textit{phase space}.
 \begin{enumerate}
@@ -475,8 +486,8 @@ the \textit{phase space}.
 				we call it an \textbf{improper unstable node}
 		\end{enumerate}
 	\item When there is a complex pair of eigenvalues, the linear system will have
-		oscillatory behavior. The Real Jordan form of $D_f$ will look like \[
-			D_f = \begin{bmatrix} \alpha & \beta \\ -\beta & \alpha \end{bmatrix}.
+		oscillatory behavior. The Real Jordan form of $\frac{\partial f}{\partial \bs{x}}$ will look like \[
+			\frac{\partial f}{\partial \bs{x}} = \begin{bmatrix} \alpha & \beta \\ -\beta & \alpha \end{bmatrix}.
 		\]
 		The parameter $\beta$ will determine the direction of the trajectories
 		(clockwise if positive).
@@ -494,7 +505,7 @@ understanding the nonlinear dynamics near equilibrium points.
 \begin{theorem}[Hartman-Grobman Theorem]
 	If the linearization of a planar dynamical system $\diff{\bs{x}}{t} =
 	f(\bs{x})$ at an equilibrium point $\bs{x_0}$ has no zero or purely imaginary eigenvalues, then there exists a
-	homeomorphism from a neighborhood $U$ of $x_0$ into $\R^2$ which takes
+	homeomorphism from a neighborhood $U$ of $\bs{x}_0$ into $\R^2$ which takes
 	trajectories of the nonlinear system and maps them onto the linearization
 	where $h(\bs{x_0}) = 0$, and the homeomorphism can be chosen to preserve the
 	parameterization by time.
@@ -502,15 +513,8 @@ understanding the nonlinear dynamics near equilibrium points.
 \end{theorem}
 \Cref{thm:hartman-grobman} essentially says that the linear dynamics predict the
 nonlinear dynamics around equilibria, but only for a neighborhood around the
-equilibrium point. Outisde of this neighborhood, the linearization may be very
+equilibrium point. Outside of this neighborhood, the linearization may be very
 wrong.
-
-Non-linear systems can also have periodic solutions.
-\begin{definition}
-	A closed orbit $\gamma$ is a trajectory of the system such that $\gamma(0) =
-	\gamma(T)$ for finite $T$.
-	\label{defn:closed-orbit}
-\end{definition}
 
 Suppose that we have a simply connected region $D$ (meaning $D$ cannot be
 contracted to a point) and we want to know if it contains a closed orbit.
@@ -520,16 +524,7 @@ contracted to a point) and we want to know if it contains a closed orbit.
 	\label{thm:bendixons}
 \end{theorem}
 \Cref{thm:bendixons} lets us rule out closed orbits from regions of
-$\R^2$.
-\begin{definition}
-	A region $M \subset \R^2$ is positively invariant for a trajectory
-	$\phi_t(\bs{x})$ if $\forall x\in M, \forall t \geq 0, \phi_t(\bs{x}) \in M$.
-	\label{defn:positive-invariance}
-\end{definition}
-A positively invariant set essentially means that once a trajectory enters the
-set, it cannot leave. That means all of the vector field lines must point inside
-the set.
-If we have a positively invariant region, then we can determine whether it
+$\R^2$. If we have a positively invariant region, then we can determine whether it
 contains closed orbits.
 \begin{theorem}[Poincare-Bendixson Theorem]
 	If $M$ is a compact, positively invariant set for the flow $\phi_t(\bs{x})$,

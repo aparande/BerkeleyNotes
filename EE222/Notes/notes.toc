@@ -7,7 +7,7 @@
 \contentsline {section}{\numberline {2}Differential Geometry}{7}{section.2}
 \contentsline {section}{\numberline {3}Nonlinear System Dynamics}{9}{section.3}
 \contentsline {subsection}{\numberline {3.1}Solutions to Nonlinear Systems}{10}{subsection.3.1}
-\contentsline {subsection}{\numberline {3.2}Planar Dynamical Systems}{11}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.2}Planar Dynamical Systems}{12}{subsection.3.2}
 \contentsline {section}{\numberline {4}Stability of Nonlinear Systems}{13}{section.4}
 \contentsline {subsection}{\numberline {4.1}Lyapunov Functions}{15}{subsection.4.1}
 \contentsline {subsubsection}{\numberline {4.1.1}Quadratic Lyapunov Functions}{16}{subsubsection.4.1.1}
