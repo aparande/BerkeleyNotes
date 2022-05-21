@@ -15,6 +15,7 @@ The notes in this repository are
 - EECS127: Optimization Models in Engineering
 - EE128: Feedback Control
 - EECS225A: Statistical Signal Processing
+- EE222: Nonlinear Systems
 - CS61B: Data Structures
 - CS61C: Machine Structures
 

@@ -62,6 +62,10 @@ jobs:
         uses: docker://pandoc/latex:2.11
         with:
           args: --to json --from latex+raw_tex --output=main/ee120.json main/EE120/Notes/notes.tex
+      - name: Convert EE222 to JSON
+        uses: docker://pandoc/latex:2.11
+        with:
+          args: --to json --from latex+raw_tex --output=main/ee222.json main/EE222/Notes/notes.tex
       # Filter Steps. Output a JSON file to the main folder
       - name: Filter 
         run: |
@@ -78,6 +82,8 @@ jobs:
           cat eecs127.json | ./pandoc_filter.py > eecs127-filtered.json
           cp -a tikz-images/. ../gitbook/.gitbook/assets
           cat eecs225a.json | ./pandoc_filter.py > eecs225a-filtered.json
+          cp -a tikz-images/. ../gitbook/.gitbook/assets
+          cat ee222.json | ./pandoc_filter.py > ee222-filtered.json
           cp -a tikz-images/. ../gitbook/.gitbook/assets
           cd ../
       # Markdown conversion steps. Output a MD file to the output directory
@@ -105,6 +111,10 @@ jobs:
         uses: docker://pandoc/latex:2.11
         with:
           args: --to markdown+pipe_tables-simple_tables-smart --from json --atx-headers --output=gitbook/EECS225A.md main/eecs225a-filtered.json
+      - name: Convert EE222 to Markdown
+        uses: docker://pandoc/latex:2.11
+        with:
+          args: --to markdown+pipe_tables-simple_tables-smart --from json --atx-headers --output=gitbook/EECS225A.md main/ee222-filtered.json
       - name: Compile Book
         run: |
           mv main/create_book.py gitbook/create_book.py
