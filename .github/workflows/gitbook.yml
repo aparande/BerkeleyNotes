@@ -109,7 +109,7 @@ jobs:
       - name: Convert EE222 to Markdown
         uses: docker://pandoc/latex:2.11
         with:
-          args: --to markdown+pipe_tables-simple_tables-smart --from json --atx-headers --output=gitbook/EECS222.md main/ee222-filtered.json
+          args: --to markdown+pipe_tables-simple_tables-smart --from json --atx-headers --output=gitbook/EE222.md main/ee222-filtered.json
       - name: Compile Book
         run: |
           mv main/create_book.py gitbook/create_book.py
