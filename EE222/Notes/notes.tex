@@ -402,7 +402,7 @@ solution, or many solutions. These solutions could exist locally, or they could
 exist for all time. We might also want to know when there is a solution which
 depends continuously on the initial conditions.
 \begin{theorem}[Local Existence and Uniqueness]
-	Given $\diff{\bs{x}}{t} = f(\bs{x}, t),\ \bs{x}(t_0) = \bs{x}_0\in\R^n$ where
+	Given $\diff[]{\bs{x}}{t} = f(\bs{x}, t),\ \bs{x}(t_0) = \bs{x}_0\in\R^n$ where
 	$f$ is piecewise continuous in $t$ and $\exists T>t_0$ such that $\forall t\in
 	[t_0, T], f$ is $L$-Lipschitz Continuous, then $\exists \delta > 0$ such that a
 	solution exists and is unique $\forall t\in [t_0, t_0 + \delta]$.
@@ -436,11 +436,11 @@ them.
 Another thing we might want to do is understand how the nonlinear system reacts
 to changes in the initial condition.
 \begin{theorem}
-	Suppose the system $\diff{\bs{x}}{t} = f(\bs{x}, t),\ \bs{x}(t_0) = \bs{x}_0$
+	Suppose the system $\diff[]{\bs{x}}{t} = f(\bs{x}, t),\ \bs{x}(t_0) = \bs{x}_0$
 	satisfies the conditions of global uniqueness and existence. Fix $T\in[t_0,
 	\infty]$ and suppose $\bs{x}(\cdot)$ and $\bs{z}(\cdot)$  are two solutions
-	satisfying $\diff{\bs{x}}{t} = f(\bs{x}, t), \bs{x}(t_0) = \bs{x}_0$ and
-	$\diff{\bs{z}}{t} = f(\bs{z}(t), t),\ \bs{z}(t_0)=\bs{z}_0$, then $\forall
+	satisfying $\diff[]{\bs{x}}{t} = f(\bs{x}, t), \bs{x}(t_0) = \bs{x}_0$ and
+	$\diff[]{\bs{z}}{t} = f(\bs{z}(t), t),\ \bs{z}(t_0)=\bs{z}_0$, then $\forall
 	\epsilon > 0, \exists \delta > 0$ such that \[
 		\|\bs{x}_0 - \bs{z}_0\| < \delta \implies \|\bs{x} - \bs{z}\|_{\infty} <
 		\epsilon.
@@ -503,7 +503,7 @@ the \textit{phase space}.
 It turns out that understanding the linear dynamics at equilibrium points can be helpful in
 understanding the nonlinear dynamics near equilibrium points.
 \begin{theorem}[Hartman-Grobman Theorem]
-	If the linearization of a planar dynamical system $\diff{\bs{x}}{t} =
+	If the linearization of a planar dynamical system $\diff[]{\bs{x}}{t} =
 	f(\bs{x})$ at an equilibrium point $\bs{x_0}$ has no zero or purely imaginary eigenvalues, then there exists a
 	homeomorphism from a neighborhood $U$ of $\bs{x}_0$ into $\R^2$ which takes
 	trajectories of the nonlinear system and maps them onto the linearization
@@ -746,36 +746,36 @@ will be that \[
 \subsection{Proving Stability}
 To prove the stability of an equilibrium point for a given nonlinear system, we
 will construct a Lyapunov function and determine stability from the properties
-of the Lyapunov functions which we can find. Given properties of $V$ and $\diff{V}{t}$, we can use the \textbf{Lyapunov
+of the Lyapunov functions which we can find. Given properties of $V$ and $\diff[]{V}{t}$, we can use the \textbf{Lyapunov
 Stability Theorems} to prove the stability of equilibria.
 \begin{theorem}
 	If $\exists V(\bs{x}, t)$ such that $V$ is LPDF and
-	$-\diff{V}{t} \geq 0$ locally, then $\bs{x}_e$ is stable in the sense of
+	$-\diff[]{V}{t} \geq 0$ locally, then $\bs{x}_e$ is stable in the sense of
 	Lyapunov.
 	\label{thm:lyapunov-sisl}
 \end{theorem}
 \begin{theorem}
 	If $\exists V(\bs{x}, t)$ such that $V$ is LPDF and decrescent, and 
-	$-\diff{V}{t} \geq 0$ locally, then $\bs{x}_e$ is uniformly stable in the sense of
+	$-\diff[]{V}{t} \geq 0$ locally, then $\bs{x}_e$ is uniformly stable in the sense of
 	Lyapunov.
 	\label{thm:lyapunov-uniformly-sisl}
 \end{theorem}
 \begin{theorem}
 	If $\exists V(\bs{x}, t)$ such that $V$ is LPDF and decrescent, and 
-	$-\diff{V}{t}$ is LPDF, then $\bs{x}_e$ is uniformly asymptotically stable in the sense of
+	$-\diff[]{V}{t}$ is LPDF, then $\bs{x}_e$ is uniformly asymptotically stable in the sense of
 	Lyapunov.
 	\label{thm:lyapunov-uniformly-as}
 \end{theorem}
 \begin{theorem}
 	If $\exists V(\bs{x}, t)$ such that $V$ is PDF and decrescent, and 
-	$-\diff{V}{t}$ is LPDF, then $\bs{x}_e$ is globally uniformly asymptotically stable in the sense of
+	$-\diff[]{V}{t}$ is LPDF, then $\bs{x}_e$ is globally uniformly asymptotically stable in the sense of
 	Lyapunov.
 	\label{thm:lyapunov-globally-as}
 \end{theorem}
 \begin{theorem}
 	If $\exists V(\bs{x}, t)$ and $h, \alpha > 0$ such that V is LPDF is
-	decrescent, $-\diff{V}{t}$ is LDPF, and \[
-		\forall \bs{x}\in B_h(\bs{x}_e),\ \left\lvert\left\lvert\diff{V}{t}\right\rvert\right\rvert \leq \alpha \|\bs{x}-\bs{x}_e\|
+	decrescent, $-\diff[]{V}{t}$ is LDPF, and \[
+		\forall \bs{x}\in B_h(\bs{x}_e),\ \left\lvert\left\lvert\diff[]{V}{t}\right\rvert\right\rvert \leq \alpha \|\bs{x}-\bs{x}_e\|
 	\]
 	\label{thm:lyapunov-exponential-stability}
 \end{theorem}
@@ -788,7 +788,7 @@ are summarized in \cref{table:lyapunov-stability}.
 	\begin{tabularx}{\textwidth}{YYY}
 		\toprule
 		\textbf{Conditions on} $\mathbf{V}$ & \textbf{Conditions on}
-		$-\diff{V}{t}$ & \textbf{Conclusion} \\
+		$-\diff[]{V}{t}$ & \textbf{Conclusion} \\
 		\midrule
 		LPDF & $\geq 0$ locally & Stable\\
 		\hline
@@ -797,7 +797,7 @@ are summarized in \cref{table:lyapunov-stability}.
 		LPDF, Decrescent & LPDF & Uniformly, Asymptotically Stable\\
 		\hline
 		LPDF, Decrescent & LDPF, $\exists \alpha > 0$ such that $\left\lvert\left\lvert
-		\diff{V}{t}\right\rvert\right\rvert \leq \alpha \|\bs{x} - \bs{x}_e\|$ &
+		\diff[]{V}{t}\right\rvert\right\rvert \leq \alpha \|\bs{x} - \bs{x}_e\|$ &
 		Exponentially Stable\\
 		\hline
 		PDF, Decrescent & PDF & Globally, Uniformly, Asymptotically Stable\\
@@ -809,18 +809,18 @@ are summarized in \cref{table:lyapunov-stability}.
 \end{gitbook-image}
 Going down the rows of \cref{table:lyapunov-stability} lead to increasingly
 stricter forms of stability. Descresence appears to add uniformity to the
-stability, while $-\diff{V}{t}$ being LPDF adds asymptotic convergence. However,
+stability, while $-\diff[]{V}{t}$ being LPDF adds asymptotic convergence. However,
 these conditions are only sufficient, meaning if we cannot find a suitable $V$,
 that does not mean that an equilibrium point is not stable.
 
 One very common case where it can be difficult to find appropriate Lyapunov
 functions is in proving asymptotic stability since it can be hard to find $V$
-such that $-\diff{V}{t}$ is LPDF. In the case of autonomous systems, we can
+such that $-\diff[]{V}{t}$ is LPDF. In the case of autonomous systems, we can
 still prove asymptotic stability without such a $V$.
 \begin{theorem}[LaSalle's Invariance Principle]
 	Consider a smooth function $V:\R^n\to\R$ with bounded sub-level sets $\Omega_c
 	= \left\{\bs{x} | V(\bs{x}) \leq c \right\}$ and $\forall \bs{x}\in \Omega_c$, 
-	$\diff{V}{t} \leq 0$. Define $S = \left\{\bs{x}\bigg\lvert\diff{V}{t} = 0\right\}$ and let
+	$\diff[]{V}{t} \leq 0$. Define $S = \left\{\bs{x}\bigg\lvert\diff[]{V}{t} = 0\right\}$ and let
 		$M$ be the largest invariant set in $S$, then \[
 			\forall \bs{x}_0\in \Omega_c,\ \bs{x}(t, t_0, x_0) \to M \text{ as } t\to
 			\infty.
@@ -834,7 +834,7 @@ in $S$, and then they will stay there. Thus if the set $M$ is only the
 equilibrium point, or a set of equilibrium points, then we can show that the
 system trajectories asymptotically converges to this equilibrium or set of
 equilibria. Moreover, if $V(\bs{x})$ is PDF, and $\forall \bs{x}\in\mathbb{R}^n,
-\diff{V}{t} \leq 0$, then we can show global asymptotic stability as well.
+\diff[]{V}{t} \leq 0$, then we can show global asymptotic stability as well.
 
 LaSalle's theorem can be generalized to non-autonomous systems as well, but it
 is slightly more complicated since the set $S$ may change over time.
@@ -843,19 +843,19 @@ is slightly more complicated since the set $S$ may change over time.
 It turns out that we can also prove the stability of systems by looking at the
 linearization around the equilibrium. Without loss of generality, suppose
 $\bs{x}_e = 0$. The linearization at the equilibrium is given by \[
-	\diff{\bs{x}}{t} = f(x,t) = f(0, t) + \frac{\partial f}{\partial
+	\diff[]{\bs{x}}{t} = f(x,t) = f(0, t) + \frac{\partial f}{\partial
 	\bs{x}}\bigg\lvert_{\bs{x} = 0}\bs{x} + f_1(\bs{x},t) \approx A(t)\bs{x}.
 \]
 The function $f_1(\bs{x}, t)$ is the higher-order terms of the linearization.
 The linearization is a time-varying system.
 Consider the time-varying linear system
 \[
-	\diff{\bs{x}}{t} = A(t)\bs{x},\ \bs{x}(t_0) = \bs{x}_0.
+	\diff[]{\bs{x}}{t} = A(t)\bs{x},\ \bs{x}(t_0) = \bs{x}_0.
 \]
 \begin{definition}
 	The state transition matrix $\Phi(t, t_0)$ of a time-varying linear system is
 	a matrix satisfying \[
-		\bs{x}(t) = \Phi(t, t_0)\bs{x}_0,\ \diff{\Phi}{t} = A(t)\Phi(t, t_0),\
+		\bs{x}(t) = \Phi(t, t_0)\bs{x}_0,\ \diff[]{\Phi}{t} = A(t)\Phi(t, t_0),\
 		\Phi(t_0, t_0) = I
 	\]
 	\label{defn:state-transition-matrix}
@@ -908,15 +908,15 @@ corresponds to uniform, asymptotic stability of the nonlinear system.
 		0
 	\]
 	and if $\bs{x}_e$ is a uniformly asymptotic stable equilibrium point of
-	$\diff{\bs{z}}{t}=A(t)\bs{z}$ where $A(t)$ is the Jacobian at the $\bs{x}_e$,
+	$\diff[]{\bs{z}}{t}=A(t)\bs{z}$ where $A(t)$ is the Jacobian at the $\bs{x}_e$,
 	then $\bs{x}_e$ is a uniformly asymptotic stable
-	equilibrium point of $\diff{\bs{x}}{t} = f(\bs{x},t)$
+	equilibrium point of $\diff[]{\bs{x}}{t} = f(\bs{x},t)$
 	\label{thm:indirect-lyapunov}
 \end{theorem}
 \subsection{Proving Instability}
 \begin{theorem}
 	An equilibrium point $\bs{x}_e$ is unstable in the sense of Lyapunov if
-	$\exists V(\bs{x},t)$ which is decrescent, the Lie derivative $\diff{V}{t}$ is
+	$\exists V(\bs{x},t)$ which is decrescent, the Lie derivative $\diff[]{V}{t}$ is
 	LPDF, $V(\bs{x}_e, t)$, and $\exists \bs{x}$ in the neighborhood of $\bs{x}_e$
 	such that $V(\bs{x}_0, t) > 0$.
 	\label{thm:lyapunov-instability}
@@ -926,7 +926,7 @@ For asymptotically stable and exponential stable equilibria, it makes sense to
 wonder which initial conditions will cause trajectories to converge to the
 equilibrium.
 \begin{definition}
-	If $\bs{x}_e$ is an equilibrium point of a time-invariant system $\diff{\bs{x}}{t}
+	If $\bs{x}_e$ is an equilibrium point of a time-invariant system $\diff[]{\bs{x}}{t}
 	= f(\bs{x})$, then the Region of Attraction of $\bs{x}_e$ is \[
 		\mathcal{R}_A(\bs{x}_e) = \{ \bs{x}_0 \in \mathbb{R}^n | \lim_{t\to\infty}
 		\bs{x}(t, t_0) = \bs{x}_e \}
@@ -934,7 +934,7 @@ equilibrium.
 	\label{defn:region-of-attraction}
 \end{definition}
 Suppose that we have a Lyapunov function $V(\bs{x})$ and a region $D$ such that
-$V(\bs{x}) > 0$ and $\diff{V}{t} < 0$ in $D$. Define a sublevel set of the
+$V(\bs{x}) > 0$ and $\diff[]{V}{t} < 0$ in $D$. Define a sublevel set of the
 Lypunov function $\Omega_c$ which is a subset of $D$. We know that if
 $\bs{x}_0\in\Omega_c$, then the trajectory will stay inside $\Omega_c$ and
 converge to the equilibrium point. Thus we can use the largest $\Omega_c$ that
@@ -951,24 +951,24 @@ sublevel set $\Omega_c$ is an estimate of the Region of Attraction.
 \begin{align*}
 	\max_{c, s} &\quad c\\
 	\text{s.t} &\quad s(\bs{x}) \text{ is SOS,}\\
-	&\quad -\left(\diff{V}{t} + \epsilon \bs{x}^\top \bs{x}\right) + s(\bs{x})(c -
+	&\quad -\left(\diff[]{V}{t} + \epsilon \bs{x}^\top \bs{x}\right) + s(\bs{x})(c -
 	V(\bs{x})) \text{ is SOS.}
 \end{align*}
 \section{Nonlinear Feedback Control}
 In nonlinear control problems, we have a system \[
-	\diff{\bs{x}}{t} = f(\bs{x}, \bs{u}).
+	\diff[]{\bs{x}}{t} = f(\bs{x}, \bs{u}).
 \]
 $\bs{x}$ is the state of the system, and $\bs{u}$ is the input to the system.
 Note that for simplicity, the system is time-invariant. Further assume, without
 loss of generality, that $f(0, 0) = 0$. The goal of nonlinear feedback control
 is to find a state feedback law $\alpha(\bs{x})$ such that the equilibrium point
 $\bs{x}_e = 0$ is globally asymptotically stable for the closed loop system \[
-	\diff{\bs{x}}{t} = f(\bs{x}, \alpha(\bs{x})).
+	\diff[]{\bs{x}}{t} = f(\bs{x}, \alpha(\bs{x})).
 \]
 Sometimes, the control impacts the state evolution in an affine manner.
 \begin{definition}
 	A control affine system is given by the differential equation \[
-		\diff{\bs{x}}{t} = f(\bs{x}) + G(\bs{x})\bs{u}
+		\diff[]{\bs{x}}{t} = f(\bs{x}) + G(\bs{x})\bs{u}
 	\] where $G(\bs{x})$ is a matrix dependent on the state vector $\bs{x}$.
 	\label{defn:control-affine}
 \end{definition}
@@ -996,7 +996,7 @@ If we can find an $\alpha(\bs{x})$ that makes the origin globally asymptotically
 stable, then the converse Lyapunov theorem says that we can find a
 corresponding Lyapunov function for the system.
 \begin{align*}
-	\forall \bs{x} \neq 0, \diff{V}{t} < 0 &\implies (\nabla_{\bs{x}}V)^\top f(\bs{x}, \alpha(\bs{x})) < 0 \\
+	\forall \bs{x} \neq 0, \diff[]{V}{t} < 0 &\implies (\nabla_{\bs{x}}V)^\top f(\bs{x}, \alpha(\bs{x})) < 0 \\
 	&\implies \exists \bs{u} \text{ s.t } (\nabla_{\bs{x}}V)^\top f(\bs{x},
 	\bs{u}) < 0\\
 	& \Leftrightarrow \inf_{\bs{u}} (\nabla_{\bs{x}}V)^\top f(\bs{x}, \bs{u}) < 0
@@ -1004,7 +1004,7 @@ corresponding Lyapunov function for the system.
 This result motivates the following definition.
 \begin{definition}
 	A continuously differentiable, PDF, radially unbounded $V: \R^n \to \R$ is a
-	Control Lyapunov Function for the system $\diff{\bs{x}}{t} = f(\bs{x},
+	Control Lyapunov Function for the system $\diff[]{\bs{x}}{t} = f(\bs{x},
 	\bs{u})$ if \[
 		\forall \bs{x} \neq 0, \inf_{\bs{u}} (\nabla_{\bs{x}}V)^\top
 		f(\bs{x}, \bs{u}) < 0
@@ -1017,7 +1017,7 @@ stable.
 \begin{theorem}
 	Suppose $f$ is Lipschitz and $V$ is a control Lyapunov function, then there
 	exists a smooth function $\alpha$ such that the origin is a globally
-	asympototically stable equilibrium point of $\diff{\bs{x}}{t} = f(\bs{x},
+	asympototically stable equilibrium point of $\diff[]{\bs{x}}{t} = f(\bs{x},
 	\alpha(\bs{x}))$.
 	\label{thm:artstein}
 \end{theorem}
@@ -1031,7 +1031,7 @@ If $\forall i,\ L_{g_i} V = 0$, then \cref{defn:control-lyapunov-function} is
 satisfied so long as $L_f V < 0$.
 \begin{theorem}
 	A function $V$ is a control lyapunov function for a control affine system \[
-		\diff{\bs{x}}{t} = f(\bs{x}) + \sum_i g_i(\bs{x}) u_i
+		\diff[]{\bs{x}}{t} = f(\bs{x}) + \sum_i g_i(\bs{x}) u_i
 	\] if \[
 		L_{g_i} V\, \forall i \implies L_f V \leq 0
 	\]
@@ -1045,7 +1045,7 @@ properties when used to derive controllers.
 	A CLF $V(\bs{x})$ satisfies the small control property if $\forall \epsilon >
 	0$, $\exists \delta > 0$ such that $\bs{x}\in B_\delta(0)$, then if
 	$\bs{x}\neq0, \exists \bs{u}\in B_\epsilon(0)$ satisfying \[
-		\diff{V}{t} = L_fV + L_GV^T\bs{u} < 0.
+		\diff[]{V}{t} = L_fV + L_GV^T\bs{u} < 0.
 	\]
 	\label{defn:small-control}
 \end{definition}
@@ -1116,11 +1116,11 @@ Suppose we have a SISO control-affine system \[
 	\label{defn:strict-relative-degree}
 \end{definition}
 To understand relative degree, suppose we differentiate $y$ once \[
-	\diff{y}{t} = L_fh + L_gh u.
+	\diff[]{y}{t} = L_fh + L_gh u.
 \]
 If $\forall \bs{x}\in U,\ L_gh(\bs{x}) = 0$ where $U$ is some region around the
 equilibrium, then \[
-	\forall \bs{x}\in U,\ \diff{y}{t} = L_fh(\bs{x}).
+	\forall \bs{x}\in U,\ \diff[]{y}{t} = L_fh(\bs{x}).
 \]
 If we differentiate again, then \[
 	\forall \bs{x}\in U,\ \diff[2]{y}{t} = L_f^2h(\bs{x}) + L_gL_fh(\bs{x}).
@@ -1136,7 +1136,7 @@ derivative of the output that we can control. By sequentially taking
 derivatives, we are essentially looking at the system \[
 	\begin{aligned}
 		y &= h(\bs{x})\\
-		\diff{y}{t} &= L_fh(\bs{x})\\
+		\diff[]{y}{t} &= L_fh(\bs{x})\\
 		\diff[2]{y}{t} &= L_f^2h(\bs{x})\\
 		&\vdots\\
 		\diff[\gamma]{y}{t} &= L_f^\gamma h(\bs{x}) + L_gL_f^{\gamma-1}h(\bs{x})
@@ -1185,7 +1185,7 @@ This change of coordinates allows us to put the system into a canonical form.
 	\]
 	\label{defn:normal-form-siso}
 \end{definition}
-When the original system is given by $\diff{\bs{x}}{t} = f(\bs{x})+g(\bs{x})u$, then
+When the original system is given by $\diff[]{\bs{x}}{t} = f(\bs{x})+g(\bs{x})u$, then
 \[
 	b(\bs{\xi},\bs{\eta}) = L_f^\gamma h(\Phi^{-1}(\bs{\xi}, \bs{\eta})) \qquad
 	a(\bs{\xi}, \bs{\eta}) = L_gL_f^{\gamma-1} h(\Phi^{-1}(\bs{\xi}, \bs{\eta}))
@@ -1212,7 +1212,7 @@ where we have all of the tools of linear control at our disposal. However,
 notice that the $\eta_i$ cannot be impacted by the control effort. These are
 known as the \textbf{internal dynamics} of the system. When $\bs{\xi} = 0$,
 then \[
-	\diff{\bs{\eta}}{t} = q(0, \bs{\eta})
+	\diff[]{\bs{\eta}}{t} = q(0, \bs{\eta})
 \]
 are known as the \textbf{Zero Dynamics} of the system. Zero dynamics for a
 system can be dangerous because if they are unstable, then the system could be
@@ -1222,7 +1222,7 @@ there are necessary and sufficient conditions which guarantee full state
 linearization.
 \begin{theorem}
 	There exists a function $h$ such that a control affine system
-	$\diff{\bs{x}}{t} = f(\bs{x}) + g(\bs{x})u$ has relative degree $n$ at
+	$\diff[]{\bs{x}}{t} = f(\bs{x}) + g(\bs{x})u$ has relative degree $n$ at
 	$\bs{x}_0$ if and only if \[
 		\begin{bmatrix}
 			g(\bs{x}) & \cdots & \ad_f^{n-2}g(\bs{x}) & \ad_f^{n-1}g(\bs{x})
@@ -1244,7 +1244,7 @@ linearization.
 \subsubsection{MIMO Case}
 Suppose instead we have a MIMO control affine system where \[
 	\begin{aligned}
-		\diff{\bs{x}}{t} &= f(\bs{x}) + G(\bs{x})\bs{u}\\
+		\diff[]{\bs{x}}{t} &= f(\bs{x}) + G(\bs{x})\bs{u}\\
 		\bs{y} &= h(\bs{x})
 	\end{aligned}
 \]
@@ -1284,15 +1284,15 @@ coordinates and then choose linearly independent $\bs{\eta}$.
 	The normal form of a square MIMO system is given by
 	\[
 		\begin{aligned}
-			\diff{\bs{\eta}}{t} &= q(\bs{\xi},\bs{\eta}) + p(\bs{\xi}, \bs{\eta})\bs{u}\\
-			\diff{\xi_i^j}{t} &= \xi_{i+1}^j, &\quad \forall j,\ \forall i < \gamma_j-1\\
-			\diff{\xi_{\gamma_j-1}^j}{t} &= b^j(\bs{\xi},\bs{\eta}) +
+			\diff[]{\bs{\eta}}{t} &= q(\bs{\xi},\bs{\eta}) + p(\bs{\xi}, \bs{\eta})\bs{u}\\
+			\diff[]{\xi_i^j}{t} &= \xi_{i+1}^j, &\quad \forall j,\ \forall i < \gamma_j-1\\
+			\diff[]{\xi_{\gamma_j-1}^j}{t} &= b^j(\bs{\xi},\bs{\eta}) +
 			\bs{a}^j(\bs{\xi},\bs{\eta})^\top\bs{u}
 		\end{aligned}
 	\]
 	\label{defn:mimo-normal-form}
 \end{definition}
-As before the $\diff{\bs{\eta}}{t}$ represent the internal dynamics of the
+As before the $\diff[]{\bs{\eta}}{t}$ represent the internal dynamics of the
 system that are not impacted by the control. As with the linear case, we can
 design a controller \[
 	\bs{u} = A^{-1}(\bs{x})\left(
@@ -1307,7 +1307,7 @@ $\bs{v}$ controls a different output. For this reason, we call $A(\bs{x})$ the
 decoupling matrix. As in the SISO case, unless $\sum_j \gamma_j = n$, there are
 zero dynamics to the system.
 \begin{theorem}
-	A control affine square system $\diff{\bs{x}}{t} = f(\bs{x}) +
+	A control affine square system $\diff[]{\bs{x}}{t} = f(\bs{x}) +
 	G(\bs{x})\bs{u}$ has vector relative degree $\sum_j \gamma_j = n$ if and only
 	if $\Delta_i$ is involutive for all $i \leq n-2$, $\Delta_i$ has constant rank
 	for all $1 \leq i \leq n-1$ and $\Delta_{n-1}$ has rank $n$ where \[
@@ -1348,10 +1348,10 @@ converges to $0$ in finite time when applying the sliding mode controller.
 \begin{definition}
 	A system expressed in strict feedback form is given by \[
 		\begin{aligned}
-			\diff{\bs{x}}{t} &= f_0(\bs{x}) + g_0(\bs{x})\xi_1\\
-			\diff{\xi_1}{t} &= f_1(\bs{x}, \xi_1) + g_1(\bs{x}, \xi_1)\xi_2\\
+			\diff[]{\bs{x}}{t} &= f_0(\bs{x}) + g_0(\bs{x})\xi_1\\
+			\diff[]{\xi_1}{t} &= f_1(\bs{x}, \xi_1) + g_1(\bs{x}, \xi_1)\xi_2\\
 			&\vdots\\
-			\diff{\xi_k}{t} &= f_k(\bs{x}, \xi_1,\cdots,\xi_k) + g_k(\bs{x},
+			\diff[]{\xi_k}{t} &= f_k(\bs{x}, \xi_1,\cdots,\xi_k) + g_k(\bs{x},
 			\xi_1,\cdots,\xi_k)u\\
 		\end{aligned}
 	\]
@@ -1364,10 +1364,10 @@ controllers.
 	$V(\bs{x})$ such that \[
 		L_fV + L_gV\alpha \leq -W
 	\] where $W$ is a positive semi-definite function for the system
-	$\diff{\bs{x}}{t} = f(\bs{x})+g(\bs{x})u$. Then for the system \[
+	$\diff[]{\bs{x}}{t} = f(\bs{x})+g(\bs{x})u$. Then for the system \[
 		\begin{aligned}
-			\diff{\bs{x}}{t} &= f(\bs{x}) + g(\bs{x})\xi\\
-			\diff{\xi}{t} &= u
+			\diff[]{\bs{x}}{t} &= f(\bs{x}) + g(\bs{x})\xi\\
+			\diff[]{\xi}{t} &= u
 		\end{aligned}
 	\]
 	the function \[
