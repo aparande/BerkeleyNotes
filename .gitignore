@@ -5,3 +5,4 @@
 *.synctex.gz
 *.out
 *.cut
+__pycache__

@@ -39,14 +39,14 @@ jobs:
         uses: docker://pandoc/latex:2.11
         with:
           args: --to json --from latex+raw_tex --output=main/eecs225a.json main/EECS225A/Notes/notes.tex
-      - name: Convert EECS126 to JSON
-        uses: docker://pandoc/latex:2.11
-        with:
-          args: --to json --from latex+raw_tex --output=main/eecs126.json main/EECS126/Notes/notes.tex
       - name: Convert EECS127 to JSON
         uses: docker://pandoc/latex:2.11
         with:
           args: --to json --from latex+raw_tex --output=main/eecs127.json main/EECS127/Notes/notes.tex
+      - name: Convert EECS126 to JSON
+        uses: docker://pandoc/latex:2.11
+        with:
+          args: --to json --from latex+raw_tex --output=main/eecs126.json main/EECS126/Notes/notes.tex
       - name: Convert EE128 to JSON
         uses: docker://pandoc/latex:2.11
         with:
@@ -59,6 +59,10 @@ jobs:
         uses: docker://pandoc/latex:2.11
         with:
           args: --to json --from latex+raw_tex --output=main/ee120.json main/EE120/Notes/notes.tex
+      - name: Convert EE222 to JSON
+        uses: docker://pandoc/latex:2.11
+        with:
+          args: --to json --from latex+raw_tex --output=main/ee222.json main/EE222/Notes/notes.tex
       - name: Filter
         run: |
           cd main
@@ -75,19 +79,17 @@ jobs:
           cp -a tikz-images/. ../gitbook/.gitbook/assets
           cat eecs225a.json | ./pandoc_filter.py > eecs225a-filtered.json
           cp -a tikz-images/. ../gitbook/.gitbook/assets
+          cat ee222.json | ./pandoc_filter.py > ee222-filtered.json
+          cp -a tikz-images/. ../gitbook/.gitbook/assets
           cd ../
-      - name: Convert EECS225A to Markdown
-        uses: docker://pandoc/latex:2.11
-        with:
-          args: --to markdown+pipe_tables-simple_tables-smart --from json --atx-headers --output=gitbook/EECS225A.md main/eecs225a-filtered.json
-      - name: Convert EECS127 to Markdown
-        uses: docker://pandoc/latex:2.11
-        with:
-          args: --to markdown+pipe_tables-simple_tables-smart --from json --atx-headers --output=gitbook/EECS127.md main/eecs127-filtered.json
       - name: Convert EECS126 to Markdown
         uses: docker://pandoc/latex:2.11
         with:
           args: --to markdown+pipe_tables-simple_tables-smart --from json --atx-headers --output=gitbook/EECS126.md main/eecs126-filtered.json
+      - name: Convert EECS127 to Markdown
+        uses: docker://pandoc/latex:2.11
+        with:
+          args: --to markdown+pipe_tables-simple_tables-smart --from json --atx-headers --output=gitbook/EECS127.md main/eecs127-filtered.json
       - name: Convert EE128 to Markdown
         uses: docker://pandoc/latex:2.11
         with:
@@ -100,12 +102,20 @@ jobs:
         uses: docker://pandoc/latex:2.11
         with:
           args: --to markdown+pipe_tables-simple_tables-smart --from json --atx-headers --output=gitbook/EE120.md main/ee120-filtered.json
+      - name: Convert EECS225A to Markdown
+        uses: docker://pandoc/latex:2.11
+        with:
+          args: --to markdown+pipe_tables-simple_tables-smart --from json --atx-headers --output=gitbook/EECS225A.md main/eecs225a-filtered.json
+      - name: Convert EE222 to Markdown
+        uses: docker://pandoc/latex:2.11
+        with:
+          args: --to markdown+pipe_tables-simple_tables-smart --from json --atx-headers --output=gitbook/EE222.md main/ee222-filtered.json
       - name: Compile Book
         run: |
           mv main/create_book.py gitbook/create_book.py
           chmod +x gitbook/create_book.py
           cd gitbook
-          python3 create_book.py EE120.md EE123.md EECS126.md EECS127.md EE128.md EECS225A.md
+          python3 create_book.py EE120.md EE123.md EECS126.md EECS127.md EE128.md EECS225A.md EE222.md
           cd ../
           sed -i -e 's/\\\$\\\$/\$\$/g' gitbook/**/*.md
       - name: Publish Book

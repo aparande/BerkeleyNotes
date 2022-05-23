@@ -1,0 +1,1386 @@
+\input{../../header.tex}
+\begin{document}
+\title{EE222 Course Notes}
+\author{Anmol Parande}
+\date{Spring 2022 - Professors Shankar Shastry and Koushil Srinath}
+\maketitle
+\textbf{Disclaimer: }These notes reflect EE222 when I took the course (Spring
+2022). They may not accurately reflect current course content, so use at your own risk.
+If you find any typos, errors, etc, please raise an issue on the \href{https://github.com/parandea17/BerkeleyNotes}{GitHub repository}.
+\tableofcontents
+\newpage
+\section{Real Analysis}
+\begin{definition}
+	The extended real line is the set \[
+		\{-\infty\} \cup \R \cup \{\infty\}.
+	\]
+	\label{defn:extended-real-line}
+\end{definition}
+\begin{definition}
+	The supremum of a set $S \subset \R$ is a value $a \in \R_e$
+	such that $\forall s\in S,\ s \leq a$ and if $b \in \R_e$ such that
+	$\forall s\in S,\ s \leq b$, then $a \leq b$.
+	\label{defn:supremum}
+\end{definition}
+Supremum is essentially the ``least upper bound'' in a set. It always exists,
+and is called $\sup S$. The opposite of supremum is the infinimum.
+\begin{definition}
+	The infinimum of a set $S \subset \R$ is a value $a \in \R_e$
+	such that $\forall s\in S,\ s \geq a$ and if $b \in \R_e$ such that
+	$\forall s\in S,\ s \geq b$, then $a \geq b$.
+	\label{defn:infinimum}
+\end{definition}
+The infinimum is the ``greatest upper bound''. Like the supremum, it always
+exists, and it is denoted $\inf S$. Supremum and Infinimum can be applied to
+scalar function $f: S\to \R$ by letting \[
+	\sup_{x\in S} f(x) = \sup \{f(x) | x\in S \}.
+\]
+\subsection{Norms}
+\begin{definition}
+	Let $V$ be a vector space of $\R$, then $\|\cdot\|: V \to \R$ is a norm if
+	$\forall \bs{x},\bs{y}\in V, \alpha \in \R$, \[
+		\|\bs{x}\| \geq 0, \qquad \bs{x} = 0 \Leftrightarrow \|\bs{x}\| = 0, \qquad
+		\|\alpha \bs{x}\| = |\alpha|\|\bs{x}\|, \qquad \|\bs{x} + \bs{y}\| \leq
+		\|\bs{x}\| + \|\bs{y}\|.
+	\]
+	\label{defn:norm}
+\end{definition}
+\begin{definition}
+	A normed space $(V, \|\cdot\|)$ is a vector space which is equipped with a
+	norm $\|\cdot\|: V \to \R$.
+	\label{defn:normed-space}
+\end{definition}
+If we have an operator $A$ which takes vectors from normed space $(X,
+\|\cdot\|_X)$ and outputs vectors in normed space $(Y, \|\cdot\|_Y)$, then we
+can define another norm on the vector space of operators from $X\to Y$.
+\begin{definition}
+	Let $A:X\to Y$ be an operator between normed spaces $(X, \|\cdot\|_X)$ and
+	$(Y, \|\cdot\|_Y)$, then the induced norm of $A$ is \[
+		\|A\|_i = \sup_{\|\bs{x}\|_X \neq 0} \frac{\|A\bs{x}\|_Y}{\|\bs{x}\|_X}
+	\]
+	\label{defn:induced-norm}
+\end{definition}
+The induced norm can be thought of as the maximum gain of the operator.
+\begin{definition}
+	Two norms $\|\cdot\|$ and $|||\cdot|||$ on a vector space $V$ are said to be
+	equivalent if $\exists k_1,
+	k_2 > 0$ such that \[
+		\forall \bs{x}\in V,\ k_1\|\bs{x}\| \leq |||\bs{x}||| \leq k_2\|\bs{x}\|
+	\]
+	\label{defn:equivalent-norm}
+\end{definition}
+If $V$ is a finite dimensional vector space if and only if all norms of $V$ are
+equivalent.
+
+\subsection{Sets}
+\begin{definition}
+	Let $(V, \|\cdot\|)$ be a normed space, $a\in \R$, $a > 0$, $\bs{x}_0\in V$,
+	then the open ball of radius $a$ centered around $x_0$ is given by \[
+		B_a(\bs{x}_0) = \{ \bs{x} \in V \ | \ \|\bs{x} - \bs{x}_0\| < a \}
+	\]
+	\label{defn:open-ball}
+\end{definition}
+\begin{definition}
+	A set $S\subset V$ is open if $\forall \bs{s}_0\in S,\ \exists \epsilon > 0$
+	such that $B_\epsilon(\bs{s}_0) \subset S$.
+	\label{defn:open-set}
+\end{definition}
+Open sets have a boundary which is not included in the set. By convention, we
+say that the empty set is open.
+
+The opposite of an open set is a closed set.
+\begin{definition}
+	A set $S$ is closed if $\sim S$ is open.
+	\label{defn:closed-set}
+\end{definition}
+Closed sets have a boundary which is included in the set.
+
+\subsection{Convergence}
+\begin{definition}
+	A sequence of points $\bs{x}_k$ in normed space $(V, \|\cdot\|)$ converges to
+	a point $\bar{\bs{x}}$ if \[
+		\forall \epsilon > 0,\ \exists N < \infty,\ \text{ such that } \forall k
+		\geq N, \|\bs{x}_k - \bar{\bs{x}}\| < \epsilon
+	\]
+	\label{defn:convergence}
+\end{definition}
+Convergence means that we can always find a finite time such that after that
+time, all points in the sequence stay within a specified norm ball.
+\begin{definition}
+	A sequence $\bs{x}_k$ is cauchy if \[
+		\forall \epsilon > 0,\ \exists N < \infty \text{ such that } \forall n,m
+		\geq N, \|\bs{x}_m - \bs{x}_n\| < \epsilon
+	\]
+	\label{defn:cauchy-sequence}
+\end{definition}
+A Cauchy sequence has a looser type of convergence than a convergent sequence
+since it only requires all elements to in the sequence to be part of the same
+norm ball after some time instead of requiring the sequence to get closer and
+closer to a single point.
+\begin{theorem}
+	If $\bs{x}_n$ is a convergent sequence, then $\bs{x}_n$ is a also a Cauchy
+	sequence.
+	\label{thm:cauchy-convergence}
+\end{theorem}
+\begin{definition}
+	A normed space $(V, \|\cdot\|)$ is complete if every Cauchy sequence converges
+	to a point in $V$.
+	\label{defn:complete-space}
+\end{definition}
+Because a complete space requires that Cauchy sequences converge, all cauchy
+sequences are convergent in a complete space. Two important complete spaces are
+\begin{enumerate}
+	\item Every finite dimensional vector space
+	\item $(C[a,b], \|\cdot\|_\infty)$, the set of continuously differentiable
+		functions on the closed interval $[a,b]$ equipped with the infinity norm.
+\end{enumerate}
+A complete normed space is also called a \textbf{Banach Space}.
+
+\subsection{Contractions}
+\begin{definition}
+	A point $\bs{x}^*$ is a fixed point of a function $P:X\to X$ if
+	$P(\bs{x}^*)=\bs{x}^*$.
+	\label{defn:fixed-point}
+\end{definition}
+\begin{definition}
+	A function $P:X\to X$ is a contraction if $\exists c\in\R, 0 \leq c < 1$ 
+	such that \[
+		\forall \bs{x},\bs{y}\in X,\ \|P(\bs{x}) - P(\bs{y})\| \leq c
+		\|\bs{x}-\bs{y}\|
+	\]
+	\label{defn:contraction}
+\end{definition}
+Informally, a contraction is a function which makes distances smaller. Suppose we look at a sequence defined by iterates of a function \[
+	\bs{x}_{k+1} = P(\bs{x}_k)
+\]
+where $P$ is a function $P:X\to X$. When does this sequence converge, and to
+what point will it converge?
+\begin{theorem}[Contraction Mapping Theorem]
+	If $P:X\to X$ is a contraction on the Banach space $(X, \|\cdot\|)$, then
+	there is a unique $\bs{x}^*\in X$ such that $P(\bs{x}^*) = \bs{x}^*$ and
+	$\forall \bs{x}_0\in X$, the sequence $\bs{x}_{n+1} = P(\bs{x}_n)$ converges to
+	$\bs{x}^*$.
+	\label{thm:contraction-mapping}
+\end{theorem}
+The contraction mapping theorem proves that contractions have a unique fixed
+points, and that repeatedly applying the contraction will converge to the fixed
+point.
+
+\subsection{Continuity}
+\begin{definition}
+	A function $h:V\to W$ on normed spaces $(V, \|\cdot\|_V)$ and $(W,
+	\|\cdot\|_W)$ is continuous at a point $\bs{x}_0$ if $\forall \epsilon > 0,
+	\exists \delta > 0$ such that \[
+		\|\bs{x}-\bs{x}_0\|_V < \delta \implies \|h(\bs{x}) - h(\bs{x_0})\|_W < \epsilon
+	\]
+	\label{thm:continuity}
+\end{definition}
+Continuity essentially means that given an $\epsilon-$ball in $W$, we can find a
+$\delta-$ball in $V$ which is mapped to the ball in $W$.
+If a function is continuous at all points $\bs{x}_0$, then we say the function
+is continuous.
+
+We can make the definition of continuity more restrictive by restraining the
+rate of growth of the function.
+\begin{definition}
+	A function $h:V\to W$ on normed spaces $(V, \|\cdot\|_V)$ and $(W,
+	\|\cdot\|_W)$ is Lipschitz continuous at $\bs{x}_0\in V$ if $\exists r > 0$
+	and $L < \infty$ such that \[
+		\forall \bs{x}, \bs{y}\in B_r(\bs{x}_0),\ \|h(\bs{x}) - h(\bs{y})\|_W \leq L
+		\|\bs{x} - \bs{y}\|_V
+	\]
+	\label{defn:lipschitz-continuity}
+\end{definition}
+A good interpretation of Lipschitz Continuity is that given two points in a ball
+around $\bs{x}_0$, the slope of the line connecting those two points is less
+than $L$. It means that the function is growing slower than linear for some
+region around $\bs{x}_0$. Lipschitz continuity implies continuity. If a function
+is lipschitz continuous with respect to one norm, it is also lipschitz
+continuous with respect to all equivalent norms.
+
+When the function $h$ is a function on $\R^n$ and is also
+differentiable, then Lipschitz continuity is easy to determine.
+\begin{theorem}
+	For a differentiable function $h:\R^n\to\R^n$, \[
+		\exists r>0, L < \infty, \bs{x}_0\in\R^n,\ \forall \bs{x}\in B_r(\bs{x}_0),
+		\left\lvert\left\lvert\frac{\partial h}{\partial
+		\bs{x}}\right\rvert\right\rvert_2 \leq L
+	\] implies Lipschitz Continuity at $\bs{x}_0$.
+	\label{thm:differentiable-lipschitz}
+\end{theorem}
+This captures the idea of growing slower than linear in high dimensional space.
+\begin{definition}
+	A function $h:\R\to V$ is piecewise continuous if $\forall k\in \mathbb{Z}$,
+	$h:[-k, k] \to V$ is continuous except at a possibly finite number of points,
+	and at the points of discontinuity $t_i$, $\lim_{s\to0^+} h(t_i+s)$ and
+	$\lim_{s\to0^-}h(t_i+s)$ exist and are finite. 
+	\label{defn:piecewise-continuous}
+\end{definition}
+\section{Differential Geometry}
+\begin{definition}
+	$M\subset \R^n$ is a $m$-dimensional smooth sub-manifold of $\R^n$ if $\forall
+	\bs{p}\in M,\ \exists r > 0$ and $F: B_r(\bs{p}) \to \R^{n-m}$ such that \[
+		\begin{aligned}
+			M \cap B_r(\bs{p}) = \{\bs{x}\in B_r(\bs{p}) | F(\bs{x}) = 0\},\\
+			F\text{ is smooth,}\\
+			\forall \bar{\bs{x}} \in M \cap B_r(\bs{p}),
+			\text{Rank}\left(\frac{\partial F}{\partial \bs{x}}
+			\bigg\rvert_{\bar{\bs{x}}}\right) = n - m
+		\end{aligned}
+	\]
+	\label{defn:manifold}
+\end{definition}
+By \cref{defn:manifold}, a manifold is essentially defined as the 0-level set of
+some smooth function $F$ and can be thought of as a surface embedded in a higher
+dimension.
+\begin{definition}
+	The tangent space of a manifold $M$ at $\bs{p}\in M$ is given by \[
+		T_{\bs{p}}M = \text{Null}\left(\frac{\partial F}{\partial
+		\bs{x}}\bigg |_{\bs{p}}\right)
+	\]
+	\label{defn:tangent-space}
+\end{definition}
+The tangent space consists of all vectors tangent to the manifold at a
+particular point $\bs{p}$.
+\begin{definition}
+	The Tangent Bundle of a manifold $M$ is the collection of all tangent spaces \[
+		T_M = \bigcup_{\bs{p}\in M} T_{\bs{p}} M
+	\]
+	\label{defn:tangent-bundle}
+\end{definition}
+\begin{definition}
+	A vector field $f:M\to T_M$ on a manifold $M$ is an assignment of each point $\bs{p}\in
+	M$ to a vector in the tangent space in that point $T_{\bs{p}}M$.
+	\label{defn:vector-field}
+\end{definition}
+Therefore, a vector field can be thought of as a curve through the tangent
+bundle of a manifold.
+\begin{definition}
+	The Lie Derivative of a function $V$ with respect to a vector field $f$ is
+	given by \[
+			L_fV = (\nabla_{\bs{x}}V)^\top f(\bs{x}).
+	\]
+	\label{defn:lie-derivative}
+\end{definition}
+A Lie Derivative is essentially a directional derivative, and it measures how a
+function changes along a vector field.
+\begin{definition}
+	Suppose that $f(\bs{x})$ and $g(\bs{x})$ are vector fields. The Lie Bracket of
+	$f$ and $g$ is given by \[
+		[f, g] = L_fg - L_gf
+	\]
+	\label{defn:lie-bracket}
+\end{definition}
+The Lie Bracket is another vector field, and it essentially measures the
+difference between moving along vector field $f$ and vector field $g$ across
+some infinitesimal distance. Another way to think about the Lie Bracket is as a
+measure of the extent to which $f$ and $g$ commute with each other. The Lie
+Bracket is also sometimes denoted using the adjoint map \[
+	\ad_fg = [f, g].
+\]
+It is helpful when chaining Lie Brackets since we can denote \[
+	[f,[f,[f,\cdots[f,g]]]] = \ad_f^ig.
+\]
+Since the Lie Bracket is a vector field, we can look at Lie Derivatives with
+respect to the Lie Bracket of two vector fields.
+\begin{theorem}
+	For a function $h$ and vector fields $f$ and $g$, \[
+		L_{[f,g]}h = L_fL_gh - L_gL_fh
+	\]
+	\label{thm:lie-brack-derivative}
+\end{theorem}
+We can also use relate repeated Lie Derivatives to doing repeated Lie Brackets.
+\begin{theorem}
+	\[
+		L_gL_f^ih(\bs{x}) = 0 \Leftrightarrow L_{\ad_f^ig}h(\bs{x}) = 0
+	\]
+	\label{thm:repeated-lie}
+\end{theorem}
+\begin{definition}
+	Suppose $f_1,f_2,\cdots,f_n$ are vector fields. A distribution $\Delta$ is the
+	span of the vector fields at each point $\bs{x}$: \[
+		\Delta(\bs{x}) = \text{span}\{f_1(\bs{x}), f_2(\bs{x}),\cdots,f_n(\bs{x})\}.
+	\]
+	\label{defn:distribution}
+\end{definition}
+At each point $\bs{x},\ \Delta(\bs{x})$ is a subspace of the tangent space at
+$\bs{x}$.
+\begin{definition}
+	The dimension of a distribution at a point $\bs{x}$ is given by \[
+		\text{Dim }\Delta(\bs{x}) = \text{Rank}\left(\begin{bmatrix}
+				f_1(\bs{x}) & \bigg\lvert & f_2(\bs{x}) & \bigg\lvert & \cdots &
+				\bigg\lvert & f_n(\bs{x})
+		\end{bmatrix}\right)
+	\]
+	\label{defn:distribution-dimension}
+\end{definition}
+Distributions have different properties which are important to look at.
+\begin{definition}
+	A distribution $\Delta$ is nonsingular, also known as regular, if its
+	dimension is constant.
+	\label{defn:regular-dimension}
+\end{definition}
+\begin{definition}
+	A distribution $\Delta$ is involutive if \[
+		\forall f, g\in \Delta, \quad [f, g] \in \Delta
+	\]
+	\label{defn:involutive-distribution}
+\end{definition}
+In involutive distributions, you can never leave the distribution by traveling
+along vectors inside the distribution.
+\begin{definition}
+	A nonsingular $K$-dimensional distribution $\Delta(\bs{x}) =
+	\text{span}\{f_1(\bs{x}), \cdots, f_k(\bs{x})\}$ is completely integrable if
+	$\exists \phi_1,\cdots,\phi_{n-k}$ such that $\forall i,k,\ L_{f_k}\phi_i = 0$
+	and $\nabla_{\bs{x}}\phi_i$ are linearly independent.
+	\label{thm:involutive}
+\end{definition}
+It turns out that integrability and involutivity are equivalent to each other.
+\begin{theorem}[Frobenius Theorem]
+	A nonsingular $\Delta$ is completely integrable if and only if $\Delta$ is
+	involutive.
+	\label{thm:frobenius}
+\end{theorem}
+\section{Nonlinear System Dynamics}
+Consider the nonlinear system \[
+	\diff[]{\bs{x}}{t} = f(\bs{x}, t).
+\]
+$f$ is a vector field which potentially changes with time and governs how the
+system evolves.
+\begin{definition}
+	The system is autonomous if $f(\bs{x}, t)$ is not explicitly dependent on time $t$.
+	\label{defn:autonomous-system}
+\end{definition}
+\begin{definition}
+	A point $x_0$ is an equilibrium point at time $t_0$ if \[
+		\forall t \geq t_0, \ f(\bs{x}_0, t) = 0 
+	\]
+	\label{defn:equilibrium-point}
+\end{definition}
+Consider a single trajectory $\phi(t, t_0, \bs{x}_0)$.
+\begin{definition}
+	A set $S$ is said to be the $\omega-$limit set of $\phi$ if\[
+		\forall \bs{y}\in S,\exists t_n\to \infty, \lim_{n\to\infty}\phi(t_n, t_0,
+		\bs{x}_0) = \bs{y}
+	\]
+	\label{defn:w-limit-set}
+\end{definition}
+Whereas linear systems converge to a single point if they converge at all,
+nonlinear systems can converge to a set of points. Thus the $\omega-$limit set
+essentially generalizes the idea of a limit.
+\begin{definition}
+	A set $M\subset \R^n$ is said to be invariant if \[
+		\forall t\geq t_0,\ \bs{y}\in M \implies \phi(t, t_0, \bs{y}) \in M
+	\]
+	\label{defn:invariant-set}
+\end{definition}
+An invariant set is one which a trajectory of the system will never leave once it enters the
+set. Just like linear systems, non-linear systems can also have periodic solutions.
+\begin{definition}
+	A closed orbit $\gamma$ is a trajectory of the system such that $\gamma(0) =
+	\gamma(T)$ for finite $T$.
+	\label{defn:closed-orbit}
+\end{definition}
+
+\subsection{Solutions to Nonlinear Systems}
+Consider the nonlinear system \[
+	\diff[]{\bs{x}}{t} = f(\bs{x}, t),\qquad \bs{x}(t_0) = \bs{x}_0\in \R^n.
+\]
+\begin{definition}
+	A function $\bs{\Phi}(t)$ is a solution to $\diff[]{\bs{x}}{t} = f(\bs{x}, t),\
+	\bs{x}(t_0) = \bs{x}_0$ on the closed interval $[t_0, t]$ if $\bs{\Phi}(t)$
+	is defined on the interval $[t_0, t]$, $\diff[]{\bs{\Phi}}{t} =
+	f(\bs{\Phi}(t), t)$ on the interval $[t_0, t]$, and $\bs{\Phi}(t_0) =
+	\bs{x}_0$.
+	\label{defn:nonlinear-solution}
+\end{definition}
+We say that $\bs{\Phi}(t)$ is a solution in the sense of Caratheodory if \[
+	\bs{\Phi}(t) = \bs{x}_0 + \int_{t_0}^t f(\bs{\Phi}(\tau), \tau)d\tau.
+\]
+Because the system is nonlinear, it could potentially have no solution, one
+solution, or many solutions. These solutions could exist locally, or they could
+exist for all time. We might also want to know when there is a solution which
+depends continuously on the initial conditions.
+\begin{theorem}[Local Existence and Uniqueness]
+	Given $\diff[]{\bs{x}}{t} = f(\bs{x}, t),\ \bs{x}(t_0) = \bs{x}_0\in\R^n$ where
+	$f$ is piecewise continuous in $t$ and $\exists T>t_0$ such that $\forall t\in
+	[t_0, T], f$ is $L$-Lipschitz Continuous, then $\exists \delta > 0$ such that a
+	solution exists and is unique $\forall t\in [t_0, t_0 + \delta]$.
+	\label{thm:local-existence}
+\end{theorem}
+\Cref{thm:local-existence} can be proved using the Contraction Mapping Theorem
+(\cref{thm:contraction-mapping}) by finding $\delta$ such that the function
+$P:C_n[t_0, t_0+\delta] \to C_n[t_0, t_0+\delta]$ given by \[
+	P(\bs{\Phi})(t) = \bs{x}_0 + \int_{t_0}^{t_0+\delta} f(\bs{\Phi}(\tau),
+	\tau)d\tau
+\]
+is a contraction under the norm $\|\bs{\Phi}\|_\infty = \sup_{t_0\leq t \leq
+t_0+\delta} \|\bs{\Phi}(t)\|$.
+\begin{theorem}[Global Existence and Uniqueness]
+	Suppose $f(\bs{x}, t)$ is piecewise continuous in $t$ and $\forall T\in [t_0,
+	\infty)$, $\exists L_T < \infty$ such that $f$ is $L_T$ Lipshitz continuous
+	for all $\bs{x}, \bs{y} \in \R^n$, then the nonlinear system  has exactly one
+	solution on $[t_0, T]$.
+	\label{thm:global-existence}
+\end{theorem}
+Once we know that solutions to a nonlinear system exist, we can sometimes bound
+them.
+\begin{theorem}[Bellman-Gronwall Lemma]
+	Suppose $\lambda\in\R$ is a constant and $\mu:[a,b]\to\R$ is continuous and
+	non-negative, then for a continuous function $y:[a, b]\to\R$ \[
+		y(t) \leq \lambda + \int_a^t \mu(\tau)y(\tau)d\tau \implies y(t) \leq
+		\lambda \text{exp}\left(\int_a^t\mu(\tau)d\tau\right)
+	\]
+	\label{thm:bellman-gronwall}
+\end{theorem}
+Another thing we might want to do is understand how the nonlinear system reacts
+to changes in the initial condition.
+\begin{theorem}
+	Suppose the system $\diff[]{\bs{x}}{t} = f(\bs{x}, t),\ \bs{x}(t_0) = \bs{x}_0$
+	satisfies the conditions of global uniqueness and existence. Fix $T\in[t_0,
+	\infty]$ and suppose $\bs{x}(\cdot)$ and $\bs{z}(\cdot)$  are two solutions
+	satisfying $\diff[]{\bs{x}}{t} = f(\bs{x}, t), \bs{x}(t_0) = \bs{x}_0$ and
+	$\diff[]{\bs{z}}{t} = f(\bs{z}(t), t),\ \bs{z}(t_0)=\bs{z}_0$, then $\forall
+	\epsilon > 0, \exists \delta > 0$ such that \[
+		\|\bs{x}_0 - \bs{z}_0\| < \delta \implies \|\bs{x} - \bs{z}\|_{\infty} <
+		\epsilon.
+	\]
+	\label{thm:continuous-dependence-on-ic}
+\end{theorem}
+\Cref{thm:continuous-dependence-on-ic} is best understood by defining a function
+$\Psi:\R^n \to C_n[t_0, t]$ where $\Psi(\bs{x}_0)(t)$ returns the solution to
+the system given the initial condition. If the conditions of
+\Cref{thm:continuous-dependence-on-ic} are satisfied, then the function $\Psi$
+will be continuous.
+
+\subsection{Planar Dynamical Systems}
+Planar dynamical systems are those with 2 state variables.
+Suppose we linearize the autonomous system $\diff[]{\bs{x}}{t} = f(\bs{x})$ at an equilibrium point.
+\[
+	\diff[]{\bs{x}}{t} = \frac{\partial f}{\partial \bs{x}} \bigg\lvert_{\bs{x_0}}\bs{x} 
+\]
+Depending on the eigenvalues of $\frac{\partial f}{\partial \bs{x}}$, the Jacobian, we get several cases for
+how this linear system behaves. We'll let $z_1$ and $z_2$ be the eigenbasis of
+the \textit{phase space}.
+\begin{enumerate}
+	\item The eigenvalues are real, yielding solutions $z_1 = z_1(0)e^{\lambda_1
+		t}, z_2 = z_2(0)e^{\lambda_2 t}$. If we eliminate the time variable, we can
+		plot the trajectories of the system.
+		\[
+			\frac{z_1}{z_1(0)} = \left(\frac{z_2}{z_2(0)}\right)^{\frac{\lambda_1}{\lambda_2}}
+		\]
+		\begin{enumerate}
+			\item When $\lambda_1, \lambda_2 < 0$, all trajectories converge to the origin, so we call this a \textbf{stable node}.
+			\item When $\lambda_1, \lambda_2 > 0$, all trajectories blow up, so we call this an \textbf{unstable node}.
+			\item When $\lambda_1 < 0 < \lambda_2$, the trajectories will converge to
+				the origin along the axis corresponding to $\lambda_1$ and diverge along
+				the axis corresponding to $\lambda_2$, so we call this a \textbf{saddle node}.
+		\end{enumerate}
+	\item There is a single repeated eigenvalue with one eigenvector. As before,
+		we can eliminate the time variable and plot the trajectories on the $z_1$,
+		$z_2$ axes.
+		\begin{enumerate}
+			\item When $\lambda < 0$, the trajetories will converge to the origin, so
+				we call it an \textbf{improper stable node}
+			\item When $\lambda > 0$, the trajetories will diverge from the origin, so
+				we call it an \textbf{improper unstable node}
+		\end{enumerate}
+	\item When there is a complex pair of eigenvalues, the linear system will have
+		oscillatory behavior. The Real Jordan form of $\frac{\partial f}{\partial \bs{x}}$ will look like \[
+			\frac{\partial f}{\partial \bs{x}} = \begin{bmatrix} \alpha & \beta \\ -\beta & \alpha \end{bmatrix}.
+		\]
+		The parameter $\beta$ will determine the direction of the trajectories
+		(clockwise if positive).
+		\begin{enumerate}
+			\item When $\alpha < 0$, the trajectories will spiral towards the origin,
+				so we call it a \textbf{stable focus}.
+			\item When $\alpha = 0$, the trajectories will remain at a constant radius
+				from the origin, so we call it a \textbf{center}.
+			\item When $\alpha > 0$, the trajectories will spiral away from the
+				origin, so we call it an \textbf{unstable focus}.
+		\end{enumerate}
+\end{enumerate}
+It turns out that understanding the linear dynamics at equilibrium points can be helpful in
+understanding the nonlinear dynamics near equilibrium points.
+\begin{theorem}[Hartman-Grobman Theorem]
+	If the linearization of a planar dynamical system $\diff[]{\bs{x}}{t} =
+	f(\bs{x})$ at an equilibrium point $\bs{x_0}$ has no zero or purely imaginary eigenvalues, then there exists a
+	homeomorphism from a neighborhood $U$ of $\bs{x}_0$ into $\R^2$ which takes
+	trajectories of the nonlinear system and maps them onto the linearization
+	where $h(\bs{x_0}) = 0$, and the homeomorphism can be chosen to preserve the
+	parameterization by time.
+	\label{thm:hartman-grobman}
+\end{theorem}
+\Cref{thm:hartman-grobman} essentially says that the linear dynamics predict the
+nonlinear dynamics around equilibria, but only for a neighborhood around the
+equilibrium point. Outside of this neighborhood, the linearization may be very
+wrong.
+
+Suppose that we have a simply connected region $D$ (meaning $D$ cannot be
+contracted to a point) and we want to know if it contains a closed orbit.
+\begin{theorem}[Bendixon's Theorem]
+	If $\divergence(f)$ is not identically zero in a sub-region of $D$ and does not
+	change sign in $D$, then $D$ contains no closed orbits.
+	\label{thm:bendixons}
+\end{theorem}
+\Cref{thm:bendixons} lets us rule out closed orbits from regions of
+$\R^2$. If we have a positively invariant region, then we can determine whether it
+contains closed orbits.
+\begin{theorem}[Poincare-Bendixson Theorem]
+	If $M$ is a compact, positively invariant set for the flow $\phi_t(\bs{x})$,
+	then if $M$ contains no equilibrium points, then $M$ has a limit cycle.
+	\label{thm:poincare-bendixson}
+\end{theorem}
+\section{Stability of Nonlinear Systems}
+The equilibria of a system can tell us a great deal about the stability of the
+system. For nonlinear systems, stability is a property of the equilibrium
+points, and to be stable is to converge to or stay equilibrium.
+\begin{definition}
+	An equilibrium point $\bs{x}_e\in \R$ is a stable equilibrium point in the
+	sense of Lyapunov if and only if $\forall \epsilon > 0,\exists \delta(t_0,
+	\epsilon)$ such that \[
+		\forall t \geq t_0,\ \|\bs{x}_0 - \bs{x}_e\| < \delta(t_0, \epsilon)
+		\implies \|\bs{x}(t) - \bs{x}_e\| < \epsilon
+	\]
+	\label{defn:stability}
+\end{definition}
+Lyapunov Stability essentially says that a finite deviation in the initial
+condition from equilibrium means the resulting trajectory of the system stay close to
+equilibrium. Notice that this definition is nearly identical to
+\cref{thm:continuous-dependence-on-ic}. That means stability of an equilibrium
+point is the same as saying the function which returns the solution to a system
+given its initial condition is continuous at the equilibrium point.
+\begin{definition}
+	An equilibrium point $\bs{x}_e\in \R$ is an uniformly stable equilibrium point in the
+	sense of Lyapunov if and only if $\forall \epsilon > 0,\exists \delta(
+	\epsilon)$ such that \[
+		\forall t \geq t_0,\ \|\bs{x}_0 - \bs{x}_e\| < \delta(\epsilon)
+		\implies \|\bs{x}(t) - \bs{x}_e\| < \epsilon
+	\]
+	\label{defn:uniformly-stable}
+\end{definition}
+Uniform stability means that the $\delta$ can be chosen independently of the
+time the system starts at.
+Both stability and uniform stability do not imply convergence to the equilibrium
+point. They only guarantee the solution stays within a particular norm ball.
+Stricter notions of stabilty add this idea in.
+\begin{definition}
+	An equilibrium point $\bs{x}_e$ is attractive if $\forall t_0 > 0,\ \exists
+	c(t_0)$ such that \[
+		\bs{x}(t_0) \in B_c(\bs{x}_e) \implies \lim_{t\to\infty} \|\bs{x}(t, t_0,
+		\bs{x}_0) - \bs{x}_e\| = 0
+	\]
+	\label{defn:attractivity}
+\end{definition}
+Attractive equilibria guarantee that trajectories beginning from initial
+conditions inside of a ball will converge to the equilibrium. However,
+attractivity does not imply stability since the trajectory could go arbitarily
+far from the equilibrium so long as it eventually returns.
+\begin{definition}
+	An equilibrium point $\bs{x}_e$ is asymptotically stable if $\bs{x}_e$ is
+	stable in the sense of Lyapunov and attractive.
+	\label{defn:asymptotic-stability}
+\end{definition}
+Asymptotic stability fixes the problem of attractivity where trajectories could
+go far from the equilibrium, and it fixes the problem with stability where the
+trajectory may not converge to equilibrium. It means that trajectories starting
+in a ball around equilibrium will converge to equilibrium without leaving that
+ball. Because the constant for attractivity may depend on time, defining
+uniform asymptotic stability requires some modifications to the idea of
+attractivity.
+\begin{definition}
+	An equilibrium point is uniformly asympototically stable if $\bs{x}_e$ is
+	uniformly stable in the sense of Lyapunov, and $\exists c$ and
+	$\gamma:\R_+\times\R^n\to\R_+$ such that \[
+		\forall \bs{x}_0\in B_c(\bs{x}_e),\ \lim_{\tau\to\infty}\gamma(\tau,
+		\bs{x}_0) = 0, \qquad \forall t\geq t_0,\ \|\bs{x}(t, t_0, \bs{x}_0) - \bs{x}_e\| \leq
+		\gamma(t-t_0, \bs{x}_0)
+	\]
+	\label{defn:uniform-asymptotic-stability}
+\end{definition}
+The existence of the $\gamma$ function helps guarantee that the rate of
+converges to equilibrium does not depend on $t_0$ since the function $\gamma$ is
+independent of $t_0$.
+Suppose that the $\gamma$ is an exponential function. Then solutions to the
+system will converge to the equilibrium exponentially fast.
+\begin{definition}
+	An equilibrium point $\bs{x}_e$ is locally exponentially stable if $\exists
+	h,m,\alpha$
+	such that \[
+		\forall \bs{x}_0\in B_h(\bs{x}_e),\ \|\bs{x}(t, t_0, \bs{x}_0) -
+		\bs{x}_e\| \leq me^{-\alpha(t - t_0)}\|\bs{x}(t) - \bs{x}_e\|
+	\]
+	\label{defn:exponential-stability}
+\end{definition}
+\Cref{defn:stability,defn:uniformly-stable,defn:asymptotic-stability,defn:uniform-asymptotic-stability,defn:exponential-stability}
+are all local definitions because the only need to hold for $\bs{x}_0$ inside a
+ball around the equilibrium. If they hold $\forall \bs{x}_0\in\R^n$, then they
+become global properties.
+
+Just as we can define stability, we can also define instability.
+\begin{definition}
+	An equilibrium point $\bs{x}_e$ is unstable in the sense of Lyapunov if
+	$\exists \epsilon > 0, \forall \delta > 0$ such that \[
+		\exists \bs{x}_0\in B_\delta(\bs{x}_e) \implies \exists T\geq t_0, x(T, t_0,
+		\bs{x}_0) \not\in B_\epsilon(\bs{x}_e)
+	\]
+	\label{defn:unstable}
+\end{definition}
+Instability means that for any $\delta-$ball, we can find an $\epsilon-$ball for
+which there is at least one initial condition whose corresponding trajectory
+leaves the $\epsilon-$ball.
+\subsection{Lyapunov Functions}
+In order to prove different types of stability, we will construct functions
+which have particular properties around equilibrium points of the system. The
+properties of these functions will help determine what type of stable the
+equilibrium point is.
+\begin{definition}
+	A class $\mathcal{K}$ function is a function $\alpha: \R_+ \to \R_+$ such that
+	$\alpha(0) = 0$ and $\alpha(s)$ is strictly monotonically increasing in $s$.
+	\label{defn:class-k-function}
+\end{definition}
+A subset of the class $\mathcal{K}$ functions grow unbounded as the argument
+approaches infinity.
+\begin{definition}
+	A class $\mathcal{KR}$ function is a class $\mathcal{K}$ function $\alpha$
+	where $\lim_{s\to\infty}\alpha(s) = s$.
+	\label{defn:class-kr-function}
+\end{definition}
+Class $\mathcal{KR}$ functions are ``radially unbounded''.
+We can use class $\mathcal{K}$ and class $\mathcal{KR}$ to bound ``energy-like''
+functions called \textbf{Lyapunov Functions}.
+\begin{definition}
+	A function $V(\bs{x}, t): \R^n \times \R_+ \to \R$ is locally positive
+	definite (LPDF) on a set $G\subset \R^n$ containing $\bs{x}_e$ if $\exists
+	\alpha \in \mathcal{K}$ such that \[
+		V(\bs{x}, t) \geq \alpha(\|\bs{x} - \bs{x}_e\|)
+	\]
+	\label{defn:lpdf}
+\end{definition}
+LPDF functions are locally ``energy-like'' in the sense that the equilibrium
+point is assigned the lowest ``energy'' value, and the larger the deviation from
+the equilibrium, the higher the value of the ``energy''.
+\begin{definition}
+	A function $V(\bs{x}, t): \R^n \times \R_+ \to \R$ is positive
+	definite (PDF) if $\exists
+	\alpha \in \mathcal{KR}$ such that \[
+		\forall \bs{x}\in\R^n,\ V(\bs{x}, t) \geq \alpha(\|\bs{x} - \bs{x}_e\|)
+	\]
+	\label{defn:pdf}
+\end{definition}
+Positive definite functions act like ``energy functions'' everywhere in $\R^n$.
+\begin{definition}
+	A function $V(\bs{x}, t): \R^n \times \R_+ \to \R$ is decrescent
+	if $\exists
+	\alpha \in \mathcal{K}$ such that \[
+		\forall \bs{x}\in B_h(\bs{x}_e),\ V(\bs{x}, t) \leq \beta(\|\bs{x} - \bs{x}_e\|)
+	\]
+	\label{defn:decrescent}
+\end{definition}
+Descresence means that for a ball around the equilibrium, we can upper bound the
+the energy.
+
+Note that we can assume $\bs{x}_e = 0$ without loss of generality for
+\cref{defn:lpdf,defn:pdf,defn:decrescent} since for a given system, we can always define a linear
+change of variables that shifts the equilibrium point to the origin.
+\subsubsection{Quadratic Lyapunov Functions}
+\begin{definition}
+	A Quadratic Lypunov function is of the form \[
+		V(\bs{x}) = \bs{x}^\top P \bs{x},\quad P \succ 0
+	\]
+	\label{defn:quadratic-lyapunov}
+\end{definition}
+Quadratic Lyapunov Functions are one of the simplest types of Lyapunov
+Functions. Their level sets are ellipses where the major axis is the eigenvector
+corresponding to $\lambda_{min}(P)$, and the minor axis is the eigenvecctor
+corresponding to $\lambda_{max}(P)$.
+
+\begin{theorem}
+	Consider the sublevel set $\Omega_c = \{ \bs{x} | V(\bs{x}) \leq c \}$. Then
+	$r_*$ is the radius of the largest circle contained inside $\Omega_c$, and $r^*$
+	is the radius of the largest circle containing $\Omega_c$.
+	\[
+		r_* = \sqrt{\frac{c}{\lambda_{max}(P)}} \qquad r^* =
+		\sqrt{\frac{c}{\lambda_{min}(P)}}
+	\]
+	\label{thm:quadratic-level-sets}
+\end{theorem}
+
+\subsubsection{Sum-of-Squares Lyapunov Functions}
+\begin{definition}
+	A polynomial $p(\bs{x})$ is sum-of-squares (SOS) if $\exists g_1,\cdots,g_r$
+	such that \[
+		p(\bs{x}) = \sum_{i=1}^r g_i^2(\bs{x})
+	\]
+	\label{defn:sos}
+\end{definition}
+SOS polynomials have the nice property that they are always non-negative due to
+being a sum of squared numbers. Since any polynomial can be written in a
+quadratic form $P(\bs{x}) = z^\top(\bs{x}) Q z(\bs{x})$ where $z$ is a vector of
+monomials, the properties of $Q$
+can tell us if $P$ is SOS or not.
+\begin{theorem}
+	A polynomial is SOS if and only if it can be written as \[
+		p(\bs{x}) = z^\top(\bs{x}) Q z(\bs{x}), \quad Q \succeq 0
+	\]
+	\label{thm:sos}
+\end{theorem}
+Note that $Q$ is not necessarily unique, and if we construct a linear operator
+which maps $Q$ to $P$, then this linear operator will have a Null Space.
+Mathematically, consider \[
+	\mathcal{L}(Q)(\bs{x}) = z^\top(\bs{x})Qz(\bs{x}).
+\]
+This linear operator has a null space spanned by the polynomials $N_j$. Given a
+matrix $Q_0 \succeq 0$ such that $p(\bs{x}) = z^\top(\bs{x})Q_0z(\bs{x})$ (i.e
+$p$ is SOS), it is also true that \[
+	p(\bs{x}) = z^\top(\bs{x})\left( Q_0 + \sum_{j} \lambda_j N_j(\bs{x}) \right)
+	z(\bs{x}).
+\]
+SOS polynomials are helpful in finding Lyapunov functions because we can use SOS
+Programming to find SOS polynomials which satisfy desired properties. For
+example, if we want $V(\bs{x})$ to be PDF, then one constraint in our SOS program
+will be that \[
+	V(\bs{x}) - \epsilon \bs{x}^\top \bs{x}, \quad \epsilon > 0
+\] is SOS.
+
+\subsection{Proving Stability}
+To prove the stability of an equilibrium point for a given nonlinear system, we
+will construct a Lyapunov function and determine stability from the properties
+of the Lyapunov functions which we can find. Given properties of $V$ and $\diff[]{V}{t}$, we can use the \textbf{Lyapunov
+Stability Theorems} to prove the stability of equilibria.
+\begin{theorem}
+	If $\exists V(\bs{x}, t)$ such that $V$ is LPDF and
+	$-\diff[]{V}{t} \geq 0$ locally, then $\bs{x}_e$ is stable in the sense of
+	Lyapunov.
+	\label{thm:lyapunov-sisl}
+\end{theorem}
+\begin{theorem}
+	If $\exists V(\bs{x}, t)$ such that $V$ is LPDF and decrescent, and 
+	$-\diff[]{V}{t} \geq 0$ locally, then $\bs{x}_e$ is uniformly stable in the sense of
+	Lyapunov.
+	\label{thm:lyapunov-uniformly-sisl}
+\end{theorem}
+\begin{theorem}
+	If $\exists V(\bs{x}, t)$ such that $V$ is LPDF and decrescent, and 
+	$-\diff[]{V}{t}$ is LPDF, then $\bs{x}_e$ is uniformly asymptotically stable in the sense of
+	Lyapunov.
+	\label{thm:lyapunov-uniformly-as}
+\end{theorem}
+\begin{theorem}
+	If $\exists V(\bs{x}, t)$ such that $V$ is PDF and decrescent, and 
+	$-\diff[]{V}{t}$ is LPDF, then $\bs{x}_e$ is globally uniformly asymptotically stable in the sense of
+	Lyapunov.
+	\label{thm:lyapunov-globally-as}
+\end{theorem}
+\begin{theorem}
+	If $\exists V(\bs{x}, t)$ and $h, \alpha > 0$ such that V is LPDF is
+	decrescent, $-\diff[]{V}{t}$ is LDPF, and \[
+		\forall \bs{x}\in B_h(\bs{x}_e),\ \left\lvert\left\lvert\diff[]{V}{t}\right\rvert\right\rvert \leq \alpha \|\bs{x}-\bs{x}_e\|
+	\]
+	\label{thm:lyapunov-exponential-stability}
+\end{theorem}
+The results of
+\cref{thm:lyapunov-sisl,thm:lyapunov-uniformly-sisl,thm:lyapunov-uniformly-as,thm:lyapunov-globally-as,thm:lyapunov-exponential-stability}
+are summarized in \cref{table:lyapunov-stability}.
+\begin{gitbook-image}
+\begin{table}[!h]
+	\centering
+	\begin{tabularx}{\textwidth}{YYY}
+		\toprule
+		\textbf{Conditions on} $\mathbf{V}$ & \textbf{Conditions on}
+		$-\diff[]{V}{t}$ & \textbf{Conclusion} \\
+		\midrule
+		LPDF & $\geq 0$ locally & Stable\\
+		\hline
+		LPDF, Decrescent & $\geq 0$ locally & Uniformly Stable\\
+		\hline
+		LPDF, Decrescent & LPDF & Uniformly, Asymptotically Stable\\
+		\hline
+		LPDF, Decrescent & LDPF, $\exists \alpha > 0$ such that $\left\lvert\left\lvert
+		\diff[]{V}{t}\right\rvert\right\rvert \leq \alpha \|\bs{x} - \bs{x}_e\|$ &
+		Exponentially Stable\\
+		\hline
+		PDF, Decrescent & PDF & Globally, Uniformly, Asymptotically Stable\\
+		\bottomrule
+	\end{tabularx}
+	\caption{Summary of Lyapunov Stability Theorems}
+	\label{table:lyapunov-stability}
+\end{table}
+\end{gitbook-image}
+Going down the rows of \cref{table:lyapunov-stability} lead to increasingly
+stricter forms of stability. Descresence appears to add uniformity to the
+stability, while $-\diff[]{V}{t}$ being LPDF adds asymptotic convergence. However,
+these conditions are only sufficient, meaning if we cannot find a suitable $V$,
+that does not mean that an equilibrium point is not stable.
+
+One very common case where it can be difficult to find appropriate Lyapunov
+functions is in proving asymptotic stability since it can be hard to find $V$
+such that $-\diff[]{V}{t}$ is LPDF. In the case of autonomous systems, we can
+still prove asymptotic stability without such a $V$.
+\begin{theorem}[LaSalle's Invariance Principle]
+	Consider a smooth function $V:\R^n\to\R$ with bounded sub-level sets $\Omega_c
+	= \left\{\bs{x} | V(\bs{x}) \leq c \right\}$ and $\forall \bs{x}\in \Omega_c$, 
+	$\diff[]{V}{t} \leq 0$. Define $S = \left\{\bs{x}\bigg\lvert\diff[]{V}{t} = 0\right\}$ and let
+		$M$ be the largest invariant set in $S$, then \[
+			\forall \bs{x}_0\in \Omega_c,\ \bs{x}(t, t_0, x_0) \to M \text{ as } t\to
+			\infty.
+		\]
+	\label{thm:la-salles}
+\end{theorem}
+LaSalle's theorem helps prove general convergence to an invariant set. Since $V$
+is always decreasing in the sub-level set $\Omega_c$, trajectories starting in
+$\Omega_c$ must eventually reach $S$. At some point, they will reach the set $M$
+in $S$, and then they will stay there. Thus if the set $M$ is only the
+equilibrium point, or a set of equilibrium points, then we can show that the
+system trajectories asymptotically converges to this equilibrium or set of
+equilibria. Moreover, if $V(\bs{x})$ is PDF, and $\forall \bs{x}\in\mathbb{R}^n,
+\diff[]{V}{t} \leq 0$, then we can show global asymptotic stability as well.
+
+LaSalle's theorem can be generalized to non-autonomous systems as well, but it
+is slightly more complicated since the set $S$ may change over time.
+
+\subsubsection{Indirect Method of Lyapunov}
+It turns out that we can also prove the stability of systems by looking at the
+linearization around the equilibrium. Without loss of generality, suppose
+$\bs{x}_e = 0$. The linearization at the equilibrium is given by \[
+	\diff[]{\bs{x}}{t} = f(x,t) = f(0, t) + \frac{\partial f}{\partial
+	\bs{x}}\bigg\lvert_{\bs{x} = 0}\bs{x} + f_1(\bs{x},t) \approx A(t)\bs{x}.
+\]
+The function $f_1(\bs{x}, t)$ is the higher-order terms of the linearization.
+The linearization is a time-varying system.
+Consider the time-varying linear system
+\[
+	\diff[]{\bs{x}}{t} = A(t)\bs{x},\ \bs{x}(t_0) = \bs{x}_0.
+\]
+\begin{definition}
+	The state transition matrix $\Phi(t, t_0)$ of a time-varying linear system is
+	a matrix satisfying \[
+		\bs{x}(t) = \Phi(t, t_0)\bs{x}_0,\ \diff[]{\Phi}{t} = A(t)\Phi(t, t_0),\
+		\Phi(t_0, t_0) = I
+	\]
+	\label{defn:state-transition-matrix}
+\end{definition}
+The state transition matrix is useful in determining properties of the system.
+\begin{enumerate}
+	\item $\sup_{t\geq t_0} \|\Phi(t, t_0)\| = m(t_0) < \infty \implies$ the system
+		is stable at the origin at $t_0$.
+	\item $\sup_{t_0\geq 0}\sup_{t\geq t_0} \|\Phi(t, t_0)\| = m < \infty \implies$ the system
+		is uniformly stable at the origin at $t_0$.
+	\item $\lim_{t\to\infty}\|\Phi(t, t_0)\| = 0 \implies$ the system is
+		asymptotically stable.
+	\item $\forall t_0,\epsilon>0,\exists T$ such that $\forall t\geq t_0 + T,\ \|\Phi(t, t_0)\| <
+		\epsilon \implies$ the system is uniformly asymptotically stable.
+	\item $\|\Phi(t, t_0)\| \leq Me^{-\lambda(t-t_0)} \implies$ exponential
+		stability.
+\end{enumerate}
+If the system was Time-Invariant, then the system would be stable so long as the
+eigenvalues of $A$ were in the open left-half of the complex plane. In fact, we
+could use $A$ to construct positive definite matrices.
+\begin{theorem}[Lyapunov Lemma]
+	For a matrix $A\in \R^{n\times n}$, its eigenvalues $\lambda_i$ satisfy
+	$\Re(\lambda_i) < 0$ if and only if $\forall Q \succ 0$, there exists
+	a solution $P\succ 0$ to the equation \[
+		A^TP + PA = -Q.
+	\]
+	\label{thm:lyapunov-lemma}
+\end{theorem}
+In general, we can use the \textbf{Lyapunov Equation} to count how many
+eigenvalues of $A$ are stable.
+\begin{theorem}[Tausskey Lemma]
+	For $A\in\R^{n\times n}$ and given $Q \succ 0$, if there are no eigenvalues on
+	the $j\omega$ axis, then the solution $P$ to $A^TP + PA = -Q$ has as many
+	positive eigenvalues as $A$ has eigenvalues in the complex left half plane.
+	\label{thm:tausskey-lemma}
+\end{theorem}
+The Lyapunov Lemma has extensions to the time-varying case.
+\begin{theorem}[Time-Varying Lyapunov Lemma]
+	If $A(\cdot)$ is bounded and for some $Q(t) \succeq \alpha I$, the solution
+	$P(t)$ to $A(t)^TP(t) + P(t)A(t) = -Q(t)$ is bounded, then the origin is a
+	asymptotically stable equilibrium point.
+	\label{thm:tv-lyapuynov-lemma}
+\end{theorem}
+It turns out that uniform asymptotic stability of the linearization of a system
+corresponds to uniform, asymptotic stability of the nonlinear system.
+\begin{theorem}[Indirect Theorem of Lyapunov]
+	For a nonlinear system whose higher-order terms of the linearization are given
+	by $f(\bs{x},t)$, if \[
+		\lim_{\|\bs{x}\|\to 0}\sup_{t\geq 0} \frac{\|f_1(\bs{x},t)\|}{\|\bs{x}\|} =
+		0
+	\]
+	and if $\bs{x}_e$ is a uniformly asymptotic stable equilibrium point of
+	$\diff[]{\bs{z}}{t}=A(t)\bs{z}$ where $A(t)$ is the Jacobian at the $\bs{x}_e$,
+	then $\bs{x}_e$ is a uniformly asymptotic stable
+	equilibrium point of $\diff[]{\bs{x}}{t} = f(\bs{x},t)$
+	\label{thm:indirect-lyapunov}
+\end{theorem}
+\subsection{Proving Instability}
+\begin{theorem}
+	An equilibrium point $\bs{x}_e$ is unstable in the sense of Lyapunov if
+	$\exists V(\bs{x},t)$ which is decrescent, the Lie derivative $\diff[]{V}{t}$ is
+	LPDF, $V(\bs{x}_e, t)$, and $\exists \bs{x}$ in the neighborhood of $\bs{x}_e$
+	such that $V(\bs{x}_0, t) > 0$.
+	\label{thm:lyapunov-instability}
+\end{theorem}
+\subsection{Region of Attraction}
+For asymptotically stable and exponential stable equilibria, it makes sense to
+wonder which initial conditions will cause trajectories to converge to the
+equilibrium.
+\begin{definition}
+	If $\bs{x}_e$ is an equilibrium point of a time-invariant system $\diff[]{\bs{x}}{t}
+	= f(\bs{x})$, then the Region of Attraction of $\bs{x}_e$ is \[
+		\mathcal{R}_A(\bs{x}_e) = \{ \bs{x}_0 \in \mathbb{R}^n | \lim_{t\to\infty}
+		\bs{x}(t, t_0) = \bs{x}_e \}
+	\]
+	\label{defn:region-of-attraction}
+\end{definition}
+Suppose that we have a Lyapunov function $V(\bs{x})$ and a region $D$ such that
+$V(\bs{x}) > 0$ and $\diff[]{V}{t} < 0$ in $D$. Define a sublevel set of the
+Lypunov function $\Omega_c$ which is a subset of $D$. We know that if
+$\bs{x}_0\in\Omega_c$, then the trajectory will stay inside $\Omega_c$ and
+converge to the equilibrium point. Thus we can use the largest $\Omega_c$ that
+is compact and contained in $D$ as an estimate of the region of attraction.
+
+When we have a Quadratic Lyapunov Function, we can set $D$ to be the largest
+circle which satisfies the conditions on $V$, and the corresponding $\Omega_c$
+contained inside $D$ will be the estimate of the Region of Attraction.
+
+We can find even better approximations of the region of attraction using SOS
+programming. Suppose we have a $V$ which we used to prove asymptotic stability.
+Then if there exists an $s$ which satisfies the following SOS program, then the
+sublevel set $\Omega_c$ is an estimate of the Region of Attraction.
+\begin{align*}
+	\max_{c, s} &\quad c\\
+	\text{s.t} &\quad s(\bs{x}) \text{ is SOS,}\\
+	&\quad -\left(\diff[]{V}{t} + \epsilon \bs{x}^\top \bs{x}\right) + s(\bs{x})(c -
+	V(\bs{x})) \text{ is SOS.}
+\end{align*}
+\section{Nonlinear Feedback Control}
+In nonlinear control problems, we have a system \[
+	\diff[]{\bs{x}}{t} = f(\bs{x}, \bs{u}).
+\]
+$\bs{x}$ is the state of the system, and $\bs{u}$ is the input to the system.
+Note that for simplicity, the system is time-invariant. Further assume, without
+loss of generality, that $f(0, 0) = 0$. The goal of nonlinear feedback control
+is to find a state feedback law $\alpha(\bs{x})$ such that the equilibrium point
+$\bs{x}_e = 0$ is globally asymptotically stable for the closed loop system \[
+	\diff[]{\bs{x}}{t} = f(\bs{x}, \alpha(\bs{x})).
+\]
+Sometimes, the control impacts the state evolution in an affine manner.
+\begin{definition}
+	A control affine system is given by the differential equation \[
+		\diff[]{\bs{x}}{t} = f(\bs{x}) + G(\bs{x})\bs{u}
+	\] where $G(\bs{x})$ is a matrix dependent on the state vector $\bs{x}$.
+	\label{defn:control-affine}
+\end{definition}
+
+When designing controllers, there is a wide variety of techniques we can use.
+Some simple techniques involve canceling out various types of nonlinearities in
+the system using the input. Here are some examples.
+\begin{enumerate}
+	\item Set $\bs{u}$ such that it cancels out nonlinear terms and adds a stable
+		linear term, effectively making the nonlinear system behave linear in the
+		closed loop.
+	\item Set $\bs{u}$ to cancel destabilitizing nonlinear terms and add a stable
+		linear term, so the stable nonlinearities help the input drive the system to
+		equilibrium.
+	\item Set $\bs{u}$ to cancel destabilizing nonlinear terms, so the nonlinear
+		system dynamics drive the system to equilibrium.
+	\item Set $\bs{u}$ to dominate destabilizing terms so they have a minimal
+		impact on the overall system behavior.
+\end{enumerate}
+While these techniques can work, there are also more principled ways of
+designing controllers to satisfy different criteria, particularly for the case
+of control affine systems.
+\subsection{Control Lyapunov Functions}
+If we can find an $\alpha(\bs{x})$ that makes the origin globally asymptotically
+stable, then the converse Lyapunov theorem says that we can find a
+corresponding Lyapunov function for the system.
+\begin{align*}
+	\forall \bs{x} \neq 0, \diff[]{V}{t} < 0 &\implies (\nabla_{\bs{x}}V)^\top f(\bs{x}, \alpha(\bs{x})) < 0 \\
+	&\implies \exists \bs{u} \text{ s.t } (\nabla_{\bs{x}}V)^\top f(\bs{x},
+	\bs{u}) < 0\\
+	& \Leftrightarrow \inf_{\bs{u}} (\nabla_{\bs{x}}V)^\top f(\bs{x}, \bs{u}) < 0
+\end{align*}
+This result motivates the following definition.
+\begin{definition}
+	A continuously differentiable, PDF, radially unbounded $V: \R^n \to \R$ is a
+	Control Lyapunov Function for the system $\diff[]{\bs{x}}{t} = f(\bs{x},
+	\bs{u})$ if \[
+		\forall \bs{x} \neq 0, \inf_{\bs{u}} (\nabla_{\bs{x}}V)^\top
+		f(\bs{x}, \bs{u}) < 0
+	\]
+	\label{defn:control-lyapunov-function}
+\end{definition}
+Once we have a control lyapunov function, we can prove that it is possible to
+find a state feedback law that will make the origin globally asymptotically
+stable.
+\begin{theorem}
+	Suppose $f$ is Lipschitz and $V$ is a control Lyapunov function, then there
+	exists a smooth function $\alpha$ such that the origin is a globally
+	asympototically stable equilibrium point of $\diff[]{\bs{x}}{t} = f(\bs{x},
+	\alpha(\bs{x}))$.
+	\label{thm:artstein}
+\end{theorem}
+Suppose that we have a control affine system, and we want to construct a control
+lyapunov function for the system. \[
+	\inf_{\bs{u}} \frac{\partial V}{\partial \bs{x}}f(\bs{x}, \bs{u}) =
+	\inf_{\bs{u}} L_f V + \sum_i L_{g_i} V u_i < 0
+\]
+Here, each $g_i(\bs{x})$ is a column of $G(\bs{x})$.
+If $\forall i,\ L_{g_i} V = 0$, then \cref{defn:control-lyapunov-function} is
+satisfied so long as $L_f V < 0$.
+\begin{theorem}
+	A function $V$ is a control lyapunov function for a control affine system \[
+		\diff[]{\bs{x}}{t} = f(\bs{x}) + \sum_i g_i(\bs{x}) u_i
+	\] if \[
+		L_{g_i} V\, \forall i \implies L_f V \leq 0
+	\]
+	\label{thm:control-affine-lyap}
+\end{theorem}
+Notice that the condition in \cref{thm:control-affine-lyap} is essentially
+saying that the $l_2$-norm of the vector composed of the $L_{g_i} V$ is equal to
+0. The choice of CLF is important because different CLFs have different
+properties when used to derive controllers.
+\begin{definition}
+	A CLF $V(\bs{x})$ satisfies the small control property if $\forall \epsilon >
+	0$, $\exists \delta > 0$ such that $\bs{x}\in B_\delta(0)$, then if
+	$\bs{x}\neq0, \exists \bs{u}\in B_\epsilon(0)$ satisfying \[
+		\diff[]{V}{t} = L_fV + L_GV^T\bs{u} < 0.
+	\]
+	\label{defn:small-control}
+\end{definition}
+The small control property means that CLF will lead to a controller which has a
+small value that does not get too large when close to the equilibrium.
+
+Given a control lyapunov function for a control affine system $V(\bs{x},
+\bs{u})$, we can devise
+a controller which stabilizes the system. In particular, we need \[
+	\frac{dV}{dt}(x, u) = L_f V(\bs{x}) + L_GV(\bs{x})^\top \bs{u} \leq 0.
+\]
+Hence, let \[
+	\bs{u} = \begin{cases}
+		0, & \text{if } L_f V < 0,\\
+		(L_GVL_GV^\top)^{-1}(-L_fV L_GV^\top), & \text{if } L_f V > 0.
+	\end{cases}
+\]
+When the plant dynamics are naturally stabilizing, this controller exerts no
+control effort. When the plant dynamics are not naturally stabilizing, then the
+controller applies some control to stabilize the system. We can show that this
+is a minimum norm controller as it solves the optimization problem \[
+	\begin{aligned}
+		\min &\quad \bs{u}^\top \bs{u}\\
+		\text{s.t} &\quad L_fV + L_GV^\top \bs{u} \leq 0.
+	\end{aligned}
+\]
+Another type of controller is known as the Sontag controller.
+\begin{theorem}
+	Suppose $V:\R^n\to\R$ is a CLF for SISO control affine system $\diff[]{\bs{x}}{t} =
+	f(\bs{x}) + g(\bs{x})u$ where $f(0) = 0$ where $f$ and $g$ are Lipschitz. Then
+	the Sontag feedback control law is given by \[
+		\alpha_S(\bs{x}) = \begin{cases}
+			\frac{-L_fV - \sqrt{(L_fV)^2 + (L_gV)^4}}{L_gV}, & \text{if } L_gV \neq
+			0,\\
+			0, & \text{else.}
+		\end{cases}
+	\]
+	makes the origin globally asymptotically stable. Moreover,
+	$\alpha_S(\bs{x})$ is continuous everywhere except $\bs{x} = 0$, is
+	continuous at $\bs{x}=0$ if $V$ satisfies the small control property, and if
+	$V(\bs{x})$ is $K+1$ times continuously differentiable and $f(\bs{x}),
+	g(\bs{x})$ are $K$ times continously differentiable $\forall \bs{x}\neq0$,
+	then $\alpha_S$ is $K$ times continuously differentiable.
+	\label{thm:sontag}
+\end{theorem}
+\subsection{Feedback Linearization}
+Since we have a large number of tools which allow us to control linear systems,
+it would be ideal if we could somehow leverage those tools for nonlinear
+control. Feedback linearization is the process of finding a feedback control law $\bs{u} =
+\alpha(\bs{x})$ such that under a nonlinear change of coordinates $z =
+\Phi(\bs{x})$, the system $\diff[]{\bs{x}}{t} = f(\bs{x}, \alpha(\bs{x}))$ behaves like a linear
+system $\diff[]{\bs{z}}{t} = A\bs{z}$. When the system is control-affine, there
+are well-established results which help us do this.
+
+\subsubsection{SISO Case}
+Suppose we have a SISO control-affine system \[
+	\begin{aligned}
+		\diff[]{\bs{x}}{t} &= f(\bs{x}) + g(\bs{x})u\\
+		y &= h(\bs{x})
+	\end{aligned}
+\]
+\begin{definition}
+	A SISO control affine system with an equilibrium point $\bs{x}_e$ has
+	strict relative degree $\gamma$ if in a neighborhood $U$ around the
+	equilibirum point, $L_gL_f^{\gamma-1}h(\bs{x})$ is bounded away from 0 and \[
+		\forall i=0,\cdots,\gamma-2,\ L_gL_f^{\gamma - 1}h(\bs{x}) = 0
+	\]
+	\label{defn:strict-relative-degree}
+\end{definition}
+To understand relative degree, suppose we differentiate $y$ once \[
+	\diff[]{y}{t} = L_fh + L_gh u.
+\]
+If $\forall \bs{x}\in U,\ L_gh(\bs{x}) = 0$ where $U$ is some region around the
+equilibrium, then \[
+	\forall \bs{x}\in U,\ \diff[]{y}{t} = L_fh(\bs{x}).
+\]
+If we differentiate again, then \[
+	\forall \bs{x}\in U,\ \diff[2]{y}{t} = L_f^2h(\bs{x}) + L_gL_fh(\bs{x}).
+\]
+Suppose that $\forall \bs{x}\in U,\ L_gL_fh(\bs{x}) = 0$, then we can
+differentiate again. At some point, after $\gamma$ differentiations, we will
+get \[
+	\forall \bs{x}\in U,\ \diff[\gamma]{y}{t} = L_f^\gamma h(\bs{x}) +
+	L_gL_f^{\gamma-1}h(\bs{x})u.
+\]
+Therefore, the relative degree of the system is essentially telling us which
+derivative of the output that we can control. By sequentially taking
+derivatives, we are essentially looking at the system \[
+	\begin{aligned}
+		y &= h(\bs{x})\\
+		\diff[]{y}{t} &= L_fh(\bs{x})\\
+		\diff[2]{y}{t} &= L_f^2h(\bs{x})\\
+		&\vdots\\
+		\diff[\gamma]{y}{t} &= L_f^\gamma h(\bs{x}) + L_gL_f^{\gamma-1}h(\bs{x})
+	\end{aligned}
+\]
+Suppose $\forall i=0,\cdots,\gamma-1,$ we let $\xi_i(\bs{x}) = \diff[i]{y}{t}$.
+These are $\gamma$ linearly independent coordinates. Since the distribution \[
+	\Delta(\bs{x}) = \text{span}\{g(\bs{x})\}
+\]
+is involutive, it is integrable, and so there must be $n-1$ functions $\eta_i$
+such that \[
+	\forall \bs{x}\in U,\ (\nabla_{\bs{x}}\eta_i)^\top g(\bs{x}) = 0.
+\]
+We can now choose $n-\gamma$ of them which are linearly independent of the
+$\xi_i$ and linearly independent with each other, and this forms a change of
+coordinates \[
+	\begin{bmatrix}
+		\xi_1\\
+		\vdots\\
+		\xi_{\gamma}\\
+		\eta_1\\
+		\vdots\\
+		\eta_{n-\gamma}
+	\end{bmatrix} = \Phi(\bs{x}) = \begin{bmatrix}
+		h(\bs{x})\\
+		L_fh(\bs{x})\\
+		\vdots\\
+		L_f^{\gamma-1}\\
+		\eta_1\\
+		\vdots\\
+		\eta_{n-\gamma}
+	\end{bmatrix}.
+\]
+This change of coordinates allows us to put the system into a canonical form.
+\begin{definition}
+	The normal form of a SISO control affine system is given by \[
+		\begin{aligned}
+			\diff[]{\xi_1}{t} &= \xi_2\\
+			\diff[]{\xi_2}{t} &= \xi_3\\
+			&\vdots\\
+			\diff[]{\xi_{\gamma}}{t} &= b(\bs{\xi}, \bs{\eta}) + a(\bs{\eta},
+			\bs{\xi})u\\
+			\diff[]{\bs{\eta}}{t} &= q(\bs{\xi}, \bs{\eta}),\\
+			y &= \eta_1
+		\end{aligned}
+	\]
+	\label{defn:normal-form-siso}
+\end{definition}
+When the original system is given by $\diff[]{\bs{x}}{t} = f(\bs{x})+g(\bs{x})u$, then
+\[
+	b(\bs{\xi},\bs{\eta}) = L_f^\gamma h(\Phi^{-1}(\bs{\xi}, \bs{\eta})) \qquad
+	a(\bs{\xi}, \bs{\eta}) = L_gL_f^{\gamma-1} h(\Phi^{-1}(\bs{\xi}, \bs{\eta}))
+\]
+With this parameterization, it is quite easy to see how we can make our system
+behave linearly. In particular, choose \[
+	u = \frac{1}{a(\bs{\xi}, \bs{\eta})}\left(-b(\bs{\xi}, \bs{\eta}) +
+	v\right)
+\]
+where $v$ is some control input. Then the system becomes
+\[
+	\begin{aligned}
+		\diff[]{\xi_1}{t} &= \xi_2\\
+		\diff[]{\xi_2}{t} &= \xi_3\\
+		&\vdots\\
+		\diff[]{\xi_{\gamma}}{t} &= v\\
+		\diff[]{\bs{\eta}}{t} &= q(\bs{\xi}, \bs{\eta})\\
+		y &= \eta_1
+	\end{aligned}
+\],
+which is a linear system. Therefore, we can design a linear feedback controller $v
+= \alpha(\bs{x})$
+where we have all of the tools of linear control at our disposal. However,
+notice that the $\eta_i$ cannot be impacted by the control effort. These are
+known as the \textbf{internal dynamics} of the system. When $\bs{\xi} = 0$,
+then \[
+	\diff[]{\bs{\eta}}{t} = q(0, \bs{\eta})
+\]
+are known as the \textbf{Zero Dynamics} of the system. Zero dynamics for a
+system can be dangerous because if they are unstable, then the system could be
+blowing up. When $\gamma = n$, then there are no zero dynamics. When this
+happens, we say the system is \textbf{Full State Linearizable}. Fortunately,
+there are necessary and sufficient conditions which guarantee full state
+linearization.
+\begin{theorem}
+	There exists a function $h$ such that a control affine system
+	$\diff[]{\bs{x}}{t} = f(\bs{x}) + g(\bs{x})u$ has relative degree $n$ at
+	$\bs{x}_0$ if and only if \[
+		\begin{bmatrix}
+			g(\bs{x}) & \cdots & \ad_f^{n-2}g(\bs{x}) & \ad_f^{n-1}g(\bs{x})
+		\end{bmatrix}
+	\]
+	has rank $n$ and \[
+		\begin{bmatrix}
+			g(\bs{x}) & \cdots & \ad_f^{n-3}g(\bs{x}) & \ad_f^{n-2}g(\bs{x})
+		\end{bmatrix}
+	\]
+	has rank $n-1$ and is involutive in the neighborhood of $\bs{x}_0$. The $h$ is
+	chosen to satisfy \[
+		(\nabla_{\bs{x}}h)^\top \begin{bmatrix}
+			g(\bs{x}) & \cdots & \ad_f^{n-3}g(\bs{x}) & \ad_f^{n-2}g(\bs{x})
+		\end{bmatrix} = 0
+	\]
+	\label{thm:full-state-linearization}
+\end{theorem}
+\subsubsection{MIMO Case}
+Suppose instead we have a MIMO control affine system where \[
+	\begin{aligned}
+		\diff[]{\bs{x}}{t} &= f(\bs{x}) + G(\bs{x})\bs{u}\\
+		\bs{y} &= h(\bs{x})
+	\end{aligned}
+\]
+We will assume that the number of outputs is equal to the number of inputs (i.e
+$\bs{y}, \bs{u} \in \R^m$). To linearize the system, we can take the same idea
+of relative degree from the SISO case and apply it to the MIMO case.
+Define $\gamma_j$ to be the lowest derivative of $y_j$ which is impacted by at
+least one input.\[
+	\begin{bmatrix}
+		\diff[\gamma_1]{y_1}{t}\\
+		\vdots\\
+		\diff[\gamma_m]{y_m}{t}
+	\end{bmatrix}
+	= \begin{bmatrix}
+		L_f^{\gamma_1}h_1(\bs{x})\\
+		\vdots\\
+		L_f^{\gamma_m}h_m(\bs{x})\\
+	\end{bmatrix} + A(\bs{x})\bs{u}, \qquad A(\bs{x}) = \begin{bmatrix}
+		L_{g_1}L_f^{\gamma_1-1}h_1(\bs{x}) & \cdots &
+		L_{g_m}L_f^{\gamma_1-1}h_1(\bs{x})\\
+		\vdots & \ddots & \vdots\\
+		L_{g_1}L_f^{\gamma_m-1}h_m(\bs{x}) & \cdots &
+		L_{g_m}L_f^{\gamma_m-1}h_m(\bs{x})
+	\end{bmatrix}
+\]
+\begin{definition}
+	A square control affine system has a vector relative degree $(\gamma_1,
+	\cdots, \gamma_m)$ at $\bs{x}_0\in U$ if $A(\bs{x}_0)$ is nonsingular and \[
+		\forall 1\leq i\leq m,\ 1\leq j \leq m,\ 0 \leq k \leq \gamma_j-2,\ \forall
+		\bs{x}\in U,\ L_{g_i}L_f^kh_j(\bs{x}) = 0
+	\]
+	\label{thm:vector-relative-degree}
+\end{definition}
+As before, we can assign $\diff[i]{y_j}{t} = \xi_i^j$ as a partial change of
+coordinates and then choose linearly independent $\bs{\eta}$.
+\begin{definition}
+	The normal form of a square MIMO system is given by
+	\[
+		\begin{aligned}
+			\diff[]{\bs{\eta}}{t} &= q(\bs{\xi},\bs{\eta}) + p(\bs{\xi}, \bs{\eta})\bs{u}\\
+			\diff[]{\xi_i^j}{t} &= \xi_{i+1}^j, &\quad \forall j,\ \forall i < \gamma_j-1\\
+			\diff[]{\xi_{\gamma_j-1}^j}{t} &= b^j(\bs{\xi},\bs{\eta}) +
+			\bs{a}^j(\bs{\xi},\bs{\eta})^\top\bs{u}
+		\end{aligned}
+	\]
+	\label{defn:mimo-normal-form}
+\end{definition}
+As before the $\diff[]{\bs{\eta}}{t}$ represent the internal dynamics of the
+system that are not impacted by the control. As with the linear case, we can
+design a controller \[
+	\bs{u} = A^{-1}(\bs{x})\left(
+	\begin{bmatrix}
+		L_f^{\gamma_1}h_1(\bs{x})\\
+		\vdots\\
+		L_f^{\gamma_m}h_m(\bs{x})\\
+	\end{bmatrix} + \bs{v}\right)
+\]
+which renders the system linear. We can now choose $\bs{v}$ where each entry of
+$\bs{v}$ controls a different output. For this reason, we call $A(\bs{x})$ the
+decoupling matrix. As in the SISO case, unless $\sum_j \gamma_j = n$, there are
+zero dynamics to the system.
+\begin{theorem}
+	A control affine square system $\diff[]{\bs{x}}{t} = f(\bs{x}) +
+	G(\bs{x})\bs{u}$ has vector relative degree $\sum_j \gamma_j = n$ if and only
+	if $\Delta_i$ is involutive for all $i \leq n-2$, $\Delta_i$ has constant rank
+	for all $1 \leq i \leq n-1$ and $\Delta_{n-1}$ has rank $n$ where \[
+		\begin{aligned}
+			\Delta_0(\bs{x}) &= \text{span}\{g_1(\bs{x}),\cdots,g_m(\bs{x})\}\\
+			\Delta_i(\bs{x}) &= \text{span}\{\ad_f^kg_i(\bs{x})\ |\  \forall 0 \leq k \leq i,
+			1 \leq j \leq m\}, &\quad \forall 1 \leq i \leq n-1
+		\end{aligned}
+	\]
+	\label{thm:full-state-linearization-mimo}
+\end{theorem}
+\subsubsection{Dynamic Extension}
+Sometimes, we can use full-state linearization even if $h$ does not satisfy the
+conditions in \cref{thm:full-state-linearization}. We do this by adding
+additional states to the system and corresponding pseudo-control inputs which
+help control these states. Sometimes, this can be done in a way which makes the
+extended system full-state linearizable.
+\subsubsection{Sliding Mode Control}
+In sliding mode control, we design a controller \[
+	u = \beta(\bs{x})\text{sgn}(s)
+\]
+where $s(\bs{x})$ describes a manifold called the ``sliding manifold''. Sliding mode
+controllers have two states
+\begin{enumerate}
+	\item Reaching Mode
+	\item Sliding Mode
+\end{enumerate}
+During the reaching mode, the controller drives the state towards the sliding
+manifold $s(\bs{x}) = 0$. We choose $s$ such that on the manifold, when the
+system is in sliding mode, the system
+naturally converges asymptotically to the equilibrium. If $s(\bs{x}) = 0$ is an
+invariant manifold, then the system will smoothly travel along the manifold to
+equilibrium. If the sliding manifold is not invariant, then the state will
+chatter around the manifold towards equilibrium as the controller continuously
+drives it back to the manifold once it leaves. To choose $s$, we need to find a CLF $V(s)$ which
+converges to $0$ in finite time when applying the sliding mode controller.
+\subsubsection{Backstepping}
+\begin{definition}
+	A system expressed in strict feedback form is given by \[
+		\begin{aligned}
+			\diff[]{\bs{x}}{t} &= f_0(\bs{x}) + g_0(\bs{x})\xi_1\\
+			\diff[]{\xi_1}{t} &= f_1(\bs{x}, \xi_1) + g_1(\bs{x}, \xi_1)\xi_2\\
+			&\vdots\\
+			\diff[]{\xi_k}{t} &= f_k(\bs{x}, \xi_1,\cdots,\xi_k) + g_k(\bs{x},
+			\xi_1,\cdots,\xi_k)u\\
+		\end{aligned}
+	\]
+	\label{defn:strict-feedback-form}
+\end{definition}
+When systems are expressed in this way, we have a convenient method of designing
+controllers.
+\begin{theorem}[Backstepping Lemma]
+	Suppose there is a continuously differentiable $u=\alpha(\bs{x})$ and a CLF
+	$V(\bs{x})$ such that \[
+		L_fV + L_gV\alpha \leq -W
+	\] where $W$ is a positive semi-definite function for the system
+	$\diff[]{\bs{x}}{t} = f(\bs{x})+g(\bs{x})u$. Then for the system \[
+		\begin{aligned}
+			\diff[]{\bs{x}}{t} &= f(\bs{x}) + g(\bs{x})\xi\\
+			\diff[]{\xi}{t} &= u
+		\end{aligned}
+	\]
+	the function \[
+		V_a(\bs{x},\xi) = V(\bs{x}) + \frac{1}{2}(\xi - \alpha(\bs{x}))^2
+	\] is a valid CLF and the control input \[
+		u = -c(\xi-\alpha(\bs{x})) + (\nabla_{\bs{x}}\alpha)^\top(f(\bs{x}) +
+		g(\bs{x})\xi) - (\nabla_{\bs{x}}V)^\top g(\bs{x}), \qquad c > 0
+	\]
+	is a stabilizing controller.
+	\label{thm:backstepping}
+\end{theorem}
+If we apply \cref{thm:backstepping} to a system expressed in strict feedback
+form, then we can recursively define controllers until we arrive at a controller
+for the full system.
+\end{document}
+

@@ -40,6 +40,12 @@
         sub_exp: '\\text{argmin}'
       - reg_exp: '\\argmax'
         sub_exp: '\\text{argmax}'
+      - reg_exp: '\\divergence'
+        sub_exp: '\\text{div}'
+      - reg_exp: '\\ad'
+        sub_exp: '\\text{ad}'
+      - reg_exp: '\\R'
+        sub_exp: '\\mathbb{R}'
     eqn_env:
       name: Equation
       label_prefix: eqn
